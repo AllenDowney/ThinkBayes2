@@ -5,10 +5,11 @@ Copyright 2012 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+from __future__ import print_function
+
 import thinkbayes2
 import thinkplot
 
-from thinkbayes2 import Pmf, Percentile
 from dice import Dice
 
 
@@ -25,7 +26,7 @@ class Train2(Dice):
         hypos: sequence of hypotheses
         alpha: parameter of the power law prior
         """
-        Pmf.__init__(self)
+        thinkbayes2.Pmf.__init__(self)
         for hypo in hypos:
             self.Set(hypo, hypo**(-alpha))
         self.Normalize()
@@ -40,7 +41,7 @@ def MakePosterior(high, dataset, constructor):
 
     Returns: posterior Suite
     """
-    hypos = xrange(1, high+1)
+    hypos = range(1, high+1)
     suite = constructor(hypos)
     suite.name = str(high)
 
@@ -86,10 +87,10 @@ def main():
                    xlabel='Number of trains',
                    ylabel='Probability')
 
-    interval = Percentile(suite, 5), Percentile(suite, 95)
+    interval = suite.Percentile(5), suite.Percentile(95)
     print(interval)
 
-    cdf = thinkbayes2.MakeCdfFromPmf(suite)
+    cdf = thinkbayes2.Cdf(suite)
     interval = cdf.Percentile(5), cdf.Percentile(95)
     print(interval)
 

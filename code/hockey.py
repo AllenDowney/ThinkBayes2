@@ -5,6 +5,8 @@ Copyright 2012 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+from __future__ import print_function, division
+
 import math
 
 import columns
@@ -18,10 +20,10 @@ USE_SUMMARY_DATA = True
 class Hockey(thinkbayes2.Suite):
     """Represents hypotheses about the scoring rate for a team."""
 
-    def __init__(self, name=''):
+    def __init__(self, label=None):
         """Initializes the Hockey object.
 
-        name: string
+        label: string
         """
         if USE_SUMMARY_DATA:
             # prior based on each team's average goals scored
@@ -32,8 +34,8 @@ class Hockey(thinkbayes2.Suite):
             mu = 2.8
             sigma = 0.85
 
-        pmf = thinkbayes2.MakeGaussianPmf(mu, sigma, 4)
-        thinkbayes2.Suite.__init__(self, pmf, name=name)
+        pmf = thinkbayes2.MakeNormalPmf(mu, sigma, 4)
+        thinkbayes2.Suite.__init__(self, pmf, label=label)
             
     def Likelihood(self, data, hypo):
         """Computes the likelihood of the data under the hypothesis.
@@ -63,7 +65,7 @@ def MakeGoalPmf(suite, high=10):
         pmf = thinkbayes2.MakePoissonPmf(lam, high)
         metapmf.Set(pmf, prob)
 
-    mix = thinkbayes2.MakeMixture(metapmf, name=suite.name)
+    mix = thinkbayes2.MakeMixture(metapmf, label=suite.label)
     return mix
 
 
@@ -80,7 +82,7 @@ def MakeGoalTimePmf(suite):
         pmf = thinkbayes2.MakeExponentialPmf(lam, high=2, n=2001)
         metapmf.Set(pmf, prob)
 
-    mix = thinkbayes2.MakeMixture(metapmf, name=suite.name)
+    mix = thinkbayes2.MakeMixture(metapmf, label=suite.label)
     return mix
 
 

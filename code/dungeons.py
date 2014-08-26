@@ -5,6 +5,8 @@ Copyright 2012 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+from __future__ import print_function, division
+
 import random
 
 import thinkbayes2
@@ -16,16 +18,14 @@ FORMATS = ['pdf', 'eps', 'png']
 class Die(thinkbayes2.Pmf):
     """Represents the PMF of outcomes for a die."""
 
-    def __init__(self, sides, name=''):
+    def __init__(self, sides, label=''):
         """Initializes the die.
 
         sides: int number of sides
-        name: string
+        label: string
         """
-        thinkbayes2.Pmf.__init__(self, name=name)
-        for x in xrange(1, sides+1):
-            self.Set(x, 1)
-        self.Normalize()
+        hypos = range(1, sides+1)
+        thinkbayes2.Pmf.__init__(self, hypos, label=label)
 
 
 def PmfMax(pmf1, pmf2):
@@ -58,8 +58,7 @@ def main():
 
     mix = thinkbayes2.MakeMixture(pmf_dice)
 
-    colors = thinkplot.Brewer.Colors()
-    thinkplot.Hist(mix, width=0.9, color=colors[4])
+    thinkplot.Hist(mix, width=0.9)
     thinkplot.Save(root='dungeons3',
                 xlabel='Outcome',
                 ylabel='Probability',
@@ -71,11 +70,11 @@ def main():
 
     dice = [d6] * 3
     three = thinkbayes2.SampleSum(dice, 1000)
-    three.name = 'sample'
+    three.label = 'sample'
     three.Print()
 
     three_exact = d6 + d6 + d6
-    three_exact.name = 'exact'
+    three_exact.label = 'exact'
     three_exact.Print()
 
     thinkplot.PrePlot(num=2)
@@ -98,16 +97,17 @@ def main():
 
     # and the easy way
     best_attr_cdf = three_exact.Max(6)
-    best_attr_cdf.name = ''
-    best_attr_pmf = thinkbayes2.MakePmfFromCdf(best_attr_cdf)
+    best_attr_cdf.label = ''
+    best_attr_pmf = best_attr_cdf.MakePmf()
     best_attr_pmf.Print()
 
     thinkplot.Pmf(best_attr_pmf)
     thinkplot.Save(root='dungeons2',
-                xlabel='Sum of three d6',
-                ylabel='Probability',
-                axis=[2, 19, 0, 0.23],
-                formats=FORMATS)
+                   xlabel='Sum of three d6',
+                   ylabel='Probability',
+                   axis=[2, 19, 0, 0.23],
+                   formats=FORMATS,
+                   legend=False)
     
 
 

@@ -5,6 +5,8 @@ Copyright 2012 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+from __future__ import print_function
+
 from dice import Dice
 import thinkplot
 
@@ -21,7 +23,7 @@ def Mean(suite):
 
 
 def MakePosterior(high, dataset):
-    hypos = xrange(1, high+1)
+    hypos = range(1, high+1)
     suite = Train(hypos)
     suite.name = str(high)
 

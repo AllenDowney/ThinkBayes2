@@ -5,6 +5,8 @@ Copyright 2012 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+from __future__ import print_function, division
+
 import math
 import numpy
 import random
@@ -159,19 +161,19 @@ def FitCdf(cdf):
 def CorrelatedGenerator(cdf, rho):
     """Generates a sequence of values from cdf with correlation.
 
-    Generates a correlated standard Gaussian series, then transforms to
+    Generates a correlated standard Normal series, then transforms to
     values from cdf
 
     cdf: distribution to choose from
     rho: target coefficient of correlation
     """
     def Transform(x):
-        """Maps from a Gaussian variate to a variate with the given CDF."""
-        p = thinkbayes2.GaussianCdf(x)
+        """Maps from a Normal variate to a variate with the given CDF."""
+        p = thinkbayes2.NormalCdf(x)
         y = cdf.Value(p)
         return y
 
-    # for the first value, choose from a Gaussian and transform it
+    # for the first value, choose from a Normal and transform it
     x = random.gauss(0, 1)
     yield Transform(x)
 
@@ -231,7 +233,7 @@ def GenerateSample(n, pc, lam1, lam2):
 
     Returns: list of random variates
     """
-    xs = [GenerateRdt(pc, lam1, lam2) for _ in xrange(n)]
+    xs = [GenerateRdt(pc, lam1, lam2) for _ in range(n)]
     return xs
 
 

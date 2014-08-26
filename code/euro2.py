@@ -5,6 +5,8 @@ Copyright 2012 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+from __future__ import print_function, division
+
 """This file contains a partial solution to a problem from
 MacKay, "Information Theory, Inference, and Learning Algorithms."
 
@@ -58,7 +60,7 @@ class Euro2(thinkbayes2.Suite):
 
 
 def Version1():
-    suite = Euro(xrange(0, 101))
+    suite = Euro(range(0, 101))
     heads, tails = 140, 110
     dataset = 'H' * heads + 'T' * tails
 
@@ -69,7 +71,7 @@ def Version1():
 
 
 def Version2():
-    suite = Euro(xrange(0, 101))
+    suite = Euro(range(0, 101))
     heads, tails = 140, 110
     dataset = 'H' * heads + 'T' * tails
 
@@ -78,7 +80,7 @@ def Version2():
 
 
 def Version3():
-    suite = Euro2(xrange(0, 101))
+    suite = Euro2(range(0, 101))
     heads, tails = 140, 110
 
     suite.Update((heads, tails))
@@ -90,9 +92,8 @@ def main():
     suite = Version3()
     print(suite.Mean())
 
-    thinkplot.Pmf(suite)
-    thinkplot.Show()
-    
+    thinkplot.Pdf(suite)
+    thinkplot.Show(legend=False)
 
 
 if __name__ == '__main__':

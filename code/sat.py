@@ -5,6 +5,8 @@ Copyright 2012 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+from __future__ import print_function, division
+
 import csv
 import math
 import numpy
@@ -100,7 +102,7 @@ class Exam(object):
         self.scale = ReadScale()
 
         scores = ReadRanks()
-        score_pmf = thinkbayes2.MakePmfFromDict(dict(scores))
+        score_pmf = thinkbayes2.Pmf(dict(scores))
 
         self.raw = self.ReverseScale(score_pmf)
         self.max_score = max(self.raw.Values())
@@ -156,12 +158,12 @@ class Exam(object):
         thinkplot.Clf()
         thinkplot.PrePlot(num=2)
 
-        cdf = thinkbayes2.MakeCdfFromPmf(self.raw, name='data')
+        cdf = thinkbayes2.Cdf(self.raw, label='data')
         thinkplot.Cdf(cdf)
 
-        efficacies = thinkbayes2.MakeGaussianPmf(0, 1.5, 3)
+        efficacies = thinkbayes2.MakeNormalPmf(0, 1.5, 3)
         pmf = self.MakeRawScoreDist(efficacies)
-        cdf = thinkbayes2.MakeCdfFromPmf(pmf, name='model')
+        cdf = thinkbayes2.Cdf(pmf, label='model')
         thinkplot.Cdf(cdf)
         
         thinkplot.Save(root='sat_calibrate',
@@ -237,8 +239,8 @@ class Sat(thinkbayes2.Suite):
         thinkplot.Clf()
         thinkplot.PrePlot(num=2)
 
-        cdf1 = thinkbayes2.MakeCdfFromPmf(self, 'posterior %d' % self.score)
-        cdf2 = thinkbayes2.MakeCdfFromPmf(other, 'posterior %d' % other.score)
+        cdf1 = thinkbayes2.Cdf(self, label='posterior %d' % self.score)
+        cdf2 = thinkbayes2.Cdf(other, label='posterior %d' % other.score)
 
         thinkplot.Cdfs([cdf1, cdf2])
         thinkplot.Save(xlabel='p_correct', 
@@ -255,8 +257,8 @@ class Sat2(thinkbayes2.Suite):
         self.exam = exam
         self.score = score
 
-        # start with the Gaussian prior
-        efficacies = thinkbayes2.MakeGaussianPmf(0, 1.5, 3)
+        # start with the Normal prior
+        efficacies = thinkbayes2.MakeNormalPmf(0, 1.5, 3)
         thinkbayes2.Suite.__init__(self, efficacies)
 
         # update based on an exam score
@@ -285,8 +287,8 @@ class Sat2(thinkbayes2.Suite):
         thinkplot.Clf()
         thinkplot.PrePlot(num=2)
 
-        cdf1 = thinkbayes2.MakeCdfFromPmf(self, 'posterior %d' % self.score)
-        cdf2 = thinkbayes2.MakeCdfFromPmf(other, 'posterior %d' % other.score)
+        cdf1 = thinkbayes2.Cdf(self, label='posterior %d' % self.score)
+        cdf2 = thinkbayes2.Cdf(other, label='posterior %d' % other.score)
 
         thinkplot.Cdfs([cdf1, cdf2])
         thinkplot.Save(xlabel='efficacy', 
@@ -355,7 +357,8 @@ def PlotPriorDist(pmf):
     thinkplot.Clf()
     thinkplot.PrePlot(num=1)
 
-    cdf1 = thinkbayes2.MakeCdfFromPmf(pmf, 'prior')
+    cdf1 = thinkbayes2.Cdf(pmf, label='prior')
+
     thinkplot.Cdf(cdf1)
     thinkplot.Save(root='sat_prior',
                    xlabel='p_correct', 

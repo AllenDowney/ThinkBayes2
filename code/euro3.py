@@ -5,6 +5,8 @@ Copyright 2012 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+from __future__ import print_function, division
+
 """This file contains a partial solution to a problem from
 MacKay, "Information Theory, Inference, and Learning Algorithms."
 
@@ -85,7 +87,7 @@ def Main():
     print('p(D|B_two)', likelihood)
     print('p(D|B_two) / p(D|F)', likelihood / like_f)
 
-    b_uniform = Euro(xrange(0, 101))
+    b_uniform = Euro(range(0, 101))
     b_uniform.Remove(50)
     b_uniform.Normalize()
     likelihood = SuiteLikelihood(b_uniform, data)

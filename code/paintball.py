@@ -5,14 +5,15 @@ Copyright 2012 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
-import thinkbayes2
-
-import matplotlib.pyplot as pyplot
-import thinkplot
+from __future__ import print_function, division
 
 import math
 import sys
 
+from collections import Counter
+
+import thinkbayes2
+import thinkplot
 
 FORMATS = ['pdf', 'eps', 'png']
 
@@ -69,7 +70,7 @@ class Paintball(thinkbayes2.Suite, thinkbayes2.Joint):
         pairs = [(alpha, beta) 
                  for alpha in alphas 
                  for beta in betas]
-        thinkbayes2.Suite.__init__(self, pairs)
+        thinkbayes2.Suite.__init__(self, Counter(pairs))
 
     def Likelihood(self, data, hypo):
         """Computes the likelihood of the data under the hypothesis.
@@ -96,7 +97,7 @@ def MakePmfPlot(alpha = 10):
     for beta in betas:
         pmf = MakeLocationPmf(alpha, beta, locations)
         pmf.name = 'beta = %d' % beta
-        thinkplot.Pmf(pmf)
+        thinkplot.Pdf(pmf)
 
     thinkplot.Save('paintball1',
                 xlabel='Distance',
@@ -143,7 +144,7 @@ def MakeConditionalPlot(suite):
     for beta in betas:
         cond = suite.Conditional(0, 1, beta)
         cond.name = 'beta = %d' % beta
-        thinkplot.Pmf(cond)
+        thinkplot.Pdf(cond)
 
     thinkplot.Save('paintball3',
                 xlabel='Distance',
@@ -179,14 +180,15 @@ def MakeCrediblePlot(suite):
             d[pair] += 1
 
     thinkplot.Contour(d, contour=False, pcolor=True)
-    pyplot.text(17, 4, '25', color='white')
-    pyplot.text(17, 15, '50', color='white')
-    pyplot.text(17, 30, '75')
+    thinkplot.Text(17, 4, '25', color='white')
+    thinkplot.Text(17, 15, '50', color='white')
+    thinkplot.Text(17, 30, '75')
 
     thinkplot.Save('paintball5',
-                xlabel='alpha',
-                ylabel='beta',
-                formats=FORMATS)
+                   xlabel='alpha',
+                   ylabel='beta',
+                   formats=FORMATS,
+                   legend=False)
 
 
 def main(script):

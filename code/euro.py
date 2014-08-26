@@ -5,6 +5,8 @@ Copyright 2012 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+from __future__ import print_function, division
+
 """This file contains a partial solution to a problem from
 MacKay, "Information Theory, Inference, and Learning Algorithms."
 
@@ -59,7 +61,7 @@ class Euro2(thinkbayes2.Suite):
 
 def UniformPrior():
     """Makes a Suite with a uniform prior."""
-    suite = Euro(xrange(0, 101))
+    suite = Euro(range(0, 101))
     return suite
 
 
@@ -94,12 +96,12 @@ def Summarize(suite):
     print('MLE', suite.MaximumLikelihood())
 
     print('Mean', suite.Mean())
-    print('Median', thinkbayes2.Percentile(suite, 50)) 
+    print('Median', suite.Percentile(50)) 
 
-    print('5th %ile', thinkbayes2.Percentile(suite, 5)) 
-    print('95th %ile', thinkbayes2.Percentile(suite, 95)) 
+    print('5th %ile', suite.Percentile(5)) 
+    print('95th %ile', suite.Percentile(95)) 
 
-    print('CI', thinkbayes2.CredibleInterval(suite, 90))
+    print('CI', suite.CredibleInterval(90))
 
 
 def PlotSuites(suites, root):

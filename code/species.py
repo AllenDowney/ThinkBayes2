@@ -5,6 +5,8 @@ Copyright 2012 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+from __future__ import print_function
+
 import matplotlib.pyplot as pyplot
 import thinkplot
 import numpy
@@ -135,7 +137,7 @@ class Subject(object):
         """Makes a CDF of total prevalence vs rank."""
         counts = self.GetCounts()
         counts.sort(reverse=True)
-        cdf = thinkbayes2.MakeCdfFromItems(enumerate(counts))
+        cdf = thinkbayes2.Cdf(enumerate(counts))
         return cdf
 
     def GetNames(self):
@@ -159,7 +161,7 @@ class Subject(object):
         """
         counts = self.GetCounts()
         items = enumerate(counts)
-        cdf = thinkbayes2.MakeCdfFromItems(items)
+        cdf = thinkbayes2.Cdf(items)
         return cdf
 
     def GetPrevalences(self):
@@ -244,7 +246,7 @@ class Subject(object):
         """Plots distribution of n."""
         pmf = self.suite.DistN()
         print('90% CI for N:', pmf.CredibleInterval(90))
-        pmf.name = self.code
+        pmf.label = self.code
 
         thinkplot.Clf()
         thinkplot.PrePlot(num=1)
@@ -288,7 +290,7 @@ class Subject(object):
 
         _, mix = self.suite.DistOfPrevalence(index)
         count, _ = self.GetSpecies(index)
-        mix.name = '%d (%d)' % (rank, count)
+        mix.label = '%d (%d)' % (rank, count)
 
         print('90%% CI for prevalence of species %d:' % rank, end=' ') 
         print(mix.CredibleInterval(90))
@@ -350,7 +352,7 @@ class Subject(object):
 
         items = zip(name_iter, prevalences)
 
-        cdf = thinkbayes2.MakeCdfFromItems(items)
+        cdf = thinkbayes2.Cdf(items)
         observations = cdf.Sample(num_reads)
 
         #for ob in observations:
@@ -371,7 +373,7 @@ class Subject(object):
         reads = t[:num_reads]
 
         subject = Subject(self.code)
-        hist = thinkbayes2.MakeHistFromList(reads)
+        hist = thinkbayes2.Hist(reads)
         for species, count in hist.Items():
             subject.Add(species, count)
 
@@ -454,7 +456,7 @@ class Subject(object):
 
         Returns: Pmf of num_new
         """
-        pred = thinkbayes2.Pmf(name=self.code)
+        pred = thinkbayes2.Pmf(label=self.code)
         for curve in curves:
             _, last_num_new = curve[-1]
             pred.Incr(last_num_new)
@@ -475,7 +477,7 @@ def MakeConditionals(curves, ks):
     cdfs = []
     for k in ks:
         pmf = joint.Conditional(1, 0, k)
-        pmf.name = 'k=%d' % k
+        pmf.label = 'k=%d' % k
         cdf = pmf.MakeCdf()
         cdfs.append(cdf)
         print('90%% credible interval for %d' % k, end=' ')
@@ -512,8 +514,8 @@ def MakeFracCdfs(curves, ks):
                 d.setdefault(k, []).append(frac)
 
     cdfs = {}
-    for k, fracs in d.iteritems():
-        cdf = thinkbayes2.MakeCdfFromList(fracs)
+    for k, fracs in d.items():
+        cdf = thinkbayes2.Cdf(fracs)
         cdfs[k] = cdf
 
     return cdfs
@@ -552,7 +554,8 @@ def ReadRarefactedData(filename='journal.pone.0047712.s001.csv',
     """
     fp = open(filename)
     reader = csv.reader(fp)
-    _ = reader.next()
+    #_ = reader.next()
+    _ = next(reader)
     
     subject = Subject('')
     subject_map = {}
@@ -573,7 +576,7 @@ def ReadRarefactedData(filename='journal.pone.0047712.s001.csv',
         count = int(t[2])
         subject.Add(species, count)
 
-    for code, subject in subject_map.iteritems():
+    for code, subject in subject_map.items():
         subject.Done(clean_param=clean_param)
 
     return subject_map
@@ -592,8 +595,8 @@ def ReadCompleteDataset(filename='BBB_data_from_Rob.csv', clean_param=0):
     """
     fp = open(filename)
     reader = csv.reader(fp)
-    header = reader.next()
-    header = reader.next()
+    header = next(reader)
+    header = next(reader)
 
     subject_codes = header[1:-1]
     subject_codes = ['B'+code for code in subject_codes]
@@ -628,7 +631,7 @@ def ReadCompleteDataset(filename='BBB_data_from_Rob.csv', clean_param=0):
                 uber_subject.Add(species, count)
 
     uber_subject.Done(clean_param=clean_param)
-    for code, subject in subject_map.iteritems():
+    for code, subject in subject_map.items():
         subject.Done(clean_param=clean_param)
 
     return subject_map, uber_subject
@@ -652,7 +655,7 @@ def JoinSubjects():
     # read the complete dataset
     all_subjects, _ = ReadCompleteDataset()
 
-    for code, subject in sampled_subjects.iteritems():
+    for code, subject in sampled_subjects.items():
         if code in all_subjects:
             match = all_subjects[code]
             subject.Match(match)
@@ -730,7 +733,7 @@ def PlotFracCdfs(cdfs, root='species-frac'):
     thinkplot.Clf()
     color = '#225EA8'
 
-    for k, cdf in cdfs.iteritems():
+    for k, cdf in cdfs.items():
         xs, ys = cdf.Render()
         ys = [1-y for y in ys]
         thinkplot.Plot(xs, ys, color=color, linewidth=1)
@@ -885,7 +888,7 @@ class Species2(object):
 
         Returns: new Pmf object
         """
-        pmf = thinkbayes2.MakePmfFromItems(zip(self.ns, self.probs))
+        pmf = thinkbayes2.Pmf(zip(self.ns, self.probs))
         return pmf
 
     def RandomN(self):
@@ -922,7 +925,7 @@ class Species2(object):
         prevalences = dirichlet.Random()
 
         # generate a simulated sample
-        pmf = thinkbayes2.MakePmfFromItems(enumerate(prevalences))
+        pmf = thinkbayes2.Pmf(enumerate(prevalences))
         cdf = pmf.MakeCdf()
         sample = cdf.Sample(self.num_reads)
         seen = set(sample)
@@ -1226,7 +1229,7 @@ def PlotAllVersions():
     for constructor in [Species, Species2, Species3, Species4, Species5]:
         suite = MakePosterior(constructor, data, ns)
         pmf = suite.DistN()
-        pmf.name = '%s' % (constructor.__name__)
+        pmf.label = '%s' % (constructor.__name__)
         thinkplot.Pmf(pmf)
 
     thinkplot.Save(root='species3',
@@ -1244,7 +1247,7 @@ def PlotMedium():
     for constructor in [Species, Species2, Species3, Species4, Species5]:
         suite = MakePosterior(constructor, data, ns)
         pmf = suite.DistN()
-        pmf.name = '%s' % (constructor.__name__)
+        pmf.label = '%s' % (constructor.__name__)
         thinkplot.Pmf(pmf)
 
     thinkplot.Show()
@@ -1271,7 +1274,7 @@ def SimpleDirichletExample():
         beta = dirichlet.MarginalBeta(i)
         print('mean', names[i], beta.Mean())
 
-        pmf = beta.MakePmf(name=names[i])
+        pmf = beta.MakePmf(label=names[i])
         thinkplot.Pmf(pmf)
 
     thinkplot.Save(root='species1',
@@ -1294,7 +1297,7 @@ def HierarchicalExample():
     thinkplot.PrePlot(num=1)
 
     pmf = suite.DistN()
-    thinkplot.Pmf(pmf)
+    thinkplot.Pdf(pmf)
     thinkplot.Save(root='species2',
                 xlabel='Number of species',
                 ylabel='Prob',
@@ -1315,7 +1318,7 @@ def CompareHierarchicalExample():
     for constructor, iters in zip(constructors, iters):
         suite = MakePosterior(constructor, data, ns, iters)
         pmf = suite.DistN()
-        pmf.name = '%s' % (constructor.__name__)
+        pmf.label = '%s' % (constructor.__name__)
         thinkplot.Pmf(pmf)
 
     thinkplot.Show()
@@ -1336,7 +1339,7 @@ def ProcessSubjects(codes):
 
         subject.Process()
         pmf = subject.suite.DistN()
-        pmf.name = subject.code
+        pmf.label = subject.code
         thinkplot.Pmf(pmf)
 
         pmfs.append(pmf)
@@ -1444,18 +1447,18 @@ def GenerateFakeSample(n, r, tr, conc=1):
     prevalences.sort()
 
     # generate a simulated sample
-    pmf = thinkbayes2.MakePmfFromItems(enumerate(prevalences))
+    pmf = thinkbayes2.Pmf(enumerate(prevalences))
     cdf = pmf.MakeCdf()
     sample = cdf.Sample(tr)
 
     # collect the species counts
-    hist = thinkbayes2.MakeHistFromList(sample)
+    hist = thinkbayes2.Hist(sample)
 
     # extract a subset of the data
     if tr > r:
         random.shuffle(sample)
         subsample = sample[:r]
-        subhist = thinkbayes2.MakeHistFromList(subsample)
+        subhist = thinkbayes2.Hist(subsample)
     else:
         subhist = hist
 
@@ -1483,7 +1486,7 @@ def PlotActualPrevalences():
     # concentration parameter used in the simulation
     conc = 0.06
 
-    for code, subject in subject_map.iteritems():
+    for code, subject in subject_map.items():
         prevalences = subject.GetPrevalences()
         m = len(prevalences)
         if m < 2:
@@ -1498,8 +1501,8 @@ def PlotActualPrevalences():
             pmf_sim.Incr(SimulateMaxPrev(m, conc))
 
     # plot CDFs for the actual and simulated max prevalence
-    cdf_actual = pmf_actual.MakeCdf(name='actual')
-    cdf_sim = pmf_sim.MakeCdf(name='sim')
+    cdf_actual = pmf_actual.MakeCdf(label='actual')
+    cdf_sim = pmf_sim.MakeCdf(label='sim')
 
     thinkplot.Cdfs([cdf_actual, cdf_sim])
     thinkplot.Show()
@@ -1812,12 +1815,12 @@ def FakeSubject(n=300, conc=0.1, num_reads=400, prevalences=None):
         prevalences.sort()
 
     # generate a simulated sample
-    pmf = thinkbayes2.MakePmfFromItems(enumerate(prevalences))
+    pmf = thinkbayes2.Pmf(enumerate(prevalences))
     cdf = pmf.MakeCdf()
     sample = cdf.Sample(num_reads)
 
     # collect the species counts
-    hist = thinkbayes2.MakeHistFromList(sample)
+    hist = thinkbayes2.Hist(sample)
 
     # extract the data
     data = [count for species, count in hist.Items()]

@@ -5,6 +5,8 @@ Copyright 2013 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+from __future__ import print_function, division
+
 import csv
 import numpy
 import thinkbayes2
@@ -39,20 +41,20 @@ def ReadData(filename='showcases.2011.csv'):
             pass
 
     fp.close()
-    return zip(*res)
+    return list(zip(*res))
     
 
 class Price(thinkbayes2.Suite):
     """Represents hypotheses about the price of a showcase."""
 
-    def __init__(self, pmf, player, name=''):
+    def __init__(self, pmf, player, label=None):
         """Constructs the suite.
 
         pmf: prior distribution of price
         player: Player object
-        name: string
+        label: string
         """
-        thinkbayes2.Suite.__init__(self, pmf, name=name)
+        thinkbayes2.Suite.__init__(self, pmf, label=label)
         self.player = player
 
     def Likelihood(self, data, hypo):
@@ -158,7 +160,7 @@ class Player(object):
 
         mu = 0
         sigma = numpy.std(diffs)
-        self.pdf_error = thinkbayes2.GaussianPdf(mu, sigma)
+        self.pdf_error = thinkbayes2.NormalPdf(mu, sigma)
 
     def ErrorDensity(self, error):
         """Density of the given error in the distribution of error.
@@ -172,7 +174,7 @@ class Player(object):
 
         A discrete version of the estimated Pdf.
         """
-        return self.pdf_price.MakePmf(self.price_xs)
+        return self.pdf_price.MakePmf(xs=self.price_xs)
 
     def CdfDiff(self):
         """Returns a reference to the Cdf of differences (underness).
@@ -199,8 +201,8 @@ class Player(object):
         guess: what the player thinks the showcase is worth        
         """
         pmf = self.PmfPrice()
-        self.prior = Price(pmf, self, name='prior')
-        self.posterior = self.prior.Copy(name='posterior')
+        self.prior = Price(pmf, self, label='prior')
+        self.posterior = self.prior.Copy(label='posterior')
         self.posterior.Update(guess)
 
     def OptimalBid(self, guess, opponent):
@@ -224,7 +226,7 @@ class Player(object):
         """
         thinkplot.Clf()
         thinkplot.PrePlot(num=2)
-        thinkplot.Pmfs([self.prior, self.posterior])
+        thinkplot.Pdfs([self.prior, self.posterior])
         thinkplot.Save(root=root,
                     xlabel='price ($)',
                     ylabel='PMF',
@@ -242,10 +244,10 @@ def MakePlots(player1, player2):
     thinkplot.Clf()
     thinkplot.PrePlot(num=2)
     pmf1 = player1.PmfPrice()
-    pmf1.name = 'showcase 1'
+    pmf1.label = 'showcase 1'
     pmf2 = player2.PmfPrice()
-    pmf2.name = 'showcase 2'
-    thinkplot.Pmfs([pmf1, pmf2])
+    pmf2.label = 'showcase 2'
+    thinkplot.Pdfs([pmf1, pmf2])
     thinkplot.Save(root='price1',
                 xlabel='price ($)',
                 ylabel='PDF',
@@ -255,9 +257,9 @@ def MakePlots(player1, player2):
     thinkplot.Clf()
     thinkplot.PrePlot(num=2)
     cdf1 = player1.CdfDiff()
-    cdf1.name = 'player 1'
+    cdf1.label = 'player 1'
     cdf2 = player2.CdfDiff()
-    cdf2.name = 'player 2'
+    cdf2.label = 'player 2'
 
     print('Player median', cdf1.Percentile(50))
     print('Player median', cdf2.Percentile(50))
@@ -280,8 +282,8 @@ def MakePlayers():
     cols = zip(*data)
     price1, price2, bid1, bid2, diff1, diff2 = cols
 
-    # print list(sorted(price1))
-    # print len(price1)
+    #print(list(sorted(price1)))
+    #print(len(price1))
 
     player1 = Player(price1, bid1, diff1)
     player2 = Player(price2, bid2, diff2)

@@ -9,10 +9,12 @@ from __future__ import print_function, division
 
 import math
 import numpy
-import cPickle
+import pickle
 import numpy
 import random
 import scipy
+
+from collections import Counter
 
 import brfss
 
@@ -27,18 +29,18 @@ NUM_SIGMAS = 1
 class Height(thinkbayes2.Suite, thinkbayes2.Joint):
     """Hypotheses about parameters of the distribution of height."""
 
-    def __init__(self, mus, sigmas, name=''):
+    def __init__(self, mus, sigmas, label=None):
         """Makes a prior distribution for mu and sigma based on a sample.
 
         mus: sequence of possible mus
         sigmas: sequence of possible sigmas
-        name: string name for the Suite
+        label: string label for the Suite
         """
         pairs = [(mu, sigma) 
                  for mu in mus
                  for sigma in sigmas]
 
-        thinkbayes2.Suite.__init__(self, pairs, name=name)
+        thinkbayes2.Suite.__init__(self, Counter(pairs), label=label)
 
     def Likelihood(self, data, hypo):
         """Computes the likelihood of the data under the hypothesis.
@@ -67,7 +69,7 @@ class Height(thinkbayes2.Suite, thinkbayes2.Joint):
         """
         x = data
         mu, sigma = hypo
-        loglike = EvalGaussianLogPdf(x, mu, sigma)
+        loglike = EvalNormalLogPdf(x, mu, sigma)
         return loglike
 
     def LogUpdateSetFast(self, data):
@@ -128,20 +130,20 @@ class Height(thinkbayes2.Suite, thinkbayes2.Joint):
 
             # compute log likelihood of m, given hypo
             stderr_m = sigma / math.sqrt(n)
-            loglike = EvalGaussianLogPdf(m, mu, stderr_m)
+            loglike = EvalNormalLogPdf(m, mu, stderr_m)
 
             #compute log likelihood of s, given hypo
             stderr_s = sigma / math.sqrt(2 * (n-1))
-            loglike += EvalGaussianLogPdf(s, sigma, stderr_s)
+            loglike += EvalNormalLogPdf(s, sigma, stderr_s)
 
             self.Incr(hypo, loglike)
 
 
-def EvalGaussianLogPdf(x, mu, sigma):
+def EvalNormalLogPdf(x, mu, sigma):
     """Computes the log PDF of x given mu and sigma.
 
     x: float values
-    mu, sigma: paramemters of Gaussian
+    mu, sigma: paramemters of Normal
 
     returns: float log-likelihood
     """
@@ -229,7 +231,7 @@ def PlotCdfs(d, labels):
     labels: map from key to string label
     """
     thinkplot.Clf()
-    for key, xs in d.iteritems():
+    for key, xs in d.items():
         mu = thinkbayes2.Mean(xs)
         xs = thinkbayes2.Jitter(xs, 1.3)
         xs = [x-mu for x in xs]
@@ -246,7 +248,7 @@ def PlotPosterior(suite, pcolor=False, contour=True):
     thinkplot.Clf()
     thinkplot.Contour(suite.GetDict(), pcolor=pcolor, contour=contour)
 
-    thinkplot.Save(root='variability_posterior_%s' % suite.name,
+    thinkplot.Save(root='variability_posterior_%s' % suite.label,
                 title='Posterior joint distribution',
                 xlabel='Mean height (cm)',
                 ylabel='Stddev (cm)')
@@ -261,7 +263,7 @@ def PlotCoefVariation(suites):
     thinkplot.PrePlot(num=2)
 
     pmfs = {}
-    for label, suite in suites.iteritems():
+    for label, suite in suites.items():
         pmf = CoefVariation(suite)
         print('CV posterior mean', pmf.Mean())
         cdf = thinkbayes2.MakeCdfFromPmf(pmf, label)
@@ -282,7 +284,7 @@ def PlotCoefVariation(suites):
 def PlotOutliers(samples):
     """Make CDFs showing the distribution of outliers."""
     cdfs = []
-    for label, sample in samples.iteritems():
+    for label, sample in samples.items():
         outliers = [x for x in sample if x < 150]
 
         cdf = thinkbayes2.MakeCdfFromList(outliers, label)
@@ -316,27 +318,18 @@ def PlotMarginals(suite):
     thinkplot.Show()
 
 
-def DumpHeights(data_dir='.', nrows=10000):
-    """Read the BRFSS dataset, extract the heights and pickle them."""
-    resp = brfss.ReadBrfss(nrows=nrows)
+def ReadHeights(nrows=None):
+    """Read the BRFSS dataset, extract the heights and pickle them.
 
-    # TODO: update this to work with a DataFrame
-    d = {1:[], 2:[]}
-    [d[r.sex].append(r.htm3) for r in resp.records if r.htm3 != 'NA']
-
-    fp = open('variability_data.pkl', 'wb')
-    cPickle.dump(d, fp)
-    fp.close()
-
-
-def LoadHeights():
-    """Read the pickled height data.
-
-    returns: map from sex code to list of heights.
+    nrows: number of rows to read
     """
-    fp = open('variability_data.pkl', 'r')
-    d = cPickle.load(fp)
-    fp.close()
+    resp = brfss.ReadBrfss(nrows=nrows).dropna(subset=['sex', 'htm3'])
+    groups = resp.groupby('sex')
+
+    d = {}
+    for name, group in groups:
+        d[name] = group.htm3.values
+
     return d
 
 
@@ -430,7 +423,7 @@ def MedianS(xs, num_sigmas):
 
     factor: number of standard deviations spanned by the IPR
     """
-    half_p = thinkbayes2.StandardGaussianCdf(num_sigmas) - 0.5
+    half_p = thinkbayes2.StandardNormalCdf(num_sigmas) - 0.5
     median, ipr = MedianIPR(xs, half_p * 2)
     s = ipr / 2 / num_sigmas
 
@@ -457,23 +450,22 @@ def RunEstimate(update_func, num_points=31, median_flag=False):
     update_func: which of the update functions to use
     num_points: number of points in the Suite (in each dimension)
     """
-    DumpHeights(nrows=None)
-    d = LoadHeights()
+    d = ReadHeights(nrows=None)
     labels = {1:'male', 2:'female'}
 
     # PlotCdfs(d, labels)
 
     suites = {}
-    for key, xs in d.iteritems():
-        name = labels[key]
-        print(name, len(xs))
+    for key, xs in d.items():
+        label = labels[key]
+        print(label, len(xs))
         Summarize(xs)
 
         xs = thinkbayes2.Jitter(xs, 1.3)
 
         mus, sigmas = FindPriorRanges(xs, num_points, median_flag=median_flag)
-        suite = Height(mus, sigmas, name)
-        suites[name] = suite
+        suite = Height(mus, sigmas, label)
+        suites[label] = suite
         update_func(suite, xs)
         print('MLE', suite.MaximumLikelihood())
 
