@@ -1,5 +1,5 @@
-"""This file contains code for use with "Think Bayes",
-by Allen B. Downey, available from greenteapress.com
+"""This file contains code for use with "Think Stats" and
+"Think Bayes", both by Allen B. Downey, available from greenteapress.com
 
 Copyright 2014 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
@@ -447,8 +447,11 @@ class Pmf(_DictWrapper):
 
         returns: float probability
         """
-        t = [prob for (val, prob) in self.d.items() if val > x]
-        return sum(t)
+        if isinstance(x, _DictWrapper):
+            return PmfProbGreater(self, x)
+        else:
+            t = [prob for (val, prob) in self.d.items() if val > x]
+            return sum(t)
 
     def ProbLess(self, x):
         """Probability that a sample from this Pmf is less than x.
@@ -457,8 +460,11 @@ class Pmf(_DictWrapper):
 
         returns: float probability
         """
-        t = [prob for (val, prob) in self.d.items() if val < x]
-        return sum(t)
+        if isinstance(x, _DictWrapper):
+            return PmfProbLess(self, x)
+        else:
+            t = [prob for (val, prob) in self.d.items() if val < x]
+            return sum(t)
 
     def __lt__(self, obj):
         """Less than.
@@ -467,10 +473,7 @@ class Pmf(_DictWrapper):
 
         returns: float probability
         """
-        if isinstance(obj, _DictWrapper):
-            return PmfProbLess(self, obj)
-        else:
-            return self.ProbLess(obj)
+        return self.ProbLess(obj)
 
     def __gt__(self, obj):
         """Greater than.
@@ -479,10 +482,7 @@ class Pmf(_DictWrapper):
 
         returns: float probability
         """
-        if isinstance(obj, _DictWrapper):
-            return PmfProbGreater(self, obj)
-        else:
-            return self.ProbGreater(obj)
+        return self.ProbGreater(obj)
 
     def __ge__(self, obj):
         """Greater than or equal.
