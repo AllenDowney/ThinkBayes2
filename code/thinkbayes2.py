@@ -663,8 +663,7 @@ class Pmf(_DictWrapper):
         returns: new Cdf
         """
         cdf = self.MakeCdf()
-        cdf.ps = [p ** k for p in cdf.ps]
-        return cdf
+        return cdf.Max(k)
 
 
 class Joint(Pmf):
@@ -1155,7 +1154,7 @@ class Cdf(object):
         returns: new Cdf
         """
         cdf = self.Copy()
-        cdf.ps = [p ** k for p in cdf.ps]
+        cdf.ps **= k
         return cdf
 
 
