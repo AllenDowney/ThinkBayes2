@@ -151,13 +151,9 @@ class _DictWrapper(object):
         elif isinstance(obj, pandas.Series):
             self.d.update(obj.value_counts().iteritems())
         else:
-            try:
-                # see if it's a list of pairs
-                self.d.update(obj)
-            except (ValueError, TypeError):
-                # finally, treat it like a list
-                self.d.update(Counter(obj))
-            
+            # finally, treat it like a list
+            self.d.update(Counter(obj))
+
         if len(self) > 0 and isinstance(self, Pmf):
             self.Normalize()
 
