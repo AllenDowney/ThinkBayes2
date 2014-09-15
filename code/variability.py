@@ -14,8 +14,6 @@ import numpy
 import random
 import scipy
 
-from collections import Counter
-
 import brfss
 
 import thinkplot
@@ -40,7 +38,7 @@ class Height(thinkbayes2.Suite, thinkbayes2.Joint):
                  for mu in mus
                  for sigma in sigmas]
 
-        thinkbayes2.Suite.__init__(self, Counter(pairs), label=label)
+        thinkbayes2.Suite.__init__(self, pairs, label=label)
 
     def Likelihood(self, data, hypo):
         """Computes the likelihood of the data under the hypothesis.

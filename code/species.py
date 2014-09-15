@@ -137,7 +137,7 @@ class Subject(object):
         """Makes a CDF of total prevalence vs rank."""
         counts = self.GetCounts()
         counts.sort(reverse=True)
-        cdf = thinkbayes2.Cdf(enumerate(counts))
+        cdf = thinkbayes2.Cdf(dict(enumerate(counts)))
         return cdf
 
     def GetNames(self):
@@ -352,7 +352,7 @@ class Subject(object):
 
         items = zip(name_iter, prevalences)
 
-        cdf = thinkbayes2.Cdf(items)
+        cdf = thinkbayes2.Cdf(dict(items))
         observations = cdf.Sample(num_reads)
 
         #for ob in observations:
@@ -888,7 +888,7 @@ class Species2(object):
 
         Returns: new Pmf object
         """
-        pmf = thinkbayes2.Pmf(zip(self.ns, self.probs))
+        pmf = thinkbayes2.Pmf(dict(zip(self.ns, self.probs)))
         return pmf
 
     def RandomN(self):
@@ -925,7 +925,7 @@ class Species2(object):
         prevalences = dirichlet.Random()
 
         # generate a simulated sample
-        pmf = thinkbayes2.Pmf(enumerate(prevalences))
+        pmf = thinkbayes2.Pmf(dict(enumerate(prevalences)))
         cdf = pmf.MakeCdf()
         sample = cdf.Sample(self.num_reads)
         seen = set(sample)
@@ -1447,7 +1447,7 @@ def GenerateFakeSample(n, r, tr, conc=1):
     prevalences.sort()
 
     # generate a simulated sample
-    pmf = thinkbayes2.Pmf(enumerate(prevalences))
+    pmf = thinkbayes2.Pmf(dict(enumerate(prevalences)))
     cdf = pmf.MakeCdf()
     sample = cdf.Sample(tr)
 
@@ -1815,7 +1815,7 @@ def FakeSubject(n=300, conc=0.1, num_reads=400, prevalences=None):
         prevalences.sort()
 
     # generate a simulated sample
-    pmf = thinkbayes2.Pmf(enumerate(prevalences))
+    pmf = thinkbayes2.Pmf(dict(enumerate(prevalences)))
     cdf = pmf.MakeCdf()
     sample = cdf.Sample(num_reads)
 

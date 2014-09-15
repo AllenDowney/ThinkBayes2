@@ -1,7 +1,7 @@
 """This file contains code used in "Think Bayes",
 by Allen B. Downey, available from greenteapress.com
 
-Copyright 2012 Allen B. Downey
+Copyright 2014 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
@@ -9,8 +9,6 @@ from __future__ import print_function, division
 
 import math
 import sys
-
-from collections import Counter
 
 import thinkbayes2
 import thinkplot
@@ -70,7 +68,7 @@ class Paintball(thinkbayes2.Suite, thinkbayes2.Joint):
         pairs = [(alpha, beta) 
                  for alpha in alphas 
                  for beta in betas]
-        thinkbayes2.Suite.__init__(self, Counter(pairs))
+        thinkbayes2.Suite.__init__(self, pairs)
 
     def Likelihood(self, data, hypo):
         """Computes the likelihood of the data under the hypothesis.
