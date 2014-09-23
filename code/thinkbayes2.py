@@ -567,6 +567,17 @@ class Pmf(_DictWrapper):
             var += p * (x - mu) ** 2
         return var
 
+    def Std(self, mu=None):
+        """Computes the standard deviation of a PMF.
+
+        mu: the point around which the variance is computed;
+                if omitted, computes the mean
+
+        returns: float standard deviation
+        """
+        var = self.Var(mu)
+        return math.sqrt(var)
+
     def MaximumLikelihood(self):
         """Returns the value with the highest probability.
 
@@ -1072,8 +1083,8 @@ class Cdf(object):
     def Sample(self, n):
         """Generates a random sample from this distribution.
         
-        Args:
-            n: int length of the sample
+        n: int length of the sample
+        returns: NumPy array
         """
         ps = np.random.random(n)
         return self.ValueArray(ps)
