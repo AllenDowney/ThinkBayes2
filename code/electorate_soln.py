@@ -21,63 +21,44 @@ class Electorate(thinkbayes2.Suite):
         hypo: fraction of the population that supports your candidate
         data: poll results
         """
-        poll, result = data
+        bias, std, result = data
         error = result - hypo
-        like = poll.ErrorDensity(error)
+        like = thinkbayes2.EvalNormalPdf(error, bias, std)
         return like
-
-    def ProbLose(self):
-        total = 0
-        for value, prob in self.Items():
-            if value < 50:
-                total += prob
-        return total
-
-
-class Poll(object):
-    """Represents a poll."""
-
-    def __init__(self, bias, std):
-        """Construct a poll result."""
-        self.bias = bias
-        self.std = std
-
-    def ErrorDensity(self, error):
-        """Density of the given error in the distribution of error.
-
-        error: difference between actual and poll result
-        """
-        return thinkbayes2.EvalNormalPdf(error, self.bias, self.std)
 
 
 def main():
-    hypos = numpy.linspace(0, 100, 101)
+    hypos = range(0, 101)
     suite = Electorate(hypos)
 
+    thinkplot.PrePlot(3)
     thinkplot.Pdf(suite, label='prior')
 
-    poll = Poll(1.1, 3.7)
-    result = 53
-    data = poll, result
+    data = 1.1, 3.7, 53
     suite.Update(data)
-
-    thinkplot.Pdf(suite, label='posterior')
+    thinkplot.Pdf(suite, label='posterior1')
+    thinkplot.Save(root='electorate1',
+                   xlabel='percentage of electorate',
+                   ylabel='PMF',
+                   formats=['png'],
+                   clf=False)
 
     print(suite.Mean())
     print(suite.Std())
-    print(suite.ProbLose())
+    print(suite.ProbLess(50))
 
-    poll = Poll(-2.3, 4.1)
-    result = 49
-    data = poll, result
+    data = -2.3, 4.1, 49
     suite.Update(data)
 
     thinkplot.Pdf(suite, label='posterior2')
-    thinkplot.Show()
+    thinkplot.Save(root='electorate2',
+                   xlabel='percentage of electorate',
+                   ylabel='PMF',
+                   formats=['png'])
 
     print(suite.Mean())
     print(suite.Std())
-    print(suite.ProbLose())
+    print(suite.ProbLess(50))
 
 
 if __name__ == '__main__':
