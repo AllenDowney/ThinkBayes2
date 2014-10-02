@@ -662,6 +662,70 @@ class Pmf(_DictWrapper):
                 pmf.Incr(v1 - v2, p1 * p2)
         return pmf
 
+    def __mul__(self, other):
+        """Computes the Pmf of the product of values drawn from self and other.
+
+        other: another Pmf
+
+        returns: new Pmf
+        """
+        try:
+            return self.MulPmf(other)
+        except AttributeError:
+            return self.MulConstant(other)
+
+    def MulPmf(self, other):
+        """Computes the Pmf of the diff of values drawn from self and other.
+
+        other: another Pmf
+
+        returns: new Pmf
+        """
+        pmf = Pmf()
+        for v1, p1 in self.Items():
+            for v2, p2 in other.Items():
+                pmf.Incr(v1 * v2, p1 * p2)
+        return pmf
+
+    def MulConstant(self, other):
+        """Computes the Pmf of the product of a constant and values from self.
+
+        other: a number
+
+        returns: new Pmf
+        """
+        pmf = Pmf()
+        for v1, p1 in self.Items():
+            pmf.Set(v1 * other, p1)
+        return pmf
+
+    def __div__(self, other):
+        """Computes the Pmf of the ratio of values drawn from self and other.
+
+        other: another Pmf
+
+        returns: new Pmf
+        """
+        try:
+            return self.DivPmf(other)
+        except AttributeError:
+            return self.MulConstant(1/other)
+
+    __truediv__ = __div__
+
+    def DivPmf(self, other):
+        """Computes the Pmf of the ratio of values drawn from self and other.
+
+        other: another Pmf
+
+        returns: new Pmf
+        """
+        pmf = Pmf()
+        for v1, p1 in self.Items():
+            for v2, p2 in other.Items():
+                pmf.Incr(v1 / v2, p1 * p2)
+        return pmf
+
     def Max(self, k):
         """Computes the CDF of the maximum of k selections from this dist.
 
@@ -1678,11 +1742,20 @@ def MakeNormalPmf(mu, sigma, num_sigmas, n=201):
 
 
 def EvalBinomialPmf(k, n, p):
-    """Evaluates the binomial pmf.
+    """Evaluates the binomial PMF.
 
     Returns the probabily of k successes in n trials with probability p.
     """
     return scipy.stats.binom.pmf(k, n, p)
+    
+
+def EvalHypergeomPmf(k, N, K, n):
+    """Evaluates the hypergeometric PMF.
+
+    Returns the probabily of k successes in n trials from a population
+    N with K successes in it.
+    """
+    return scipy.stats.hypergeom.pmf(k, N, K, n)
     
 
 def EvalPoissonPmf(k, lam):
