@@ -21,8 +21,9 @@ class Soccer(thinkbayes2.Suite):
         hypo: goal rate in goals per game
         data: interarrival time in minutes
         """
-        # TODO: fill this in
-        like = 1
+        goals = data
+        lam = hypo
+        like = thinkbayes2.EvalPoissonPmf(goals, lam)
         return like
 
     def PredictiveDist(self, label='pred'):
@@ -30,10 +31,13 @@ class Soccer(thinkbayes2.Suite):
 
         returns: new Pmf (mixture of Poissons)
         """
-        # TODO: fill this in
-        lam = 1
-        pred = thinkbayes2.MakePoissonPmf(lam, 15)
-        return pred
+        metapmf = thinkbayes2.Pmf()
+        for lam, prob in self.Items():
+            pred = thinkbayes2.MakePoissonPmf(lam, 15)
+            metapmf[pred] = prob
+
+        mix = thinkbayes2.MakeMixture(metapmf, label=label)
+        return mix
 
 
 def main():
@@ -57,9 +61,14 @@ def main():
     thinkplot.Pdfs([suite1, suite2])
     thinkplot.Show()
 
-    # TODO: compute posterior prob Germany is better than Argentina
+    # compute posterior prob Germany is better than Argentina
+    post_prob = suite1 > suite2
+    print('posterior prob Germany > Argentina', post_prob)
 
-    # TODO: compute the Bayes factor of the evidence
+    prior_odds = 1
+    post_odds = post_prob / (1 - post_prob)
+    k = post_odds / prior_odds
+    print('Bayes factor', k)    
 
     # compute predictive distributions for goals scored in a rematch
     pred1 = suite1.PredictiveDist(label='Germany')
@@ -70,7 +79,9 @@ def main():
     thinkplot.Pdfs([pred1, pred2])
     thinkplot.Show()
 
-    # TODO: compute predictive probability of winning rematch
+    # compute predictive probability of winning rematch
+    print('posterior prob Germany wins rematch', pred1 > pred2)
+    print('posterior prob Argentina wins rematch', pred2 > pred1)
 
 
 if __name__ == '__main__':
