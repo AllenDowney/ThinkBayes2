@@ -13,13 +13,13 @@ import thinkplot
 
 
 class Hyrax(thinkbayes2.Suite):
-    """Represents hypotheses about."""
+    """Represents hypotheses about how many hyraxes there are."""
 
     def Likelihood(self, data, hypo):
         """Computes the likelihood of the data under the hypothesis.
 
-        hypo: 
-        data: 
+        hypo: total population
+        data: # tagged, # caught (n), # of caught who were tagged (k)
         """
         tagged, n, k = data
         if hypo < tagged + n - k:
@@ -30,14 +30,36 @@ class Hyrax(thinkbayes2.Suite):
         return like
 
 
+class Hyrax2(thinkbayes2.Suite):
+    """Represents hypotheses about how many hyraxes there are."""
+
+    def Likelihood(self, data, hypo):
+        """Computes the likelihood of the data under the hypothesis.
+
+        hypo: total population (N)
+        data: # tagged (K), # caught (n), # of caught who were tagged (k)
+        """
+        N = hypo
+        K, n, k = data
+
+        if hypo < K + (n - k):
+            return 0
+
+        like = thinkbayes2.EvalHypergeomPmf(k, N, K, n)
+        return like
+
+
 def main():
     hypos = range(1, 1000)
     suite = Hyrax(hypos)
+    suite2 = Hyrax2(hypos)
 
     data = 10, 10, 2
     suite.Update(data)
+    suite2.Update(data)
 
-    thinkplot.Pdf(suite, label='posterior')
+    thinkplot.Pdf(suite, label='binomial')
+    thinkplot.Pdf(suite, label='hypergeom')
     thinkplot.Show()
 
 
