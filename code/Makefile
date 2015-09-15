@@ -1,7 +1,7 @@
 FILES = Makefile \
 brfss.py     euro3.py    monty2.py        sat.py          train.py \
 cookie2.py   euro.py     monty.py         species.py      variability.py \
-cookie.py    hockey.py   paintball.py     thinkbayes2.py \
+cookie.py    hockey.py   paintball.py     thinkbayes2.py  thinkstats2.py \
 dice.py      kidney.py   price.py         thinkplot.py \
 dungeons.py  redline_data.py  train2.py   columns.py \
 euro2.py     m_and_m.py  redline.py       train3.py \
@@ -36,9 +36,9 @@ figs:
 	rsync -a $(FIGS) $(FIGDEST)
 
 
-DOCS = thinkstats2.html thinkplot.html
+DOCS = thinkbayes2.html thinkplot.html
 
-DOCPY = thinkstats2.py thinkplot.py
+DOCPY = thinkbayes2.py thinkplot.py
 
 %.html: %.py
 	pydoc -w $<

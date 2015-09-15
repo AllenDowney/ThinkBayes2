@@ -41,6 +41,8 @@ from scipy import stats
 from scipy import special
 from scipy import ndimage
 
+from io import open
+
 ROOT2 = math.sqrt(2)
 
 def RandomSeed(x):
@@ -1048,7 +1050,8 @@ class Cdf(object):
         term: how much to add
         """
         new = self.Copy()
-        new.xs = [x + term for x in self.xs]
+        # don't use +=, or else an int array + float yields int array
+        new.xs = new.xs + term
         return new
 
     def Scale(self, factor):
@@ -1057,7 +1060,8 @@ class Cdf(object):
         factor: what to multiply by
         """
         new = self.Copy()
-        new.xs = [x * factor for x in self.xs]
+        # don't use *=, or else an int array * float yields int array
+        new.xs = new.xs * factor
         return new
 
     def Prob(self, x):
@@ -1492,6 +1496,14 @@ class Pdf(object):
     def Render(self, **options):
         """Generates a sequence of points suitable for plotting.
 
+        If options includes low and high, it must also include n;
+        in that case the density is evaluated an n locations between
+        low and high, including both.
+
+        If options includes xs, the density is evaluate at those location.
+
+        Otherwise, self.GetLinspace is invoked to provide the locations.
+
         Returns:
             tuple of (xs, densities)
         """
@@ -1612,6 +1624,15 @@ class EstimatedPdf(Pdf):
         returns: float or NumPy array of probability density
         """
         return self.kde.evaluate(xs)
+
+    def Sample(self, n):
+        """Generates a random sample from the estimated Pdf.
+
+        n: size of sample
+        """
+        # NOTE: we have to flatten because resample returns a 2-D
+        # array for some reason.
+        return self.kde.resample(n).flatten()
 
 
 def CredibleInterval(pmf, percentage=90):
@@ -1749,6 +1770,16 @@ def EvalBinomialPmf(k, n, p):
     """
     return stats.binom.pmf(k, n, p)
     
+
+def MakeBinomialPmf(n, p):
+    """Evaluates the binomial PMF.
+
+    Returns the distribution of successes in n trials with probability p.
+    """
+    pmf = Pmf()
+    for k in range(n+1):
+        pmf[k] = stats.binom.pmf(k, n, p)
+    return pmf
 
 def EvalHypergeomPmf(k, N, K, n):
     """Evaluates the hypergeometric PMF.
@@ -2156,12 +2187,12 @@ def Jitter(values, jitter=0.5):
     return np.random.uniform(-jitter, +jitter, n) + values
 
 
-def NormalProbabilityPlot(sample, label=None, fit_color='0.8'):
+def NormalProbabilityPlot(sample, fit_color='0.8', **options):
     """Makes a normal probability plot with a fitted line.
 
     sample: sequence of numbers
-    label: string label for the data
     fit_color: color string for the fitted line
+    options: passed along to Plot
     """
     xs, ys = NormalProbability(sample)
     mean, var = MeanVar(sample)
@@ -2171,7 +2202,7 @@ def NormalProbabilityPlot(sample, label=None, fit_color='0.8'):
     thinkplot.Plot(*fit, color=fit_color, label='model')
 
     xs, ys = NormalProbability(sample)
-    thinkplot.Plot(xs, ys, label=label)
+    thinkplot.Plot(xs, ys, **options)
 
  
 def Mean(xs):
@@ -2614,7 +2645,7 @@ def ReadStataDct(dct_file, **options):
 
     # fill in the end column by shifting the start column
     variables['end'] = variables.start.shift(-1)
-    variables['end'][len(variables)-1] = 0
+    variables.loc[len(variables)-1, 'end'] = 0
 
     dct = FixedWidthVariables(variables, index_base=1)
     return dct
@@ -2666,7 +2697,7 @@ def ResampleRowsWeighted(df, column='finalwgt'):
     returns: DataFrame
     """
     weights = df[column]
-    cdf = Pmf(weights.iteritems()).MakeCdf()
+    cdf = Cdf(dict(weights))
     indices = cdf.Sample(len(weights))
     sample = df.loc[indices]
     return sample
@@ -2685,12 +2716,16 @@ def PercentileRow(array, p):
 
 
 def PercentileRows(ys_seq, percents):
-    """Selects rows from a sequence that map to percentiles.
+    """Given a collection of lines, selects percentiles along vertical axis.
 
-    ys_seq: sequence of unsorted rows
+    For example, if ys_seq contains simulation results like ys as a
+    function of time, and percents contains (5, 95), the result would
+    be a 90% CI for each vertical slice of the simulation results.
+
+    ys_seq: sequence of lines (y values)
     percents: list of percentiles (0-100) to select
 
-    returns: list of NumPy arrays
+    returns: list of NumPy arrays, one for each percentile
     """
     nrows = len(ys_seq)
     ncols = len(ys_seq[0])
