@@ -126,6 +126,11 @@ class Interpolator(object):
         return y
 
 
+# When we plot Hist, Pmf and Cdf objects, they don't appear in
+# the legend unless we override the default label.
+DEFAULT_LABEL = '_nolegend_' 
+
+
 class _DictWrapper(object):
     """An object that contains a dictionary."""
 
@@ -135,7 +140,7 @@ class _DictWrapper(object):
         obj: Hist, Pmf, Cdf, Pdf, dict, pandas Series, list of pairs
         label: string label
         """
-        self.label = label if label is not None else '_nolegend_'
+        self.label = label if label is not None else DEFAULT_LABEL
         self.d = {}
 
         # flag whether the distribution is under a log transform
@@ -165,9 +170,17 @@ class _DictWrapper(object):
 
     def __str__(self):
         cls = self.__class__.__name__
-        return '%s(%s)' % (cls, str(self.d))
+        if self.label == DEFAULT_LABEL:
+            return '%s(%s)' % (cls, str(self.d))
+        else:
+            return self.label
 
-    __repr__ = __str__
+    def __repr__(self):
+        cls = self.__class__.__name__
+        if self.label == DEFAULT_LABEL:
+            return '%s(%s)' % (cls, repr(self.d))
+        else:
+            return '%s(%s, %s)' % (cls, repr(self.d), repr(self.label))
 
     def __eq__(self, other):
         return self.d == other.d
@@ -432,7 +445,7 @@ class Pmf(_DictWrapper):
 
         returns: value from the Pmf
         """
-        p = percentage / 100.0
+        p = percentage / 100
         total = 0
         for val, prob in sorted(self.Items()):
             total += prob
@@ -501,7 +514,7 @@ class Pmf(_DictWrapper):
         """
         return 1 - (self > obj)
 
-    def Normalize(self, fraction=1.0):
+    def Normalize(self, fraction=1):
         """Normalizes this PMF so the sum of all probs is fraction.
 
         Args:
@@ -513,10 +526,8 @@ class Pmf(_DictWrapper):
             raise ValueError("Normalize: Pmf is under a log transform")
 
         total = self.Total()
-        if total == 0.0:
+        if total == 0:
             raise ValueError('Normalize: total probability is zero.')
-            #logging.warning('Normalize: total probability is zero.')
-            #return total
 
         factor = fraction / total
         for x in self.d:
@@ -534,7 +545,7 @@ class Pmf(_DictWrapper):
             float value from the Pmf
         """
         target = random.random()
-        total = 0.0
+        total = 0
         for x, p in self.d.items():
             total += p
             if total >= target:
@@ -549,10 +560,7 @@ class Pmf(_DictWrapper):
         Returns:
             float mean
         """
-        mean = 0.0
-        for x, p in self.d.items():
-            mean += p * x
-        return mean
+        return sum(p * x for x, p in self.Items())
 
     def Var(self, mu=None):
         """Computes the variance of a PMF.
@@ -565,10 +573,15 @@ class Pmf(_DictWrapper):
         if mu is None:
             mu = self.Mean()
 
-        var = 0.0
-        for x, p in self.d.items():
-            var += p * (x - mu) ** 2
-        return var
+        return sum(p * (x-mu)**2 for x, p in self.Items())
+
+    def Expect(self, func):
+        """Computes the expectation of func(x).
+
+        Returns:
+            expectation
+        """
+        return np.sum(p * func(x) for x, p in self.Items()) 
 
     def Std(self, mu=None):
         """Computes the standard deviation of a PMF.
@@ -615,6 +628,8 @@ class Pmf(_DictWrapper):
         except AttributeError:
             return self.AddConstant(other)
 
+    __radd__ = __add__
+
     def AddPmf(self, other):
         """Computes the Pmf of the sum of values drawn from self and other.
 
@@ -635,6 +650,9 @@ class Pmf(_DictWrapper):
 
         returns: new Pmf
         """
+        if other == 0:
+            return self.Copy()
+
         pmf = Pmf()
         for v1, p1 in self.Items():
             pmf.Set(v1 + other, p1)
@@ -797,7 +815,7 @@ class Joint(Pmf):
         for prob, val in t:
             interval.append(val)
             total += prob
-            if total >= percentage / 100.0:
+            if total >= percentage / 100:
                 break
 
         return interval
@@ -933,7 +951,7 @@ def MakeUniformPmf(low, high, n):
     return pmf
 
 
-class Cdf(object):
+class Cdf:
     """Represents a cumulative distribution function.
 
     Attributes:
@@ -950,7 +968,7 @@ class Cdf(object):
         ps: list of cumulative probabilities
         label: string label
         """
-        self.label = label if label is not None else '_nolegend_'
+        self.label = label if label is not None else DEFAULT_LABEL
 
         if isinstance(obj, (_DictWrapper, Cdf, Pdf)):
             if not label:
@@ -995,9 +1013,19 @@ class Cdf(object):
         self.ps /= self.ps[-1]
 
     def __str__(self):
-        return 'Cdf(%s, %s)' % (str(self.xs), str(self.ps))
+        cls = self.__class__.__name__
+        if self.label == DEFAULT_LABEL:
+            return '%s(%s, %s)' % (cls, str(self.xs), str(self.ps))
+        else:
+            return self.label
 
-    __repr__ = __str__
+    def __repr__(self):
+        cls = self.__class__.__name__
+        if self.label == DEFAULT_LABEL:
+            return '%s(%s, %s)' % (cls, str(self.xs), str(self.ps))
+        else:
+            return '%s(%s, %s, %s)' % (cls, str(self.xs), str(self.ps), 
+                                       repr(self.label))
 
     def __len__(self):
         return len(self.xs)
@@ -1014,6 +1042,11 @@ class Cdf(object):
     def __eq__(self, other):
         return np.all(self.xs == other.xs) and np.all(self.ps == other.ps)
 
+    def Print(self):
+        """Prints the values and freqs/probs in ascending order."""
+        for val, prob in zip(self.xs, self.ps):
+            print(val, prob)
+
     def Copy(self, label=None):
         """Returns a copy of this Cdf.
 
@@ -1028,11 +1061,6 @@ class Cdf(object):
         if label is None:
             label = self.label
         return Pmf(self, label=label)
-
-    def Values(self):
-        """Returns a sorted list of values.
-        """
-        return self.xs
 
     def Items(self):
         """Returns a sorted sequence of (value, probability) pairs.
@@ -1074,7 +1102,7 @@ class Cdf(object):
             float probability
         """
         if x < self.xs[0]:
-            return 0.0
+            return 0
         index = bisect.bisect(self.xs, x)
         p = self.ps[index-1]
         return p
@@ -1089,7 +1117,7 @@ class Cdf(object):
         xs = np.asarray(xs)
         index = np.searchsorted(self.xs, xs, side='right')
         ps = self.ps[index-1]
-        ps[xs < self.xs[0]] = 0.0
+        ps[xs < self.xs[0]] = 0
         return ps
 
     ProbArray = Probs
@@ -1109,8 +1137,10 @@ class Cdf(object):
         index = bisect.bisect_left(self.ps, p)
         return self.xs[index]
 
-    def ValueArray(self, ps):
+    def Values(self, ps=None):
         """Returns InverseCDF(p), the value that corresponds to probability p.
+
+        If ps is not provided, returns all values.
 
         Args:
             ps: NumPy array of numbers in the range [0, 1]
@@ -1118,12 +1148,17 @@ class Cdf(object):
         Returns:
             NumPy array of values
         """
+        if ps is None:
+            return self.xs
+
         ps = np.asarray(ps)
         if np.any(ps < 0) or np.any(ps > 1):
             raise ValueError('Probability p must be in range [0, 1]')
 
         index = np.searchsorted(self.ps, ps, side='left')
         return self.xs[index]
+
+    ValueArray = Values
 
     def Percentile(self, p):
         """Returns the value that corresponds to percentile p.
@@ -1134,7 +1169,18 @@ class Cdf(object):
         Returns:
             number value
         """
-        return self.Value(p / 100.0)
+        return self.Value(p / 100)
+
+    def Percentiles(self, ps):
+        """Returns the value that corresponds to percentiles ps.
+
+        Args:
+            ps: numbers in the range [0, 100]
+
+        Returns:
+            array of values
+        """
+        return self.Values(ps / 100)
 
     def PercentileRank(self, x):
         """Returns the percentile rank of the value x.
@@ -1143,7 +1189,16 @@ class Cdf(object):
 
         returns: percentile rank in the range 0 to 100
         """
-        return self.Prob(x) * 100.0
+        return self.Prob(x) * 100
+
+    def PercentileRanks(self, xs):
+        """Returns the percentile ranks of the values in xs.
+
+        xs: potential value in the CDF
+
+        returns: array of percentile ranks in the range 0 to 100
+        """
+        return self.Probs(x) * 100
 
     def Random(self):
         """Chooses a random value from this distribution."""
@@ -1165,7 +1220,7 @@ class Cdf(object):
             float mean
         """
         old_p = 0
-        total = 0.0
+        total = 0
         for x, new_p in zip(self.xs, self.ps):
             p = new_p - old_p
             total += p * x
@@ -1183,13 +1238,13 @@ class Cdf(object):
         Returns:
             sequence of two floats, low and high
         """
-        prob = (1 - percentage / 100.0) / 2
+        prob = (1 - percentage / 100) / 2
         interval = self.Value(prob), self.Value(1 - prob)
         return interval
 
     ConfidenceInterval = CredibleInterval
 
-    def _Round(self, multiplier=1000.0):
+    def _Round(self, multiplier=1000):
         """
         An entry is added to the cdf only if the percentile differs
         from the previous value in a significant digit, where the number
@@ -1648,7 +1703,7 @@ def CredibleInterval(pmf, percentage=90):
         sequence of two floats, low and high
     """
     cdf = pmf.MakeCdf()
-    prob = (1 - percentage / 100.0) / 2
+    prob = (1 - percentage / 100) / 2
     interval = cdf.Value(prob), cdf.Value(1 - prob)
     return interval
 
@@ -1663,7 +1718,7 @@ def PmfProbLess(pmf1, pmf2):
     Returns:
         float probability
     """
-    total = 0.0
+    total = 0
     for v1, p1 in pmf1.Items():
         for v2, p2 in pmf2.Items():
             if v1 < v2:
@@ -1681,7 +1736,7 @@ def PmfProbGreater(pmf1, pmf2):
     Returns:
         float probability
     """
-    total = 0.0
+    total = 0
     for v1, p1 in pmf1.Items():
         for v2, p2 in pmf2.Items():
             if v1 > v2:
@@ -1699,7 +1754,7 @@ def PmfProbEqual(pmf1, pmf2):
     Returns:
         float probability
     """
-    total = 0.0
+    total = 0
     for v1, p1 in pmf1.Items():
         for v2, p2 in pmf2.Items():
             if v1 == v2:
@@ -1781,6 +1836,35 @@ def MakeBinomialPmf(n, p):
         pmf[k] = stats.binom.pmf(k, n, p)
     return pmf
 
+
+def EvalGeometricPmf(k, p, loc=0):
+    """Evaluates the geometric PMF.
+
+    With loc=0: Probability of `k` trials to get one success.
+    With loc=-1: Probability of `k` trials before first success.
+
+    k: number of trials
+    p: probability of success on each trial
+    """
+    return stats.geom.pmf(k, p, loc=loc)
+    
+
+def MakeGeometricPmf(p, loc=0, high=10):
+    """Evaluates the binomial PMF.
+
+    With loc=0: PMF of trials to get one success.
+    With loc=-1: PMF of trials before first success.
+
+    p: probability of success
+    high: upper bound where PMF is truncated
+    """
+    pmf = Pmf()
+    for k in range(high):
+        pmf[k] = stats.geom.pmf(k, p, loc=loc)
+    pmf.Normalize()
+    return pmf
+
+
 def EvalHypergeomPmf(k, N, K, n):
     """Evaluates the hypergeometric PMF.
 
@@ -1798,10 +1882,7 @@ def EvalPoissonPmf(k, lam):
 
     returns: float probability
     """
-    # don't use the scipy function (yet).  for lam=0 it returns NaN;
-    # should be 0.0
-    # return stats.poisson.pmf(k, lam)
-    return lam ** k * math.exp(-lam) / special.gamma(k+1)
+    return stats.poisson.pmf(k, lam)
 
 
 def MakePoissonPmf(lam, high, step=1):
@@ -1814,7 +1895,7 @@ def MakePoissonPmf(lam, high, step=1):
     """
     pmf = Pmf()
     for k in range(0, high + 1, step):
-        p = EvalPoissonPmf(k, lam)
+        p = stats.poisson.pmf(k, lam)
         pmf.Set(k, p)
     pmf.Normalize()
     return pmf
@@ -2168,7 +2249,7 @@ def LogBinomialCoef(n, k):
     return n * math.log(n) - k * math.log(k) - (n - k) * math.log(n - k)
 
 
-def NormalProbability(ys, jitter=0.0):
+def NormalProbability(ys, jitter=0):
     """Generates data for a normal probability plot.
 
     ys: sequence of values
