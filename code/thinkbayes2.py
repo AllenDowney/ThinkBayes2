@@ -183,7 +183,10 @@ class _DictWrapper(object):
             return '%s(%s, %s)' % (cls, repr(self.d), repr(self.label))
 
     def __eq__(self, other):
-        return self.d == other.d
+        try:
+            return self.d == other.d
+        except AttributeError:
+            return False
 
     def __len__(self):
         return len(self.d)
@@ -294,6 +297,26 @@ class _DictWrapper(object):
         """Gets an unsorted sequence of (value, freq/prob) pairs."""
         return self.d.items()
 
+    def SortedItems(self):
+        """Gets a sorted sequence of (value, freq/prob) pairs.
+
+        It items are unsortable, the result is unsorted.
+        """
+        def isnan(x):
+            try:
+                return math.isnan(x)
+            except TypeError:
+                return False
+
+        if any([isnan(x) for x in self.Values()]):
+            msg = 'Keys contain NaN, may not sort correctly.'
+            logging.warning(msg)
+
+        try:
+            return sorted(self.d.items())
+        except TypeError:
+            return self.d.items()
+
     def Render(self, **options):
         """Generates a sequence of points suitable for plotting.
 
@@ -302,10 +325,7 @@ class _DictWrapper(object):
         Returns:
             tuple of (sorted value sequence, freq/prob sequence)
         """
-        if min(self.d.keys()) is np.nan:
-            logging.warning('Hist: contains NaN, may not render correctly.')
-
-        return zip(*sorted(self.Items()))
+        return zip(*self.SortedItems())
 
     def MakeCdf(self, label=None):
         """Makes a Cdf."""
@@ -314,12 +334,8 @@ class _DictWrapper(object):
 
     def Print(self):
         """Prints the values and freqs/probs in ascending order."""
-        try:
-            for val, prob in sorted(self.d.items()):
-                print(val, prob)
-        except:
-            for val, prob in (self.d.items()):
-                print(val, prob)
+        for val, prob in self.SortedItems():
+            print(val, prob)
 
     def Set(self, x, y=0):
         """Sets the freq/prob associated with the value x.
@@ -482,41 +498,9 @@ class Pmf(_DictWrapper):
             t = [prob for (val, prob) in self.d.items() if val < x]
             return sum(t)
 
-    def __lt__(self, obj):
-        """Less than.
-
-        obj: number or _DictWrapper
-
-        returns: float probability
-        """
-        return self.ProbLess(obj)
-
-    def __gt__(self, obj):
-        """Greater than.
-
-        obj: number or _DictWrapper
-
-        returns: float probability
-        """
-        return self.ProbGreater(obj)
-
-    def __ge__(self, obj):
-        """Greater than or equal.
-
-        obj: number or _DictWrapper
-
-        returns: float probability
-        """
-        return 1 - (self < obj)
-
-    def __le__(self, obj):
-        """Less than or equal.
-
-        obj: number or _DictWrapper
-
-        returns: float probability
-        """
-        return 1 - (self > obj)
+    # NOTE: I've decided to remove the magic comparators because they
+    # have the side-effect of making Pmf sortable, but in fact they
+    # don't support sorting.
 
     def Normalize(self, fraction=1):
         """Normalizes this PMF so the sum of all probs is fraction.
@@ -2769,9 +2753,11 @@ def ReadStataDct(dct_file, **options):
     type_map = dict(byte=int, int=int, long=int, float=float, double=float)
 
     var_info = []
-    for line in open(dct_file, **options):
-        match = re.search( r'_column\(([^)]*)\)', line)
-        if match:
+    with open(dct_file, **options) as f:
+        for line in f:
+            match = re.search( r'_column\(([^)]*)\)', line)
+            if not match:
+                continue
             start = int(match.group(1))
             t = line.split()
             vtype, name, fstring = t[1:4]
