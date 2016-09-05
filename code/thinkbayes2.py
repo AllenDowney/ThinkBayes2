@@ -594,13 +594,21 @@ class Pmf(_DictWrapper):
         var = self.Var(mu)
         return math.sqrt(var)
 
-    def MaximumLikelihood(self):
+    def MAP(self):
         """Returns the value with the highest probability.
 
         Returns: float probability
         """
         _, val = max((prob, val) for val, prob in self.Items())
         return val
+
+    # Calling this function MaximumLikelihood is potentially misleading,
+    # since the highest posterior probability does not necessarily
+    # correspond to the highest likelihood.  MAP, for maximum aposteori
+    # probability, is better, but still potentially misleading because
+    # we might apply it to a Pmf that is not a posterior distribution.
+    # So I'm providing both names.
+    MaximumLikelihood = MAP
 
     def CredibleInterval(self, percentage=90):
         """Computes the central credible interval.
@@ -1180,6 +1188,7 @@ class Cdf:
         Returns:
             array of values
         """
+        ps = np.asarray(ps)
         return self.Values(ps / 100)
 
     def PercentileRank(self, x):
@@ -1934,6 +1943,32 @@ def MakeExponentialPmf(lam, high, n=200):
     return pmf
 
 
+def EvalParetoPdf(x, xm, alpha):
+    """Computes the Pareto.
+
+    xm: minimum value (scale parameter)
+    alpha: shape parameter
+
+    returns: float probability density
+    """
+    return stats.pareto.pdf(x, alpha, scale=xm)
+
+
+def MakeParetoPmf(xm, alpha, high, num=101):
+    """Makes a PMF discrete approx to a Pareto distribution.
+
+    xm: minimum value (scale parameter)
+    alpha: shape parameter
+    high: upper bound value
+    num: number of values
+
+    returns: normalized Pmf
+    """
+    xs = np.linspace(xm, high, num)
+    ps = stats.pareto.pdf(xs, alpha, scale=xm)
+    pmf = Pmf(dict(zip(xs, ps)))
+    return pmf
+
 def StandardNormalCdf(x):
     """Evaluates the CDF of the standard Normal distribution.
     
@@ -2046,7 +2081,7 @@ def RenderParetoCdf(xmin, alpha, low, high, n=50):
     return xs, ps
 
 
-class Beta(object):
+class Beta:
     """Represents a Beta distribution.
 
     See http://en.wikipedia.org/wiki/Beta_distribution
@@ -2069,6 +2104,12 @@ class Beta(object):
     def Mean(self):
         """Computes the mean of this distribution."""
         return self.alpha / (self.alpha + self.beta)
+
+    def MAP(self):
+        """Computes the value with maximum a posteori probability."""
+        a = self.alpha - 1
+        b = self.beta - 1
+        return a / (a + b)
 
     def Random(self):
         """Generates a random variate from this distribution."""
@@ -2103,6 +2144,9 @@ class Beta(object):
         model of the continuous distribution, and behaves well as
         the number of values increases.
         """
+        if label is None and self.label is not None:
+            label = self.label
+
         if self.alpha < 1 or self.beta < 1:
             cdf = self.MakeCdf()
             pmf = cdf.MakePmf()
