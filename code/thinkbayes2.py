@@ -498,6 +498,18 @@ class Pmf(_DictWrapper):
             t = [prob for (val, prob) in self.d.items() if val < x]
             return sum(t)
 
+    def ProbEqual(self, x):
+        """Probability that a sample from this Pmf is exactly x.
+
+        x: number
+
+        returns: float probability
+        """
+        if isinstance(x, _DictWrapper):
+            return PmfProbEqual(self, x)
+        else:
+            return self[x]
+
     # NOTE: I've decided to remove the magic comparators because they
     # have the side-effect of making Pmf sortable, but in fact they
     # don't support sorting.
@@ -945,7 +957,7 @@ def MakeMixture(metapmf, label='mix'):
     mix = Pmf(label=label)
     for pmf, p1 in metapmf.Items():
         for x, p2 in pmf.Items():
-            mix.Incr(x, p1 * p2)
+            mix[x] += p1 * p2
     return mix
 
 
