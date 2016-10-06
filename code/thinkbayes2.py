@@ -41,6 +41,8 @@ from scipy import stats
 from scipy import special
 from scipy import ndimage
 
+from scipy.special import gamma
+
 from io import open
 
 ROOT2 = math.sqrt(2)
@@ -1859,6 +1861,33 @@ def MakeBinomialPmf(n, p):
     pmf = Pmf()
     for k in range(n+1):
         pmf[k] = stats.binom.pmf(k, n, p)
+    return pmf
+
+
+def EvalGammaPdf(lam, a):
+    """Computes the Gamma PDF.
+
+    lam: where to evaluate the PDF
+    a: parameter of the gamma distribution
+
+    returns: float probability
+    """
+    return lam**(a-1) * math.exp(-lam) / gamma(a)
+
+
+def MakeGammaPmf(lams, a):
+    """Makes a PMF discrete approx to a Gamma distribution.
+
+    lam: parameter lambda in events per unit time
+    xs: upper bound of the Pmf
+
+    returns: normalized Pmf
+    """
+    pmf = Pmf()
+    for lam in lams:
+        pmf[lam] = EvalGammaPdf(lam, a)
+        
+    pmf.Normalize()
     return pmf
 
 
