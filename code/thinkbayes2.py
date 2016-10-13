@@ -1988,6 +1988,40 @@ def MakeExponentialPmf(lam, high, n=200):
     return pmf
 
 
+def EvalWeibullPdf(x, lam, k):
+    """Computes the Weibull PDF.
+
+    x: value
+    lam: parameter lambda in events per unit time
+    k: parameter
+
+    returns: float probability density
+    """
+    arg = (x / lam)
+    return k / lam * arg**(k-1) * np.exp(-arg**k)
+
+
+def EvalWeibullCdf(x, lam, k):
+    """Evaluates CDF of the Weibull distribution."""
+    arg = (x / lam)
+    return 1 - np.exp(-arg**k)
+
+
+def MakeWeibullPmf(lam, k, high, n=200):
+    """Makes a PMF discrete approx to a Weibull distribution.
+
+    lam: parameter lambda in events per unit time
+    k: parameter
+    high: upper bound
+    n: number of values in the Pmf
+
+    returns: normalized Pmf
+    """
+    xs = np.linspace(0, high, n)
+    ps = EvalWeibullPdf(xs, lam, k)
+    return Pmf(dict(zip(xs, ps)))
+
+
 def EvalParetoPdf(x, xm, alpha):
     """Computes the Pareto.
 
