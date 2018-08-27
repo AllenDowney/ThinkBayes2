@@ -2,6 +2,11 @@
 
 *Think Bayes* is an introduction to Bayesian statistics using computational methods.  This is the repository for the second edition.
 
+You can run the code in this book on Binder by pressing this button:
+
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master)
+
+
 The premise of this book, and the other books in the *Think X* series, is that if you know how to program, you can use that skill to learn other topics.
 
 Most books on Bayesian statistics use mathematical notation and present ideas in terms of mathematical concepts like calculus. This book uses Python code instead of math, and discrete approximations instead of continuous mathematics. As a result, what would be an integral in a math book becomes a summation, and most operations on probability distributions are simple loops.
