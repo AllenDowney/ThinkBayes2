@@ -1,6 +1,6 @@
 # ThinkBayes2
 
-*Think Bayes* is an introduction to Bayesian statistics using computational methods.
+*Think Bayes* is an introduction to Bayesian statistics using computational methods.  This is the repository for the second edition.
 
 The premise of this book, and the other books in the *Think X* series, is that if you know how to program, you can use that skill to learn other topics.
 
@@ -80,7 +80,7 @@ If you don't want to use Git, you can [download my files in a Zip archive](https
 `gzip` to unpack the Zip file. Make a note of the location of the files
 you download.
 
-## Installing Python
+## Installing Anaconda
 
 You might already have Python installed on your computer, but you might
 not have the latest version. To use the code in this book, I recommend
@@ -111,17 +111,47 @@ you might want it for other projects.
 By default, Anaconda installs most of the packages you need, but there
 are a few more you might have to add. 
 
-There are two ways to do that:
+If you know about Conda environments, you can create a new environment and get the packages you need using the `environment.yml` file in the `ThinkBayes2` directory.
 
-1.  Open a command window. On macOS or Linux, you can use Terminal. On
-Windows, open the Anaconda Prompt that should be in your Start menu.
-Run the following command (copy and paste it if you can, to avoid
-typos):
+Otherwise, open a command window and run the following command:
 
 ```
 conda install jupyterlab pandas seaborn
 ```
 
-2.  Create a Conda environment with the packages you need.  You can do that using
-the `environment.yml` file in this repository.
+Finally, we'll use `pip` to install the `thinkbayes2` libraries.  Open a command window and make sure you are in the directory that contains the `ThinkBayes2` directory.  Then run the following command:
 
+```
+pip install ./ThinkBayes2
+```
+
+*Coming soon, a script to test your installation.*
+
+
+## Running Jupyter
+
+The code for each chapter, and starter code for the exercises, is in
+Jupyter notebooks. If you have not used Jupyter before, you can [read about it here](https://jupyter.org).
+
+To start Jupyter on macOS or Linux, open a Terminal; on Windows, open
+Git Bash. Use `cd` to "change directory" into `ModSimPy` and launch the Jupyter server:
+
+```
+cd ModSimPy
+jupyter notebook
+```
+
+Jupyter should open a window in a browser, and you should see a list of directories.
+Click on `notebooks` to open the directory containing the notebooks.  Then click on the first notebook; it should
+open in a new tab.
+
+In the notebook, press Shift-Enter to run the first few "cells". The first time you run a
+notebook, it might take several seconds to start, while some Python
+files get initialized. After that, it should run faster.
+
+You can also launch Jupyter from the Start menu on Windows, from the Dock on
+macOS, or from the Anaconda Navigator on any system. If you do that, Jupyter
+might start in your home directory or somewhere else in your file
+system, so you might have to navigate to find the `ThinkBayes2` directory.
+
+I hope these instructions help you get started easily.  Please let me know if there is anything I can do to improve them.
