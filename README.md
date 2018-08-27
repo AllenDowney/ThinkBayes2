@@ -28,7 +28,7 @@ To run the examples and work on the exercises in this book, you have to:
 
 The next three sections provide details for these steps. 
 
-## Copying my files
+### Copying my files
 
 The code for this book is available from
 this **Git repository**. Git is a software tool that helps you keep track of the
@@ -80,7 +80,7 @@ If you don't want to use Git, you can [download my files in a Zip archive](https
 `gzip` to unpack the Zip file. Make a note of the location of the files
 you download.
 
-## Installing Anaconda
+### Installing Anaconda
 
 You might already have Python installed on your computer, but you might
 not have the latest version. To use the code in this book, I recommend
@@ -128,7 +128,7 @@ pip install ./ThinkBayes2
 *Coming soon, a script to test your installation.*
 
 
-## Running Jupyter
+### Running Jupyter
 
 The code for each chapter, and starter code for the exercises, is in
 Jupyter notebooks. If you have not used Jupyter before, you can [read about it here](https://jupyter.org).
