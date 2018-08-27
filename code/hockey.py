@@ -43,7 +43,7 @@ class Hockey(thinkbayes2.Suite):
         Evaluates the Poisson PMF for lambda and k.
 
         hypo: goal scoring rate in goals per game
-        data: goals scored in one period
+        data: goals scored in one game
         """
         lam = hypo
         k = data

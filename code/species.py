@@ -638,7 +638,7 @@ def ReadCompleteDataset(filename='BBB_data_from_Rob.csv', clean_param=0):
         
 
 def JoinSubjects():
-    """Reads both datasets and computers their inner join.
+    """Reads both datasets and computes their inner join.
 
     Finds all subjects that appear in both datasets.
 

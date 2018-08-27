@@ -103,7 +103,7 @@ def main():
 
     thinkplot.Pmf(best_attr_pmf)
     thinkplot.Save(root='dungeons2',
-                   xlabel='Sum of three d6',
+                   xlabel='Best of three d6',
                    ylabel='Probability',
                    axis=[2, 19, 0, 0.23],
                    formats=FORMATS,

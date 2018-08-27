@@ -8,7 +8,7 @@ License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 from __future__ import print_function, division
 
 import csv
-import numpy
+import numpy as np
 import thinkbayes2
 import thinkplot
 
@@ -94,7 +94,7 @@ class GainCalculator(object):
         returns: tuple (sequence of bids, sequence of gains)
     
         """
-        bids = numpy.linspace(low, high, n)
+        bids = np.linspace(low, high, n)
 
         gains = [self.ExpectedGain(bid) for bid in bids]
 
@@ -146,7 +146,7 @@ class Player(object):
     """Represents a player on The Price is Right."""
 
     n = 101
-    price_xs = numpy.linspace(0, 75000, n)
+    price_xs = np.linspace(0, 75000, n)
 
     def __init__(self, prices, bids, diffs):
         """Construct the Player.
@@ -159,7 +159,7 @@ class Player(object):
         self.cdf_diff = thinkbayes2.MakeCdfFromList(diffs)
 
         mu = 0
-        sigma = numpy.std(diffs)
+        sigma = np.std(diffs)
         self.pdf_error = thinkbayes2.NormalPdf(mu, sigma)
 
     def ErrorDensity(self, error):
@@ -337,7 +337,7 @@ def PlotOptimalBid():
     """Plots optimal bid vs estimated price.
     """
     player1, player2 = MakePlayers()
-    guesses = numpy.linspace(15000, 60000, 21)
+    guesses = np.linspace(15000, 60000, 21)
 
     res = []
     for guess in guesses:
