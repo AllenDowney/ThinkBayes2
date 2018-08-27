@@ -31,10 +31,8 @@ import re
 from collections import Counter
 from operator import itemgetter
 
-import thinkplot
-
 import numpy as np
-import pandas
+import pandas as pd
 
 import scipy
 from scipy import stats
@@ -158,7 +156,7 @@ class _DictWrapper(object):
             self.d.update(obj.items())
         elif isinstance(obj, (_DictWrapper, Cdf, Pdf)):
             self.d.update(obj.Items())
-        elif isinstance(obj, pandas.Series):
+        elif isinstance(obj, pd.Series):
             self.d.update(obj.value_counts().iteritems())
         else:
             # finally, treat it like a list
@@ -2417,10 +2415,10 @@ def NormalProbabilityPlot(sample, fit_color='0.8', **options):
     std = math.sqrt(var)
 
     fit = FitLine(xs, mean, std)
-    thinkplot.Plot(*fit, color=fit_color, label='model')
+    plt.plot(*fit, color=fit_color, label='model')
 
     xs, ys = NormalProbability(sample)
-    thinkplot.Plot(xs, ys, **options)
+    plt.plot(xs, ys, **options)
 
  
 def Mean(xs):
@@ -2615,8 +2613,8 @@ def SpearmanCorr(xs, ys):
     Returns:
         float Spearman's correlation
     """
-    xranks = pandas.Series(xs).rank()
-    yranks = pandas.Series(ys).rank()
+    xranks = pd.Series(xs).rank()
+    yranks = pd.Series(ys).rank()
     return Corr(xranks, yranks)
 
 
@@ -2826,7 +2824,7 @@ class FixedWidthVariables(object):
 
         returns: DataFrame
         """
-        df = pandas.read_fwf(filename,
+        df = pd.read_fwf(filename,
                              colspecs=self.colspecs, 
                              names=self.names,
                              **options)
@@ -2862,7 +2860,7 @@ def ReadStataDct(dct_file, **options):
             var_info.append((start, vtype, name, fstring, long_desc))
             
     columns = ['start', 'type', 'name', 'fstring', 'desc']
-    variables = pandas.DataFrame(var_info, columns=columns)
+    variables = pd.DataFrame(var_info, columns=columns)
 
     # fill in the end column by shifting the start column
     variables['end'] = variables.start.shift(-1)
@@ -3008,10 +3006,10 @@ class HypothesisTest(object):
         """
         def VertLine(x):
             """Draws a vertical line at x."""
-            thinkplot.Plot([x, x], [0, 1], color='0.8')
+            plt.plot([x, x], [0, 1], color='0.8')
 
         VertLine(self.actual)
-        thinkplot.Cdf(self.test_cdf, label=label)
+        self.test_cdf.plot(label=label)
 
     def TestStatistic(self, data):
         """Computes the test statistic.
