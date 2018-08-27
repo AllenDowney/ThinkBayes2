@@ -113,24 +113,38 @@ option to install Visual Studio Code, which is an interactive
 environment for writing programs. You won’t need it for this book, but
 you might want it for other projects.
 
-By default, Anaconda installs most of the packages you need, but there
-are a few more you might have to add. 
-
-If you know about Conda environments, you can create a new environment and get the packages you need using the `environment.yml` file in the `ThinkBayes2` directory.
-
-Otherwise, open a command window and run the following command:
+The next step is to create a Conda environment that contains the packages
+you need.  Open a command window and run the following commands:
 
 ```
-conda install jupyterlab pandas seaborn
+cd ThinkBayes2
+conda env create -f environment.yml
 ```
 
-Finally, we'll use `pip` to install the `thinkbayes2` libraries.  Open a command window and make sure you are in the directory that contains the `ThinkBayes2` directory.  Then run the following command:
+You might get a few error messages about packages that are not installed, but
+we will not need them.
+
+To activate the environment you just created, run
 
 ```
-pip install ./ThinkBayes2
+conda activate ThinkBayes2
 ```
 
-*Coming soon, a script to test your installation.*
+To test whether the installation was successful, run
+
+```
+python install_test.py
+```
+
+If all is well, a window should appear with a graph.
+
+When you are done working on this book, you might want to deactivate the environment:
+
+```
+conda deactivate
+```
+
+But when you want to work on this book again, you will have to activate the environment again.
 
 
 ### Running Jupyter
@@ -138,8 +152,8 @@ pip install ./ThinkBayes2
 The code for each chapter, and starter code for the exercises, is in
 Jupyter notebooks. If you have not used Jupyter before, you can [read about it here](https://jupyter.org).
 
-To start Jupyter on macOS or Linux, open a Terminal; on Windows, open
-Git Bash. Use `cd` to "change directory" into `ThinkBayes2` and launch the Jupyter server:
+To start Jupyter, open a command window (on macOS or Linux, open a Terminal; on Windows, open
+Git Bash) and run the following commands:
 
 ```
 cd ThinkBayes2
