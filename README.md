@@ -134,10 +134,10 @@ The code for each chapter, and starter code for the exercises, is in
 Jupyter notebooks. If you have not used Jupyter before, you can [read about it here](https://jupyter.org).
 
 To start Jupyter on macOS or Linux, open a Terminal; on Windows, open
-Git Bash. Use `cd` to "change directory" into `ModSimPy` and launch the Jupyter server:
+Git Bash. Use `cd` to "change directory" into `ThinkBayes2` and launch the Jupyter server:
 
 ```
-cd ModSimPy
+cd ThinkBayes2
 jupyter notebook
 ```
 
