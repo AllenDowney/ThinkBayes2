@@ -146,6 +146,13 @@ conda deactivate
 
 But when you want to work on this book again, you will have to activate the environment again.
 
+If you prefer not to work with Conda environments, you could install the packages you need in the Conda "base" environment.  If you run the following commands in the `ThinkBayes2` directory, you should get everything you need:
+
+```
+conda install pandas jupyterlab seaborn
+pip install .
+```
+
 
 ### Running Jupyter
 
