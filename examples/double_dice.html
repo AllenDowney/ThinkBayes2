@@ -1,0 +1,670 @@
+<style type="text/css">
+.highlight{background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .1em;padding:0em .5em;border-radius: 4px;}
+.k{color: #338822; font-weight: bold;}
+.kn{color: #338822; font-weight: bold;}
+.mi{color: #000000;}
+.o{color: #000000;}
+.ow{color: #BA22FF;  font-weight: bold;}
+.nb{color: #338822;}
+.n{color: #000000;}
+.s{color: #cc2222;}
+.se{color: #cc2222; font-weight: bold;}
+.si{color: #C06688; font-weight: bold;}
+.nn{color: #4D00FF; font-weight: bold;}
+</style>
+
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="The-double-dice-problem">The double dice problem<a class="anchor-link" href="#The-double-dice-problem">&#182;</a></h3><p>Suppose I have a box that contains one each of 4-sided, 6-sided, 8-sided, and 12-sided dice.  I choose a die at random, and roll it twice
+without letting you see the die or the outcome.  I report that I got
+the same outcome on both rolls.</p>
+<p>1) What is the posterior probability that I rolled each of the dice?</p>
+<p>2) If I roll the same die again, what is the probability that I get the same outcome a third time?</p>
+<p><strong>Solution</strong></p>
+<p>Here's a <code>BayesTable</code> that represents the four hypothetical dice.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hypo</span> <span class="o">=</span> <span class="p">[</span><span class="n">Fraction</span><span class="p">(</span><span class="n">sides</span><span class="p">)</span> <span class="k">for</span> <span class="n">sides</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">]]</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">BayesTable</span><span class="p">(</span><span class="n">hypo</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>hypo</th>
+      <th>prior</th>
+      <th>likelihood</th>
+      <th>unnorm</th>
+      <th>posterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>6</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since we didn't specify prior probabilities, the default value is equal priors for all hypotheses.  They don't have to be normalized, because we have to normalize the posteriors anyway.</p>
+<p>Now we can specify the likelihoods: if a die has <code>n</code> sides, the chance of getting the same outcome twice is <code>1/n</code>.</p>
+<p>So the likelihoods are:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">likelihood</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">table</span><span class="o">.</span><span class="n">hypo</span>
+<span class="n">table</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>hypo</th>
+      <th>prior</th>
+      <th>likelihood</th>
+      <th>unnorm</th>
+      <th>posterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>1</td>
+      <td>1/4</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>6</td>
+      <td>1</td>
+      <td>1/6</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8</td>
+      <td>1</td>
+      <td>1/8</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12</td>
+      <td>1</td>
+      <td>1/12</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can use <code>update</code> to compute the posterior probabilities:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+<span class="n">table</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>hypo</th>
+      <th>prior</th>
+      <th>likelihood</th>
+      <th>unnorm</th>
+      <th>posterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>1</td>
+      <td>1/4</td>
+      <td>1/4</td>
+      <td>2/5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>6</td>
+      <td>1</td>
+      <td>1/6</td>
+      <td>1/6</td>
+      <td>4/15</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8</td>
+      <td>1</td>
+      <td>1/8</td>
+      <td>1/8</td>
+      <td>1/5</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12</td>
+      <td>1</td>
+      <td>1/12</td>
+      <td>1/12</td>
+      <td>2/15</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">posterior</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0    0.400000
+1    0.266667
+2    0.200000
+3    0.133333
+Name: posterior, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The 4-sided die is most likely because you are more likely to get doubles on a 4-sided die than on a 6-, 8-, or 12- sided die.</p>
+<h3 id="Part-two">Part two<a class="anchor-link" href="#Part-two">&#182;</a></h3><p>The second part of the problem asks for the (posterior predictive) probability of getting the same outcome a third time, if we roll the same die again.</p>
+<p>If the die has <code>n</code> sides, the probability of getting the same value again is <code>1/n</code>, which should look familiar.</p>
+<p>To get the total probability of getting the same outcome, we have to add up the conditional probabilities:</p>
+
+<pre><code>P(n | data) * P(same outcome | n)</code></pre>
+<p>The first term is the posterior probability; the second term is <code>1/n</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">total</span> <span class="o">+=</span> <span class="n">row</span><span class="o">.</span><span class="n">posterior</span> <span class="o">/</span> <span class="n">row</span><span class="o">.</span><span class="n">hypo</span>
+    
+<span class="n">total</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Fraction(13, 72)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This calculation is similar to the first step of the update, so we can also compute it by</p>
+<p>1) Creating a new table with the posteriors from <code>table</code>.</p>
+<p>2) Adding the likelihood of getting the same outcome a third time.</p>
+<p>3) Computing the normalizing constant.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">table2</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="n">table2</span><span class="o">.</span><span class="n">likelihood</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">table</span><span class="o">.</span><span class="n">hypo</span>
+<span class="n">table2</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>hypo</th>
+      <th>prior</th>
+      <th>likelihood</th>
+      <th>unnorm</th>
+      <th>posterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>2/5</td>
+      <td>1/4</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>6</td>
+      <td>4/15</td>
+      <td>1/6</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8</td>
+      <td>1/5</td>
+      <td>1/8</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12</td>
+      <td>2/15</td>
+      <td>1/12</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">table2</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Fraction(13, 72)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">table2</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>hypo</th>
+      <th>prior</th>
+      <th>likelihood</th>
+      <th>unnorm</th>
+      <th>posterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>2/5</td>
+      <td>1/4</td>
+      <td>1/10</td>
+      <td>36/65</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>6</td>
+      <td>4/15</td>
+      <td>1/6</td>
+      <td>2/45</td>
+      <td>16/65</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8</td>
+      <td>1/5</td>
+      <td>1/8</td>
+      <td>1/40</td>
+      <td>9/65</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12</td>
+      <td>2/15</td>
+      <td>1/12</td>
+      <td>1/90</td>
+      <td>4/65</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This result is the same as the posterior after seeing the same outcome three times.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This example demonstrates a general truth: to compute the predictive probability of an event, you can pretend you saw the event, do a Bayesian update, and record the normalizing constant.</p>
+<p>(With one caveat: this only works if your priors are normalized.)</p>
+
+</div>
+</div>
+</div>
+ 
+
