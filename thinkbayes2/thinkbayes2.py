@@ -52,7 +52,7 @@ def RandomSeed(x):
     """
     random.seed(x)
     np.random.seed(x)
-    
+
 
 def Odds(p):
     """Computes odds for a given probability.
@@ -88,7 +88,7 @@ def Probability2(yes, no):
     """Computes the probability corresponding to given odds.
 
     Example: yes=2, no=1 means 2:1 odds in favor, or 2/3 probability.
-    
+
     yes, no: int or float odds in favor
     """
     return yes / (yes + no)
@@ -128,7 +128,7 @@ class Interpolator(object):
 
 # When we plot Hist, Pmf and Cdf objects, they don't appear in
 # the legend unless we override the default label.
-DEFAULT_LABEL = '_nolegend_' 
+DEFAULT_LABEL = '_nolegend_'
 
 
 class _DictWrapper(object):
@@ -241,7 +241,7 @@ class _DictWrapper(object):
 
     def Log(self, m=None):
         """Log transforms the probabilities.
-        
+
         Removes values with probability 0.
 
         Normalizes so that the largest logprob is 0.
@@ -434,7 +434,7 @@ class Hist(_DictWrapper):
 
 class Pmf(_DictWrapper):
     """Represents a probability mass function.
-    
+
     Values can be any hashable type; probabilities are floating-point.
     Pmfs are not necessarily normalized.
     """
@@ -556,7 +556,7 @@ class Pmf(_DictWrapper):
 
     def Sample(self, n):
         """Generates a random sample from this distribution.
-        
+
         n: int length of the sample
         returns: NumPy array
         """
@@ -597,7 +597,7 @@ class Pmf(_DictWrapper):
         Returns:
             expectation
         """
-        return np.sum(p * func(x) for x, p in self.Items()) 
+        return np.sum(p * func(x) for x, p in self.Items())
 
     def Std(self, mu=None):
         """Computes the standard deviation of a PMF.
@@ -985,7 +985,7 @@ class Cdf:
     """
     def __init__(self, obj=None, ps=None, label=None):
         """Initializes.
-        
+
         If ps is provided, obj must be the corresponding list of values.
 
         obj: Hist, Pmf, Cdf, Pdf, dict, pandas Series, list of pairs
@@ -1006,7 +1006,7 @@ class Cdf:
                 logging.warning("Cdf: can't pass ps without also passing xs.")
             return
         else:
-            # if the caller provides xs and ps, just store them          
+            # if the caller provides xs and ps, just store them
             if ps is not None:
                 if isinstance(ps, str):
                     logging.warning("Cdf: ps can't be a string")
@@ -1048,7 +1048,7 @@ class Cdf:
         if self.label == DEFAULT_LABEL:
             return '%s(%s, %s)' % (cls, str(self.xs), str(self.ps))
         else:
-            return '%s(%s, %s, %s)' % (cls, str(self.xs), str(self.ps), 
+            return '%s(%s, %s, %s)' % (cls, str(self.xs), str(self.ps),
                                        repr(self.label))
 
     def __len__(self):
@@ -1231,7 +1231,7 @@ class Cdf:
 
     def Sample(self, n):
         """Generates a random sample from this distribution.
-        
+
         n: int length of the sample
         returns: NumPy array
         """
@@ -1595,7 +1595,7 @@ class Pdf(object):
             xs = options.pop('xs', None)
             if xs is None:
                 xs = self.GetLinspace()
-            
+
         ds = self.Density(xs)
         return xs, ds
 
@@ -1816,7 +1816,7 @@ def EvalNormalPdf(x, mu, sigma):
     x: value
     mu: mean
     sigma: standard deviation
-    
+
     returns: float probability density
     """
     return stats.norm.pdf(x, mu, sigma)
@@ -1824,7 +1824,7 @@ def EvalNormalPdf(x, mu, sigma):
 
 def MakeNormalPmf(mu, sigma, num_sigmas, n=201):
     """Makes a PMF discrete approx to a Normal distribution.
-    
+
     mu: float mean
     sigma: float standard deviation
     num_sigmas: how many sigmas to extend in each direction
@@ -1849,12 +1849,15 @@ def EvalBinomialPmf(k, n, p):
     Returns the probabily of k successes in n trials with probability p.
     """
     return stats.binom.pmf(k, n, p)
-    
+
 
 def MakeBinomialPmf(n, p):
     """Evaluates the binomial PMF.
 
-    Returns the distribution of successes in n trials with probability p.
+    n: number of trials
+    p: probability of success on each trial
+
+    Returns: Pmf of number of successes
     """
     pmf = Pmf()
     for k in range(n+1):
@@ -1898,7 +1901,7 @@ def EvalGeometricPmf(k, p, loc=0):
     p: probability of success on each trial
     """
     return stats.geom.pmf(k, p, loc=loc)
-    
+
 
 def MakeGeometricPmf(p, loc=0, high=10):
     """Evaluates the binomial PMF.
@@ -1923,7 +1926,7 @@ def EvalHypergeomPmf(k, N, K, n):
     N with K successes in it.
     """
     return stats.hypergeom.pmf(k, N, K, n)
-    
+
 
 def EvalPoissonPmf(k, lam):
     """Computes the Poisson PMF.
@@ -2048,13 +2051,13 @@ def MakeParetoPmf(xm, alpha, high, num=101):
 
 def StandardNormalCdf(x):
     """Evaluates the CDF of the standard Normal distribution.
-    
+
     See http://en.wikipedia.org/wiki/Normal_distribution
     #Cumulative_distribution_function
 
     Args:
         x: float
-                
+
     Returns:
         float
     """
@@ -2063,14 +2066,14 @@ def StandardNormalCdf(x):
 
 def EvalNormalCdf(x, mu=0, sigma=1):
     """Evaluates the CDF of the normal distribution.
-    
+
     Args:
         x: float
 
         mu: mean parameter
-        
+
         sigma: standard deviation parameter
-                
+
     Returns:
         float
     """
@@ -2080,15 +2083,15 @@ def EvalNormalCdf(x, mu=0, sigma=1):
 def EvalNormalCdfInverse(p, mu=0, sigma=1):
     """Evaluates the inverse CDF of the normal distribution.
 
-    See http://en.wikipedia.org/wiki/Normal_distribution#Quantile_function  
+    See http://en.wikipedia.org/wiki/Normal_distribution#Quantile_function
 
     Args:
         p: float
 
         mu: mean parameter
-        
+
         sigma: standard deviation parameter
-                
+
     Returns:
         float
     """
@@ -2097,11 +2100,11 @@ def EvalNormalCdfInverse(p, mu=0, sigma=1):
 
 def EvalLognormalCdf(x, mu=0, sigma=1):
     """Evaluates the CDF of the lognormal distribution.
-    
+
     x: float or sequence
     mu: mean parameter
     sigma: standard deviation parameter
-                
+
     Returns: float or sequence
     """
     return stats.lognorm.cdf(x, loc=mu, scale=sigma)
@@ -2374,14 +2377,14 @@ def NormalProbability(ys, jitter=0):
     """Generates data for a normal probability plot.
 
     ys: sequence of values
-    jitter: float magnitude of jitter added to the ys 
+    jitter: float magnitude of jitter added to the ys
 
     returns: numpy arrays xs, ys
     """
     n = len(ys)
     xs = np.random.normal(0, 1, n)
     xs.sort()
-    
+
     if jitter:
         ys = Jitter(ys, jitter)
     else:
@@ -2396,7 +2399,7 @@ def Jitter(values, jitter=0.5):
 
     values: sequence
     jitter: scalar magnitude of jitter
-    
+
     returns: new numpy array
     """
     n = len(values)
@@ -2420,7 +2423,7 @@ def NormalProbabilityPlot(sample, fit_color='0.8', **options):
     xs, ys = NormalProbability(sample)
     plt.plot(xs, ys, **options)
 
- 
+
 def Mean(xs):
     """Computes mean.
 
@@ -2470,7 +2473,7 @@ def MeanVar(xs, ddof=0):
 
     xs: sequence of values
     ddof: delta degrees of freedom
-    
+
     returns: pair of float, mean and var
     """
     xs = np.asarray(xs)
@@ -2623,13 +2626,13 @@ def MapToRanks(t):
 
     Args:
         t: sequence of numbers
-    
+
     Returns:
         list of integer ranks, starting at 1
     """
     # pair up each value with its index
     pairs = enumerate(t)
-    
+
     # sort by value
     sorted_pairs = sorted(pairs, key=itemgetter(1))
 
@@ -2699,7 +2702,7 @@ def CoefDetermination(ys, res):
     Args:
         ys: dependent variable
         res: residuals
-        
+
     Returns:
         float coefficient of determination
     """
@@ -2825,7 +2828,7 @@ class FixedWidthVariables(object):
         returns: DataFrame
         """
         df = pd.read_fwf(filename,
-                             colspecs=self.colspecs, 
+                             colspecs=self.colspecs,
                              names=self.names,
                              **options)
         return df
@@ -2839,7 +2842,7 @@ def ReadStataDct(dct_file, **options):
 
     returns: FixedWidthVariables object
     """
-    type_map = dict(byte=int, int=int, long=int, float=float, 
+    type_map = dict(byte=int, int=int, long=int, float=float,
                     double=float, numeric=float)
 
     var_info = []
@@ -2858,7 +2861,7 @@ def ReadStataDct(dct_file, **options):
                 vtype = type_map[vtype]
             long_desc = ' '.join(t[4:]).strip('"')
             var_info.append((start, vtype, name, fstring, long_desc))
-            
+
     columns = ['start', 'type', 'name', 'fstring', 'desc']
     variables = pd.DataFrame(var_info, columns=columns)
 
@@ -2989,7 +2992,7 @@ class HypothesisTest(object):
 
         returns: float p-value
         """
-        self.test_stats = [self.TestStatistic(self.RunModel()) 
+        self.test_stats = [self.TestStatistic(self.RunModel())
                            for _ in range(iters)]
         self.test_cdf = Cdf(self.test_stats)
 
@@ -3014,7 +3017,7 @@ class HypothesisTest(object):
     def TestStatistic(self, data):
         """Computes the test statistic.
 
-        data: data in whatever form is relevant        
+        data: data in whatever form is relevant
         """
         raise UnimplementedMethodException()
 
@@ -3033,7 +3036,7 @@ class HypothesisTest(object):
 
 def main():
     pass
-    
+
 
 if __name__ == '__main__':
     main()

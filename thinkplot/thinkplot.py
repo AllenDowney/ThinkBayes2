@@ -710,29 +710,12 @@ def legend(**options):
     https://matplotlib.org/api/_as_gen/matplotlib.pyplot.legend.html
 
     """
-    underride(options, loc='best')
+    _Underride(options, loc='best')
 
     ax = plt.gca()
     handles, labels = ax.get_legend_handles_labels()
     if len(handles):
         ax.legend(handles, labels, **options)
-
-
-def underride(d, **options):
-    """Add key-value pairs to d only if key is not in d.
-
-    If d is None, create a new dictionary.
-
-    d: dictionary
-    options: keyword args to add to d
-    """
-    if d is None:
-        d = {}
-
-    for key, val in options.items():
-        d.setdefault(key, val)
-
-    return d
 
 
 def Show(**options):
