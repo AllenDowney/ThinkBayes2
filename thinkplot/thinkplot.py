@@ -563,7 +563,7 @@ def Contour(obj, pcolor=False, contour=True, imshow=False, **options):
     except AttributeError:
         d = obj
 
-    _Underride(options, linewidth=3, cmap=matplotlib.cm.Blues)
+    _Underride(options, cmap=matplotlib.cm.Blues)
 
     xs, ys = zip(*d.keys())
     xs = sorted(set(xs))

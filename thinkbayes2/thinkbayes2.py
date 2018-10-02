@@ -1846,7 +1846,11 @@ def MakeNormalPmf(mu, sigma, num_sigmas, n=201):
 def EvalBinomialPmf(k, n, p):
     """Evaluates the binomial PMF.
 
-    Returns the probabily of k successes in n trials with probability p.
+    k: number of successes
+    n: number of trials
+    p: probability of success on each trial
+
+    returns: probabily of k successes in n trials with probability p.
     """
     return stats.binom.pmf(k, n, p)
 
@@ -1857,7 +1861,7 @@ def MakeBinomialPmf(n, p):
     n: number of trials
     p: probability of success on each trial
 
-    Returns: Pmf of number of successes
+    returns: Pmf of number of successes
     """
     pmf = Pmf()
     for k in range(n+1):
