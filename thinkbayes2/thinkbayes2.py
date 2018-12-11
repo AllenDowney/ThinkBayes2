@@ -2363,6 +2363,10 @@ class Dirichlet(object):
         ps = self.params / alpha0
         return Pmf(zip(xs, ps), label=label)
 
+    def Mean(self):
+        """Array of means."""
+        return self.params / np.sum(self.params)
+
 
 def BinomialCoef(n, k):
     """Compute the binomial coefficient "n choose k".
