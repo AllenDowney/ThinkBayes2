@@ -1,7 +1,7 @@
 FILES = Makefile \
 brfss.py     euro3.py    monty2.py        sat.py          train.py \
 cookie2.py   euro.py     monty.py         species.py      variability.py \
-cookie.py    hockey.py   paintball.py     thinkbayes2.py  thinkstats2.py \
+cookie.py    hockey.py   paintball.py     thinkbayes2.py  tb.py \
 dice.py      kidney.py   price.py         thinkplot.py \
 dungeons.py  redline_data.py  train2.py   columns.py \
 euro2.py     m_and_m.py  redline.py       train3.py \

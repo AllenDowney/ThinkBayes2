@@ -62,7 +62,7 @@ def SuiteLikelihood(suite, data):
     returns: float likelihood
     """
     total = 0
-    for hypo, prob in suite.Items():
+    for hypo, prob in suite.items():
         like = suite.Likelihood(data, hypo)
         total += prob * like
     return total

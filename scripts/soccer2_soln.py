@@ -32,7 +32,7 @@ class Soccer(thinkbayes2.Suite):
         returns: new Pmf (mixture of Poissons)
         """
         metapmf = thinkbayes2.Pmf()
-        for lam, prob in self.Items():
+        for lam, prob in self.items():
             pred = thinkbayes2.MakePoissonPmf(lam, 15)
             metapmf[pred] = prob
 
@@ -53,8 +53,8 @@ def main():
     suite1.Update(1)
     suite2.Update(0)
 
-    print('posterior mean Germany', suite1.Mean())
-    print('posterior mean Argentina', suite2.Mean())
+    print('posterior mean Germany', suite1.mean())
+    print('posterior mean Argentina', suite2.mean())
 
     # plot the posteriors
     thinkplot.PrePlot(2)

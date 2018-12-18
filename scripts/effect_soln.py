@@ -39,11 +39,11 @@ def RunEstimate(update_func, num_points=31, median_flag=False):
     suite1 = suites['male']
     suite2 = suites['female']
 
-    mu1 = suite1.Marginal(0)
-    sigma1 = suite1.Marginal(1)
+    mu1 = suite1.marginal(0)
+    sigma1 = suite1.marginal(1)
 
-    mu2 = suite2.Marginal(0)
-    sigma2 = suite2.Marginal(1)
+    mu2 = suite2.marginal(0)
+    sigma2 = suite2.marginal(1)
 
     diff = mu1 - mu2
     sigma = (sigma1 + sigma2) / 2

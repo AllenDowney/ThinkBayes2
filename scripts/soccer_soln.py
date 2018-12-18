@@ -33,7 +33,7 @@ class Soccer(thinkbayes2.Suite):
         score: number of goals already scored
         """
         metapmf = thinkbayes2.Pmf()
-        for lam, prob in self.Items():
+        for lam, prob in self.items():
             lt = lam * rem_time / 90
             pred = thinkbayes2.MakePoissonPmf(lt, 15)
             metapmf[pred] = prob
@@ -56,15 +56,15 @@ def main():
     # start with a prior based on the mean interarrival time
     suite.Update(mean_interarrival)
     thinkplot.Pdf(suite, label='prior')
-    print('prior mean', suite.Mean())
+    print('prior mean', suite.mean())
 
     suite.Update(11)
     thinkplot.Pdf(suite, label='posterior 1')
-    print('after one goal', suite.Mean())
+    print('after one goal', suite.mean())
 
     suite.Update(12)
     thinkplot.Pdf(suite, label='posterior 2')
-    print('after two goals', suite.Mean())
+    print('after two goals', suite.mean())
 
     thinkplot.Show()
 

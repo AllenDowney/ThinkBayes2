@@ -335,7 +335,7 @@ class Cache(object):
         bucket: int bucket number
         name: string
         """
-        pmf = self.joint.Conditional(0, 1, bucket, name=name)
+        pmf = self.joint.conditional(0, 1, bucket, name=name)
         cdf = pmf.MakeCdf()
         return cdf
 
@@ -359,7 +359,7 @@ class Cache(object):
         """
         joint = thinkbayes2.Joint()
 
-        for val, freq in self.joint.Items():
+        for val, freq in self.joint.items():
             age, bucket = val
             cm = BucketToCm(bucket)
             if cm > size_thresh:

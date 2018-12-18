@@ -81,7 +81,7 @@ def main():
 
     for high in [500, 1000, 2000]:
         suite = MakePosterior(high, dataset, Train2)
-        print(high, suite.Mean())
+        print(high, suite.mean())
 
     thinkplot.Save(root='train3',
                    xlabel='Number of trains',

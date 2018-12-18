@@ -50,14 +50,14 @@ def main():
     joint.UpdateSet(pairs)
 
     thinkplot.PrePlot(2)
-    pdfx = joint.Marginal(0)
-    pdfy = joint.Marginal(1)
+    pdfx = joint.marginal(0)
+    pdfy = joint.marginal(1)
     thinkplot.Pdf(pdfx, label='posterior x')
     thinkplot.Pdf(pdfy, label='posterior y')
     thinkplot.Show()
 
-    print(pdfx.Mean(), pdfx.Std())
-    print(pdfy.Mean(), pdfy.Std())
+    print(pdfx.mean(), pdfx.Std())
+    print(pdfy.mean(), pdfy.Std())
 
 
 if __name__ == '__main__':

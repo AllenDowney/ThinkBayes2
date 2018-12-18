@@ -119,7 +119,7 @@ def main():
     suite = Lincoln(hypos)
     suite.Update(data)
 
-    n_marginal = suite.Marginal(0)
+    n_marginal = suite.marginal(0)
 
     thinkplot.Pmf(n_marginal, label='n')
     thinkplot.Save(root='lincoln1',
@@ -127,20 +127,20 @@ def main():
                    ylabel='PMF',
                    formats=['pdf', 'png'])
 
-    print('post mean n', n_marginal.Mean())
+    print('post mean n', n_marginal.mean())
     print('MAP n', n_marginal.MaximumLikelihood())
 
-    p1_marginal = suite.Marginal(1, label='p1')
-    p2_marginal = suite.Marginal(2, label='p2')
+    p1_marginal = suite.marginal(1, label='p1')
+    p2_marginal = suite.marginal(2, label='p2')
 
     thinkplot.Pdf(p1_marginal)
     thinkplot.Pdf(p2_marginal)
     thinkplot.Show()
 
-    print('post mean p1', p1_marginal.Mean())
+    print('post mean p1', p1_marginal.mean())
     print('MAP p1', p1_marginal.MaximumLikelihood())
 
-    print('post mean p2', p2_marginal.Mean())
+    print('post mean p2', p2_marginal.mean())
     print('MAP p2', p2_marginal.MaximumLikelihood())
 
     print('p1 > p2', p1_marginal > p2_marginal)

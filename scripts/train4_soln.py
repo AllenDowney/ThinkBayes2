@@ -32,7 +32,7 @@ def main():
 
     data = 3, 70
     suite.Update(data)
-    print('posterior mean', suite.Mean())
+    print('posterior mean', suite.mean())
 
     thinkplot.Pmf(suite, label='after 70')
     thinkplot.Show(xlabel='Number of trains',

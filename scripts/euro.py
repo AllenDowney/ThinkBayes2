@@ -95,7 +95,7 @@ def Summarize(suite):
 
     print('MLE', suite.MaximumLikelihood())
 
-    print('Mean', suite.Mean())
+    print('mean', suite.mean())
     print('Median', suite.Percentile(50)) 
 
     print('5th %ile', suite.Percentile(5)) 

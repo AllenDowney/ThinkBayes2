@@ -36,8 +36,8 @@ def PmfMax(pmf1, pmf2):
     returns: new Pmf
     """
     res = thinkbayes2.Pmf()
-    for v1, p1 in pmf1.Items():
-        for v2, p2 in pmf2.Items():
+    for v1, p1 in pmf1.items():
+        for v2, p2 in pmf2.items():
             res.Incr(max(v1, v2), p1*p2)
     return res
     
@@ -52,8 +52,8 @@ def main():
     pmf_dice.Normalize()
 
     mix = thinkbayes2.Pmf()
-    for die, weight in pmf_dice.Items():
-        for outcome, prob in die.Items():
+    for die, weight in pmf_dice.items():
+        for outcome, prob in die.items():
             mix.Incr(outcome, weight*prob)
 
     mix = thinkbayes2.MakeMixture(pmf_dice)

@@ -107,7 +107,7 @@ class GainCalculator(object):
         """
         suite = self.player.posterior
         total = 0
-        for price, prob in sorted(suite.Items()):
+        for price, prob in sorted(suite.items()):
             gain = self.Gain(bid, price)
             total += prob * gain
         return total
@@ -305,8 +305,8 @@ def PlotExpectedGains(guess1=20000, guess2=40000):
 
     print('Player 1 prior mle', player1.prior.MaximumLikelihood())
     print('Player 2 prior mle', player2.prior.MaximumLikelihood())
-    print('Player 1 mean', player1.posterior.Mean())
-    print('Player 2 mean', player2.posterior.Mean())
+    print('Player 1 mean', player1.posterior.mean())
+    print('Player 2 mean', player2.posterior.mean())
     print('Player 1 mle', player1.posterior.MaximumLikelihood())
     print('Player 2 mle', player2.posterior.MaximumLikelihood())
 
@@ -343,7 +343,7 @@ def PlotOptimalBid():
     for guess in guesses:
         player1.MakeBeliefs(guess)
 
-        mean = player1.posterior.Mean()
+        mean = player1.posterior.mean()
         mle = player1.posterior.MaximumLikelihood()
 
         calc = GainCalculator(player1, player2)

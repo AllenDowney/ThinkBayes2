@@ -38,11 +38,11 @@ def main():
     suite = Soccer(hypos)
 
     thinkplot.Pdf(suite, label='prior')
-    print('prior mean', suite.Mean())
+    print('prior mean', suite.mean())
 
     suite.Update(11)
     thinkplot.Pdf(suite, label='posterior 1')
-    print('after one goal', suite.Mean())
+    print('after one goal', suite.mean())
 
     thinkplot.Show()
 

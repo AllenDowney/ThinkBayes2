@@ -89,7 +89,7 @@ def MakeNormalModel(weights):
     """
     cdf = thinkbayes2.Cdf(weights, label='weights')
 
-    mean, var = thinkbayes2.TrimmedMeanVar(weights)
+    mean, var = thinkbayes2.TrimmedmeanVar(weights)
     std = math.sqrt(var)
     print('n, mean, std', len(weights), mean, std)
 
@@ -106,7 +106,7 @@ def MakeNormalPlot(weights):
 
     weights: sequence
     """
-    mean, var = thinkbayes2.TrimmedMeanVar(weights, p=0.01)
+    mean, var = thinkbayes2.TrimmedmeanVar(weights, p=0.01)
     std = math.sqrt(var)
 
     xs = [-5, 5]
@@ -150,7 +150,7 @@ def main(script, nrows=1000):
 
     script: string script name
     """
-    thinkbayes2.RandomSeed(17)
+    thinkbayes2.random_seed(17)
 
     nrows = int(nrows)    
     df = ReadBrfss(nrows=nrows)

@@ -42,7 +42,7 @@ class Locker(object):
         """Adds a key-value pair."""
         self.shelf[str(key)] = value
 
-    def Lookup(self, key):
+    def lookup(self, key):
         """Looks up a key."""
         return self.shelf.get(str(key))
 
@@ -93,7 +93,7 @@ class Subject(object):
         if clean_param:
             self.Clean(clean_param)
 
-        self.species.sort(reverse=reverse)        
+        self.species.sort(reverse=reverse)
         counts = self.GetCounts()
         self.num_species = len(counts)
         self.num_reads = sum(counts)
@@ -374,7 +374,7 @@ class Subject(object):
 
         subject = Subject(self.code)
         hist = thinkbayes2.Hist(reads)
-        for species, count in hist.Items():
+        for species, count in hist.items():
             subject.Add(species, count)
 
         subject.Done()
@@ -476,7 +476,7 @@ def MakeConditionals(curves, ks):
 
     cdfs = []
     for k in ks:
-        pmf = joint.Conditional(1, 0, k)
+        pmf = joint.conditional(1, 0, k)
         pmf.label = 'k=%d' % k
         cdf = pmf.MakeCdf()
         cdfs.append(cdf)
@@ -796,7 +796,7 @@ class Species(thinkbayes2.Suite):
     def DistN(self):
         """Computes the distribution of n."""
         pmf = thinkbayes2.Pmf()
-        for hypo, prob in self.Items():
+        for hypo, prob in self.items():
             pmf.Set(hypo.n, prob)
         return pmf
         
@@ -1267,12 +1267,12 @@ def SimpleDirichletExample():
     dirichlet = thinkbayes2.Dirichlet(3)
     for i in range(3):
         beta = dirichlet.MarginalBeta(i)
-        print('mean', names[i], beta.Mean())
+        print('mean', names[i], beta.mean())
 
     dirichlet.Update(data)
     for i in range(3):
         beta = dirichlet.MarginalBeta(i)
-        print('mean', names[i], beta.Mean())
+        print('mean', names[i], beta.mean())
 
         pmf = beta.MakePmf(label=names[i])
         thinkplot.Pmf(pmf)
@@ -1697,7 +1697,7 @@ class Calibrator(object):
         print('Run n, q, l', n_actual, q_actual, l_actual)
 
         # extract the data
-        data = [count for species, count in subhist.Items()]
+        data = [count for species, count in subhist.items()]
         data.sort()
         print('data', data)
 
@@ -1706,7 +1706,7 @@ class Calibrator(object):
         subject.num_reads = r
         subject.total_reads = tr
 
-        for species, count in subhist.Items():
+        for species, count in subhist.items():
             subject.Add(species, count)
         subject.Done()
 
@@ -1749,7 +1749,7 @@ class Calibrator(object):
         actual: actual value
         seq: which sequence to append (actual, mean) onto
         """
-        mean = pmf.Mean()
+        mean = pmf.mean()
         seq.append((actual, mean))
 
         cdf = pmf.MakeCdf()
@@ -1823,13 +1823,13 @@ def FakeSubject(n=300, conc=0.1, num_reads=400, prevalences=None):
     hist = thinkbayes2.Hist(sample)
 
     # extract the data
-    data = [count for species, count in hist.Items()]
+    data = [count for species, count in hist.items()]
     data.sort()
 
     # make a Subject and process
     subject = Subject('simulated')
 
-    for species, count in hist.Items():
+    for species, count in hist.items():
         subject.Add(species, count)
     subject.Done()
 

@@ -108,9 +108,9 @@ def MakePosteriorPlot(suite):
 
     suite: posterior joint distribution of location
     """
-    marginal_alpha = suite.Marginal(0)
+    marginal_alpha = suite.marginal(0)
     marginal_alpha.name = 'alpha'
-    marginal_beta = suite.Marginal(1)
+    marginal_beta = suite.marginal(1)
     marginal_beta.name = 'beta'
 
     print('alpha CI', marginal_alpha.CredibleInterval(50))
@@ -140,7 +140,7 @@ def MakeConditionalPlot(suite):
     thinkplot.PrePlot(num=len(betas))
 
     for beta in betas:
-        cond = suite.Conditional(0, 1, beta)
+        cond = suite.conditional(0, 1, beta)
         cond.name = 'beta = %d' % beta
         thinkplot.Pdf(cond)
 
@@ -173,7 +173,7 @@ def MakeCrediblePlot(suite):
 
     percentages = [75, 50, 25]
     for p in percentages:
-        interval = suite.MaxLikeInterval(p)
+        interval = suite.max_like_interval(p)
         for pair in interval:
             d[pair] += 1
 

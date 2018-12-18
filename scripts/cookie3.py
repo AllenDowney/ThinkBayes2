@@ -39,17 +39,17 @@ def main():
 
     print('After 1 vanilla')
     suite.Update('vanilla')
-    for hypo, prob in suite.Items():
+    for hypo, prob in suite.items():
         print(hypo, prob)
 
     print('\nAfter 1 vanilla, 1 chocolate')
     suite.Update('chocolate')
-    for hypo, prob in suite.Items():
+    for hypo, prob in suite.items():
         print(hypo, prob)
 
     print('\nAfter 1 vanilla, 1 chocolate, 1 vanilla')
     suite.Update('vanilla')
-    for hypo, prob in suite.Items():
+    for hypo, prob in suite.items():
         print(hypo, prob)
 
 

@@ -61,7 +61,7 @@ def MakeGoalPmf(suite, high=10):
     """
     metapmf = thinkbayes2.Pmf()
 
-    for lam, prob in suite.Items():
+    for lam, prob in suite.items():
         pmf = thinkbayes2.MakePoissonPmf(lam, high)
         metapmf.Set(pmf, prob)
 
@@ -78,7 +78,7 @@ def MakeGoalTimePmf(suite):
     """
     metapmf = thinkbayes2.Pmf()
 
-    for lam, prob in suite.Items():
+    for lam, prob in suite.items():
         pmf = thinkbayes2.MakeExponentialPmf(lam, high=2, n=2001)
         metapmf.Set(pmf, prob)
 
@@ -143,7 +143,7 @@ def ProcessScoresPairwise(pairs):
     for key, goals in goals_scored.iteritems():
         if len(goals) < 3:
             continue
-        lam = thinkbayes2.Mean(goals)
+        lam = thinkbayes2.mean(goals)
         lams.append(lam)
 
     # make the distribution of average goals scored
@@ -151,7 +151,7 @@ def ProcessScoresPairwise(pairs):
     thinkplot.Cdf(cdf)
     thinkplot.Show()
 
-    mu, var = thinkbayes2.MeanVar(lams)
+    mu, var = thinkbayes2.meanVar(lams)
     print('mu, sig', mu, math.sqrt(var))
 
     print('BOS v VAN', pairs['BOS', 'VAN'])
@@ -174,7 +174,7 @@ def ProcessScoresTeamwise(pairs):
     # make a list of average goals scored
     lams = []
     for key, goals in goals_scored.iteritems():
-        lam = thinkbayes2.Mean(goals)
+        lam = thinkbayes2.mean(goals)
         lams.append(lam)
 
     # make the distribution of average goals scored
@@ -182,7 +182,7 @@ def ProcessScoresTeamwise(pairs):
     thinkplot.Cdf(cdf)
     thinkplot.Show()
 
-    mu, var = thinkbayes2.MeanVar(lams)
+    mu, var = thinkbayes2.meanVar(lams)
     print('mu, sig', mu, math.sqrt(var))
 
 

@@ -15,9 +15,9 @@ class Train(Dice):
     for the Dice problem."""
 
 
-def Mean(suite):
+def mean(suite):
     total = 0
-    for hypo, prob in suite.Items():
+    for hypo, prob in suite.items():
         total += hypo * prob
     return total
 
@@ -39,7 +39,7 @@ def main():
 
     for high in [500, 1000, 2000]:
         suite = MakePosterior(high, dataset)
-        print(high, suite.Mean())
+        print(high, suite.mean())
 
     thinkplot.Save(root='train2',
                    xlabel='Number of trains',

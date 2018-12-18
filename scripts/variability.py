@@ -87,7 +87,7 @@ class Height(thinkbayes2.Suite, thinkbayes2.Joint):
             loglike = -n * math.log(sigma) - total / 2 / sigma**2
             self.Incr(hypo, loglike)
 
-    def LogUpdateSetMeanVar(self, data):
+    def LogUpdateSetmeanVar(self, data):
         """Updates the suite using ABC and mean/var.
 
         Args:
@@ -215,7 +215,7 @@ def CoefVariation(suite):
     Returns: Pmf object for CV.
     """
     pmf = thinkbayes2.Pmf()
-    for (m, s), p in suite.Items():
+    for (m, s), p in suite.items():
         pmf.Incr(s/m, p)
     return pmf
 
@@ -230,7 +230,7 @@ def PlotCdfs(d, labels):
     """
     thinkplot.Clf()
     for key, xs in d.items():
-        mu = thinkbayes2.Mean(xs)
+        mu = thinkbayes2.mean(xs)
         xs = thinkbayes2.Jitter(xs, 1.3)
         xs = [x-mu for x in xs]
         cdf = thinkbayes2.MakeCdfFromList(xs)
@@ -248,7 +248,7 @@ def PlotPosterior(suite, pcolor=False, contour=True):
 
     thinkplot.Save(root='variability_posterior_%s' % suite.label,
                 title='Posterior joint distribution',
-                xlabel='Mean height (cm)',
+                xlabel='mean height (cm)',
                 ylabel='Stddev (cm)')
 
 
@@ -263,7 +263,7 @@ def PlotCoefVariation(suites):
     pmfs = {}
     for label, suite in suites.items():
         pmf = CoefVariation(suite)
-        print('CV posterior mean', pmf.Mean())
+        print('CV posterior mean', pmf.mean())
         cdf = thinkbayes2.MakeCdfFromPmf(pmf, label)
         thinkplot.Cdf(cdf)
     
@@ -304,12 +304,12 @@ def PlotMarginals(suite):
     thinkplot.Clf()
 
     pyplot.subplot(1, 2, 1)
-    pmf_m = suite.Marginal(0)
+    pmf_m = suite.marginal(0)
     cdf_m = thinkbayes2.MakeCdfFromPmf(pmf_m)
     thinkplot.Cdf(cdf_m)
 
     pyplot.subplot(1, 2, 2)
-    pmf_s = suite.Marginal(1)
+    pmf_s = suite.marginal(1)
     cdf_s = thinkbayes2.MakeCdfFromPmf(pmf_s)
     thinkplot.Cdf(cdf_s)
 
@@ -379,7 +379,7 @@ def UpdateSuite4(suite, xs):
     t: sequence
     """
     suite.Log()
-    suite.LogUpdateSetMeanVar(xs)
+    suite.LogUpdateSetmeanVar(xs)
     suite.Exp()
     suite.Normalize()
 
@@ -469,10 +469,10 @@ def RunEstimate(update_func, num_points=31, median_flag=False):
 
         PlotPosterior(suite)
 
-        pmf_m = suite.Marginal(0)
-        pmf_s = suite.Marginal(1)
-        print('marginal mu', pmf_m.Mean(), pmf_m.Var())
-        print('marginal sigma', pmf_s.Mean(), pmf_s.Var())
+        pmf_m = suite.marginal(0)
+        pmf_s = suite.marginal(1)
+        print('marginal mu', pmf_m.mean(), pmf_m.Var())
+        print('marginal sigma', pmf_s.mean(), pmf_s.Var())
 
         # PlotMarginals(suite)
 

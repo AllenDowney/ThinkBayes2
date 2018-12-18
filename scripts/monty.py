@@ -54,7 +54,7 @@ def main():
     data = 'B'
     pmf.Update(data)
 
-    for hypo, prob in sorted(pmf.Items()):
+    for hypo, prob in sorted(pmf.items()):
         print(hypo, prob)
 
 

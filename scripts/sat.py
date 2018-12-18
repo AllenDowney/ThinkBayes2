@@ -86,7 +86,7 @@ def DivideValues(pmf, denom):
     """
     new = thinkbayes2.Pmf()
     denom = float(denom)
-    for val, prob in pmf.Items():
+    for val, prob in pmf.items():
         x = val / denom
         new.Set(x, prob)
     return new
@@ -104,7 +104,7 @@ class Exam(object):
         scores = ReadRanks()
         score_pmf = thinkbayes2.Pmf(dict(scores))
 
-        self.raw = self.ReverseScale(score_pmf)
+        self.raw = self.reverseScale(score_pmf)
         self.max_score = max(self.raw.Values())
         self.prior = DivideValues(self.raw, denom=self.max_score)
         
@@ -146,7 +146,7 @@ class Exam(object):
         efficacies: Pmf of efficacy
         """
         pmfs = thinkbayes2.Pmf()
-        for efficacy, prob in efficacies.Items():
+        for efficacy, prob in efficacies.items():
             scores = self.PmfCorrect(efficacy)
             pmfs.Set(scores, prob)
 
@@ -179,19 +179,19 @@ class Exam(object):
         pmf = PmfCorrect(efficacy, self.difficulties)
         return pmf
 
-    def Lookup(self, raw):
+    def lookup(self, raw):
         """Looks up a raw score and returns a scaled score."""
-        return self.scale.Lookup(raw)
+        return self.scale.lookup(raw)
         
-    def Reverse(self, score):
+    def reverse(self, score):
         """Looks up a scaled score and returns a raw score.
 
         Since we ignore the penalty, negative scores round up to zero.
         """
-        raw = self.scale.Reverse(score)
+        raw = self.scale.reverse(score)
         return raw if raw > 0 else 0
         
-    def ReverseScale(self, pmf):
+    def reverseScale(self, pmf):
         """Applies the reverse scale to the values of a PMF.
 
         Args:
@@ -202,8 +202,8 @@ class Exam(object):
             new Pmf
         """
         new = thinkbayes2.Pmf()
-        for val, prob in pmf.Items():
-            raw = self.Reverse(val)
+        for val, prob in pmf.items():
+            raw = self.reverse(val)
             new.Incr(raw, prob)
         return new
 
@@ -226,7 +226,7 @@ class Sat(thinkbayes2.Suite):
         p_correct = hypo
         score = data
 
-        k = self.exam.Reverse(score)
+        k = self.exam.reverse(score)
         n = self.exam.max_score
         like = thinkbayes2.EvalBinomialPmf(k, n, p_correct)
         return like
@@ -268,7 +268,7 @@ class Sat2(thinkbayes2.Suite):
         """Computes the likelihood of a test score, given efficacy."""
         efficacy = hypo
         score = data
-        raw = self.exam.Reverse(score)
+        raw = self.exam.reverse(score)
 
         pmf = self.exam.PmfCorrect(efficacy)
         like = pmf.Prob(raw)

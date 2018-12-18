@@ -212,9 +212,9 @@ class WaitTimeCalculator(object):
 
         root: string
         """
-        print('Mean z', self.pmf_z.Mean() / 60)
-        print('Mean zb', self.pmf_zb.Mean() / 60)
-        print('Mean y', self.pmf_y.Mean() / 60)
+        print('mean z', self.pmf_z.mean() / 60)
+        print('mean zb', self.pmf_zb.mean() / 60)
+        print('mean y', self.pmf_y.mean() / 60)
 
         cdf_z = self.pmf_z.MakeCdf()
         cdf_zb = self.pmf_zb.MakeCdf()
@@ -251,7 +251,7 @@ def PmfOfWaitTime(pmf_zb):
     Returns: dist of wait time (also dist of elapsed time)
     """
     metapmf = thinkbayes2.Pmf()
-    for gap, prob in pmf_zb.Items():
+    for gap, prob in pmf_zb.items():
         uniform = MakeUniformPmf(0, gap)
         metapmf.Set(uniform, prob)
 
@@ -348,7 +348,7 @@ class ArrivalRateEstimator(object):
         for _k1, y, k2 in passenger_data:
             self.post_lam.Update((y, k2))
 
-        print('Mean posterior lambda', self.post_lam.Mean())
+        print('mean posterior lambda', self.post_lam.mean())
 
     def MakePlot(self, root='redline1'):
         """Plot the prior and posterior CDF of passengers arrival rate.
@@ -447,7 +447,7 @@ class GapDirichlet(thinkbayes2.Dirichlet):
         self.xs = xs
         self.mean_zbs = []
 
-    def PmfMeanZb(self):
+    def PmfmeanZb(self):
         """Makes the Pmf of mean zb.
 
         Values stored in mean_zbs.
@@ -507,7 +507,7 @@ class GapDirichlet2(GapDirichlet):
         obs_zb = elapsed.post_x + Floor(y)
         probs = obs_zb.Probs(self.xs)
 
-        mean_zb = obs_zb.Mean()
+        mean_zb = obs_zb.mean()
         self.mean_zbs.append(mean_zb)
         print(k, y, mean_zb)
 
@@ -537,16 +537,16 @@ class GapTimeEstimator(object):
         for k1, y, _k2 in passenger_data:
             dirichlet.Update((k1, y))
 
-        self.pmf_mean_zb = dirichlet.PmfMeanZb()
+        self.pmf_mean_zb = dirichlet.PmfmeanZb()
 
         self.post_zb = dirichlet.PredictivePmf(self.xs, label="post zb")
         self.post_z = UnbiasPmf(self.post_zb, label="post z")
 
     def PlotPmfs(self):
         """Plot the PMFs."""
-        print('Mean y', self.pmf_y.Mean())
-        print('Mean z', self.post_z.Mean())
-        print('Mean zb', self.post_zb.Mean())
+        print('mean y', self.pmf_y.mean())
+        print('mean z', self.post_z.mean())
+        print('mean zb', self.post_zb.mean())
 
         thinkplot.Pmf(self.pmf_y)
         thinkplot.Pmf(self.post_z)
@@ -611,13 +611,13 @@ class WaitMixtureEstimator(object):
         """
         self.metapmf = thinkbayes2.Pmf()
 
-        for lam, prob in sorted(are.post_lam.Items()):
+        for lam, prob in sorted(are.post_lam.items()):
             ete = ElapsedTimeEstimator(wtc, lam, num_passengers)
             self.metapmf.Set(ete.pmf_y, prob)
 
         self.mixture = thinkbayes2.MakeMixture(self.metapmf)
 
-        lam = are.post_lam.Mean()
+        lam = are.post_lam.mean()
         ete = ElapsedTimeEstimator(wtc, lam, num_passengers)
         self.point = ete.pmf_y
 
@@ -626,7 +626,7 @@ class WaitMixtureEstimator(object):
         thinkplot.Clf()
 
         # plot the MetaPmf
-        for pmf, prob in sorted(self.metapmf.Items()):
+        for pmf, prob in sorted(self.metapmf.items()):
             cdf = pmf.MakeCdf().Scale(1.0/60)
             width = 2/math.log(-math.log(prob))
             thinkplot.Plot(cdf.xs, cdf.ps,

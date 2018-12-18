@@ -24,7 +24,7 @@ def main():
     suite = Train(hypos)
 
     suite.Update(60)
-    print(suite.Mean())
+    print(suite.mean())
 
     thinkplot.PrePlot(1)
     thinkplot.Pmf(suite)

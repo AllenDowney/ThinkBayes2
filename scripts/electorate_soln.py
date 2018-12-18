@@ -43,7 +43,7 @@ def main():
                    formats=['png'],
                    clf=False)
 
-    print(suite.Mean())
+    print(suite.mean())
     print(suite.Std())
     print(suite.ProbLess(50))
 
@@ -56,7 +56,7 @@ def main():
                    ylabel='PMF',
                    formats=['png'])
 
-    print(suite.Mean())
+    print(suite.mean())
     print(suite.Std())
     print(suite.ProbLess(50))
 
