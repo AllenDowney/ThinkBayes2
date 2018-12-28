@@ -632,47 +632,77 @@ class Pmf(pd.Series):
 
     @property
     def qs(self):
+        """Get the quantities."""
         return self.index.values
 
     @property
     def ps(self):
+        """Get the probabilities."""
         return self.values
 
     def copy(self):
+        """Copy this object."""
         return Pmf(self)
 
     def __call__(self, qs):
+        """Look up qs and return ps."""
         return self.get(qs, 0)
 
     def __getitem__(self, qs):
+        """Look up qs and return ps."""
         try:
             return super().__getitem__(qs)
         except (KeyError, ValueError, IndexError):
             return 0
 
     def normalize(self):
+        """Normalize the PMF so total probability is 1."""
         self /= self.sum()
 
+    def total(self):
+        """Total of the probabilities."""
+        return self.sum()
+
     def sort(self):
+        """Sort by quantity."""
         self.sort_index(inplace=True)
 
     def bar(self, **options):
+        """Plots the PMF as a bar plot."""
         underride(options, label=self.name)
         plt.bar(self.index, self.values, **options)
 
     def plot(self, **options):
+        """Plots the PMF as a line."""
         underride(options, label=self.name)
         plt.plot(self.index, self.values, **options)
 
     def mean(self):
-        """Computes the mean of a PMF.
+        """Mean of a PMF.
 
-        Returns:
-            float mean
+        returns: float
         """
         return np.sum(self.qs * self.ps)
 
-    def __add__(self, x):
+    def var(self):
+        """Variance of a PMF.
+
+        returns: float
+        """
+        m = self.mean()
+        d = self.qs - m
+        return np.sum(d**2 * self.ps)
+
+     def std(self):
+        """Standard deviation of a PMF.
+
+        returns: float
+        """
+        m = self.mean()
+        d = self.qs - m
+        return np.sqrt(self.var())
+
+     def __add__(self, x):
         """Computes the Pmf of the sum of values drawn from self and other.
 
         x: another Pmf or a scalar
@@ -752,11 +782,6 @@ class Pmf(pd.Series):
                 break
 
         return interval
-
-    def total(self):
-        """Returns the total of the frequencies/probabilities."""
-        total = np.sum(self.values)
-        return total
 
     def Largest(self, n=10):
         """Returns the largest n values, with frequency/probability.
@@ -845,25 +870,49 @@ class Pmf(pd.Series):
             return self[self.qs != x].sum()
 
 
-def pmf_conv(pmf1, pmf2, func):
-    qs = func.outer(pmf1.qs, pmf2.qs).flatten()
+def pmf_conv(pmf1, pmf2, ufunc):
+    """Convolve two PMFs.
+
+    pmf1:
+    pmf2:
+    ufunc: elementwise function for arrays
+
+    returns: new Pmf
+    """
+    qs = func(pmf1.qs, pmf2.qs).flatten()
     ps = np.multiply.outer(pmf1.ps, pmf2.ps).flatten()
     series = pd.Series(ps).groupby(qs).sum()
     return Pmf(series.index, series.values)
 
 
 def pmf_add(pmf1, pmf2):
-    return pmf_conv(pmf1, pmf2, np.add)
+    """Distribution of the sum.
+
+    pmf1:
+    pmf2:
+
+    returns: new Pmf
+    """
+    return pmf_conv(pmf1, pmf2, np.add.outer)
 
 
 def pmf_sub(pmf1, pmf2):
-    return pmf_conv(pmf1, pmf2, np.subtract)
+    """Distribution of the difference.
+
+    pmf1:
+    pmf2:
+
+    returns: new Pmf
+    """
+    return pmf_conv(pmf1, pmf2, np.subtract.outer)
 
 
-def pmf_outer(pmf1, pmf2, func):
+def pmf_outer(pmf1, pmf2, ufunc):
     """Computes the outer product of two PMFs.
 
-    func: function to apply to the qs
+    pmf1:
+    pmf2:
+    ufunc: function to apply to the qs
 
     returns: NumPy array
     """
