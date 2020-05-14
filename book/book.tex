@@ -1,8 +1,9 @@
-% LaTeX source for ``Think Bayes, 2nd edition''
-% Copyright 2018  Allen B. Downey.
+% LaTeX source for ``Think Bayes: Bayesian Statistics Made Simple''
+% Copyright 2012  Allen B. Downey.
 
-% License: Creative Commons Attribution-NonCommercial 4.0 Unported License.
-% http://creativecommons.org/licenses/by-nc/4.0/
+% License: Creative Commons 
+% Attribution-NonCommercial-ShareAlike 4.0 International
+% http://creativecommons.org/licenses/by-nc-sa/4.0/
 %
 
 \documentclass[12pt]{book}
@@ -12,52 +13,167 @@
 % for some of these packages, you might have to install
 % texlive-latex-extra (in Ubuntu)
 
-\usepackage[T1]{fontenc}
+%\usepackage[T1]{fontenc}
+%\usepackage{textcomp}
+%\usepackage{mathpazo}
+%\usepackage{pslatex}
+
 \usepackage{url}
-\usepackage{graphicx}
-\usepackage{exercise}
-\usepackage{makeidx}
-\usepackage{upquote}
-\usepackage{fancyhdr}
-\usepackage{amsmath}
 \usepackage[bookmarks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{amsmath}
+\usepackage{amsthm}
+%\usepackage{amssymb}
+\usepackage{exercise}                        % texlive-latex-extra
+\usepackage{makeidx}
+\usepackage{setspace}
+\usepackage{hevea}
+\usepackage{upquote}
+\usepackage{xcolor}
+\usepackage{textcomp}
+\usepackage{listings}
 
-\newenvironment{exercise}{\begin{Exercise}}{\end{Exercise}}
+% include this so we can compile without hyperref
+% https://tex.stackexchange.com/questions/44088/when-do-i-need-to-invoke-phantomsection
+\providecommand\phantomsection{}
 
-\input{latexonly}
+\title{Think Bayes}
+\author{Allen B. Downey}
+
+\newcommand{\thetitle}{Think Bayes}
+\newcommand{\thesubtitle}{Bayesian Statistics Made Simple}
+\newcommand{\theversion}{2.0.0}
+
+% these styles get translated in CSS for the HTML version
+\newstyle{a:link}{color:black;}
+\newstyle{p+p}{margin-top:1em;margin-bottom:1em}
+\newstyle{img}{border:0px}
+
+% change the arrows in the HTML version
+\setlinkstext
+  {\imgsrc[alt="Previous"]{back.png}}
+  {\imgsrc[alt="Up"]{up.png}}
+  {\imgsrc[alt="Next"]{next.png}}
+
+\makeindex
+
+\newif\ifplastex
+\plastexfalse
+
+\begin{document}
+
+\frontmatter
+
 
 \newcommand{\PMF}{\mathrm{PMF}}
 \newcommand{\PDF}{\mathrm{PDF}}
 \newcommand{\CDF}{\mathrm{CDF}}
 \newcommand{\ICDF}{\mathrm{ICDF}}
-\newcommand{\p}[1]{\ensuremath{P(#1)}}
-\newcommand{\odds}[1]{\ensuremath{\mathrm{o}(#1)}}
-\newcommand{\T}[1]{\mbox{#1}}
-\newcommand{\AND}{~\mathrm{and}~}
-\newcommand{\NOT}{\mathrm{not}~}
-\newcommand{\given}{~|~}
 
+\ifplastex
+    \usepackage{localdef}
+    \maketitle
 
-\title{Think Bayes}
-\author{Allen B. Downey}
+\newcount\anchorcnt
+\newcommand*{\Anchor}[1]{%
+  \@bsphack%
+    \Hy@GlobalStepCount\anchorcnt%
+    \edef\@currentHref{anchor.\the\anchorcnt}% 
+    \Hy@raisedlink{\hyper@anchorstart{\@currentHref}\hyper@anchorend}% 
+    \M@gettitle{}\label{#1}% 
+    \@esphack%
+}
+\else
 
-\newcommand{\thetitle}{Think Bayes: Bayesian Statistics Made Simple}
-\newcommand{\theversion}{2.0.0}
+%\newtheoremstyle{exercise}% name of the style to be used
+%  {\topsep}% measure of space to leave above the theorem. E.g.: 3pt
+%  {\topsep}% measure of space to leave below the theorem. E.g.: 3pt
+%  {}% name of font to use in the body of the theorem
+%  {}% measure of space to indent
+%  {\bfseries}% name of head font
+%  {}% punctuation between head and body
+%  { }% space after theorem head; " " = normal interword space
+%  {}% Manually specify head
 
-\makeindex
+%\theoremstyle{exercise}
+\newtheorem{exercise}{Exercise}[chapter]
 
+\input{latexonly}
 
+\begin{latexonly}
 
-\begin{document}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\blankpage}{\thispagestyle{empty} \quad \newpage}
 
-\maketitle
+% TITLE PAGES FOR LATEX VERSION
 
-\frontmatter
+%-half title--------------------------------------------------
+\thispagestyle{empty}
 
+\begin{flushright}
+\vspace*{2.0in}
+
+\begin{spacing}{3}
+{\huge \thetitle}\\
+{\Large \thesubtitle}
+\end{spacing}
+
+\vspace{0.25in}
+
+Version \theversion
+
+\vfill
+
+\end{flushright}
+
+%--verso------------------------------------------------------
+
+\blankpage
+\blankpage
+
+%--title page--------------------------------------------------
 \pagebreak
 \thispagestyle{empty}
 
-Copyright \copyright ~2018 Allen B. Downey.
+\begin{flushright}
+\vspace*{2.0in}
+
+\begin{spacing}{3}
+{\huge \thetitle}\\
+{\Large \thesubtitle}
+\end{spacing}
+
+\vspace{0.25in}
+
+Version \theversion
+
+\vspace{1in}
+
+
+{\Large
+Allen B. Downey\\
+}
+
+
+\vspace{0.5in}
+
+{\Large Green Tea Press}
+
+{\small Needham, Massachusetts}
+
+\vfill
+
+\end{flushright}
+
+
+%--copyright--------------------------------------------------
+\pagebreak
+\thispagestyle{empty}
+
+Copyright \copyright ~2012 Allen B. Downey.
 
 
 \vspace{0.2in}
@@ -69,11 +185,50 @@ Needham MA 02492
 \end{flushleft}
 
 Permission is granted to copy, distribute, and/or modify this document
-under the terms of the Creative Commons Attribution-NonCommercial 3.0 Unported
-License, which is available at \url{http://creativecommons.org/licenses/by-nc/3.0/}.
+under the terms of the Creative Commons
+Attribution-NonCommercial-ShareAlike 4.0 International License, which
+is available at
+\url{http://creativecommons.org/licenses/by-nc-sa/4.0/}.
+
+
+The \LaTeX\ source for this book is available from
+\url{http://greenteapress.com/thinkbayes2}.
 
 \vspace{0.2in}
 
+\end{latexonly}
+
+
+% HTMLONLY
+
+\begin{htmlonly}
+
+% TITLE PAGE FOR HTML VERSION
+
+{\Large \thetitle: \thesubtitle}
+
+{\large Allen B. Downey}
+
+Version \theversion
+
+\vspace{0.25in}
+
+Copyright 2012 Allen B. Downey
+
+\vspace{0.25in}
+
+Permission is granted to copy, distribute, and/or modify this document
+under the terms of the Creative Commons 
+Attribution-NonCommercial-ShareAlike 4.0 International
+Unported License, which is available at
+\url{http://creativecommons.org/licenses/by-nc-sa/4.0/}.
+
+\setcounter{chapter}{-1}
+
+\end{htmlonly}
+
+\fi
+% END OF THE PART WE SKIP FOR PLASTEX
 
 \chapter{Preface}
 \label{preface}
@@ -297,7 +452,7 @@ to refer to the Python objects I use to represent them.
 \section{Prerequisites}
 
 There are several excellent modules for doing Bayesian statistics in
-Python, including PyMC and OpenBUGS.  I chose not to use them
+Python, including {\tt pymc} and OpenBUGS.  I chose not to use them
 for this book because you need a fair amount of background knowledge
 to get started with these modules, and I want to keep the
 prerequisites minimal.  If you know Python and a little bit about
@@ -381,7 +536,7 @@ with replacement is an unrealistic scenario.
 
 \item Linda Pescatore found a typo and made some helpful suggestions.
 
-\item Tomasz Mi\k{a}sko sent many excellent corrections and suggestions.
+\item Tomasz Miasko sent many excellent corrections and suggestions.
 
 % ENDCONTRIB
 
@@ -401,313 +556,213 @@ Alvaro Sanchez.
 
 \normalsize
 
-\pagebreak
+\clearemptydoublepage
+
+% TABLE OF CONTENTS
+\begin{latexonly}
+
 \tableofcontents
 
+\clearemptydoublepage
+
+\end{latexonly}
 
 % START THE BOOK
 \mainmatter
 
-
-
+\newcommand{\p}[1]{\ensuremath{\mathrm{p}(#1)}}
+\newcommand{\odds}[1]{\ensuremath{\mathrm{o}(#1)}}
+\newcommand{\T}[1]{\mbox{#1}}
+\newcommand{\AND}{~\mathrm{and}~}
+\newcommand{\NOT}{\mathrm{not}~}
 
 
 \chapter{Bayes's Theorem}
 \label{intro}
 
+\section{Conditional probability}
+
 The fundamental idea behind all Bayesian statistics is Bayes's theorem,
-which is surprisingly easy to derive if you understand
+which is surprisingly easy to derive, provided that you understand
 conditional probability.  So we'll start with probability, then
 conditional probability, then Bayes's theorem, and on to Bayesian
 statistics.
-
 \index{conditional probability}
 \index{probability!conditional}
 
-\section{The Linda problem}
+A probability is a number between 0 and 1 (including both) that
+represents a degree of belief in a fact or prediction.  The value
+1 represents certainty that a fact is true, or that a prediction
+will come true.  The value 0 represents certainty
+that the fact is false.
+\index{degree of belief}
 
-As part of a psychological experiment, Tversky and Kahneman posed the following question\footnote{See \url{https://en.wikipedia.org/wiki/Conjunction_fallacy}}:
+Intermediate values represent degrees of certainty.  The value 0.5,
+often written as 50\%, means that a predicted outcome is
+as likely to happen as not.  
+For example, the probability that a tossed coin lands ``heads'' is close to 50\%.
+\index{coin toss}
 
-\begin{quote}
-Linda is 31 years old, single, outspoken, and very bright. She majored in philosophy. As a student, she was deeply concerned with issues of discrimination and social justice, and also participated in anti-nuclear demonstrations.  Which is more probable?
+A conditional probability is a probability based on some relevant information.  For example, suppose I toss two coins.  
+The probability that both coins land heads is 25\%.
 
-\begin{enumerate}
+But suppose I toss two coins and, without showing you the result, tell you that at least one of the coins in heads.
+What is the probability that both are heads?
+The answer is 1/3.
 
-\item Linda is a bank teller.
-\item Linda is a bank teller and is active in the feminist movement.
+Here's how I got that: when I toss the coins, there are four equally likely outcomes: heads-heads, heads-tails, tails-heads, and tails-tails.
+When I tell you that at least one coin is heads, that eliminates one outcome, tails-tails.
 
-\end{enumerate}
-\end{quote}
+The remaining outcomes are heads-heads, heads-tails, and tails-heads, and they are still equally likely.
+So the probability of heads-heads is 1/3.
 
-Many people choose the second answer, presumably because it seems more consistent with the description.  It seems unlikely that Linda would be ``just" a bank teller; if she is a bank teller, it seems likely that she would also be a feminist.
+That argument is correct, but if you don't find it entirely convincing, we'll come back to this problem and solve it more carefully using Bayes's Theorem.
 
-But the second answer cannot be correct.  Suppose we find 1000 people who fit Linda's description and 10 of them work as bank tellers.  How many of them are also feminists?  At most, all 10 of them are; in that case, the two options are equally likely.  Or some of them are; in that case the second option is less likely.  But there can't be more than 10 out of 10, so the second option cannot be more likely.
+In this example, we computed the conditional probability of two heads, given the information that at least one coin is heads.
 
-If this example makes you uncomfortable, you are in good company.  The biologist Stephen J. Gould wrote:
-
-\begin{quote}
-I am particularly fond of this example because I know that the [second] statement is least probable, yet a little homunculus\footnote{See \url{https://en.wikipedia.org/wiki/Homunculus_argument}.} in my head continues to jump up and down, shouting at me, ``but she can't just be a bank teller; read the description.''
-\end{quote}
-
-In the following sections I'll use this example to demonstrate probability, conditional probability, and Bayes's theorem.
-
-
-\section{Probability}
-
-The definition of probability is more controversial than you might expect (see \url{https://en.wikipedia.org/wiki/Probability_interpretations}).  To avoid getting bogged down before we get started, I will start with a simple definition: a {\bf probability} is a fraction of a {\bf population}.
-
-For example, if we survey 1000 people, and 10 of them are bank tellers, the fraction that work as bank tellers is 0.01 or 1\%.  If we choose a person from this population at random, the probability that they are a bank teller is 1\%.  (By ``at random'' I mean that every person in the population has the same chance of being chosen.)
-
-In this example, the population is finite, so we can compute probabilities by counting.  To demonstrate, and to get back to the Linda problem, I'll use a data set from the General Social Survey\footnote{See \url{http://gss.norc.org/}} (GSS).
-
-As you will see in the Jupyter notebook for this chapter, I downloaded a dataset with a population of 50,287 people who responded to the survey.  For each respondent I extract the following variables:
-
-\begin{description}
-
-\item[female]: \py{True} if the respondent is female, \py{False} otherwise.
-
-\item[liberal]: \py{True} if the respondent self-identifies as liberal.
-
-\item[democrat]: \py{True} if the respondent self-identifies as a Democrat, that is, a member of the Democratic Party in the United States.
-
-\item[banker]: \py{True} if the respondent works in banking.
-
-\end{description}
-
-Each of these variables is a Series object, which is defined by Pandas.  If you are not familiar with Pandas, I will explain what you need to know as we go along.
-
-To compute the number of respondents who are bankers, we could use a for loop:
-
-\begin{code}
-total = 0
-for x in banker:
-    if x is True:
-        total += 1
-\end{code}
-
-But it is easier to use methods provided by Series.  For example, \py{sum} computes the total of the elements in the Series, treating \py{True} as 1 and \py{False} as 0.  So we can replace the for loop with:
-
-\begin{code}
-total = banker.sum()
-\end{code}
-
-To get a probability, we could divide the total by the length of the Series:
-
-\begin{code}
-prob = total / len(banker)
-\end{code}
-
-Or we could use the Series method \py{mean}, which computes the mean of the elements, again treating \py{True} as 1 and \py{False} as 0:
-
-\begin{code}
-prob = banker.mean()
-\end{code}
-
-To make the code more readable, I'll define a function that computes the fraction of \py{True} values in a Series:
-
-\begin{code}
-def prob(A):
-    return A.mean()
-\end{code}
-
-Then we can compute a probability for each variable:
-
-\begin{code}
-prob(female)
-0.5385487302881461
-
-prob(liberal)
-0.14741384453238413
-
-prob(democrat)
-0.36639688189790603
-
-prob(banker)
-0.014536560144769025
-\end{code}
-
-In this dataset, about 54\% of respondents are female, 15\% say they are liberal, 37\% say they are Democrats, and 1.5\% work in banking.
-
-The mathematical notation for probability is $\p{A}$, where $A$ represents a fact which might be true or false, or a prediction that might come true or not.  In the example, $\p{banker}$ is the probability that a random respondent is a banker.
-
-
-\section{Conditional probability}
-
-I'll use this data to solve a simplified version of the Linda problem:
-
-\begin{quote}
-Linda is female and liberal:
-
-\begin{itemize}
-\item What is the probability that she is a banker?
-\item What is the probability that she is a banker and a Democrat?
-\end{itemize}
-
-\end{quote}
-
-The answers to these question are conditional probabilities.
-A {\bf conditional probability} is a probability based on a specified subset of a population.  For example, given that Linda is female, what is the probability she is a banker?
-
-\index{conditional probability}
-\index{probability!conditional}
-
-One way to answer this question is to select the subset of the population that is female and compute the fraction that are bankers.  We can do that with a for loop:
-
-To select a subset, we can use one Series as an index into another:
-
-\begin{code}
-prob(banker[female])
-0.020788715752160108
-\end{code}
-
-The Series \py{banker[female]} contains the elements of \py{banker} for female respondents only.  The result indicates that about 2.1\% of female respondents are bankers.
-
-The mathematical notation for conditional probability is \p{A|B}, which is the probability of $A$ given that $B$ is true.  In this example, $A$ is the event that Linda is a banker and $B$ is the condition that she is female, so we could write $\p{banker|female}$.
-
-I define the following function to compute conditional probabilities.
-
-\begin{code}
-def conditional(A, B):
-    return prob(A[B])
-\end{code}
-
-For this example, we would call it like this:
-
-\begin{code}
-conditional(banker, female)
-0.020788715752160108
-\end{code}
-
+The usual notation for conditional probability is $\p{A|B}$, which
+is the probability of $A$ given that $B$ is true.  In this
+example, $A$ represents the two heads, and $B$ is the condition that at least one coin is heads.
 
 
 \section{Conjoint probability}
-\label{conjoint}
 
 {\bf Conjoint probability} is a fancy way to say the probability that
-two things are true.  For example, we might want to know the probability that a random person is a female banker.
+two things are true.  I'll use the notation $\p{A \AND B}$ to mean the
+probability that $A$ and $B$ are both true.
 
 \index{conjoint probability}
 \index{probability!conjoint}
 
-We can compute this probability using the \py{&} operator, which computes the logical AND of the elements in a series; for example, \py{female&banker} is \py{True} only where \py{female} and \py{banker} are \py{True}:
+If you learned about probability in the context of coin tosses and
+dice, you might have learned the following formula:
+%
+\[ \p{A \AND B} = \p{A}~\p{B} \quad\quad\mbox{WARNING: not always true}\]
+%
+For example, if I toss two coins, and $A$ means the first coin lands
+face up, and $B$ means the second coin lands face up, then $\p{A} =
+\p{B} = 0.5$, and sure enough, $\p{A \AND B} = \p{A}~\p{B} = 0.25$.
 
-\begin{code}
-prob(female & banker)
-0.011195736472647006
-\end{code}
+But this formula only works because in this case $A$ and $B$ are
+independent; that is, knowing the first outcome does
+not change the probability of the second.  Or, more formally,
+\p{B|A} = \p{B}.
+\index{independence}
+\index{dependence}
 
-About 1.1\% of the respondents are female bankers.
+Here is a different example where the outcomes are not independent.
+Suppose that $A$ means that it rains today and $B$ means that it
+rains tomorrow.  If I know that it rained today, it is more likely
+that it will rain tomorrow, so $\p{B|A} > \p{B}$.
 
-The mathematical notation for conjoint probability is \p{A \AND B}, so we could write this example as $\p{female \AND banker}$.
+In general, the probability of a conjunction is
+%
+\[ \p{A \AND B} = \p{A}~\p{B|A} \]
+%
+for any $A$ and $B$.  So if the chance of rain on any given day
+is 0.5, the chance of rain on two consecutive days is not
+0.25, but probably a bit higher.
 
-As this example shows, the conjoint probability, \p{A \AND B}, is not generally the same as the conditional probability, \p{A|B}.  However, they are related by the following equation:
 
-\[ \p{A | B} = \p{A \AND B} / \p{B} \]
+\section{The cookie problem}
 
-For example:
+We'll get to Bayes's theorem soon, but I want to motivate it with an
+example called the cookie problem.\footnote{Based on an example from
+  \url{http://en.wikipedia.org/wiki/Bayes'_theorem} that is no longer
+  there.}  Suppose there are two bowls of cookies.  Bowl 1 contains
+  30 vanilla cookies and 10 chocolate cookies.  Bowl 2 contains 20 of
+  each.
+\index{Bayes's theorem}
+\index{cookie problem}
 
-\[ \p{banker | female} = \p{banker \AND female} / \p{female} \]
+Now suppose you choose one of the bowls at random and, without
+looking, select a cookie at random.  The cookie is vanilla.  What is
+the probability that it came from Bowl 1?
 
-In other words, we can compute the conditional probability that Linda is a banker, given that she is female, like this:
-
-\begin{code}
-prob(banker & female) / prob(female)
-0.0207887
-\end{code}
-
-And we can confirm that we get the same result if we select the subset of female respondents and compute the fraction of bankers:
-
-\begin{code}
-prob(banker[female])
-0.0207887
-\end{code}
-
+This is a conditional probability; we want $\p{\T{Bowl 1} |
+  \T{vanilla}}$, but it is not obvious how to compute it.  If I asked a
+different question---the probability of a vanilla cookie given Bowl
+1---it would be easy:
+%
+\[ \p{\T{vanilla} | \T{Bowl 1}} = 3/4 \]
+%
+Sadly, $\p{A|B}$ is {\em not} the same as $\p{B|A}$, but there
+is a way to get from one to the other: Bayes's theorem.
 
 
 \section{Bayes's theorem}
 
-We can also write the relationship between conditional and conjoint probability the other way around:
-%
-\[ \p{A \AND B} = \p{B} \p{A | B} \]
-%
-In other words, the probability that $A$ and $B$ are true is the product of two probabilities: the probability of $B$ and the conditional probability of
-$A$ given $B$.
-
-The AND operator is commutative, so:
+At this point we have everything we need to derive Bayes's theorem.
+We'll start with the observation that conjunction is commutative; that is
 %
 \[ \p{A \AND B} = \p{B \AND A} \]
 %
-That implies that we can compute a conjoint probability either way:
+for any events $A$ and $B$.
+
+\index{Bayes's theorem!derivation}
+\index{conjunction}
+
+Next, we write the probability of a conjunction:
 %
-\[ \p{B} \p{A | B} = \p{A} \p{B | A}  \]
+\[ \p{A \AND B} = \p{A}~\p{B|A} \]
 %
-If you think about what that means, it is not surprising: you can check $B$ first, and then $A$ given $B$, or $A$ first, and then $B$ given $A$.  You get the same thing either way.
-
-Now, if we divide through by $\p{B}$, we get Bayes's theorem:
+Since we have not said anything about what $A$ and $B$ mean, they
+are interchangeable.  Interchanging them yields
 %
-\[ \p{A | B} = \frac{\p{A} ~ \p{B | A}}{\p{B}} \]
+\[ \p{B \AND A} = \p{B}~\p{A|B} \]
 %
-We can confirm that Bayes's theorem works with the example data.  If $A$ is $banker$ and $B$ is $female$, we can compute the conditional probability $\p{banker|female}$ directly:
+That's all we need.  Pulling those pieces together, we get
+%
+\[ \p{B}~\p{A|B} = \p{A}~\p{B|A} \]
+%
+Which means there are two ways to compute the conjunction.
+If you have $\p{A}$, you multiply by the conditional
+probability $\p{B|A}$.  Or you can do it the other way around; if you
+know \p{B}, you multiply by $\p{A|B}$.  Either way you should get
+the same thing.
 
-\begin{code}
-conditional(banker|female)
-0.02078871575216
-\end{code}
+Finally we can divide through by $\p{B}$:
+%
+\[ \p{A|B} = \frac{\p{A}~\p{B|A}}{\p{B}} \]
+%
+And that's Bayes's theorem!  It might not look like much, but
+it turns out to be surprisingly powerful.
 
-Or we can compute it using Bayes's theorem:
-
-\begin{code}
-prob(banker) * conditional(female, banker) / prob(female)
-0.02078871575216
-\end{code}
-
-The results are the same.
-
-In one sense, there is nothing special about Bayes's theorem.  It's just an equation that relates conditional probabilities.
-
-And in this example, it is not particularly useful, because it is easier to compute the probability we want directly.  So let's see an example where it is more useful.
-
-
-\section{The cookie problem}
-\label{cookie}
-  
-\begin{quote}
-Suppose there are two bowls of cookies\footnote{Based on an example from
-  \url{http://en.wikipedia.org/wiki/Bayes'_theorem} that is no longer
-  there.}.  Bowl 1 contains 30 vanilla cookies and 10 chocolate cookies.  Bowl 2 contains 20 of each.
-  
-  Now suppose you choose one of the bowls at random and, without
-looking, select a cookie at random.  The cookie is vanilla.  What is
-the probability that it came from Bowl 1?
-\end{quote}  
-
-\index{Bayes's theorem}
-\index{cookie problem}
-
-
-
-The probability we want is 
-\p{\T{Bowl 1} \given \T{vanilla}}, 
-but it is not obvious how to compute it.  Bayes's theorem provides a way: if we can't compute $\p{A|B}$ directly, we can find it by computing:
+For example, we can use it to solve the cookie problem.  I'll write
+$B_1$ for the hypothesis that the cookie came from Bowl 1
+and $V$ for the vanilla cookie.  Plugging in Bayes's theorem
+we get
+%
+\[ \p{B_1|V} = \frac{\p{B_1}~\p{V|B_1}}{\p{V}} \]
+%
+The term on the left is what we want: the probability of Bowl 1, given
+that we chose a vanilla cookie.  The terms on the right are:
 
 \begin{itemize}
 
-\item \p{A}, which is the probability of Bowl 1, unconditioned on the vanilla cookie.  Since we chose the bowls at random, $\p{\T{Bowl 1}} = 1/2$
+\item $\p{B_1}$: This is the probability that we chose Bowl 1, unconditioned by what kind of cookie we got.  Since the problem says we chose a bowl at random, we can assume $\p{B_1} = 1/2$.
 
-\item \p{B|A}, which is the chance of getting a vanilla cookie from Bowl 1.  From the statement of the problem, we know $\p{\T{vanilla} \given \T{Bowl 1}} = 3/4$.
+\item $\p{V|B_1}$: This is the probability of getting a vanilla cookie
+from Bowl 1, which is 3/4.
 
-\item \p{B}, which is the chance of getting a vanilla cookie, unconditioned on which bowl we chose from.  In the example, the bowls have the same number of cookies, so every cookie has the same chance of being chosen.  Out of 80 cookies in both bowls, 50 are vanilla, so $\p{\T{vanilla}} = 5/8$.
+\item $\p{V}$: This is the probability of drawing a vanilla cookie from
+either bowl.  Since we had an equal chance of choosing either bowl
+and the bowls contain the same number of cookies, we had the same
+chance of choosing any cookie.  Between the two bowls there are
+50 vanilla and 30 chocolate cookies, so $\p{V} = 5/8$.
 
 \end{itemize}
 
-From Bayes's theorem we have:
+Putting it together, we have 
 %
-\[ \p{\T{Bowl 1} \given \T{vanilla}} =  \frac{\p{\T{Bowl 1}} ~ \p{\T{vanilla} \given \T{Bowl 1}}}{\p{\T{vanilla}}}\]
+\[ \p{B_1|V} = \frac{(1/2)~(3/4)}{5/8} \]
 %
-Plugging in the numbers, we get:
-%
-\[ \p{\T{Bowl 1} \given \T{vanilla}} =  \frac{(1/2) ~ (3/4)}{(5/8)} = 3/5 \]
-%
+which reduces to 3/5.  So the vanilla cookie is evidence in favor of
+the hypothesis that we chose Bowl 1, because vanilla cookies are more
+likely to come from Bowl 1.
+
+\index{evidence}
+
 This example demonstrates one use of Bayes's theorem: it provides
 a strategy to get from \p{B|A} to \p{A|B}.  This strategy is useful
 in cases, like the cookie problem, where it is easier to compute
@@ -725,9 +780,7 @@ some body of data, $D$.
 
 This way of thinking about Bayes's theorem is called the
 {\bf diachronic interpretation}.  ``Diachronic'' means that something
-is happening over time; in this case
-the probability of the hypotheses changes, over time, as
-we see new data.
+is happening over time; in this case, the probability of the hypotheses changes over time as we see new data.
 
 Rewriting Bayes's theorem with $H$ and $D$ yields:
 %
@@ -751,14 +804,11 @@ the hypothesis after we see the data, called the {\bf posterior}.
 \item \p{D|H} is the probability of the data under the hypothesis,
 called the {\bf likelihood}.
 
-\item \p{D} is the probability of the data under any hypothesis,
-called the {\bf total probability of the data}.
+\item \p{D} is the {\bf total probability of the data}, under any hypothesis.
 
 \end{itemize}
 
-Sometimes we can compute the prior based on background
-information.  For example, the cookie problem specifies that we choose
-a bowl at random with equal probability.
+Sometimes we can compute the prior based on background information.  For example, the cookie problem specifies that we choose a bowl at random with equal probability.
 
 In other cases the prior is subjective; that is, reasonable people
 might disagree, either because they use different background
@@ -771,224 +821,90 @@ The likelihood is usually the easiest part to compute.  In the
 cookie problem, if we know which bowl the cookie came from,
 we find the probability of a vanilla cookie by counting.
 
-Computing the total probability of the data can be tricky.  It is supposed to be the
-probability of seeing the data under any hypothesis at all, but in the
-most general case it is hard to nail down what that means.
+Computing the total probability of the data can be tricky.  It is supposed to be the probability of seeing the data under any hypothesis at all, but in the most general case it is hard to nail down what that means.
 
 Most often we simplify things by specifying a set of hypotheses
-that are
+that are:
 
 \index{mutually exclusive}
 \index{collectively exhaustive}
 
 \begin{description}
 
-\item[Mutually exclusive:] At most one hypothesis in the set can be true, and
+\item[Mutually exclusive:] At most one hypothesis in
+the set can be true, and
 
-\item[Collectively exhaustive:] There are no other possibilities; at least one of the hypotheses has to be true.
+\item[Collectively exhaustive:] There are no other
+possibilities; at least one of the hypotheses has to be true.
 
 \end{description}
 
-I use the word {\bf suite} for a set of hypotheses that has these properties.
-
-\index{suite}
-\index{total probability}
-\index{law of total probability}
-
-With a suite of $N$ hypotheses, numbered $H_1$ to $H_N$, we can compute \p{D} using the {\bf law of total probability}:
-%
-\[ \p{D} = \sum_{i=1}^N \p{H_i} ~ \p{D \given H_i}  \]
-%
 In the cookie problem, there are only two hypotheses---the cookie
 came from Bowl 1 or Bowl 2---and they are mutually exclusive and
-collectively exhaustive.  So we can write:
+collectively exhaustive.
+
+\index{total probability}
+
+In that case we can compute \p{D} using the law of total probability,
+which says that if there are two exclusive ways that something
+might happen, you can add up the probabilities like this:
 %
-\begin{equation*}
-\begin{split}
-\p{D} = & \p{\T{Bowl 1}} ~ \p{\T{vanilla} \given \T{Bowl 1}} \\
-      + & \p{\T{Bowl 2}} ~ \p{\T{vanilla} \given \T{Bowl 2}}
-\end{split}
-\end{equation*}
+\[ \p{D} = \p{B_1}~\p{D|B_1} + \p{B_2}~\p{D|B_2} \]
 %
 Plugging in the values from the cookie problem, we have
 %
 \[ \p{D} = (1/2)~(3/4) + (1/2)~(1/2) = 5/8 \]
 %
-which is what we computed earlier.
-
-However, as we'll see in the next chapter, there are easier ways to compute the total probability of the data.  And sometimes you don't have to compute it at all.
-
-
-\chapter{Computational probability}
+which is what we computed earlier by mentally combining the two
+bowls.
 
 
-\section{Bayes table}
+\section{Bayes Tables}
 
-In Section~\ref{cookie} we solved the cookie problem by hand:  
+In the cookie problem we can compute the probability of the data directly, but that's not always the case.  In fact, computing the total probability of the data is often the hardest part of the problem.
 
-\begin{quote}
-Suppose there are two bowls of cookies.  Bowl 1 contains 30 vanilla cookies and 10 chocolate cookies.  Bowl 2 contains 20 of each.
+Fortunately, there is another way to solve problems like this that makes it easier: the Bayes table.
 
-Now suppose you choose one of the bowls at random and, without
-looking, select a cookie at random.  The cookie is vanilla.  What is
-the probability that it came from Bowl 1?
-\end{quote}  
+You can write a Bayes table on paper or use a spreadsheet, but for this example I'll use a Pandas DataFrame.
 
-Now we'll solve this problem using a {\bf Bayes table}.  A Bayes table contains one row for each hypothesis, numbered $H_1$ to $H_N$.  For each hypothesis it has the following columns:
+First I'll make empty DataFrame with one row for each hypothesis:
 
-\begin{itemize}
+\begin{code}
+import pandas as pd
+table = pd.DataFrame(index=['Bowl 1', 'Bowl 2'])
+\end{code}
 
-\item Prior: The prior probability, $\p{H_i}$.
+Then I'll add columns for the prior probabilities and likelihoods.
 
-\item Likelihood: The likelihood of the data under each hypothesis, $\p{D | H_i}$.
+\begin{code}
+table['prior'] = 1/2, 1/2
+table['likelihood'] = 3/4, 1/2
+\end{code}
 
-\item Unnormalized posterior:  The product $\p{H_i} ~ \p{D | H_i}$.
+This table shows the results so far:
 
-\item Posterior: The normalized posterior $\p{H_i | D}$.
+\input{table01-01}
 
-\end{itemize}
+If we multiply the priors by the likelihoods, the results are unnormalized posteriors; they are proportional to the posterior probabilities, but they don't add up to 1.
 
-The following is the Bayes table for the cookie problem:
+We can normalize them by computing the total probability of the data and dividing through.
 
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-   & Prior   & Likelihood   & Unnorm Post      & Posterior  \\
-   & $\p{H}$ & $\p{D|H}$    & $\p{H}~\p{D|H}$  & $\p{H|D}$  \\
-\hline
-A  &  1/2    &  3/4         &  3/8             &  3/5       \\
-B  &  1/2    &  1/2         &  2/8             &  2/5       \\
-\hline
-\end{tabular}
+\begin{code}
+table['unnorm'] = table['prior'] * table['likelihood']
+prob_data = table['unnorm'].sum()
+table['posterior'] = table['unnorm'] / prob_data
+\end{code}
 
-Since we choose a bowl at random, the priors are both 1/2.  The likelihoods are the conditional probabilities of the data: in Bowl 1, the probability of a vanilla cookie is 3/4; in Bowl 2 it is 1/2.
+The following table shows the result:
 
-The third column, the unnormalized posteriors, are the product of the first two columns.  To say that they are "unnormalized" means that they do not add up to 1.  But because the hypotheses are mutually exclusive and collectively exhaustive, we know that the posterior have to add up to 1.
-
-So we can compute the posteriors by normalizing, that is, by computing the sum of the unnormalized posteriors and dividing through.
-
-The sum of the unnormalized posteriors is 5/8, which you might recognize as the total probability of the data.  Dividing the unnormalized posteriors by 5/8 yields the posteriors, 3/5 and 2/5.
-
-Using a Bayes table makes it easier to compute the total probability of the data.  It is also straightforward to implement a Bayes table computationally using a spreadsheet or, as we'll see in the next section, a Pandas DataFrame.
-
-\section{Computational Bayes table}
-
-%TODO: write this
-
-\section{Independence}
-
-In Section~\ref{conjoint} we define conjoint probability as the probability that two facts, $A$ and $B$, are true.  And we wrote the general equation:
-%
-\[ \p{A \AND B} = \p{A} ~ \p{B|A} \]
-%
-If you previously learned about probability in the context of coin tosses and
-dice, you might have seen the following equation:
-%
-\[ \p{A \AND B} = \p{A}~\p{B} \quad\quad\mbox{WARNING: not always true}\]
-%
-This simpler equation is sometimes true, but not always.
-
-For example, if I toss two coins, and $A$ means the first coin lands
-face up, and $B$ means the second coin lands face up, then $\p{A} =
-\p{B} = 0.5$, and sure enough, $\p{A \AND B} = \p{A}~\p{B} = 0.25$.
-
-But if $A$ means it rains on Saturday and $B$ means it rains on Sunday, I can't use the simple formula, because if it rains on Saturday, it is more likely to rain again on Sunday.  
-
-In the first example, knowing the outcome of the first coin does not affect the probability of the second coin, so $\p{B|A} = \p{B}$.  In this case we say that they two outcomes are {\bf independent}.
-
-In the second example, knowing that it rained on Saturday affects the probability of rain on Sunday, and $\p{B|A} > \p{B}$.  In this case, the outcomes are {\bf dependent}.
-
-Knowing when events are independent is important.  In the 2016 U.S. presidential election, many forecasters underestimated the probability Donald Trump would win because they underestimated the dependence between states, that is, the conditional probability that Trump would win Ohio, for example, given that he won Pennsylvania.
-
-However, it is often difficult to know when events are dependent, or how strongly dependent they are.  Sometimes we make a modeling decision to treat events as independent, even if we think they are not.  And other times we can be convinced they are independent, and it turns out they are not.
-
-We will see two notorious examples at the end of this chapter.
+\input{table01-02}
 
 
+Dice problem with a table
+
+Two coins with a table
 
 
-\newcommand{\MM}{M\&M}
-
-\section{The \MM~problem}
-
-\MM's are small candy-coated chocolates that come in a variety of
-colors.  Mars, Inc., which makes \MM's, changes the mixture of
-colors from time to time.
-\index{M and M problem}
-
-In 1995, they introduced blue \MM's.  Before then, the color mix in
-a bag of plain \MM's was 30\% Brown, 20\% Yellow, 20\% Red, 10\%
-Green, 10\% Orange, 10\% Tan.  Afterward it was 24\% Blue , 20\%
-Green, 16\% Orange, 14\% Yellow, 13\% Red, 13\% Brown.
-
-Suppose a friend of mine has two bags of \MM's, and he tells me
-that one is from 1994 and one from 1996.  He won't tell me which is
-which, but he gives me one \MM~from each bag.  One is yellow and
-one is green.  What is the probability that the yellow one came
-from the 1994 bag?
-
-This problem is similar to the cookie problem, with the twist that I
-draw one sample from each bowl/bag.  This problem also gives me a
-chance to demonstrate the table method, which is useful for solving
-problems like this on paper.  In the next chapter we will
-solve them computationally.
-\index{table method}
-
-The first step is to enumerate the hypotheses.  The bag the yellow
-\MM~came from I'll call Bag 1; I'll call the other Bag 2.  So
-the hypotheses are:
-
-\begin{itemize}
-
-\item A: Bag 1 is from 1994, which implies that Bag 2 is from 1996.
-
-\item B: Bag 1 is from 1996 and Bag 2 from 1994.
-
-\end{itemize}
-
-Now we construct a table with a row for each hypothesis and a
-column for each term in Bayes's theorem:
-
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-   & Prior & Likelihood &   & Posterior  \\
-   & \p{H} & \p{D|H} & \p{H}~\p{D|H}  & \p{H|D}  \\
-\hline
-A  &  1/2  &  (20)(20)  &  200  &  20/27 \\
-B  &  1/2  &  (14)(10)  &   70  &  7/27 \\
-\hline
-\end{tabular}
-
-The first column has the priors.
-Based on the statement of the problem,
-it is reasonable to choose $\p{A} = \p{B} = 1/2$.
-
-The second column has the likelihoods, which follow from the
-information in the problem.  For example, if $A$ is true, the yellow
-\MM~came from the 1994 bag with probability 20\%, and the green came
-from the 1996 bag with probability 20\%.  If $B$ is true, the yellow
-\MM~came from the 1996 bag with probability 14\%, and the green came
-from the 1994 bag with probability 10\%.
-Because the selections are
-independent, we get the conjoint probability by multiplying.
-\index{independence}
-
-The third column is just the product of the previous two.
-The sum of this column, 270, is the normalizing constant.
-To get the last column, which contains the posteriors, we divide
-the third column by the normalizing constant.
-
-That's it.  Simple, right?
-
-Well, you might be bothered by one detail.  I write \p{D|H}
-in terms of percentages, not probabilities, which means it
-is off by a factor of 10,000.  But that
-cancels out when we divide through by the normalizing constant, so
-it doesn't affect the result.
-\index{normalizing constant}
-
-When the set of hypotheses is mutually exclusive and collectively
-exhaustive, you can multiply the likelihoods by any factor, if it is
-convenient, as long as you apply the same factor to the entire column.
 
 
 \section{The Monty Hall problem}
@@ -1139,6 +1055,50 @@ If the Monty Hall problem is your idea of fun, I have collected a
 number of similar problems in an article called ``All your Bayes are
 belong to us,'' which you can read at
 \url{http://allendowney.blogspot.com/2011/10/all-your-bayes-are-belong-to-us.html}.
+
+
+
+\section{Exercises}
+
+\newcommand{\MM}{M\&M}
+
+\MM's are small candy-coated chocolates that come in a variety of
+colors.  Mars, Inc., which makes \MM's, changes the mixture of
+colors from time to time.
+\index{M and M problem}
+
+In 1995, they introduced blue \MM's.  Before then, the color mix in
+a bag of plain \MM's was 30\% Brown, 20\% Yellow, 20\% Red, 10\%
+Green, 10\% Orange, 10\% Tan.  Afterward it was 24\% Blue , 20\%
+Green, 16\% Orange, 14\% Yellow, 13\% Red, 13\% Brown.
+
+Suppose a friend of mine has two bags of \MM's, and he tells me
+that one is from 1994 and one from 1996.  He won't tell me which is
+which, but he gives me one \MM~from each bag.  One is yellow and
+one is green.  What is the probability that the yellow one came
+from the 1994 bag?
+
+This problem is similar to the cookie problem, with the twist that I
+draw one sample from each bowl/bag.  This problem also gives me a
+chance to demonstrate the table method, which is useful for solving
+problems like this on paper.  In the next chapter we will
+solve them computationally.
+\index{table method}
+
+The first step is to enumerate the hypotheses.  The bag the yellow
+\MM~came from I'll call Bag 1; I'll call the other Bag 2.  So
+the hypotheses are:
+
+\begin{itemize}
+
+\item A: Bag 1 is from 1994, which implies that Bag 2 is from 1996.
+
+\item B: Bag 1 is from 1996 and Bag 2 from 1994.
+
+\end{itemize}
+
+
+
 
 
 \chapter{Computational Statistics}
@@ -1638,7 +1598,7 @@ few cases we override {\tt Update}, usually to improve performance.
 
 \section{Exercises}
 
-\begin{Exercise}
+\begin{exercise}
 
 In Section~\ref{framework} I said that the solution to the cookie
 problem generalizes to the case where we draw multiple cookies
@@ -1653,7 +1613,7 @@ represent the hypothetical state of the bowls, and modify
 {\tt Likelihood} accordingly.  You might want to define a 
 {\tt Bowl} object.
 
-\end{Exercise}
+\end{exercise}
 
 
 
@@ -2848,7 +2808,6 @@ cookie problem:
 Suppose there are two bowls of cookies.  Bowl 1 contains
   30 vanilla cookies and 10 chocolate cookies.  Bowl 2 contains 20 of
   each.
-
 
 Now suppose you choose one of the bowls at random and, without looking,
 select a cookie at random.  The cookie is vanilla.  What is the probability
@@ -5662,7 +5621,7 @@ When each value in a distribution is a tuple of variables, it is
 called a {\bf joint distribution} because it represents the
 distributions of the variables together, that is ``jointly''.
 A joint distribution contains the distributions of the variables,
-as well information about the relationships among them.
+as well as information about the relationships among them.
 \index{joint distribution}
 
 Given a joint distribution, we can compute the distributions
@@ -5900,7 +5859,7 @@ There is a lot of new vocabulary in this chapter, so let's review:
 
 \item[Conditional distribution:] The distribution of one parameter in
   a joint distribution, conditioned on one or more of the other
-  parameters.  Figure~\ref{fig.paintball3} several distributions for
+  parameters.  Figure~\ref{fig.paintball3} shows several distributions for
   {\tt alpha}, conditioned on different values of {\tt beta}.
 
 \end{description}
@@ -9339,7 +9298,7 @@ Finally, before we return the likelihood, we have to apply a correction
 factor, which is the number of ways we could have observed these {\tt m}
 species, if the total number of species is {\tt n}.  
 {\tt BinomialCoefficient} computes ``n choose m'', which is written
-${n}\choose{m}$. 
+$\binom{n}{m}$. 
 \index{binomial coefficient}
 
 As often happens, the optimized version is less readable and more
