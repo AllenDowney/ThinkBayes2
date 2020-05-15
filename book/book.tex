@@ -40,6 +40,20 @@
 % https://tex.stackexchange.com/questions/44088/when-do-i-need-to-invoke-phantomsection
 \providecommand\phantomsection{}
 
+% format end of chapter excercises
+\newtheoremstyle{exercise}
+  {12pt}        % space above
+  {12pt}        % space below
+  {}            % body font
+  {}            % indent amount
+  {\bfseries}   % head font
+  {}            % punctuation
+  {12pt}        % head space
+  {}            % custom head
+\theoremstyle{exercise}
+\newtheorem{exercise}{Exercise}[chapter]
+
+
 \title{Think Bayes}
 \author{Allen B. Downey}
 
@@ -87,19 +101,6 @@
     \@esphack%
 }
 \else
-
-%\newtheoremstyle{exercise}% name of the style to be used
-%  {\topsep}% measure of space to leave above the theorem. E.g.: 3pt
-%  {\topsep}% measure of space to leave below the theorem. E.g.: 3pt
-%  {}% name of font to use in the body of the theorem
-%  {}% measure of space to indent
-%  {\bfseries}% name of head font
-%  {}% punctuation between head and body
-%  { }% space after theorem head; " " = normal interword space
-%  {}% Manually specify head
-
-%\theoremstyle{exercise}
-\newtheorem{exercise}{Exercise}[chapter]
 
 \input{latexonly}
 
@@ -340,20 +341,31 @@ optimized code yields the same results, at least approximately).
 
 
 \section{Working with the code}
-\label{download}
+\label{codeinfo}
 
-The code and sound samples used in this book are available from
-\url{https://github.com/AllenDowney/ThinkBayes}.  Git is a version
-control system that allows you to keep track of the files that
-make up a project.  A collection of files under Git's control is
-called a ``repository''.  GitHub is a hosting service that provides
-storage for Git repositories and a convenient web interface.
+There are several ways you can work with the code in this book:
+
+\begin{itemize}
+
+\item If you don't have a programming environment where you can run Jupyter notebooks, and you don't want to create one, you can run the notebooks on Colab, which is an online service provided by Google.  Colab let's you run Jupyter notebooks in a browser without installing anything.
+
+\item If you have Python and Jupyter installed, you can download the code and run it on your computer.
+
+\end{itemize}
+
+To run the notebooks on Colab, you can follow the links at the end of each chapter, or you can start from \url{}, which has links to all of the notebooks.
+
+If you already have Python and Jupyter, you can download the code from
+my Git repository, at \url{https://github.com/AllenDowney/ThinkBayes}.  Git is a version control system that allows you to keep track of the files that make up a project.  
+A collection of files under Git's control is
+called a ``repository''.  
+GitHub is a hosting service that provides storage for Git repositories and a convenient web interface.
+
 \index{repository}
 \index{Git}
 \index{GitHub}
 
-The GitHub homepage for my repository provides several ways to
-work with the code:
+The GitHub homepage for my repository provides several ways to download the code:
 
 \begin{itemize}
 
@@ -373,37 +385,76 @@ won't be able to write your changes back to GitHub.
 
 \item If you don't want to use Git at all, you can download the files
 in a Zip file using the button in the lower-right corner of the
-GitHub page.
+GitHub page.  Or you can download the Zip file from \url{}.
 
 \end{itemize}
 
-The code for the first edition of the book works with Python 2.
-If you are using Python 3, you might want to use the updated code
-in \url{https://github.com/AllenDowney/ThinkBayes2} instead.
-
-I developed this book using Anaconda from
-Continuum Analytics, which is a free Python distribution that includes
+If you don't have Python and Jupyter installed already, I recommend you install Anaconda, which is a free Python distribution that includes
 all the packages you'll need to run the code (and lots more).
-I found Anaconda easy to install.  By default it does a user-level
-installation, not system-level, so you don't need administrative
-privileges.  You can
-download Anaconda from \url{http://continuum.io/downloads}.
+I found Anaconda easy to install.  By default it installs files in your home directory, so you don't need administrator privileges.  You can download Anaconda from \url{https://www.anaconda.com/products/individual}.
 \index{Anaconda}
+
+If you install Anaconda, you will have most of the packages you need to run the code in this book.
+To make sure you have everything you need (and the right versions), the best option is to create a Conda environment.  And the best way to do that is to use the command line.
+If you are not familiar with the command line, you might want to run the notebooks on Colab.
+
+\begin{enumerate}
+
+\item After downloading my repository, you should have a directory named {\tt ThinkBayes2}.  Use {\tt cd} to move into that directory.
+
+\item Use {\tt ls} to confirm that you have a file named {\tt environment.yml}.  It lists the packages you need.
+
+\item Run the following command to create an environment:
+
+\begin{verbatim}
+conda env create -f environment.yml
+\end{verbatim}
+
+\item Run the following command to activate the environment you just created:
+
+\begin{verbatim}
+conda activate ThinkBayes2
+\end{verbatim}
+
+\item To test your environment and make sure it has everything we need, run the following command:
+
+\begin{verbatim}
+python test_env.py
+\end{verbatim}
+
+\end{enumerate}
+
+If you don't want to create an environment just for this book, you can install what you need using Conda.
+The following commands should get everything you need:
+
+\begin{verbatim}
+conda install python jupyter pandas scipy matplotlib
+pip install empiricaldist
+\end{verbatim}
 
 If you don't want to use Anaconda, you will need the following
 packages:
 
 \begin{itemize}
 
+\item Jupyter to run the notebooks, \url{https://jupyter.org/};
+\index{Jupyter}
+
 \item NumPy for basic numerical computation, \url{http://www.numpy.org/};
 \index{NumPy}
 
-\item SciPy for scientific computation,
-  \url{http://www.scipy.org/};
+\item SciPy for scientific computation, \url{http://www.scipy.org/};
 \index{SciPy}
 
-\item matplotlib for visualization, \url{http://matplotlib.org/}.
+\item Pandas for working with data, \url{https://pandas.pydata.org/};
+\index{Pandas}
+
+\item matplotlib for visualization, \url{http://matplotlib.org/};
 \index{matplotlib}
+
+\item empiricaldist for representing distributions, \url{};
+\index{empiricaldist}.
+%TODO: add this URL
 
 \end{itemize}
 
@@ -414,10 +465,6 @@ recommend using Anaconda or one of the other Python distributions
 that include these packages.
 \index{installation}
 
-Many of the examples in this book use classes and functions defined in
-{\tt thinkbayes.py}.  Some of them also use {\tt thinkplot.py}, which
-provides wrappers for some of the functions in {\tt pyplot}, which is
-part of {\tt matplotlib}.  
 
 
 \section{Code style}
@@ -692,24 +739,23 @@ is a way to get from one to the other: Bayes's theorem.
 
 \section{Bayes's theorem}
 
-At this point we have everything we need to derive Bayes's theorem.
-We'll start with the observation that conjunction is commutative; that is
-%
-\[ \p{A \AND B} = \p{B \AND A} \]
-%
-for any events $A$ and $B$.
-
 \index{Bayes's theorem!derivation}
 \index{conjunction}
 
-Next, we write the probability of a conjunction:
+Here's how we derive Bayes's theorem.
+We'll start with the probability of a conjunction:
 %
 \[ \p{A \AND B} = \p{A}~\p{B|A} \]
 %
 Since we have not said anything about what $A$ and $B$ mean, they
-are interchangeable.  Interchanging them yields
+are interchangeable.  
+Interchanging them yields
 %
 \[ \p{B \AND A} = \p{B}~\p{A|B} \]
+%
+Also, conjunction is commutative; that is
+%
+\[ \p{A \AND B} = \p{B \AND A} \]
 %
 That's all we need.  Pulling those pieces together, we get
 %
@@ -717,11 +763,11 @@ That's all we need.  Pulling those pieces together, we get
 %
 Which means there are two ways to compute the conjunction.
 If you have $\p{A}$, you multiply by the conditional
-probability $\p{B|A}$.  Or you can do it the other way around; if you
-know \p{B}, you multiply by $\p{A|B}$.  Either way you should get
-the same thing.
+probability $\p{B|A}$.  
+Or you can do it the other way around; if you
+know \p{B}, you multiply by $\p{A|B}$.
 
-Finally we can divide through by $\p{B}$:
+Finally we divide through by $\p{B}$:
 %
 \[ \p{A|B} = \frac{\p{A}~\p{B|A}}{\p{B}} \]
 %
@@ -885,7 +931,7 @@ This table shows the results so far:
 
 \input{table01-01}
 
-If we multiply the priors by the likelihoods, the results are unnormalized posteriors; they are proportional to the posterior probabilities, but they don't add up to 1.
+If we multiply the priors by the likelihoods, the results are {\bf unnormalized posteriors}; they are proportional to the posterior probabilities, but they don't add up to 1.
 
 We can normalize them by computing the total probability of the data and dividing through.
 
@@ -899,168 +945,169 @@ The following table shows the result:
 
 \input{table01-02}
 
+The posterior probability for Bowl 1 is 0.6, which is what we got using Bayes's Theorem.  As a bonus, we also get the posterior probability for Bowl 2, which is 0.4.
 
-Dice problem with a table
 
-Two coins with a table
+\section{The dice problem}
 
+Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
+I choose one of the dice at random, roll it, and report that the outcome is a 1.
+What is the probability that I chose the 6-sided die?
+
+In this example, there are three hypotheses with equal prior probabilities.
+The data is my report that the outcome is a 1.
+Under the hypothesis that I chose the 6-sided die, the probability of the data is 1/6.
+If I chose the 8-sided die, the probability is 1/8, and if I chose the 12-sided die, it's 1/12.
+
+Plugging the priors and likelihoods into a Bayes table, I get these results:
+
+\input{table01-03}
+
+The posterior probability that I chose the 6-sided die is $4/9$.
+
+As this example demonstrates, the table method works with more than two hypotheses.
 
 
 
 \section{The Monty Hall problem}
 
-The Monty Hall problem might be the most contentious question in
-the history of probability.  The scenario is simple, but the correct
-answer is so counterintuitive that many people just can't accept
-it, and many smart people have embarrassed themselves not just by
-getting it wrong but by arguing the wrong side, aggressively,
-in public.
 \index{Monty Hall problem}
 
 Monty Hall was the original host of the game show {\em Let's Make a
-Deal}.  The Monty Hall problem is based on one of the regular
-games on the show.  If you are on the show, here's what happens:
+Deal}.  
+The Monty Hall problem is based on one of the regular
+games on the show.  
+If you are a contestant, here's how the game works:
 
 \begin{itemize}
 
-\item Monty shows you three closed doors and tells you that there is a
-  prize behind each door: one prize is a car, the other two are less
-  valuable prizes like peanut butter and fake finger nails.  The
-  prizes are arranged at random.
+\item Monty shows you three closed doors numbered 1, 2, and 3.
+He tells you that there is a prize behind each door.
 
-\item The object of the game is to guess which door has the car.  If
-  you guess right, you get to keep the car.
+\item One prize is valuable (traditionally a car), the other two are less valuable (traditionally goats).
 
-\item You pick a door, which we will call Door A.  We'll call the
-  other doors B and C.
-
-\item Before opening the door you chose, Monty increases the
-  suspense by opening either Door B or C, whichever does not
-  have the car.  (If the car is actually behind Door A, Monty can
-  safely open B or C, so he chooses one at random.)
-
-\item Then Monty offers you the option to stick with your original
-  choice or switch to the one remaining unopened door.
+\item The object of the game is to guess which door has the car.  
+If you guess right, you get to keep the car.
 
 \end{itemize}
 
-The question is, should you ``stick'' or ``switch'' or does it
-make no difference?
-\index{stick}
-\index{switch}
-\index{intuition}
+Suppose you pick Door 1.
+Before opening the door you chose, Monty opens Door 3 and reveals a
+goat.
+Then Monty offers you the option to stick with your original
+choice or switch to the remaining unopened door.
 
-Most people have the strong intuition that it makes no difference.
+To maximize your chance of winning the car, should you stick with Door 1 or switch to Door 2?
+
+To answer this question, we have to make some assumptions about the behavior of the host:
+
+\begin{enumerate}
+
+\item Monty always opens a door and offers you the option to switch.
+
+\item He never opens the door you picked or the door with the car.
+
+\item  If you choose the door with the car, he chooses one of the other doors at random.
+
+\end{enumerate}
+
+Under these assumptions, you are better off switching.  
+If you stick, you win $1/3$ of the time.  
+If you switch, you win $2/3$ of the time.
+
+If you have not encountered this problem before, you might find the answer surprising.
+You would not be alone; many people have the strong intuition that it doesn't matter if you stick or switch.
 There are two doors left, they reason, so the chance that the car
 is behind Door A is 50\%.
+But that is wrong.
 
-But that is wrong.  In fact, the chance of winning if you stick
-with Door A is only 1/3; if you switch, your chances are 2/3.
+To see why, it might help to use a Bayes table.
+We start with three hypotheses: the car might be behind Door 1, 2, or 3.
+According to the statement of the problem, the prior probability for each door is 1/3.
 
-By applying Bayes's theorem, we can break this problem into simple
-pieces, and maybe convince ourselves that the correct answer is,
-in fact, correct.
-
-To start, we should make a careful statement of the data.  In
-this case $D$ consists of two parts: Monty chooses Door B
-{\em and} there is no car there.
-
-Next we define three hypotheses: $A$, $B$, and $C$ represent the
-hypothesis that the car is behind Door A, Door B, or Door C.
-Again, let's apply the table method:
-
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-   & Prior & Likelihood &   & Posterior  \\
-   & \p{H} & \p{D|H} & \p{H}~\p{D|H}  & \p{H|D}  \\
-\hline
-A  &  1/3  &  1/2  &  1/6  &  1/3 \\
-B  &  1/3  &  0  &   0  &  0 \\
-C  &  1/3  &  1  &   1/3  &  2/3 \\
-\hline
-\end{tabular}
-
-Filling in the priors is easy because we are told that the prizes
-are arranged at random, which suggests that the car is equally
-likely to be behind any door.
-
-Figuring out the likelihoods takes some thought, but with reasonable
-care we can be confident that we have it right:
+The data is that Monty opened Door 3 and revealed a goat.
+So let's consider the probability of the data under each hypothesis:
 
 \begin{itemize}
 
-\item If the car is actually behind A, Monty could safely open Doors B
-  or C.  So the probability that he chooses B is 1/2.  And since the
-  car is actually behind A, the probability that the car is not behind
-  B is 1.
+\item If the car were behind Door 3, Monty would not have opened it, so the probability of the data under this hypothesis is 0.
 
-\item If the car is actually behind B, Monty has to open door C, so
-  the probability that he opens door B is 0.
+\item If the car were behind Door 2, Monty would have to open Door 3, so the probability of the data under this hypothesis is 1.
 
-\item Finally, if the car is behind Door C, Monty opens B with
-  probability 1 and finds no car there with probability 1.
+\item If the car were behind Door 1, Monty would choose Door 2 or 3 at random; the probability he would open Door 3 is $1/2$.
 
 \end{itemize}
 
-Now the hard part is over; the rest is just arithmetic.  The
-sum of the third column is 1/2.  Dividing through yields
-$\p{A|D} = 1/3$ and $\p{C|D} = 2/3$.  So you are better off switching.
+Once we figure out prior probabilities and likelihoods, the Bayes table does the rest.  Here is the result:
 
-There are many variations of the Monty Hall problem.  One of the
-strengths of the Bayesian approach is that it generalizes to handle
-these variations.
+\input{table01-04}
 
-For example, suppose that Monty always chooses B if he can, and
-only chooses C if he has to (because the car is behind B).  In
-that case the revised table is:
+After Monty opens Door 3, the posterior probability of Door 1 is $1/3$; the posterior probability of Door 2 is $2/3$.
 
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-   & Prior & Likelihood &   & Posterior  \\
-   & \p{H} & \p{D|H} & \p{H}~\p{D|H}  & \p{H|D}  \\
-\hline
-A  &  1/3  &  1  &  1/3  &  1/2 \\
-B  &  1/3  &  0  &   0   &  0 \\
-C  &  1/3  &  1  &   1/3  &  1/2 \\
-\hline
-\end{tabular}
-
-The only change is \p{D|A}.  If the car is behind $A$, Monty can
-choose to open B or C.  But in this variation he always chooses
-B, so $\p{D|A} = 1$.
-
-As a result, the likelihoods are the same for $A$ and $C$, and the
-posteriors are the same: $\p{A|D} = \p{C|D} = 1/2$.  In this case, the
-fact that Monty chose B reveals no information about the location of
-the car, so it doesn't matter whether the contestant sticks or
-switches.
-
-On the other hand, if he had opened $C$, we would know $\p{B|D} = 1$.
-
-I included the Monty Hall problem in this chapter because I think it
-is fun, and because Bayes's theorem makes the complexity of the
-problem a little more manageable.  But it is not a typical use of
-Bayes's theorem, so if you found it confusing, don't worry!
-
-\section{Discussion}
-
-For many problems involving conditional probability, Bayes's theorem
-provides a divide-and-conquer strategy.  If \p{A|B} is hard to
-compute, or hard to measure experimentally, check whether it might be
-easier to compute the other terms in Bayes's theorem, \p{B|A}, \p{A}
-and \p{B}.
 \index{divide-and-conquer}
 
-If the Monty Hall problem is your idea of fun, I have collected a
-number of similar problems in an article called ``All your Bayes are
-belong to us,'' which you can read at
-\url{http://allendowney.blogspot.com/2011/10/all-your-bayes-are-belong-to-us.html}.
+As this example shows, our intuition for probability is not always reliable.
+Bayes's Theorem provides a divide-and-conquer strategy that can help:
 
+\begin{enumerate}
+
+\item First, write down the hypotheses and the data.
+
+\item Next, figure out the prior probabilities.
+
+\item Finally, compute the likelihood of the data under each hypothesis.
+
+\end{enumerate}
+
+The Bayes table does the rest.
+The exercises in the next section give you a chance to practice.
 
 
 \section{Exercises}
 
+The code for this chapter is in {\tt chap01.ipynb}, which is in the repository for this book.  See Section~\ref{codeinfo} for details.
+You can run the notebook on Colab at \url{https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/code/chap01.ipynb}.
+
+Use a Bayes table to solve the following problems.
+
+\begin{exercise}
+
+Suppose you meet someone and learn that they have two children.
+You ask if either child is a girl and they say yes.
+What is the probability that both children are girls?
+
+Hint: Start with four equally likely hypotheses.
+
+\end{exercise}
+
+
+\begin{exercise}
+
+Suppose you have two coins in a box.
+One is a normal coin with heads on one side and tails on the other, and one is a trick coin with heads on both sides.
+
+You choose a coin at random and see that one of the sides is heads.
+What is the probability that you chose the trick coin?
+
+\end{exercise}
+
+
+\begin{exercise}
+
+There are many variations of the Monty Hall problem (see \url{https://en.wikipedia.org/wiki/Monty_Hall_problem}).  
+
+For example, suppose that Monty always chooses Door 2 if he can, and
+only chooses Door 3 if he has to (because the car is behind Door 2).
+
+If you choose Door 1 and Monty opens Door 2, what is the probability the car is behind Door 3?
+
+And if he opens Door 3, what is the probability the car is behind Door 2?
+
+\end{exercise}
+
 \newcommand{\MM}{M\&M}
+
+\begin{exercise}
 
 \MM's are small candy-coated chocolates that come in a variety of
 colors.  Mars, Inc., which makes \MM's, changes the mixture of
@@ -1078,24 +1125,7 @@ which, but he gives me one \MM~from each bag.  One is yellow and
 one is green.  What is the probability that the yellow one came
 from the 1994 bag?
 
-This problem is similar to the cookie problem, with the twist that I
-draw one sample from each bowl/bag.  This problem also gives me a
-chance to demonstrate the table method, which is useful for solving
-problems like this on paper.  In the next chapter we will
-solve them computationally.
-\index{table method}
-
-The first step is to enumerate the hypotheses.  The bag the yellow
-\MM~came from I'll call Bag 1; I'll call the other Bag 2.  So
-the hypotheses are:
-
-\begin{itemize}
-
-\item A: Bag 1 is from 1994, which implies that Bag 2 is from 1996.
-
-\item B: Bag 1 is from 1996 and Bag 2 from 1994.
-
-\end{itemize}
+\end{exercise}
 
 
 
@@ -1485,86 +1515,7 @@ You can download this example from
 see Section~\ref{download}.
 
 
-\section{The \MM~problem}
 
-\index{M and M problem}
-We can use the \verb"Suite" framework to solve the \MM~problem.
-Writing the \verb"Likelihood" function is tricky, but everything
-else is straightforward.
-
-First I need to encode the color mixes from before and
-after 1995:
-
-\begin{verbatim}
-    mix94 = dict(brown=30,
-                 yellow=20,
-                 red=20,
-                 green=10,
-                 orange=10,
-                 tan=10)
-
-    mix96 = dict(blue=24,
-                 green=20,
-                 orange=16,
-                 yellow=14,
-                 red=13,
-                 brown=13)
-\end{verbatim}
-
-Then I have to encode the hypotheses:
-
-\begin{verbatim}
-    hypoA = dict(bag1=mix94, bag2=mix96)
-    hypoB = dict(bag1=mix96, bag2=mix94)
-\end{verbatim}
-
-\verb"hypoA" represents the hypothesis that Bag 1 is from
-1994 and Bag 2 from 1996.  \verb"hypoB" is the other way
-around.
-
-Next I map from the name of the hypothesis to the representation:
-
-\begin{verbatim}
-    hypotheses = dict(A=hypoA, B=hypoB)
-\end{verbatim}
-
-And finally I can write \verb"Likelihood".  In this case
-the hypothesis, \verb"hypo", is a string, either \verb"A" or \verb"B".
-The data is a tuple that specifies a bag
-and a color.
-
-\begin{verbatim}
-    def Likelihood(self, data, hypo):
-        bag, color = data
-        mix = self.hypotheses[hypo][bag]
-        like = mix[color]
-        return like
-\end{verbatim}
-
-Here's the code that creates the suite and updates it:
-
-\begin{verbatim}
-    suite = M_and_M('AB')
-
-    suite.Update(('bag1', 'yellow'))
-    suite.Update(('bag2', 'green'))
-
-    suite.Print()
-\end{verbatim}
-
-And here's the result:
-
-\begin{verbatim}
-A 0.740740740741
-B 0.259259259259
-\end{verbatim}
-
-The posterior probability of A is approximately $20/27$, which is what
-we got before.
-
-The code in this section is available from
-\url{http://thinkbayes.com/m_and_m.py}.  For more information see
-Section~\ref{download}.
 
 \section{Discussion}
 
