@@ -506,9 +506,9 @@ prerequisites minimal.  If you know Python and a little bit about
 probability, you are ready to start this book.
 
 Chapter~\ref{intro} is about probability and Bayes's theorem; it has
-no code.  Chapter~\ref{compstat} introduces {\tt Pmf}, a thinly disguised
+no code.  Chapter~\ref{compstat} introduces \py{Pmf}, a thinly disguised
 Python dictionary I use to represent a probability mass function
-(PMF).  Then Chapter~\ref{estimation} introduces {\tt Suite}, a kind
+(PMF).  Then Chapter~\ref{estimation} introduces \py{Suite}, a kind
 of Pmf that provides a framework for doing Bayesian updates.
 
 In some of the later chapters, I use
@@ -712,6 +712,7 @@ is 0.5, the chance of rain on two consecutive days is not
 
 
 \section{The cookie problem}
+\label{cookie}
 
 We'll get to Bayes's theorem soon, but I want to motivate it with an
 example called the cookie problem.\footnote{Based on an example from
@@ -948,7 +949,8 @@ The following table shows the result:
 The posterior probability for Bowl 1 is 0.6, which is what we got using Bayes's Theorem.  As a bonus, we also get the posterior probability for Bowl 2, which is 0.4.
 
 
-\section{The dice problem}
+\section{The Dice Problem}
+\label{dice}
 
 Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
 I choose one of the dice at random, roll it, and report that the outcome is a 1.
@@ -1060,26 +1062,21 @@ Bayes's Theorem provides a divide-and-conquer strategy that can help:
 \end{enumerate}
 
 The Bayes table does the rest.
-The exercises in the next section give you a chance to practice.
 
+\section{Summary}
+
+In this chapter...
+
+In the next chapter
+
+But first you might want to work on these exercises.
 
 \section{Exercises}
 
 The code for this chapter is in {\tt chap01.ipynb}, which is in the repository for this book.  See Section~\ref{codeinfo} for details.
 You can run the notebook on Colab at \url{https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/code/chap01.ipynb}.
 
-Use a Bayes table to solve the following problems.
-
-\begin{exercise}
-
-Suppose you meet someone and learn that they have two children.
-You ask if either child is a girl and they say yes.
-What is the probability that both children are girls?
-
-Hint: Start with four equally likely hypotheses.
-
-\end{exercise}
-
+The notebook provides space where you can work on the following problems.
 
 \begin{exercise}
 
@@ -1088,6 +1085,17 @@ One is a normal coin with heads on one side and tails on the other, and one is a
 
 You choose a coin at random and see that one of the sides is heads.
 What is the probability that you chose the trick coin?
+
+\end{exercise}
+
+
+\begin{exercise}
+
+Suppose you meet someone and learn that they have two children.
+You ask if either child is a girl and they say yes.
+What is the probability that both children are girls?
+
+Hint: Start with four equally likely hypotheses.
 
 \end{exercise}
 
@@ -1130,7 +1138,6 @@ from the 1994 bag?
 
 
 
-
 \chapter{Computational Statistics}
 \label{compstat}
 
@@ -1140,436 +1147,994 @@ In statistics a {\bf distribution} is a set of values and their
 corresponding probabilities.
 \index{distribution}
 
-For example, if you roll a six-sided die, the set of possible
+For example, if you toss a coin, there are two possible outcomes with approximately equal probabilities.
+
+If you roll a six-sided die, the set of possible
 values is the numbers 1 to 6, and the probability associated
 with each value is 1/6.
 \index{dice}
 
-As another example, you might be interested in how many times each
-word appears in common English usage.  You could build a distribution
-that includes each word and how many times it appears.
-\index{word frequency}
+To represent distributions, we'll use a library called \py{empiricaldist}.
+An ``empirical'' distribution is based on data, as opposed to a theoretical distribution.
 
-To represent a distribution in Python, you could use a dictionary that
-maps from each value to its probability.  I have written a class
-called {\tt Pmf} that uses a Python dictionary in exactly that way,
-and provides a number of useful methods.
-I called the class Pmf in reference to 
-a {\bf probability mass function}, which is a way to
-represent a distribution mathematically.
+This library provides a class called \py{Pmf}, which represents
+a {\bf probability mass function}.
+
 \index{probability mass function}
 \index{Pmf class}
 
-{\tt Pmf} is defined in a Python module I wrote to accompany this
-book, {\tt thinkbayes.py}.  You can download it from
-\url{http://thinkbayes.com/thinkbayes.py}.    For more information
-see Section~\ref{download}.
+\py{empiricaldist} is available from the Python Package Index (PyPI).
+You can download it from \url{https://pypi.org/project/empiricaldist/} or install it with {\tt pip}.
+For more details, see Section~\ref{codeinfo}.
 
-To use {\tt Pmf} you can import it like this:
+To use \py{Pmf} you can import it like this:
 
-\begin{verbatim}
-from thinkbayes import Pmf
-\end{verbatim}
+\begin{code}
+from empiricaldist import Pmf
+\end{code}
 
-The following code builds a Pmf to represent the distribution
-of outcomes for a six-sided die:
+The following example makes a \py{Pmf} that represents the outcome of a coin toss.
 
-\begin{verbatim}
-pmf = Pmf()
+\begin{code}
+coin = Pmf()
+coin['heads'] = 1/2
+coin['tails'] = 1/2
+\end{code}
+
+The two outcomes have the same probability, $1/2$.
+
+This example makes a \py{Pmf} that represents the distribution
+of outcomes of a six-sided die:
+
+\begin{code}
+die = Pmf()
 for x in [1,2,3,4,5,6]:
-    pmf.Set(x, 1/6.0)
-\end{verbatim}
+    die[x] = 1
+\end{code}
 
-\verb"Pmf" creates an empty Pmf with no values.  The
-\verb"Set" method sets the probability associated with each
-value to $1/6$.
+\py{Pmf} creates an empty \py{Pmf} with no values.  
+The \py{for} loop adds the values $1$ through $6$, each with ``probability'' $1$.
 
-Here's another example that counts the number of times each word
-appears in a sequence:
+In this \py{Pmf}, the probabilities don't add up to 1, so they are not really probabilities.
+We can use \py{normalize} to make them add up to 1.
 
-\begin{verbatim}
-pmf = Pmf()
-for word in word_list:
-    pmf.Incr(word, 1)
-\end{verbatim}
+\begin{code}
+die.normalize()
+\end{code}
 
-\verb"Incr" increases the ``probability'' associated with each
-word by 1.  If a word is not already in the Pmf, it is added.
+Another way make a \py{Pmf} is to provide a sequence of values.
 
-I put ``probability'' in quotes because in this example, the
-probabilities are not normalized; that is, they do not add up to 1.
-So they are not true probabilities.
+\begin{code}
+die = Pmf.from_seq([1,2,3,4,5,6])
+\end{code}
 
-But in this example the word counts are proportional to the
-probabilities.  So after we count all the words, we can compute
-probabilities by dividing through by the total number of words.  {\tt
-  Pmf} provides a method, \verb"Normalize", that does exactly that:
-\index{Pmf methods}
+In this example, every value appears once, so they all have the same probability.
+More generally, values can appear more than once, as in this example:
 
-\begin{verbatim}
-pmf.Normalize()
-\end{verbatim}
+\begin{code}
+letters = Pmf.from_seq(list('Mississippi'))
+\end{code}
 
-Once you have a Pmf object, you can ask for the probability
-associated with any value:
-\index{Prob}
+The following table shows the results.
 
-\begin{verbatim}
-print pmf.Prob('the')
-\end{verbatim}
+\input{table02-01}
 
-And that would print the frequency of the word ``the'' as a fraction
-of the words in the list.
+The \py{qs} are the values or ``quantities'' in the distribution; the \py{ps} are the corresponding probabilities.  In the word ``Mississippi'', about 36\% of the letters are ``s''.
 
-Pmf uses a Python dictionary to store the values and their
-probabilities, so the values in the Pmf can be any hashable type.
-The probabilities can be any numerical type, but they are usually
-floating-point numbers (type \verb"float").
+The \py{Pmf} class inherits from a Pandas \py{Series}, so anything you can do with a \py{Series}, you can also do with a \py{Pmf}.
+
+For example, you can use the bracket operator to look up a value and returns the corresponding probability.
+
+\begin{code}
+letters['s']
+\end{code}
+
+However, if you ask for the probability of a value that's not in the distribution, you get a \py{KeyError}.
+
+You can also call a \py{Pmf} as if it were a function, with a value in parentheses.
+
+\begin{code}
+letters('s')
+\end{code}
+
+If the value is in the distribution the results are the same.
+But if the value is not in the distribution, the result is $0$, not an error.
+
+As these examples shows, the values in a \py{Pmf} can be integers or strings.
+In general, they can be any type that can be stores in the index of a Pandas Series.
+
+If you are familiar with Pandas, that will help you work with \py{Pmf} objects.
+But I will explain what you need to know as we go along.
 
 
-\section{The cookie problem}
+\section{The Cookie Problem}
 
-In the context of Bayes's theorem, it is natural to use a Pmf
-to map from each hypothesis to its probability.  In the cookie
-problem, the hypotheses are $B_1$ and $B_2$.  In Python, I
-represent them with strings:
+In this section I'll use a \py{Pmf} to solve the cookie problem from Section~\ref{cookie}.
+Here's the statement of the problem again:
+
+\begin{quote}
+Suppose there are two bowls of cookies.  
+Bowl 1 contains 30 vanilla cookies and 10 chocolate cookies.  
+Bowl 2 contains 20 of each.
+
+Now suppose you choose one of the bowls at random and, without
+looking, select a cookie at random.  The cookie is vanilla.  What is
+the probability that it came from Bowl 1?
+\end{quote}
+
+
+Here's a \py{Pmf} that represents the two hypotheses and their prior probabilities:
 \index{cookie problem}
 
-\begin{verbatim}
-pmf = Pmf()
-pmf.Set('Bowl 1', 0.5)
-pmf.Set('Bowl 2', 0.5)
-\end{verbatim}
+\begin{code}
+prior = Pmf.from_seq(['Bowl 1', 'Bowl 2'])
 
-This distribution, which contains the priors for each hypothesis,
+\end{code}
+
+This distribution, which contains the prior probability for each hypothesis,
 is called (wait for it) the {\bf prior distribution}.
 \index{prior distribution}
 
 To update the distribution based on new data (the vanilla cookie),
-we multiply each prior by the corresponding likelihood.  The likelihood
+we multiply the priors by the likelihoods.  The likelihood
 of drawing a vanilla cookie from Bowl 1 is 3/4.  The likelihood
 for Bowl 2 is 1/2.
-\index{Mult}
 
-\begin{verbatim}
-pmf.Mult('Bowl 1', 0.75)
-pmf.Mult('Bowl 2', 0.5)
-\end{verbatim}
+\begin{code}
+likelihood_vanilla = [0.75, 0.5]
+posterior = prior * likelihood_vanilla
+\end{code}
 
-\verb"Mult" does what you would expect.  It gets the probability
-for the given hypothesis and multiplies by the given likelihood.
+The result is the unnormalized posteriors.
+We can use \py{normalize} to compute the posterior probabilities:
 
-After this update, the distribution is no longer normalized, but
-because these hypotheses are mutually exclusive and collectively
-exhaustive, we can {\bf renormalize}:
-\index{renormalize}
+\begin{code}
+posterior.normalize()
+\end{code}
 
-\begin{verbatim}
-pmf.Normalize()
-\end{verbatim}
-
-The result is a distribution that contains the posterior probability
-for each hypothesis, which is called (wait now) the
-{\bf posterior distribution}.
-\index{posterior distribution}
+The return value from \py{normalize} is the total probability of the data, which is $5/8$.
 
 Finally, we can get the posterior probability for Bowl 1:
 
-\begin{verbatim}
-print pmf.Prob('Bowl 1')
-\end{verbatim}
+\begin{code}
+posterior('Bowl 1')
+\end{code}
 
-And the answer is 0.6.  You can download this example
-from \url{http://thinkbayes.com/cookie.py}.  For more information
+And the answer is 0.6.
+This distribution, which contains the posterior probability for each hypothesis, is called (wait now) the {\bf posterior distribution}.
+\index{posterior distribution}
+
+One benefit of using \py{Pmf} objects is that it is easy to do successive updates with more data.  
+For example, suppose you put the first cookie back (so the contents of the bowls don't change) and draw again from the same bowl.
+If the second cookie is also vanilla, we can do a second update like this:
+
+\begin{code}
+posterior *= likelihood_vanilla
+posterior.normalize()
+\end{code}
+
+Now the posterior probability for Bowl 1 is almost 70\%.
+But suppose we do the same thing again and get a chocolate cookie.
+Here's the update.
+
+\begin{code}
+likelihood_chocolate = [0.25, 0.5]
+posterior *= likelihood_chocolate
+posterior.normalize()
+\end{code}
+
+Now the posterior probability for Bowl 1 is about 53\%.
+After two vanilla cookies and one chocolate, the posterior probabilities are close to 50/50.
+
+
+\section{More Bowls}
+
+Next let's solve a cookie problem with 101 bowls:
+
+\begin{itemize}
+
+\item Bowl 0 contains no vanilla cookies,
+
+\item Bowl 1 contains 1\% vanilla cookies,
+
+\item Bowl 2 contains 2\% vanilla cookies,
+
+\end{itemize}
+
+and so on, up to
+
+\begin{itemize}
+
+\item Bowl 99 contains 99\% vanilla cookies, and
+
+\item Bowl 100 contains all vanilla cookies.
+
+\end{itemize}
+
+As in the previous version, there are only two kinds of cookies, vanilla and chocolate.  So Bowl 0 is all chocolate cookies, Bowl 1 is 99\% chocolate, and so on.
+
+\begin{figure}
+% chap02soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig02-01.pdf}}
+\caption{Prior and posterior distributions for the 101 Bowls problem.}
+\label{fig02-01}
+\end{figure}
+
+Suppose we choose a bowl at random, choose a cookie at random, and it turns out to be vanilla.  What is the probability that the cookie came from Bowl $x$, for each value of $x$?
+
+To solve this problem, I'll use `np.arange` to represent 101 hypotheses, numbered from 0 to 100.
+
+\begin{code}
+hypos = np.arange(101)
+\end{code}
+
+And use it to make the prior distribution:
+
+\begin{code}
+prior = Pmf(1, hypos)
+prior.normalize()
+\end{code}
+
+As this example shows, we an initialize a \py{Pmf} with two parameters.
+The first parameter is the prior probability; the second parameter is a sequence of values.
+Because the probabilities are all the same, we only have to provide one of them.
+It gets ``broadcast'' across the hypotheses.
+
+Since all hypotheses have the same prior probability, this distribution is {\bf uniform}.
+
+The likelihood of the data is the fraction of vanilla cookies in each bowl, which we can calculate using \py{hypos}:
+
+\begin{code}
+likelihood_vanilla = hypos/100
+\end{code}
+
+Now we can compute the posterior distribution in the usual way:
+
+\begin{code}
+posterior1 = prior * likelihood_vanilla
+posterior1.normalize()
+\end{code}
+
+Figure~\ref{fig02-01} (top) shows the prior distribution and the posterior distribution after one vanilla cookie.
+Bowl 0 has been eliminated, because it contains no vanilla cookies, and Bowl 100 is the most likely.
+The posterior distribution is a line because the the likelihoods are proportional to the bowl numbers.
+
+Now suppose we put the cookie back, draw again from the same bowl, and get another vanilla cookie.
+Here's the update after the second cookie:
+
+\begin{code}
+posterior2 = posterior1 * likelihood_vanilla
+posterior2.normalize()
+\end{code}
+
+Figure~\ref{fig02-01} (middle) shows the result.
+Because the likelihood function is a line, the posterior after two cookies is a parabola.
+
+At this point the high-numbered bowls are the most likely because they contain the most vanilla cookies, and the low-numbered bowls have been all but eliminated.
+
+But suppose we draw again and get a chocolate cookie.
+Here's the update:
+
+\begin{code}
+likelihood_chocolate = 1 - hypos/100
+posterior3 = posterior2 * likelihood_chocolate
+posterior3.normalize()
+\end{code}
+
+Figure~\ref{fig02-01} (bottom) shows the result.
+Now Bowl 100 has been eliminated because it contains no chocolare cookies.
+But the high-numbered bowls are still more likely than the low-numbered bowls, because we have seen more vanilla cookies than chocolate.
+
+In fact, the peak of the posterior distribution is at Bowl 67, which corresponds to the fraction of vanilla cookies in the data we've observed, $2/3$.
+
+The quantity with the highest posterior probability is called the {\bf MAP}, which stands for ``maximum a posteori probability'', where ``a posteori'' is unnecessary Latin for ``posterior''.
+
+To compute the MAP, we can use the \py{Series} method \py{idxmax}:
+
+\begin{code}
+posterior3.idxmax()
+\end{code}
+
+Or \py{Pmf} provides a more memorable name for the same thing:
+
+\begin{code}
+ posterior3.max_prob()
+\end{code}
+
+As you might suspect, this example isn't really about bowls; it's about estimating proportions.
+Imagine that you have one bowl of cookies.
+You don't know what fraction of cookies are vanilla, but you think it is equally likely to be any fraction from 0 to 1.
+If you draw three cookies and two are vanilla, what proportion of cookies in the bowl do you think are vanilla?
+The posterior distribution we just computed is the answer to that question.
+
+We'll come back to estimating proportions in the next chapter.
+But first let's use a \py{Pmf} to solve the dice problem.
+
+
+\section{The Dice Problem}
+
+In Section~\ref{dice} we solved the dice problem using a Bayes table.
+Here's the statment of the problem again:
+
+\begin{quote}
+Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
+I choose one of the dice at random, roll it, and report that the outcome is a 1.
+What is the probability that I chose the 6-sided die?
+\end{quote}
+
+Let's solve it again using a \py{Pmf}.
+I'll use integers to represent the hypotheses:
+
+\begin{code}
+hypos = [6, 8, 12]
+\end{code}
+
+And I can make the prior distribution like this:
+
+\begin{code}
+prior = Pmf(1/3, hypos)
+\end{code}
+
+As in the previous example, the prior probability gets broadcast across the hypotheses.
+
+Now we can compute the likelihood of the data:
+
+\begin{code}
+likelihood1 = 1/6, 1/8, 1/12
+\end{code}
+
+And use it to compute the posterior distribution.
+
+\begin{code}
+posterior = prior * likelihood1
+posterior.normalize()
+\end{code}
+
+Here's the result:
+
+\input{table02-02}
+
+The posterior probability for the 6-sided die is $4/9$.
+
+Now suppose I roll the same die again and get a $7$.
+We can do a second update like this:
+
+\begin{code}
+likelihood2 = 0, 1/8, 1/12
+posterior *= likelihood2
+posterior.normalize()
+\end{code}
+
+The likelihood for the 6-sided die is $0$ because it is not possible to get a 7 on a 6-sided die.
+The other two likelihoods are the same as in the previous update.
+And here's the result:
+
+\input{table02-03}
+
+After rolling a 1 and a 7, the posterior probability of the 8-sided die is about 69\%.
+
+
+\section{Updating Dice}
+
+The following function is a more general version of the update in the previous section:
+
+\begin{code}
+def update_dice(pmf, data):
+    hypos = pmf.qs
+    likelihood = 1 / hypos
+    impossible = (data > hypos)
+    likelihood[impossible] = 0
+    pmf *= likelihood
+    pmf.normalize()
+\end{code}
+
+The first parameter is a \py{Pmf} that represents the possible dice and their probabilities.
+The second parameter is the outcome of rolling a die.
+
+The first line selects \py{qs} from the \py{Pmf}, which is the index of the \py{Series}; in this example, it represents the hypotheses.
+
+Since the hypotheses are integers, we can use them to compute the likelihoods.
+In general, if there are \py{n} sides on the die, the probability of any possible outcome is \py{1/n}.
+
+However, we have to check for impossible outcomes!
+If the outcome exceeds the hypothetical number of sides on the die, the probability of that outcome is $0$.
+
+\py{impossible} is a Boolean Series that is \py{True} for each impossible die.
+I use it as an index into \py{likelihood} to set the corresponding probabilities to $0$.
+
+Finally, I multiply \py{pmf} by the likelihoods and normalize.
+
+Here's how we can use this function to compute the updates in the previous section:
+ 
+\begin{code}
+pmf = prior.copy()
+update_dice(pmf, 1)
+update_dice(pmf, 7)
+\end{code}
+
+I start with a fresh copy of the prior distribution and use \py{update_dice} to do the updates.
+The result is the same.
+
+
+\section{Summary}
+
+This chapter introduces the \py{empiricaldist} module, which provides \py{Pmf}, which we use to represent a set of hypotheses and their probabilities.
+
+We use a \py{Pmf} to solve the cookie problem and the dice problem, which we saw in the previous chapter.
+With a \py{Pmf} it is easy to perform sequential updates as we see multiple pieces of data.
+
+We also solved a more general version of the cookie problem, with 101 bowls rather than two.
+Then we computed the MAP, which is the quantity with the highest posterior probability.
+
+In the next chapter ...
+
+But first you might want to work on the exercises.
+
+
+\section{Exercises}
+
+The code for this chapter is in {\tt chap02.ipynb}, which is in the repository for this book.  See Section~\ref{codeinfo} for details.
+You can run the notebook on Colab at \url{https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/code/chap02.ipynb}.
+
+The notebook provides space where you can work on the following problems.
+
+
+\begin{exercise}
+Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
+I choose one of the dice at random, roll it four times, and get 1, 3, 5, and 7.
+What is the probability that I chose the 8-sided die?
+\end{exercise}
+
+
+\begin{exercise}
+In the previous version of the dice problem, the prior probabilities are the same because the box contains one of each die.
+But suppose the box contains 1 die that is 4-sided, 2 dice that are 6-sided, 3 dice that are 8-sided, 4 dice that are 12-sided, and 5 dice that are 20-sided.
+I choose a die, roll it, and get a 7.  What is the probability that I chose an 8-sided die?
+\end{exercise}
+
+
+\begin{exercise}
+Suppose I have two sock drawers.  
+One contains equal numbers of black and white socks.  
+The other contains equal numbers of red, green, and blue socks.
+Suppose I choose a drawer and random, choose two socks at random, and I tell you that I got a matching pair.
+What is the probability that the socks are white?
+
+For simplicity, let's assume that there are so many socks in both drawers that removing one sock makes a negligible change to the proportions.
+\end{exercise}
+
+
+\begin{exercise}
+Here's a problem from {\it Bayesian Data Analysis}, which is available from \url{http://www.stat.columbia.edu/~gelman/book}:
+
+\begin{quote}
+Elvis Presley had a twin brother (who died at birth). What is the probability that Elvis was an identical twin?
+\end{quote}
+
+Hint: In 1935, about 2/3 of twins were fraternal and 1/3 were identical.
+\end{exercise}
+
+
+\chapter{Estimation}
+\label{more}
+
+
+\section{The Euro problem}
+\label{euro}
+
+\index{Euro problem}
+\index{MacKay, David}
+In {\it Information Theory, Inference, and Learning Algorithms}, David MacKay poses this problem:
+
+\begin{quote}
+A statistical statement appeared in ``The Guardian" on Friday January 4, 2002:
+
+  \begin{quote}
+        When spun on edge 250 times, a Belgian one-euro coin came
+        up heads 140 times and tails 110.  `It looks very suspicious
+        to me,' said Barry Blight, a statistics lecturer at the London
+        School of Economics.  `If the coin were unbiased, the chance of
+        getting a result as extreme as that would be less than 7\%.'
+        \end{quote}
+
+But do these data give evidence that the coin is biased rather than fair?
+\end{quote}
+
+To answer that question, we'll proceed in two steps.  The first
+is to estimate the probability that the coin comes up heads.  The second
+is to evaluate whether the data support the hypothesis that the
+coin is biased.
+
+You can download the code in this section from
+\url{http://thinkbayes.com/euro.py}.
+  For more information
 see Section~\ref{download}.
-\index{cookie.py}
 
+Any given coin has some probability, $x$, of landing heads up when spun
+on edge.  It seems reasonable to believe that the value of $x$ depends
+on some physical characteristics of the coin, primarily the distribution
+of weight.
 
-\section{The Bayesian framework}
-\label{framework}
+If a coin is perfectly balanced, we expect $x$ to be close to 50\%, but
+for a lopsided coin, $x$ might be substantially different.  We can use
+Bayes's theorem and the observed data to estimate $x$.
 
-\index{Bayesian framework}
-Before we go on to other problems, I want to rewrite the code
-from the previous section to make it more general.  First I'll
-define a class to encapsulate the code related to this problem:
+Let's define 101 hypotheses, where $H_x$ is the hypothesis that the
+probability of heads is $x$\%, for values from 0 to 100.  I'll
+start with a uniform prior where the probability of $H_x$ is the same
+for all $x$.  We'll come back later to consider other priors.
+\index{uniform distribution}
 
-\begin{verbatim}
-class Cookie(Pmf):
+\begin{figure}
+% euro.py
+\centerline{\includegraphics[height=2.5in]{figs/euro1.pdf}}
+\caption{Posterior distribution for the Euro problem
+on a uniform prior.}
+\label{fig.euro1}
+\end{figure}
 
-    def __init__(self, hypos):
-        Pmf.__init__(self)
-        for hypo in hypos:
-            self.Set(hypo, 1)
-        self.Normalize()
-\end{verbatim}
+The likelihood function is relatively easy: If $H_x$ is true, the
+probability of heads is $x/100$ and the probability of tails is $1-
+x/100$.
 
-A Cookie object is a Pmf that maps from hypotheses to their
-probabilities.  The \verb"__init__" method gives each hypothesis
-the same prior probability.  As in the previous section, there are
-two hypotheses:
-
-\begin{verbatim}
-    hypos = ['Bowl 1', 'Bowl 2']
-    pmf = Cookie(hypos)
-\end{verbatim}
-
-\verb"Cookie" provides an \verb"Update" method that takes
-data as a parameter and updates the probabilities:
-\index{Update}
-
-\begin{verbatim}
-    def Update(self, data):
-        for hypo in self.Values():
-            like = self.Likelihood(data, hypo)
-            self.Mult(hypo, like)
-        self.Normalize()
-\end{verbatim}
-
-\verb"Update" loops through each hypothesis in the suite
-and multiplies its probability by the likelihood of the
-data under the hypothesis, which is computed by \verb"Likelihood":
-\index{Likelihood}
-
-\begin{verbatim}
-    mixes = {
-        'Bowl 1':dict(vanilla=0.75, chocolate=0.25),
-        'Bowl 2':dict(vanilla=0.5, chocolate=0.5),
-        }
+\begin{code}
+class Euro(Suite):
 
     def Likelihood(self, data, hypo):
-        mix = self.mixes[hypo]
-        like = mix[data]
-        return like
-\end{verbatim}
+        x = hypo
+        if data == 'H':
+            return x/100.0
+        else:
+            return 1 - x/100.0
+\end{code}
 
-\verb"Likelihood" uses \verb"mixes", which is a dictionary
-that maps from the name of a bowl to the mix of cookies in
-the bowl.
+Here's the code that makes the suite and updates it:
 
-Here's what the update looks like:
+\begin{code}
+    suite = Euro(xrange(0, 101))
+    dataset = 'H' * 140 + 'T' * 110
 
-\begin{verbatim}
-    pmf.Update('vanilla')
-\end{verbatim}
-
-And then we can print the posterior probability of each hypothesis:
-
-\begin{verbatim}
-    for hypo, prob in pmf.Items():
-        print hypo, prob
-\end{verbatim}
-
-The result is
-
-\begin{verbatim}
-Bowl 1 0.6
-Bowl 2 0.4
-\end{verbatim}
-
-which is the same as what we got before.  This code is more complicated
-than what we saw in the previous section.  One advantage is that it
-generalizes to the case where we draw more than one cookie from the
-same bowl (with replacement):
-
-\begin{verbatim}
-    dataset = ['vanilla', 'chocolate', 'vanilla']
     for data in dataset:
-        pmf.Update(data)
-\end{verbatim}
+        suite.Update(data)
+\end{code}
 
-The other advantage is that it provides a framework for solving many
-similar problems.  In the next section we'll solve the Monty Hall
-problem computationally and then see what parts of the framework are
-the same.
+The result is in Figure~\ref{fig.euro1}.
 
-The code in this section is available from
-\url{http://thinkbayes.com/cookie2.py}.
-  For more information
-see Section~\ref{download}.
 
-\section{The Monty Hall problem}
+\section{Summarizing the posterior}
 
-To solve the Monty Hall problem, I'll define a new class:
-\index{Monty Hall problem}
+Again, there are several ways to summarize the posterior distribution.
+One option is to find the most likely value in the posterior
+distribution.  \verb"thinkbayes" provides a function that does 
+that:
+\index{posterior distribution}
+\index{maximum likelihood}
 
-\begin{verbatim}
-class Monty(Pmf):
+\begin{code}
+def MaximumLikelihood(pmf):
+    """Returns the value with the highest probability."""
+    prob, val = max((prob, val) for val, prob in pmf.Items())
+    return val
+\end{code}
 
-    def __init__(self, hypos):
-        Pmf.__init__(self)
-        for hypo in hypos:
-            self.Set(hypo, 1)
-        self.Normalize()
-\end{verbatim}
+In this case the result is 56, which is also the observed percentage of
+heads, $140/250 = 56\%$.  So that suggests (correctly) that the
+observed percentage is the maximum likelihood estimator
+for the population.
 
-So far \verb"Monty" and \verb"Cookie" are exactly the same.
-And the code that creates the Pmf is the same, too, except for
-the names of the hypotheses:
+We might also summarize the posterior by computing the mean
+and median:
+\index{median}
 
-\begin{verbatim}
-    hypos = 'ABC'
-    pmf = Monty(hypos)
-\end{verbatim}
+\begin{code}
+    print 'Mean', suite.Mean()
+    print 'Median', thinkbayes.Percentile(suite, 50)
+\end{code}
 
-Calling \verb"Update" is pretty much the same:
+The mean is 55.95; the median is 56.  Finally, we can compute a
+credible interval: 
 
-\begin{verbatim}
-    data = 'B'
-    pmf.Update(data)
-\end{verbatim}
+\begin{code}
+    print 'CI', thinkbayes.CredibleInterval(suite, 90)
+\end{code}
 
-And the implementation of \verb"Update" is exactly the same:
+The result is $(51, 61)$.
 
-\begin{verbatim}
+Now, getting back to the original question, we would like to know
+whether the coin is fair.  We observe that the posterior credible
+interval does not include 50\%, which suggests that the coin is not
+fair.
+
+But that is not exactly the question we started with.  MacKay asked,
+`` Do these data give evidence that the coin is biased rather than
+fair?''  To answer that question, we will have to be more precise
+about what it means to say that data constitute evidence for
+a hypothesis.  And that is the subject of the next chapter.
+\index{evidence}
+
+But before we go on, I want to address one possible source of confusion.
+Since we want to know whether the coin is fair, it might be tempting
+to ask for the probability that {\tt x} is 50\%:
+
+\begin{code}
+    print suite.Prob(50)
+\end{code}
+
+The result is 0.021, but that value is almost meaningless.  The
+decision to evaluate 101 hypotheses was arbitrary; we could have
+divided the range into more or fewer pieces, and if we had, the
+probability for any given hypothesis would be greater or less.
+
+
+\section{Swamping the priors}
+\label{triangle}
+
+\begin{figure}
+% euro.py
+\centerline{\includegraphics[height=2.5in]{figs/euro2.pdf}}
+\caption{Uniform and triangular priors for the
+Euro problem.}
+\label{fig.euro2}
+\end{figure}
+
+\begin{figure}
+% euro.py
+\centerline{\includegraphics[height=2.5in]{figs/euro3.pdf}}
+\caption{Posterior distributions for the Euro problem.}
+\label{fig.euro3}
+\end{figure}
+
+We started with a uniform prior, but that might not be a good
+choice.  I can believe
+that if a coin is lopsided, $x$ might deviate substantially from
+50\%, but it seems unlikely that the Belgian Euro coin is so
+imbalanced that $x$ is 10\% or 90\%.
+
+It might be more reasonable to choose a prior that gives
+higher probability to values of $x$ near 50\% and lower probability
+to extreme values.
+
+As an example, I constructed a triangular prior, shown in
+Figure~\ref{fig.euro2}.  Here's the code that constructs the prior:
+
+\begin{code}
+def TrianglePrior():
+    suite = Euro()
+    for x in range(0, 51):
+        suite.Set(x, x)
+    for x in range(51, 101):
+        suite.Set(x, 100-x) 
+    suite.Normalize()
+\end{code}
+
+Figure~\ref{fig.euro2} shows the result (and the uniform prior for
+comparison).
+Updating this prior with the same dataset yields the posterior
+distribution shown in Figure~\ref{fig.euro3}.  Even with substantially
+different priors, the posterior distributions are very similar.  The
+medians and the credible intervals are identical; the means differ by
+less than 0.5\%.  \index{triangle distribution}
+
+This is an example of {\bf swamping the priors}: with enough
+data, people who start with different priors will tend to
+converge on the same posterior.
+\index{swamping the priors}
+\index{convergence}
+
+
+\section{Optimization}
+
+The code I have shown so far is meant to be easy to read, but it
+is not very efficient.  In general, I like to develop code that
+is demonstrably correct, then check whether it is fast enough for
+my purposes.  If so, there is no need to optimize.
+For this example, if we care about run time,
+there are several ways we can speed it up.
+\index{optimization}
+
+The first opportunity is to reduce the number of times we
+normalize the suite.
+In the original code, we call \verb"Update" once for each spin.
+
+\begin{code}
+    dataset = 'H' * heads + 'T' * tails
+
+    for data in dataset:
+        suite.Update(data)
+\end{code}
+
+And here's what \verb"Update" looks like:
+
+\begin{code}
     def Update(self, data):
         for hypo in self.Values():
             like = self.Likelihood(data, hypo)
             self.Mult(hypo, like)
-        self.Normalize()
-\end{verbatim}
+        return self.Normalize()
+\end{code}
 
-The only part that requires some work is \verb"Likelihood":
+Each update iterates through the hypotheses, then calls \verb"Normalize",
+which iterates through the hypotheses again.  We can save some
+time by doing all of the updates before normalizing.
 
-\begin{verbatim}
+\verb"Suite" provides a method called \verb"UpdateSet" that does
+exactly that.  Here it is:
+
+\begin{code}
+    def UpdateSet(self, dataset):
+        for data in dataset:
+            for hypo in self.Values():
+                like = self.Likelihood(data, hypo)
+                self.Mult(hypo, like)
+        return self.Normalize()
+\end{code}
+
+And here's how we can invoke it:
+
+\begin{code}
+    dataset = 'H' * heads + 'T' * tails
+    suite.UpdateSet(dataset)
+\end{code}
+
+This optimization speeds things up, but the run time is still
+proportional to the amount of data.  We can speed things up
+even more by rewriting \verb"Likelihood" to process the entire
+dataset, rather than one spin at a time.
+
+In the original version,
+\verb"data" is a string that encodes either heads or tails:
+
+\begin{code}
     def Likelihood(self, data, hypo):
-        if hypo == data:
-            return 0
-        elif hypo == 'A':
-            return 0.5
+        x = hypo / 100.0
+        if data == 'H':
+            return x
         else:
-            return 1
-\end{verbatim}
+            return 1-x
+\end{code}
 
-Finally, printing the results is the same:
+As an alternative, we could encode the dataset as a tuple of 
+two integers: the number of heads and tails.
+In that case \verb"Likelihood" looks like this:
+\index{tuple}
 
-\begin{verbatim}
-    for hypo, prob in pmf.Items():
-        print hypo, prob
-\end{verbatim}
+\begin{code}
+    def Likelihood(self, data, hypo):
+        x = hypo / 100.0
+        heads, tails = data
+        like = x**heads * (1-x)**tails
+        return like
+\end{code}
 
-And the answer is
+And then we can call \verb"Update" like this:
 
-\begin{verbatim}
-A 0.333333333333
-B 0.0
-C 0.666666666667
-\end{verbatim}
+\begin{code}
+    heads, tails = 140, 110
+    suite.Update((heads, tails))
+\end{code}
 
-In this example, writing \verb"Likelihood" is a little complicated,
-but the framework of the Bayesian update is simple.  The code in
-this section is available from \url{http://thinkbayes.com/monty.py}.
-  For more information
-see Section~\ref{download}.
+Since we have replaced repeated multiplication with exponentiation,
+this version takes the same time for any number of spins.
 
-\section{Encapsulating the framework}
 
-\index{Suite class}
-Now that we see what elements of the framework are the same, we
-can encapsulate them in an object---a \verb"Suite" is a \verb"Pmf"
-that provides \verb"__init__", \verb"Update", and \verb"Print":
+%TODO: postpone this section
+\section{The beta distribution}
+\label{beta}
 
-\begin{verbatim}
-class Suite(Pmf):
-    """Represents a suite of hypotheses and their probabilities."""
+\index{beta distribution}
+There is one more optimization that solves this problem
+even faster.
 
-    def __init__(self, hypo=tuple()):
-        """Initializes the distribution."""
+So far we have used a Pmf object to represent a discrete set of
+values for {\tt x}.  Now we will use a continuous
+distribution, specifically the beta distribution (see
+\url{http://en.wikipedia.org/wiki/Beta_distribution}).
+\index{continuous distribution}
 
+The beta distribution is defined on the interval from 0 to 1
+(including both), so it is a natural choice for describing
+proportions and probabilities.  But wait, it gets better.
+
+%TODO: explain the binomial distribution in the previous section
+
+It turns out that if you do a Bayesian update with a binomial
+likelihood function, which is what we did in the previous section, the beta
+distribution is a {\bf conjugate prior}.  That means that if the prior
+distribution for {\tt x} is a beta distribution, the posterior is also
+a beta distribution.  But wait, it gets even better.
+\index{binomial likelihood function}
+\index{conjugate prior}
+
+The shape of the beta distribution depends on two parameters, written
+$\alpha$ and $\beta$, or {\tt alpha} and {\tt beta}.  If the prior
+is a beta distribution with parameters {\tt alpha} and {\tt beta}, and
+we see data with {\tt h} heads and {\tt t} tails, the posterior is a
+beta distribution with parameters {\tt alpha+h} and {\tt beta+t}.  In
+other words, we can do an update with two additions.
+\index{parameter}
+
+So that's great, but it only works if we can find a beta distribution
+that is a good choice for a prior.  Fortunately, for many realistic
+priors there is a beta distribution that is at least a good
+approximation, and for a uniform prior there is a perfect match.  The
+beta distribution with {\tt alpha=1} and {\tt beta=1} is uniform from
+0 to 1.
+
+Let's see how we can take advantage of all this.  
+{\tt thinkbayes.py} provides 
+a class that represents a beta distribution:
+\index{Beta object}
+
+\begin{code}
+class Beta(object):
+
+    def __init__(self, alpha=1, beta=1):
+        self.alpha = alpha
+        self.beta = beta
+\end{code}
+
+By default \verb"__init__" makes a uniform distribution.
+{\tt Update} performs a Bayesian update:
+
+\begin{code}
     def Update(self, data):
-        """Updates each hypothesis based on the data."""
+        heads, tails = data
+        self.alpha += heads
+        self.beta += tails
+\end{code}
 
-    def Print(self):
-        """Prints the hypotheses and their probabilities."""
-\end{verbatim}
+{\tt data} is a pair of integers representing the number of
+heads and tails.
 
-The implementation of \verb"Suite" is in \verb"thinkbayes.py".  To use
-\verb"Suite", you should write a class that inherits from it and
-provides \verb"Likelihood".  For example, here is the solution to the
-Monty Hall problem rewritten to use \verb"Suite":
+So we have yet another way to solve the Euro problem:
 
-\begin{verbatim}
-from thinkbayes import Suite
+\begin{code}
+    beta = thinkbayes.Beta()
+    beta.Update((140, 110))
+    print beta.Mean()
+\end{code}
 
-class Monty(Suite):
+{\tt Beta} provides {\tt Mean}, which 
+computes a simple function of {\tt alpha}
+and {\tt beta}:
 
-    def Likelihood(self, data, hypo):
-        if hypo == data:
-            return 0
-        elif hypo == 'A':
-            return 0.5
-        else:
-            return 1
-\end{verbatim}
+\begin{code}
+    def Mean(self):
+        return float(self.alpha) / (self.alpha + self.beta)
+\end{code}
 
-And here's the code that uses this class:
+For the Euro problem the posterior mean is 56\%, which is the
+same result we got using Pmfs.  
 
-\begin{verbatim}
-    suite = Monty('ABC')
-    suite.Update('B')
-    suite.Print()
-\end{verbatim}
+{\tt Beta} also provides {\tt EvalPdf}, which evaluates
+the probability density
+function (PDF)  of the beta distribution:
+\index{probability density function}
+\index{PDF}
 
-You can download this example from
-\url{http://thinkbayes.com/monty2.py}.
-  For more information
-see Section~\ref{download}.
+\begin{code}
+    def EvalPdf(self, x):
+        return x**(self.alpha-1) * (1-x)**(self.beta-1)
+\end{code}
 
+Finally, {\tt Beta} provides {\tt MakePmf}, which
+uses {\tt EvalPdf} to generate a discrete approximation
+of the beta distribution.
 
+%This expression might look familiar.  Here's {\tt
+%  thinkbayes.EvalBinomialPmf}
+
+%\begin{code}
+%def EvalBinomialPmf(x, yes, no): 
+%    return x**yes * (1-x)**no
+%\end{code}
+
+%It's the same function, but in {\tt EvalPdf}, we think of {\tt x} as a
+%random variable and {\tt alpha} and {\tt beta} as parameters; in {\tt
+%  EvalBinomialPmf}, {\tt x} is the parameter, and {\tt yes} and {\tt
+%  no} are random variables.  Distributions like these that share the
+%same PDF are called {\bf conjugate distributions}.
+%\index{conjugate distribution}
 
 
 \section{Discussion}
 
-This chapter presents the Suite class, which encapsulates the 
-Bayesian update framework.
+In this chapter we solved the same problem with two different 
+priors and found that with a large dataset, the priors get
+swamped.  If two people start with different
+prior beliefs, they generally find, as they see more data, that
+their posterior distributions converge.  At some point the
+difference between their distributions is small enough that it has
+no practical effect.
+\index{swamping the priors}
+\index{convergence}
 
-{\tt Suite} is an {\bf abstract type}, which means that it defines the
-interface a Suite is supposed to have, but does not provide a complete
-implementation.  The {\tt Suite} interface includes {\tt Update} and
-{\tt Likelihood}, but the {\tt Suite} class only provides an
-implementation of {\tt Update}, not {\tt Likelihood}.
-\index{abstract type} \index{concrete type} \index{interface}
-\index{implementation}
+When this happens, it relieves some of the worry about objectivity
+that I discussed in the previous chapter.  And for many real-world
+problems even stark prior beliefs can eventually be reconciled
+by data.
 
-A {\bf concrete type} is a class that extends an abstract parent
-class and provides an implementation of the missing methods.
-For example, {\tt Monty} extends {\tt Suite}, so it inherits
-{\tt Update} and provides {\tt Likelihood}.
+But that is not always the case.  First, remember that all Bayesian
+analysis is based on modeling decisions.  If you and I do not
+choose the same model, we might interpret data differently.  So
+even with the same data, we would compute different likelihoods,
+and our posterior beliefs might not converge.
+\index{modeling}
 
-If you are familiar with
-design patterns, you might recognize this as an example of the
-template method pattern.
-You can read about this pattern at
-\url{http://en.wikipedia.org/wiki/Template_method_pattern}.
-\index{template method pattern}
+Also, notice that in a Bayesian update, we multiply
+each prior probability by a likelihood, so if \p{H} is 0,
+\p{H|D} is also 0, regardless of $D$.  In the Euro problem,
+if you are convinced that $x$ is less than 50\%, and you assign
+probability 0 to all other hypotheses, no amount of data will
+convince you otherwise.
+\index{Euro problem}
 
-Most of the examples in the following chapters follow the same
-pattern; for each problem we define a new class that extends {\tt
-  Suite}, inherits {\tt Update}, and provides {\tt Likelihood}.  In a
-few cases we override {\tt Update}, usually to improve performance.
+This observation is the basis of {\bf Cromwell's rule}, which is the
+recommendation that you should avoid giving a prior probability of
+0 to any hypothesis that is even remotely possible
+(see \url{http://en.wikipedia.org/wiki/Cromwell's_rule}).
+\index{Cromwell's rule}
+
+Cromwell's rule is named after Oliver Cromwell, who wrote, ``I beseech
+you, in the bowels of Christ, think it possible that you may be
+mistaken.''  For Bayesians, this turns out to be good advice (even if
+it's a little overwrought).
+\index{Cromwell, Oliver}
+
 
 \section{Exercises}
 
 \begin{exercise}
 
-In Section~\ref{framework} I said that the solution to the cookie
-problem generalizes to the case where we draw multiple cookies
-with replacement.
+Suppose that instead of observing coin tosses directly, you measure
+the outcome using an instrument that is not always correct.  Specifically,
+suppose there is a probability {\tt y} that an actual heads is reported
+as tails, or actual tails reported as heads.
 
-But in the more likely scenario where we eat the cookies we draw,
-the likelihood of each draw depends on the previous draws.
+Write a class that estimates the bias of a coin given a series of
+outcomes and the value of {\tt y}.
 
-Modify the solution in this chapter to handle selection without
-replacement.  Hint: add instance variables to {\tt Cookie} to
-represent the hypothetical state of the bowls, and modify
-{\tt Likelihood} accordingly.  You might want to define a 
-{\tt Bowl} object.
+How does the spread of the posterior distribution depend on
+{\tt y}?
 
 \end{exercise}
 
 
+\begin{exercise}
+
+\index{Reddit}
+This exercise is inspired by a question posted by a
+``redditor'' named dominosci on Reddit's statistics ``subreddit'' at
+\url{http://reddit.com/r/statistics}.
+
+Reddit is an online forum with many interest groups called
+subreddits.  Users, called redditors, post links to online
+content and other web pages.  Other redditors vote on the links,
+giving an ``upvote'' to high-quality links and a ``downvote'' to
+links that are bad or irrelevant.
+
+A problem, identified by dominosci, is that some redditors
+are more reliable than others, and Reddit does not take
+this into account.
+
+The challenge is to devise a system so that when a redditor
+casts a vote, the estimated quality of the link is updated
+in accordance with the reliability of the redditor, and the
+estimated reliability of the redditor is updated in accordance
+with the quality of the link.
+
+One approach is to model the quality of the link as the
+probability of garnering an upvote, and to model the reliability
+of the redditor as the probability of correctly giving an upvote
+to a high-quality item.
+
+Write class definitions for redditors and links and an update function
+that updates both objects whenever a redditor casts a vote.
+
+\end{exercise}
 
 
-\chapter{Estimation}
+\chapter{More Estimation}
 \label{estimation}
 
 \section{The dice problem}
@@ -1600,22 +2165,22 @@ In previous examples I used strings to represent hypotheses and
 data, but for the die problem I'll use numbers.  Specifically,
 I'll use the integers 4, 6, 8, 12, and 20 to represent hypotheses:
 
-\begin{verbatim}
+\begin{code}
     suite = Dice([4, 6, 8, 12, 20])
-\end{verbatim}
+\end{code}
 
 And integers from 1 to 20 for the data.
 These representations make it easy to
 write the likelihood function:
 
-\begin{verbatim}
+\begin{code}
 class Dice(Suite):
     def Likelihood(self, data, hypo):
         if hypo < data:
             return 0
         else:
             return 1.0/hypo
-\end{verbatim}
+\end{code}
 
 Here's how \verb"Likelihood" works.  If \verb"hypo<data", that
 means the roll is greater than the number of sides on the die.
@@ -1627,19 +2192,19 @@ answer is \verb"1/hypo", regardless of {\tt data}.
 
 Here is the statement that does the update (if I roll a 6):
 
-\begin{verbatim}
+\begin{code}
     suite.Update(6)
-\end{verbatim}
+\end{code}
 
 And here is the posterior distribution:
 
-\begin{verbatim}
+\begin{code}
 4 0.0
 6 0.392156862745
 8 0.294117647059
 12 0.196078431373
 20 0.117647058824
-\end{verbatim}
+\end{code}
 
 After we roll a 6, the probability for the 4-sided die is 0.  The
 most likely alternative is the 6-sided die, but there is still
@@ -1647,21 +2212,21 @@ almost a 12\% chance for the 20-sided die.
 
 What if we roll a few more times and get 6, 8, 7, 7, 5, and 4?
 
-\begin{verbatim}
+\begin{code}
     for roll in [6, 8, 7, 7, 5, 4]:
         suite.Update(roll)
-\end{verbatim}
+\end{code}
 
 With this data the 6-sided die is eliminated, and the 8-sided
 die seems quite likely.  Here are the results:
 
-\begin{verbatim}
+\begin{code}
 4 0.0
 6 0.0
 8 0.943248453672
 12 0.0552061280613
 20 0.0015454182665
-\end{verbatim}
+\end{code}
 
 Now the probability is 94\% that we are rolling the 8-sided die,
 and less than 1\% for the 20-sided die.
@@ -1715,9 +2280,9 @@ We don't have much basis to choose a prior, but we can start with
 something simple and then consider alternatives.  Let's assume that
 $N$ is equally likely to be any value from 1 to 1000.
 
-\begin{verbatim}
+\begin{code}
     hypos = xrange(1, 1001)
-\end{verbatim}
+\end{code}
 
 Now all we need is a likelihood function.  In a hypothetical fleet of
 $N$ locomotives, what is the probability that we would see number 60?
@@ -1729,14 +2294,14 @@ $1/N$.
 Here's the likelihood function:
 \index{likelihood function}
 
-\begin{verbatim}
+\begin{code}
 class Train(Suite):
     def Likelihood(self, data, hypo):
         if hypo < data:
             return 0
         else:
             return 1.0/hypo
-\end{verbatim}
+\end{code}
 
 This might look familiar; the likelihood functions for the locomotive
 problem and the dice problem are identical.
@@ -1744,10 +2309,10 @@ problem and the dice problem are identical.
 
 Here's the update:
 
-\begin{verbatim}
+\begin{code}
     suite = Train(hypos)
     suite.Update(60)
-\end{verbatim}
+\end{code}
 
 There are too many hypotheses to print, so I plotted the
 results in Figure~\ref{fig.train1}.  Not surprisingly, all
@@ -1764,7 +2329,7 @@ But maybe that's
 not the right goal.  An alternative is to compute the
 mean of the posterior distribution:
 
-\begin{verbatim}
+\begin{code}
 def Mean(suite):
     total = 0
     for hypo, prob in suite.Items():
@@ -1772,13 +2337,13 @@ def Mean(suite):
     return total
 
 print Mean(suite)
-\end{verbatim}
+\end{code}
 
 Or you could use the very similar method provided by {\tt Pmf}:
 
-\begin{verbatim}
+\begin{code}
     print suite.Mean()
-\end{verbatim}
+\end{code}
 
 The mean of the posterior is 333, so that might be a
 good guess if you wanted to minimize error.  If you played this
@@ -1826,10 +2391,10 @@ priors tend to converge.  For example, suppose that in addition
 to train 60 we also see trains 30 and 90.  We can update the
 distribution like this:
 
-\begin{verbatim}
+\begin{code}
     for data in [60, 30, 90]:
         suite.Update(data)
-\end{verbatim}
+\end{code}
 
 With these data, the means of the posteriors are
 
@@ -1890,7 +2455,7 @@ a parameter that is often near 1.
 
 We can construct a power law prior like this:
 
-\begin{verbatim}
+\begin{code}
 class Train(Dice):
 
     def __init__(self, hypos, alpha=1.0):
@@ -1898,14 +2463,14 @@ class Train(Dice):
         for hypo in hypos:
             self.Set(hypo, hypo**(-alpha))
         self.Normalize()
-\end{verbatim}
+\end{code}
 
 And here's the code that constructs the prior:
 
-\begin{verbatim}
+\begin{code}
     hypos = range(1, 1001)
     suite = Train(hypos)
-\end{verbatim}
+\end{code}
 
 Again, the upper bound is arbitrary, but with a power law
 prior, the posterior is less sensitive to this choice.
@@ -1965,7 +2530,7 @@ the 5th and 95th percentiles.
 
 \verb"thinkbayes" provides a function that computes percentiles:
 
-\begin{verbatim}
+\begin{code}
 def Percentile(pmf, percentage):
     p = percentage / 100.0
     total = 0
@@ -1973,14 +2538,14 @@ def Percentile(pmf, percentage):
         total += prob
         if total >= p:
             return val    
-\end{verbatim}
+\end{code}
 
 And here's the code that uses it:
 
-\begin{verbatim}
+\begin{code}
     interval = Percentile(suite, 5), Percentile(suite, 95)
     print interval
-\end{verbatim}
+\end{code}
 
 For the previous example---the locomotive problem with a power law prior
 and three trains---the 90\% credible interval is $(91, 243)$.  The
@@ -2006,15 +2571,15 @@ compute percentiles more efficiently.
 cumulative distribution function.  {\tt Pmf} provides a method
 that makes the corresponding Cdf:
 
-\begin{verbatim}
+\begin{code}
 cdf = suite.MakeCdf()
-\end{verbatim}
+\end{code}
 
 And {\tt Cdf} provides a function named \verb"Percentile"
 
-\begin{verbatim}
+\begin{code}
     interval = cdf.Percentile(5), cdf.Percentile(95)
-\end{verbatim}
+\end{code}
 
 Converting from a Pmf to a Cdf takes time proportional to the number
 of values, {\tt len(pmf)}.  The Cdf stores the values and
@@ -2138,522 +2703,6 @@ of the locomotive problem, and compare the results.
 
 
 
-\chapter{More Estimation}
-\label{more}
-
-\section{The Euro problem}
-\label{euro}
-
-\index{Euro problem}
-\index{MacKay, David}
-In {\it Information Theory, Inference, and Learning Algorithms}, David MacKay
-poses this problem:
-
-\begin{quote}
-A statistical statement appeared in ``The Guardian" on Friday January 4, 2002:
-
-  \begin{quote}
-        When spun on edge 250 times, a Belgian one-euro coin came
-        up heads 140 times and tails 110.  `It looks very suspicious
-        to me,' said Barry Blight, a statistics lecturer at the London
-        School of Economics.  `If the coin were unbiased, the chance of
-        getting a result as extreme as that would be less than 7\%.'
-        \end{quote}
-
-But do these data give evidence that the coin is biased rather than fair?
-\end{quote}
-
-To answer that question, we'll proceed in two steps.  The first
-is to estimate the probability that the coin lands face up.  The second
-is to evaluate whether the data support the hypothesis that the
-coin is biased.
-
-You can download the code in this section from
-\url{http://thinkbayes.com/euro.py}.
-  For more information
-see Section~\ref{download}.
-
-Any given coin has some probability, $x$, of landing heads up when spun
-on edge.  It seems reasonable to believe that the value of $x$ depends
-on some physical characteristics of the coin, primarily the distribution
-of weight.
-
-If a coin is perfectly balanced, we expect $x$ to be close to 50\%, but
-for a lopsided coin, $x$ might be substantially different.  We can use
-Bayes's theorem and the observed data to estimate $x$.
-
-Let's define 101 hypotheses, where $H_x$ is the hypothesis that the
-probability of heads is $x$\%, for values from 0 to 100.  I'll
-start with a uniform prior where the probability of $H_x$ is the same
-for all $x$.  We'll come back later to consider other priors.
-\index{uniform distribution}
-
-\begin{figure}
-% euro.py
-\centerline{\includegraphics[height=2.5in]{figs/euro1.pdf}}
-\caption{Posterior distribution for the Euro problem
-on a uniform prior.}
-\label{fig.euro1}
-\end{figure}
-
-The likelihood function is relatively easy: If $H_x$ is true, the
-probability of heads is $x/100$ and the probability of tails is $1-
-x/100$.
-
-\begin{verbatim}
-class Euro(Suite):
-
-    def Likelihood(self, data, hypo):
-        x = hypo
-        if data == 'H':
-            return x/100.0
-        else:
-            return 1 - x/100.0
-\end{verbatim}
-
-Here's the code that makes the suite and updates it:
-
-\begin{verbatim}
-    suite = Euro(xrange(0, 101))
-    dataset = 'H' * 140 + 'T' * 110
-
-    for data in dataset:
-        suite.Update(data)
-\end{verbatim}
-
-The result is in Figure~\ref{fig.euro1}.
-
-
-\section{Summarizing the posterior}
-
-Again, there are several ways to summarize the posterior distribution.
-One option is to find the most likely value in the posterior
-distribution.  \verb"thinkbayes" provides a function that does 
-that:
-\index{posterior distribution}
-\index{maximum likelihood}
-
-\begin{verbatim}
-def MaximumLikelihood(pmf):
-    """Returns the value with the highest probability."""
-    prob, val = max((prob, val) for val, prob in pmf.Items())
-    return val
-\end{verbatim}
-
-In this case the result is 56, which is also the observed percentage of
-heads, $140/250 = 56\%$.  So that suggests (correctly) that the
-observed percentage is the maximum likelihood estimator
-for the population.
-
-We might also summarize the posterior by computing the mean
-and median:
-\index{median}
-
-\begin{verbatim}
-    print 'Mean', suite.Mean()
-    print 'Median', thinkbayes.Percentile(suite, 50)
-\end{verbatim}
-
-The mean is 55.95; the median is 56.  Finally, we can compute a
-credible interval: 
-
-\begin{verbatim}
-    print 'CI', thinkbayes.CredibleInterval(suite, 90)
-\end{verbatim}
-
-The result is $(51, 61)$.
-
-Now, getting back to the original question, we would like to know
-whether the coin is fair.  We observe that the posterior credible
-interval does not include 50\%, which suggests that the coin is not
-fair.
-
-But that is not exactly the question we started with.  MacKay asked,
-`` Do these data give evidence that the coin is biased rather than
-fair?''  To answer that question, we will have to be more precise
-about what it means to say that data constitute evidence for
-a hypothesis.  And that is the subject of the next chapter.
-\index{evidence}
-
-But before we go on, I want to address one possible source of confusion.
-Since we want to know whether the coin is fair, it might be tempting
-to ask for the probability that {\tt x} is 50\%:
-
-\begin{verbatim}
-    print suite.Prob(50)
-\end{verbatim}
-
-The result is 0.021, but that value is almost meaningless.  The
-decision to evaluate 101 hypotheses was arbitrary; we could have
-divided the range into more or fewer pieces, and if we had, the
-probability for any given hypothesis would be greater or less.
-
-
-\section{Swamping the priors}
-\label{triangle}
-
-\begin{figure}
-% euro.py
-\centerline{\includegraphics[height=2.5in]{figs/euro2.pdf}}
-\caption{Uniform and triangular priors for the
-Euro problem.}
-\label{fig.euro2}
-\end{figure}
-
-\begin{figure}
-% euro.py
-\centerline{\includegraphics[height=2.5in]{figs/euro3.pdf}}
-\caption{Posterior distributions for the Euro problem.}
-\label{fig.euro3}
-\end{figure}
-
-We started with a uniform prior, but that might not be a good
-choice.  I can believe
-that if a coin is lopsided, $x$ might deviate substantially from
-50\%, but it seems unlikely that the Belgian Euro coin is so
-imbalanced that $x$ is 10\% or 90\%.
-
-It might be more reasonable to choose a prior that gives
-higher probability to values of $x$ near 50\% and lower probability
-to extreme values.
-
-As an example, I constructed a triangular prior, shown in
-Figure~\ref{fig.euro2}.  Here's the code that constructs the prior:
-
-\begin{verbatim}
-def TrianglePrior():
-    suite = Euro()
-    for x in range(0, 51):
-        suite.Set(x, x)
-    for x in range(51, 101):
-        suite.Set(x, 100-x) 
-    suite.Normalize()
-\end{verbatim}
-
-Figure~\ref{fig.euro2} shows the result (and the uniform prior for
-comparison).
-Updating this prior with the same dataset yields the posterior
-distribution shown in Figure~\ref{fig.euro3}.  Even with substantially
-different priors, the posterior distributions are very similar.  The
-medians and the credible intervals are identical; the means differ by
-less than 0.5\%.  \index{triangle distribution}
-
-This is an example of {\bf swamping the priors}: with enough
-data, people who start with different priors will tend to
-converge on the same posterior.
-\index{swamping the priors}
-\index{convergence}
-
-
-\section{Optimization}
-
-The code I have shown so far is meant to be easy to read, but it
-is not very efficient.  In general, I like to develop code that
-is demonstrably correct, then check whether it is fast enough for
-my purposes.  If so, there is no need to optimize.
-For this example, if we care about run time,
-there are several ways we can speed it up.
-\index{optimization}
-
-The first opportunity is to reduce the number of times we
-normalize the suite.
-In the original code, we call \verb"Update" once for each spin.
-
-\begin{verbatim}
-    dataset = 'H' * heads + 'T' * tails
-
-    for data in dataset:
-        suite.Update(data)
-\end{verbatim}
-
-And here's what \verb"Update" looks like:
-
-\begin{verbatim}
-    def Update(self, data):
-        for hypo in self.Values():
-            like = self.Likelihood(data, hypo)
-            self.Mult(hypo, like)
-        return self.Normalize()
-\end{verbatim}
-
-Each update iterates through the hypotheses, then calls \verb"Normalize",
-which iterates through the hypotheses again.  We can save some
-time by doing all of the updates before normalizing.
-
-\verb"Suite" provides a method called \verb"UpdateSet" that does
-exactly that.  Here it is:
-
-\begin{verbatim}
-    def UpdateSet(self, dataset):
-        for data in dataset:
-            for hypo in self.Values():
-                like = self.Likelihood(data, hypo)
-                self.Mult(hypo, like)
-        return self.Normalize()
-\end{verbatim}
-
-And here's how we can invoke it:
-
-\begin{verbatim}
-    dataset = 'H' * heads + 'T' * tails
-    suite.UpdateSet(dataset)
-\end{verbatim}
-
-This optimization speeds things up, but the run time is still
-proportional to the amount of data.  We can speed things up
-even more by rewriting \verb"Likelihood" to process the entire
-dataset, rather than one spin at a time.
-
-In the original version,
-\verb"data" is a string that encodes either heads or tails:
-
-\begin{verbatim}
-    def Likelihood(self, data, hypo):
-        x = hypo / 100.0
-        if data == 'H':
-            return x
-        else:
-            return 1-x
-\end{verbatim}
-
-As an alternative, we could encode the dataset as a tuple of 
-two integers: the number of heads and tails.
-In that case \verb"Likelihood" looks like this:
-\index{tuple}
-
-\begin{verbatim}
-    def Likelihood(self, data, hypo):
-        x = hypo / 100.0
-        heads, tails = data
-        like = x**heads * (1-x)**tails
-        return like
-\end{verbatim}
-
-And then we can call \verb"Update" like this:
-
-\begin{verbatim}
-    heads, tails = 140, 110
-    suite.Update((heads, tails))
-\end{verbatim}
-
-Since we have replaced repeated multiplication with exponentiation,
-this version takes the same time for any number of spins.
-
-
-\section{The beta distribution}
-\label{beta}
-
-\index{beta distribution}
-There is one more optimization that solves this problem
-even faster.
-
-So far we have used a Pmf object to represent a discrete set of
-values for {\tt x}.  Now we will use a continuous
-distribution, specifically the beta distribution (see
-\url{http://en.wikipedia.org/wiki/Beta_distribution}).
-\index{continuous distribution}
-
-The beta distribution is defined on the interval from 0 to 1
-(including both), so it is a natural choice for describing
-proportions and probabilities.  But wait, it gets better.
-
-%TODO: explain the binomial distribution in the previous section
-
-It turns out that if you do a Bayesian update with a binomial
-likelihood function, which is what we did in the previous section, the beta
-distribution is a {\bf conjugate prior}.  That means that if the prior
-distribution for {\tt x} is a beta distribution, the posterior is also
-a beta distribution.  But wait, it gets even better.
-\index{binomial likelihood function}
-\index{conjugate prior}
-
-The shape of the beta distribution depends on two parameters, written
-$\alpha$ and $\beta$, or {\tt alpha} and {\tt beta}.  If the prior
-is a beta distribution with parameters {\tt alpha} and {\tt beta}, and
-we see data with {\tt h} heads and {\tt t} tails, the posterior is a
-beta distribution with parameters {\tt alpha+h} and {\tt beta+t}.  In
-other words, we can do an update with two additions.
-\index{parameter}
-
-So that's great, but it only works if we can find a beta distribution
-that is a good choice for a prior.  Fortunately, for many realistic
-priors there is a beta distribution that is at least a good
-approximation, and for a uniform prior there is a perfect match.  The
-beta distribution with {\tt alpha=1} and {\tt beta=1} is uniform from
-0 to 1.
-
-Let's see how we can take advantage of all this.  
-{\tt thinkbayes.py} provides 
-a class that represents a beta distribution:
-\index{Beta object}
-
-\begin{verbatim}
-class Beta(object):
-
-    def __init__(self, alpha=1, beta=1):
-        self.alpha = alpha
-        self.beta = beta
-\end{verbatim}
-
-By default \verb"__init__" makes a uniform distribution.
-{\tt Update} performs a Bayesian update:
-
-\begin{verbatim}
-    def Update(self, data):
-        heads, tails = data
-        self.alpha += heads
-        self.beta += tails
-\end{verbatim}
-
-{\tt data} is a pair of integers representing the number of
-heads and tails.
-
-So we have yet another way to solve the Euro problem:
-
-\begin{verbatim}
-    beta = thinkbayes.Beta()
-    beta.Update((140, 110))
-    print beta.Mean()
-\end{verbatim}
-
-{\tt Beta} provides {\tt Mean}, which 
-computes a simple function of {\tt alpha}
-and {\tt beta}:
-
-\begin{verbatim}
-    def Mean(self):
-        return float(self.alpha) / (self.alpha + self.beta)
-\end{verbatim}
-
-For the Euro problem the posterior mean is 56\%, which is the
-same result we got using Pmfs.  
-
-{\tt Beta} also provides {\tt EvalPdf}, which evaluates
-the probability density
-function (PDF)  of the beta distribution:
-\index{probability density function}
-\index{PDF}
-
-\begin{verbatim}
-    def EvalPdf(self, x):
-        return x**(self.alpha-1) * (1-x)**(self.beta-1)
-\end{verbatim}
-
-Finally, {\tt Beta} provides {\tt MakePmf}, which
-uses {\tt EvalPdf} to generate a discrete approximation
-of the beta distribution.
-
-%This expression might look familiar.  Here's {\tt
-%  thinkbayes.EvalBinomialPmf}
-
-%\begin{verbatim}
-%def EvalBinomialPmf(x, yes, no): 
-%    return x**yes * (1-x)**no
-%\end{verbatim}
-
-%It's the same function, but in {\tt EvalPdf}, we think of {\tt x} as a
-%random variable and {\tt alpha} and {\tt beta} as parameters; in {\tt
-%  EvalBinomialPmf}, {\tt x} is the parameter, and {\tt yes} and {\tt
-%  no} are random variables.  Distributions like these that share the
-%same PDF are called {\bf conjugate distributions}.
-%\index{conjugate distribution}
-
-
-\section{Discussion}
-
-In this chapter we solved the same problem with two different 
-priors and found that with a large dataset, the priors get
-swamped.  If two people start with different
-prior beliefs, they generally find, as they see more data, that
-their posterior distributions converge.  At some point the
-difference between their distributions is small enough that it has
-no practical effect.
-\index{swamping the priors}
-\index{convergence}
-
-When this happens, it relieves some of the worry about objectivity
-that I discussed in the previous chapter.  And for many real-world
-problems even stark prior beliefs can eventually be reconciled
-by data.
-
-But that is not always the case.  First, remember that all Bayesian
-analysis is based on modeling decisions.  If you and I do not
-choose the same model, we might interpret data differently.  So
-even with the same data, we would compute different likelihoods,
-and our posterior beliefs might not converge.
-\index{modeling}
-
-Also, notice that in a Bayesian update, we multiply
-each prior probability by a likelihood, so if \p{H} is 0,
-\p{H|D} is also 0, regardless of $D$.  In the Euro problem,
-if you are convinced that $x$ is less than 50\%, and you assign
-probability 0 to all other hypotheses, no amount of data will
-convince you otherwise.
-\index{Euro problem}
-
-This observation is the basis of {\bf Cromwell's rule}, which is the
-recommendation that you should avoid giving a prior probability of
-0 to any hypothesis that is even remotely possible
-(see \url{http://en.wikipedia.org/wiki/Cromwell's_rule}).
-\index{Cromwell's rule}
-
-Cromwell's rule is named after Oliver Cromwell, who wrote, ``I beseech
-you, in the bowels of Christ, think it possible that you may be
-mistaken.''  For Bayesians, this turns out to be good advice (even if
-it's a little overwrought).
-\index{Cromwell, Oliver}
-
-
-\section{Exercises}
-
-\begin{exercise}
-
-Suppose that instead of observing coin tosses directly, you measure
-the outcome using an instrument that is not always correct.  Specifically,
-suppose there is a probability {\tt y} that an actual heads is reported
-as tails, or actual tails reported as heads.
-
-Write a class that estimates the bias of a coin given a series of
-outcomes and the value of {\tt y}.
-
-How does the spread of the posterior distribution depend on
-{\tt y}?
-
-\end{exercise}
-
-
-\begin{exercise}
-
-\index{Reddit}
-This exercise is inspired by a question posted by a
-``redditor'' named dominosci on Reddit's statistics ``subreddit'' at
-\url{http://reddit.com/r/statistics}.
-
-Reddit is an online forum with many interest groups called
-subreddits.  Users, called redditors, post links to online
-content and other web pages.  Other redditors vote on the links,
-giving an ``upvote'' to high-quality links and a ``downvote'' to
-links that are bad or irrelevant.
-
-A problem, identified by dominosci, is that some redditors
-are more reliable than others, and Reddit does not take
-this into account.
-
-The challenge is to devise a system so that when a redditor
-casts a vote, the estimated quality of the link is updated
-in accordance with the reliability of the redditor, and the
-estimated reliability of the redditor is updated in accordance
-with the quality of the link.
-
-One approach is to model the quality of the link as the
-probability of garnering an upvote, and to model the reliability
-of the redditor as the probability of correctly giving an upvote
-to a high-quality item.
-
-Write class definitions for redditors and links and an update function
-that updates both objects whenever a redditor casts a vote.
-
-\end{exercise}
 
 
 
@@ -2689,26 +2738,26 @@ Probabilities and odds are different representations of the
 same information.  Given a probability, you can compute the
 odds like this:
 
-\begin{verbatim}
+\begin{code}
 def Odds(p):
     return p / (1-p)
-\end{verbatim}
+\end{code}
 
 Given the odds in favor, in decimal form, you can convert to
 probability like this:
 
-\begin{verbatim}
+\begin{code}
 def Probability(o):
     return o / (o+1)
-\end{verbatim}
+\end{code}
 
 If you represent odds with a numerator and denominator, you
 can convert to probability like this:
 
-\begin{verbatim}
+\begin{code}
 def Probability2(yes, no):
     return yes / (yes + no)
-\end{verbatim}
+\end{code}
 
 When I work with odds in my head, I find it helpful to picture
 people at the track.  If 20\% of them think my horse will win,
@@ -2904,7 +2953,7 @@ pairs of values and compute the distribution of the sums.
 of the first approach.  First, I'll define a class to represent
 a single die as a Pmf:
 
-\begin{verbatim}
+\begin{code}
 class Die(thinkbayes.Pmf):
 
     def __init__(self, sides):
@@ -2912,38 +2961,38 @@ class Die(thinkbayes.Pmf):
         for x in xrange(1, sides+1):
             self.Set(x, 1)
         self.Normalize()
-\end{verbatim}
+\end{code}
 
 Now I can create a 6-sided die:
 
-\begin{verbatim}
+\begin{code}
 d6 = Die(6)
-\end{verbatim}
+\end{code}
 
 And use \verb"thinkbayes.SampleSum" to generate a sample of 1000 rolls.
 
-\begin{verbatim}
+\begin{code}
 dice = [d6] * 3
 three = thinkbayes.SampleSum(dice, 1000)
-\end{verbatim}
+\end{code}
 
 \verb"SampleSum" takes list of distributions (either Pmf or Cdf
 objects) and the sample size, {\tt n}.  It generates {\tt n} random
 sums and returns their distribution as a Pmf object.
 
-\begin{verbatim}
+\begin{code}
 def SampleSum(dists, n):
     pmf = MakePmfFromList(RandomSum(dists) for i in xrange(n))
     return pmf
-\end{verbatim}
+\end{code}
 
 \verb"SampleSum" uses \verb"RandomSum", also in \verb"thinkbayes.py":
 
-\begin{verbatim}
+\begin{code}
 def RandomSum(dists):
     total = sum(dist.Random() for dist in dists)
     return total
-\end{verbatim}
+\end{code}
 
 {\tt RandomSum} invokes {\tt Random} on each distribution and
 adds up the results.
@@ -2956,7 +3005,7 @@ The other approach is to enumerate all pairs of values and
 compute the sum and probability of each pair.  This is implemented
 in \verb"Pmf.__add__":
 
-\begin{verbatim}
+\begin{code}
 # class Pmf
 
     def __add__(self, other):
@@ -2965,7 +3014,7 @@ in \verb"Pmf.__add__":
             for v2, p2 in other.Items():
                 pmf.Incr(v1+v2, p1*p2)
         return pmf
-\end{verbatim}
+\end{code}
 
 {\tt self} is a Pmf, of course; {\tt other} can be a Pmf or anything
 else that provides {\tt Items}.  The result is a new Pmf.  The time to
@@ -2974,9 +3023,9 @@ run \verb"__add__" depends on the number of items in {\tt self} and
 
 And here's how it's used:
 
-\begin{verbatim}
+\begin{code}
     three_exact = d6 + d6 + d6
-\end{verbatim}
+\end{code}
 
 When you apply the {\tt +} operator to a Pmf, Python invokes
 \verb"__add__".  In this example, \verb"__add__" is invoked twice.
@@ -3040,7 +3089,7 @@ and efficient algorithm for finding the Cdf of the maximum.
 The code to simulate maxima is almost identical to the code for
 simulating sums:
 
-\begin{verbatim}
+\begin{code}
 def RandomMax(dists):
     total = max(dist.Random() for dist in dists)
     return total
@@ -3048,19 +3097,19 @@ def RandomMax(dists):
 def SampleMax(dists, n):
     pmf = MakePmfFromList(RandomMax(dists) for i in xrange(n))
     return pmf
-\end{verbatim}
+\end{code}
 
 All I did was replace ``sum'' with ``max''.  And the code
 for enumeration is almost identical, too:
 
-\begin{verbatim}
+\begin{code}
 def PmfMax(pmf1, pmf2):
     res = thinkbayes.Pmf()
     for v1, p1 in pmf1.Items():
         for v2, p2 in pmf2.Items():
             res.Incr(max(v1, v2), p1*p2)
     return res
-\end{verbatim}
+\end{code}
 
 In fact, you could generalize this function by taking the
 appropriate operator as a parameter.
@@ -3107,14 +3156,14 @@ we can enumerate the probabilities in the given Cdf
 and raise them to the $k$th power.
 \verb"Cdf" provides a method that does just that:
 
-\begin{verbatim}
+\begin{code}
 # class Cdf
 
     def Max(self, k):
         cdf = self.Copy()
         cdf.ps = [p**k for p in cdf.ps]
         return cdf
-\end{verbatim}
+\end{code}
 
 \verb"Max" takes the number of selections, {\tt k}, and returns a new
 Cdf that represents the distribution of the maximum of {\tt k}
@@ -3128,10 +3177,10 @@ to $m \log m$, but that's still better than quadratic.
 Finally, here's an example that computes the distribution of
 a character's best attribute:
 
-\begin{verbatim}
+\begin{code}
     best_attr_cdf = three_exact.Max(6)
     best_attr_pmf = best_attr_cdf.MakePmf()
-\end{verbatim}
+\end{code}
 
 Where \verb"three_exact" is defined in the previous section.
 If we print the results, we see that the chance of generating
@@ -3152,13 +3201,13 @@ Figure~\ref{fig.dungeons2} shows the distribution.
 Let's do one more example from {\it Dungeons~\&~Dragons}.  Suppose
 I have a box of dice with the following inventory:
 
-\begin{verbatim}
+\begin{code}
 5   4-sided dice
 4   6-sided dice
 3   8-sided dice
 2  12-sided dice
 1  20-sided die
-\end{verbatim}
+\end{code}
 
 I choose a die from the box and roll it.  What is the distribution
 of the outcome?
@@ -3184,20 +3233,20 @@ Let's start with a simple version of the problem where there are
 only two dice, one with 6 sides and one with 8.  We can make a Pmf to
 represent each die:
 
-\begin{verbatim}
+\begin{code}
     d6 = Die(6)
     d8 = Die(8)
-\end{verbatim}
+\end{code}
 
 Then we create a Pmf to represent the mixture:
 
-\begin{verbatim}
+\begin{code}
     mix = thinkbayes.Pmf()
     for die in [d6, d8]:
         for outcome, prob in die.Items():
             mix.Incr(outcome, prob)
     mix.Normalize()
-\end{verbatim}
+\end{code}
 
 The first loop enumerates the dice; the second enumerates the
 outcomes and their probabilities.  Inside the loop,
@@ -3210,7 +3259,7 @@ weight the outcomes accordingly.
 First we create a Pmf that maps from each die to the probability it is
 selected:
 
-\begin{verbatim}
+\begin{code}
     pmf_dice = thinkbayes.Pmf()
     pmf_dice.Set(Die(4), 5)
     pmf_dice.Set(Die(6), 4)
@@ -3218,16 +3267,16 @@ selected:
     pmf_dice.Set(Die(12), 2)
     pmf_dice.Set(Die(20), 1)
     pmf_dice.Normalize()
-\end{verbatim}
+\end{code}
 
 Next we need a more general version of the mixture algorithm:
 
-\begin{verbatim}
+\begin{code}
     mix = thinkbayes.Pmf()
     for die, weight in pmf_dice.Items():
         for outcome, prob in die.Items():
             mix.Incr(outcome, weight*prob)
-\end{verbatim}
+\end{code}
 
 Now each die has a weight associated with it (which makes it a
 weighted die, I suppose).  When we add each outcome to the mixture,
@@ -3241,9 +3290,9 @@ that can produce them (and it does so less than half the time).
 {\tt thinkbayes} provides a function named {\tt MakeMixture}
 that encapsulates this algorithm, so we could have written:
 
-\begin{verbatim}
+\begin{code}
     mix = thinkbayes.MakeMixture(pmf_dice)
-\end{verbatim}
+\end{code}
 
 We'll use {\tt MakeMixture} again in Chapters~\ref{prediction} and
 ~\ref{observer}.
@@ -3416,7 +3465,7 @@ the interface a Pdf is supposed to have, but does not provide
 a complete implementation.  The {\tt Pdf} interface includes
 two methods, {\tt Density} and {\tt MakePmf}:
 
-\begin{verbatim}
+\begin{code}
 class Pdf(object):
 
     def Density(self, x):
@@ -3428,7 +3477,7 @@ class Pdf(object):
             pmf.Set(x, self.Density(x))
         pmf.Normalize()
         return pmf
-\end{verbatim}
+\end{code}
 
 {\tt Density} takes a value, {\tt x}, and returns the corresponding
 density.  {\tt MakePmf} makes a discrete approximation to the PDF.
@@ -3444,7 +3493,7 @@ and provides an implementation of the missing methods.
 For example, {\tt GaussianPdf} extends {\tt Pdf} and provides
 {\tt Density}:
 
-\begin{verbatim}
+\begin{code}
 class GaussianPdf(Pdf):
 
     def __init__(self, mu, sigma):
@@ -3453,7 +3502,7 @@ class GaussianPdf(Pdf):
         
     def Density(self, x):
         return scipy.stats.norm.pdf(x, self.mu, self.sigma)
-\end{verbatim}
+\end{code}
 
 \verb"__init__" takes {\tt mu} and {\tt sigma}, which are
 the mean and standard deviation of the distribution, and stores
@@ -3505,7 +3554,7 @@ uses it:
 \index{scipy}
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 class EstimatedPdf(Pdf):
 
     def __init__(self, sample):
@@ -3513,7 +3562,7 @@ class EstimatedPdf(Pdf):
 
     def Density(self, x):
         return self.kde.evaluate(x)
-\end{verbatim}
+\end{code}
 
 \verb"__init__" takes a sample
 and computes a kernel density estimate.  The result is a
@@ -3528,7 +3577,7 @@ Finally, here's an outline of the code I used to generate
 Figure~\ref{fig.price1}:
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
     prices = ReadData()
     pdf = thinkbayes.EstimatedPdf(prices)
 
@@ -3536,7 +3585,7 @@ Figure~\ref{fig.price1}:
     n = 101
     xs = numpy.linspace(low, high, n) 
     pmf = pdf.MakePmf(xs)
-\end{verbatim}
+\end{code}
 
 {\tt pdf} is a {\tt Pdf} object, estimated by KDE.  {\tt pmf}
 is a Pmf object that approximates the Pdf by evaluating the density
@@ -3593,9 +3642,9 @@ contestant's estimate would be {\tt guess}?''
 
 Or if we define
 %
-\begin{verbatim}
+\begin{code}
     error = price - guess
-\end{verbatim}
+\end{code}
 %
 then we could ask, ``What is the likelihood
 that the contestant's estimate is off by {\tt error}?''
@@ -3608,9 +3657,9 @@ of the showcase.
 
 The definition of diff is
 %
-\begin{verbatim}
+\begin{code}
     diff = price - bid
-\end{verbatim}
+\end{code}
 %
 When {\tt diff} is negative, the bid is too high.  As an
 aside, we can use this distribution to compute the probability that the
@@ -3634,7 +3683,7 @@ and the same variance as {\tt diff}.
 The {\tt Player} class implements this model:
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 class Player(object):
 
     def __init__(self, prices, bids, diffs):
@@ -3644,7 +3693,7 @@ class Player(object):
         mu = 0
         sigma = numpy.std(diffs)
         self.pdf_error = thinkbayes.GaussianPdf(mu, sigma)
-\end{verbatim}
+\end{code}
 
 {\tt prices} is a sequence of showcase prices, {\tt bids} is a
 sequence of bids, and {\tt diffs} is a sequence of diffs, where
@@ -3676,19 +3725,19 @@ Now we are ready to write the likelihood function.  As usual,
 I define a new class that extends {\tt thinkbayes.Suite}:
 \index{likelihood}
 
-\begin{verbatim}
+\begin{code}
 class Price(thinkbayes.Suite):
 
     def __init__(self, pmf, player):
         thinkbayes.Suite.__init__(self, pmf)
         self.player = player
-\end{verbatim}
+\end{code}
 
 {\tt pmf} represents the prior distribution and
 {\tt player} is a Player object as described in the previous
 section.  Here's {\tt Likelihood}:
 
-\begin{verbatim}
+\begin{code}
     def Likelihood(self, data, hypo):
         price = hypo
         guess = data
@@ -3697,7 +3746,7 @@ section.  Here's {\tt Likelihood}:
         like = self.player.ErrorDensity(error)
 
         return like
-\end{verbatim}
+\end{code}
 
 {\tt hypo} is the hypothetical price of the showcase.  {\tt data}
 is the contestant's best guess at the price.  {\tt error} is
@@ -3706,12 +3755,12 @@ given the hypothesis.
 
 {\tt ErrorDensity} is defined in {\tt Player}:
 
-\begin{verbatim}
+\begin{code}
 # class Player:
 
     def ErrorDensity(self, error):
         return self.pdf_error.Density(error)
-\end{verbatim}
+\end{code}
 
 {\tt ErrorDensity} works by evaluating \verb"pdf_error" at
 the given value of {\tt error}.
@@ -3741,7 +3790,7 @@ And therefore, a probability density is a perfectly good likelihood.
 {\tt Player} provides a method that takes the contestant's
 guess and computes the posterior distribution:
 
-\begin{verbatim}
+\begin{code}
 # class Player
 
     def MakeBeliefs(self, guess):
@@ -3749,7 +3798,7 @@ guess and computes the posterior distribution:
         self.prior = Price(pmf, self)
         self.posterior = self.prior.Copy()
         self.posterior.Update(guess)
-\end{verbatim}
+\end{code}
 
 {\tt PmfPrice} generates a discrete approximation
 to the PDF of price, which we use to construct the prior.
@@ -3757,7 +3806,7 @@ to the PDF of price, which we use to construct the prior.
 {\tt PmfPrice} uses {\tt MakePmf}, which
 evaluates \verb"pdf_price" at a sequence of values:
 
-\begin{verbatim}
+\begin{code}
 # class Player
 
     n = 101
@@ -3765,7 +3814,7 @@ evaluates \verb"pdf_price" at a sequence of values:
 
     def PmfPrice(self):
         return self.pdf_price.MakePmf(self.price_xs)
-\end{verbatim}
+\end{code}
 
 To construct the posterior, we make a copy of the
 prior and then invoke {\tt Update}, which invokes {\tt Likelihood}
@@ -3817,13 +3866,13 @@ will be along shortly.
 
 To compute optimal bids, I wrote a class called {\tt GainCalculator}:
 
-\begin{verbatim}
+\begin{code}
 class GainCalculator(object):
 
     def __init__(self, player, opponent):
         self.player = player
         self.opponent = opponent
-\end{verbatim}
+\end{code}
 
 {\tt player} and {\tt opponent} are {\tt Player} objects.
 
@@ -3832,14 +3881,14 @@ computes a sequence of bids and the expected gain for each
 bid:
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
     def ExpectedGains(self, low=0, high=75000, n=101):
         bids = numpy.linspace(low, high, n)
 
         gains = [self.ExpectedGain(bid) for bid in bids]
 
         return bids, gains
-\end{verbatim}
+\end{code}
 
 {\tt low} and {\tt high} specify the range of possible bids;
 {\tt n} is the number of bids to try.  
@@ -3847,7 +3896,7 @@ bid:
 {\tt ExpectedGains} calls {\tt ExpectedGain}, which
 computes expected gain for a given bid:
 
-\begin{verbatim}
+\begin{code}
     def ExpectedGain(self, bid):
         suite = self.player.posterior
         total = 0
@@ -3855,7 +3904,7 @@ computes expected gain for a given bid:
             gain = self.Gain(bid, price)
             total += prob * gain
         return total
-\end{verbatim}
+\end{code}
 
 {\tt ExpectedGain} loops through the values in the posterior
 and computes the gain for each bid, given the actual prices of
@@ -3873,7 +3922,7 @@ guess is \$20,000 and Player 2's best guess is \$40,000.}
 {\tt ExpectedGain} invokes {\tt Gain}, which takes a bid and an actual
 price and returns the expected gain:
 
-\begin{verbatim}
+\begin{code}
     def Gain(self, bid, price):
         if bid > price:
             return 0
@@ -3885,7 +3934,7 @@ price and returns the expected gain:
             return 2 * price * prob
         else:
             return price * prob
-\end{verbatim}
+\end{code}
 
 If you overbid, you get nothing.  Otherwise we compute 
 the difference between your bid and the price, which determines
@@ -3898,18 +3947,18 @@ this outcome is rare, it doesn't make much difference.
 Finally, we have to compute the probability of winning based
 on {\tt diff}:
 
-\begin{verbatim}
+\begin{code}
     def ProbWin(self, diff):
         prob = (self.opponent.ProbOverbid() + 
                 self.opponent.ProbWorseThan(diff))
         return prob
-\end{verbatim}
+\end{code}
 
 If your opponent overbids, you win.  Otherwise, you have to hope
 that your opponent is off by more than {\tt diff}.  {\tt Player}
 provides methods to compute both probabilities:
 
-\begin{verbatim}
+\begin{code}
 # class Player:
 
     def ProbOverbid(self):
@@ -3917,7 +3966,7 @@ provides methods to compute both probabilities:
 
     def ProbWorseThan(self, diff):
         return 1 - self.cdf_diff.Prob(diff)
-\end{verbatim}
+\end{code}
 
 This code might be confusing because the computation is now from
 the point of view of the opponent, who is computing, ``What is
@@ -3930,7 +3979,7 @@ Both answers are based on the CDF of {\tt diff}.  If the opponent's
 
 Finally, here's the code that computes optimal bids:
 
-\begin{verbatim}
+\begin{code}
 # class Player:
 
     def OptimalBid(self, guess, opponent):
@@ -3939,7 +3988,7 @@ Finally, here's the code that computes optimal bids:
         bids, gains = calc.ExpectedGains()
         gain, bid = max(zip(gains, bids))
         return bid, gain
-\end{verbatim}
+\end{code}
 
 Given a guess and an opponent, {\tt OptimalBid} computes
 the posterior distribution, instantiates a {\tt GainCalculator},
@@ -4048,7 +4097,7 @@ do exactly that:
 \index{numpy}
 \index{Gaussian distribution}
 
-\begin{verbatim}
+\begin{code}
 def MakeGaussianPmf(mu, sigma, num_sigmas, n=101):
     pmf = Pmf()
     low = mu - num_sigmas*sigma
@@ -4059,7 +4108,7 @@ def MakeGaussianPmf(mu, sigma, num_sigmas, n=101):
         pmf.Set(x, p)
     pmf.Normalize()
     return pmf
-\end{verbatim}  
+\end{code}  
 
 {\tt mu} and {\tt sigma} are the mean and standard deviation of the
 Gaussian distribution.  \verb"num_sigmas" is the number of standard
@@ -4077,13 +4126,13 @@ both.
 Getting back to the hockey problem, here's the definition for a suite
 of hypotheses about the value of $\lambda$.
 
-\begin{verbatim}
+\begin{code}
 class Hockey(thinkbayes.Suite):
 
     def __init__(self):
         pmf = thinkbayes.MakeGaussianPmf(2.7, 0.3, 4)
         thinkbayes.Suite.__init__(self, pmf)
-\end{verbatim}  
+\end{code}  
 
 So the prior distribution is Gaussian with mean 2.7, standard deviation
 0.3, and it spans 4 sigmas above and below the mean.
@@ -4128,19 +4177,19 @@ in a game is {\tt lam}, the distribution of goals per game is
 given by the Poisson PMF:
 \index{Poisson distribution}
 
-\begin{verbatim}
+\begin{code}
 def EvalPoissonPmf(k, lam):
     return (lam)**k * math.exp(-lam) / math.factorial(k)
-\end{verbatim}  
+\end{code}  
 
 And the distribution of time between goals is given by the
 exponential PDF:
 \index{exponential distribution}
 
-\begin{verbatim}
+\begin{code}
 def EvalExponentialPdf(x, lam):
     return lam * math.exp(-lam * x)
-\end{verbatim}  
+\end{code}  
 
 I use the variable
 {\tt lam} because {\tt lambda} is a reserved keyword in Python.
@@ -4160,7 +4209,7 @@ goals per game.}
 Now we can compute the likelihood that a team with a hypothetical
 value of {\tt lam} scores {\tt k} goals in a game:
 
-\begin{verbatim}
+\begin{code}
 # class Hockey
 
     def Likelihood(self, data, hypo):
@@ -4168,7 +4217,7 @@ value of {\tt lam} scores {\tt k} goals in a game:
         k = data
         like = thinkbayes.EvalPoissonPmf(k, lam)
         return like
-\end{verbatim}
+\end{code}
 
 Each hypothesis is a possible value of $\lambda$;  {\tt
   data} is the observed number of goals, {\tt k}.
@@ -4176,13 +4225,13 @@ Each hypothesis is a possible value of $\lambda$;  {\tt
 With the likelihood function in place, we can make a suite for each
 team and update them with the scores from the first four games.
 
-\begin{verbatim}
+\begin{code}
     suite1 = Hockey('bruins')
     suite1.UpdateSet([0, 2, 8, 4])
      
     suite2 = Hockey('canucks')
     suite2.UpdateSet([1, 3, 1, 0])
-\end{verbatim}  
+\end{code}  
 
 Figure~\ref{fig.hockey1} shows the resulting posterior distributions
 for {\tt lam}.  Based on the first four games, the most likely
@@ -4207,7 +4256,7 @@ method that computes a truncated approximation of a Poisson
 distribution:
 \index{Poisson distribution}
 
-\begin{verbatim}
+\begin{code}
 def MakePoissonPmf(lam, high):
     pmf = Pmf()
     for k in xrange(0, high+1):
@@ -4215,15 +4264,15 @@ def MakePoissonPmf(lam, high):
         pmf.Set(k, p)
     pmf.Normalize()
     return pmf
-\end{verbatim}  
+\end{code}  
 
 The range of values in the computed Pmf is from 0 to {\tt high}.
 So if the value of {\tt lam} were exactly 3.4, we would compute:
 
-\begin{verbatim}
+\begin{code}
 lam = 3.4
 goal_dist = thinkbayes.MakePoissonPmf(lam, 10)
-\end{verbatim}
+\end{code}
 
 I chose the upper bound, 10, because the probability of scoring
 more than 10 goals in a game is quite low.
@@ -4242,7 +4291,7 @@ in the distribution of {\tt lam}.
 Given the posterior distribution of {\tt lam}, here's the code
 that makes the distribution of goals:
 
-\begin{verbatim}
+\begin{code}
 def MakeGoalPmf(suite):
     metapmf = thinkbayes.Pmf()
 
@@ -4252,7 +4301,7 @@ def MakeGoalPmf(suite):
 
     mix = thinkbayes.MakeMixture(metapmf)
     return mix
-\end{verbatim}  
+\end{code}  
 
 For each value of {\tt lam} we make a Poisson Pmf and add it to the
 meta-Pmf.  I call it a meta-Pmf because it is a Pmf that contains
@@ -4282,11 +4331,11 @@ more.
 To get the probability of winning, first we compute the
 distribution of the goal differential:
 
-\begin{verbatim}
+\begin{code}
     goal_dist1 = MakeGoalPmf(suite1)
     goal_dist2 = MakeGoalPmf(suite2)
     diff = goal_dist1 - goal_dist2
-\end{verbatim}  
+\end{code}  
 
 The subtraction operator invokes \verb"Pmf.__sub__", which enumerates
 pairs of values and computes the difference.  Subtracting two
@@ -4296,11 +4345,11 @@ Section~\ref{addends}.
 If the goal differential is positive, the Bruins win; if negative, the
 Canucks win; if 0, it's a tie:
 
-\begin{verbatim}
+\begin{code}
     p_win = diff.ProbGreater(0)
     p_loss = diff.ProbLess(0)
     p_tie = diff.Prob(0)
-\end{verbatim}  
+\end{code}  
 
 With the distributions from the previous section, \verb"p_win"
 is 46\%, \verb"p_loss" is 37\%, and \verb"p_tie" is 17\%.
@@ -4325,10 +4374,10 @@ is exponentially distributed.
 
 Given {\tt lam}, we can compute the time between goals like this: 
 
-\begin{verbatim}
+\begin{code}
 lam = 3.4
 time_dist = thinkbayes.MakeExponentialPmf(lam, high=2, n=101)
-\end{verbatim}  
+\end{code}  
 
 {\tt high} is the upper bound of the distribution.  In this case
 I chose 2, because the probability of going more than two games
@@ -4344,7 +4393,7 @@ Pmfs.
 \index{meta-Pmf}
 \index{mixture}
 
-\begin{verbatim}
+\begin{code}
 def MakeGoalTimePmf(suite):
     metapmf = thinkbayes.Pmf()
 
@@ -4354,7 +4403,7 @@ def MakeGoalTimePmf(suite):
 
     mix = thinkbayes.MakeMixture(metapmf)
     return mix
-\end{verbatim}  
+\end{code}  
 
 Figure~\ref{fig.hockey3} shows the resulting distributions.  For
 time values less than one period (one third of a game), the Bruins
@@ -4367,11 +4416,11 @@ to score simultaneously.
 
 Now we compute the probability that the Bruins score first:
 
-\begin{verbatim}
+\begin{code}
     time_dist1 = MakeGoalTimePmf(suite1)
     time_dist2 = MakeGoalTimePmf(suite2)
     p_overtime = thinkbayes.PmfProbLess(time_dist1, time_dist2)
-\end{verbatim}  
+\end{code}  
 
 For the Bruins, the probability of winning in overtime is 52\%.
 
@@ -4379,12 +4428,12 @@ Finally, the total probability of winning is the chance of
 winning at the end of regulation play plus the probability
 of winning in overtime.
 
-\begin{verbatim}
+\begin{code}
     p_tie = diff.Prob(0)
     p_overtime = thinkbayes.PmfProbLess(time_dist1, time_dist2)
 
     p_win = diff.ProbGreater(0) + p_tie * p_overtime
-\end{verbatim}  
+\end{code}  
 
 For the Bruins, the overall chance of winning the next game is 55\%.
 
@@ -4392,13 +4441,13 @@ To win the series, the Bruins can either win the next two games
 or split the next two and win the third.  Again, we can compute
 the total probability:
 
-\begin{verbatim}
+\begin{code}
     # win the next two
     p_series = p_win**2
 
     # split the next two, win the third
     p_series += 2 * p_win * (1-p_win) * p_win
-\end{verbatim}  
+\end{code}  
 
 The Bruins chance of winning the series is 57\%.  And in 2011,
 they did.
@@ -4662,7 +4711,7 @@ So given the actual distribution of gaps, we can compute the
 distribution of gaps as seen by passengers.  {\tt BiasPmf}
 does this computation:
 
-\begin{verbatim}
+\begin{code}
 def BiasPmf(pmf):
     new_pmf = pmf.Copy()
 
@@ -4671,7 +4720,7 @@ def BiasPmf(pmf):
         
     new_pmf.Normalize()
     return new_pmf
-\end{verbatim}
+\end{code}
 
 {\tt pmf} is the actual distribution; \verb"new_pmf" is the
 biased distribution.  Inside the loop, we multiply the
@@ -4715,7 +4764,7 @@ according to the probability of each gap.
 The following function takes the distribution of {\tt zb} and
 computes the distribution of {\tt y}:
 
-\begin{verbatim}
+\begin{code}
 def PmfOfWaitTime(pmf_zb):
     metapmf = thinkbayes.Pmf()
     for gap, prob in pmf_zb.Items():
@@ -4724,7 +4773,7 @@ def PmfOfWaitTime(pmf_zb):
 
     pmf_y = thinkbayes.MakeMixture(metapmf)
     return pmf_y
-\end{verbatim}
+\end{code}
 
 {\tt PmfOfWaitTime} makes a meta-Pmf that maps from each uniform
 distribution to its probability.  Then it uses {\tt MakeMixture},
@@ -4735,23 +4784,23 @@ which we saw in Section~\ref{mixture}, to compute the mixture.
 
 {\tt PmfOfWaitTime} also uses {\tt MakeUniformPmf}, defined here:
 
-\begin{verbatim}
+\begin{code}
 def MakeUniformPmf(low, high):
     pmf = thinkbayes.Pmf()
     for x in MakeRange(low=low, high=high):
         pmf.Set(x, 1)
     pmf.Normalize()
     return pmf
-\end{verbatim}
+\end{code}
 
 {\tt low} and {\tt high} are the range of the uniform distribution,
 (both ends included).  Finally, {\tt MakeUniformPmf} uses {\tt
   MakeRange}, defined here:
 
-\begin{verbatim}
+\begin{code}
 def MakeRange(low, high, skip=10):
     return range(low, high+skip, skip)
-\end{verbatim}
+\end{code}
 
 {\tt MakeRange} defines a set of possible values for wait time
 (expressed in seconds).  By default it divides the range into 
@@ -4760,7 +4809,7 @@ def MakeRange(low, high, skip=10):
 To encapsulate the process of computing these distributions, I
 created a class called {\tt WaitTimeCalculator}:
 
-\begin{verbatim}
+\begin{code}
 class WaitTimeCalculator(object):
 
     def __init__(self, pmf_z):
@@ -4769,7 +4818,7 @@ class WaitTimeCalculator(object):
 
         self.pmf_y = self.PmfOfWaitTime(self.pmf_zb)
         self.pmf_x = self.pmf_y
-\end{verbatim}
+\end{code}
 
 The parameter, \verb"pmf_z", is the unbiased distribution of {\tt z}.
 \verb"pmf_zb" is the biased distribution of gap time, as seen by
@@ -4781,9 +4830,9 @@ wait time.  To see why, remember that for a particular value of
 {\tt zp}, the distribution of {\tt y} is uniform from 0 to {\tt zp}.
 Also
 %
-\begin{verbatim}
+\begin{code}
 x = zp - y
-\end{verbatim}
+\end{code}
 %
 So the distribution of {\tt x} is also uniform from 0 to {\tt zp}.
 
@@ -4849,9 +4898,9 @@ encapsulates the distributions of {\tt zp}, {\tt x},
 and {\tt y}, prior to taking into account the number of
 passengers.
 
-\begin{verbatim}
+\begin{code}
     wtc = WaitTimeCalculator(pmf_z)
-\end{verbatim}
+\end{code}
 
 \verb"pmf_z" is the given distribution of gap times.
 
@@ -4860,11 +4909,11 @@ below), which encapsulates the posterior distribution of {\tt x} and
 the predictive distribution of {\tt y}.
 \index{predictive distribution}
 
-\begin{verbatim}
+\begin{code}
     ete = ElapsedTimeEstimator(wtc,
                                lam=2.0/60,
                                num_passengers=15)
-\end{verbatim}
+\end{code}
 
 The parameters are the {\tt WaitTimeCalculator}, the passenger
 arrival rate, {\tt lam} (expressed in passengers per second),
@@ -4872,7 +4921,7 @@ and the observed number of passengers, let's say 15.
 
 Here is the definition of {\tt ElapsedTimeEstimator}:
 
-\begin{verbatim}
+\begin{code}
 class ElapsedTimeEstimator(object):
 
     def __init__(self, wtc, lam, num_passengers):
@@ -4882,7 +4931,7 @@ class ElapsedTimeEstimator(object):
         self.post_x.Update((lam, num_passengers))
 
         self.pmf_y = PredictWaitTime(wtc.pmf_zb, self.post_x)
-\end{verbatim}
+\end{code}
 
 \verb"prior_x" and \verb"posterior_x" are the prior and
 posterior distributions of elapsed time.  \verb"pmf_y" is
@@ -4900,7 +4949,7 @@ the posterior distribution.
 
 Here's the definition of {\tt Elapsed}:
 
-\begin{verbatim}
+\begin{code}
 class Elapsed(thinkbayes.Suite):
 
     def Likelihood(self, data, hypo):
@@ -4908,7 +4957,7 @@ class Elapsed(thinkbayes.Suite):
         lam, k = data
         like = thinkbayes.EvalPoissonPmf(k, lam * x)
         return like
-\end{verbatim}
+\end{code}
 
 As always, {\tt Likelihood} takes a hypothesis and data, and
 computes the likelihood of the data under the hypothesis.
@@ -4925,21 +4974,21 @@ distribution.
 
 Finally, here's the definition of {\tt PredictWaitTime}:
 
-\begin{verbatim}
+\begin{code}
 def PredictWaitTime(pmf_zb, pmf_x):
     pmf_y = pmf_zb - pmf_x
     RemoveNegatives(pmf_y)
     return pmf_y
-\end{verbatim}
+\end{code}
 
 \verb"pmf_zb" is the distribution of gaps between trains;
 \verb"pmf_x" is the distribution of elapsed time, based on
 the observed number of passengers.  Since {\tt y = zb - x},
 we can compute
 
-\begin{verbatim}
+\begin{code}
     pmf_y = pmf_zb - pmf_x
-\end{verbatim}
+\end{code}
 
 The subtraction operator invokes \verb"Pmf.__sub__", which enumerates
 all pairs of {\tt zb} and {\tt x}, computes the differences, and adds
@@ -4950,13 +4999,13 @@ impossible.  For example, if you arrive during a gap of 5 minutes, you
 can't wait more than 5 minutes.  {\tt RemoveNegatives} removes the
 impossible values from the distribution and renormalizes.
 
-\begin{verbatim}
+\begin{code}
 def RemoveNegatives(pmf):
     for val in pmf.Values():
         if val < 0:
             pmf.Remove(val)
     pmf.Normalize()
-\end{verbatim}
+\end{code}
 
 Figure~\ref{fig.redline3} shows the results.  The prior distribution
 of {\tt x} is the same as the distribution of {\tt y} in
@@ -4996,7 +5045,7 @@ number of new arrivals while you are waiting.
 
 After five days, you might have data like this:
 %
-\begin{verbatim}
+\begin{code}
 k1      y     k2
 --     ---    --
 17     4.6     9
@@ -5004,7 +5053,7 @@ k1      y     k2
 23     1.4     4
 18     5.4    12
 4      5.8    11
-\end{verbatim}
+\end{code}
 %
 where {\tt k1} is the number of passengers waiting when you arrive,
 {\tt y} is your wait time in minutes, and {\tt k2} is the number of
@@ -5025,7 +5074,7 @@ In this case the hypothesis is a value of $\lambda$.  The data is a
 pair, {\tt y, k}, where {\tt y} is a wait time and {\tt k} is the
 number of passengers that arrived.
 
-\begin{verbatim}
+\begin{code}
 class ArrivalRate(thinkbayes.Suite):
 
     def Likelihood(self, data, hypo):
@@ -5033,7 +5082,7 @@ class ArrivalRate(thinkbayes.Suite):
         y, k = data
         like = thinkbayes.EvalPoissonPmf(k, lam * y)
         return like
-\end{verbatim}
+\end{code}
 
 This {\tt Likelihood} might look familiar; it
 is almost identical to {\tt Elapsed.Likelihood} in
@@ -5048,7 +5097,7 @@ $\lambda$.  The parameter, \verb"passenger_data", is a list
 of {\tt k1, y, k2} tuples, as in the table above.
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 class ArrivalRateEstimator(object):
 
     def __init__(self, passenger_data):
@@ -5061,7 +5110,7 @@ class ArrivalRateEstimator(object):
         self.post_lam = self.prior_lam.Copy()
         for k1, y, k2 in passenger_data:
             self.post_lam.Update((y, k2))
-\end{verbatim}
+\end{code}
 
 \verb"__init__" builds
 {\tt hypos}, which is a sequence of hypothetical values for {\tt lam},
@@ -5110,7 +5159,7 @@ we can take it into account by a process like this:
 We have already done steps (1) and (2).  I wrote a class
 called {\tt WaitMixtureEstimator} to handle steps (3) and (4).
 
-\begin{verbatim}
+\begin{code}
 class WaitMixtureEstimator(object):
 
     def __init__(self, wtc, are, num_passengers=15):
@@ -5121,7 +5170,7 @@ class WaitMixtureEstimator(object):
             self.metapmf.Set(ete.pmf_y, prob)
 
         self.mixture = thinkbayes.MakeMixture(self.metapmf)
-\end{verbatim}
+\end{code}
 
 {\tt wtc} is the {\tt WaitTimeCalculator} that contains the
 distribution of {\tt zb}.  {\tt are} is the {\tt ArrivalTimeEstimator}
@@ -5210,21 +5259,21 @@ During my year of commuting, I took the Red Line home about 220
 times.  So I take the observed gap times, \verb"gap_times",
 generate a sample of 220 gaps, and compute their Pmf:
 
-\begin{verbatim}
+\begin{code}
     n = 220
     cdf_z = thinkbayes.MakeCdfFromList(gap_times)
     sample_z = cdf_z.Sample(n)
     pmf_z = thinkbayes.MakePmfFromList(sample_z)
-\end{verbatim}
+\end{code}
 
 Next I bias \verb"pmf_z" to get the distribution of
 {\tt zb}, draw a sample, and then add in delays of
 30, 40, and 50 minutes (expressed in seconds):
 
-\begin{verbatim}
+\begin{code}
     cdf_zp = BiasPmf(pmf_z).MakeCdf()
     sample_zb = cdf_zp.Sample(n) + [1800, 2400, 3000]
-\end{verbatim}
+\end{code}
 
 {\tt Cdf.Sample} is more efficient than {\tt Pmf.Sample}, so it
 is usually faster to convert a Pmf to a Cdf before sampling.
@@ -5232,31 +5281,31 @@ is usually faster to convert a Pmf to a Cdf before sampling.
 Next I use the sample of {\tt zb} to estimate a Pdf using
 KDE, and then convert the Pdf to a Pmf:
 
-\begin{verbatim}
+\begin{code}
     pdf_zb = thinkbayes.EstimatedPdf(sample_zb)
     xs = MakeRange(low=60)
     pmf_zb = pdf_zb.MakePmf(xs)
-\end{verbatim}
+\end{code}
 
 Finally I unbias the distribution of {\tt zb} to get the
 distribution of {\tt z}, which I use to create the
 {\tt WaitTimeCalculator}:
 
-\begin{verbatim}
+\begin{code}
     pmf_z = UnbiasPmf(pmf_zb)
     wtc = WaitTimeCalculator(pmf_z)
-\end{verbatim}
+\end{code}
 
 This process is complicated, but
 all of the steps are operations we have seen before.
 Now we are ready to compute the probability of a long wait.
 
-\begin{verbatim}
+\begin{code}
 def ProbLongWait(num_passengers, minutes):
     ete = ElapsedTimeEstimator(wtc, lam, num_passengers)
     cdf_y = ete.pmf_y.MakeCdf()
     prob = 1 - cdf_y.Prob(minutes * 60)
-\end{verbatim}
+\end{code}
 
 Given the number of passengers on the platform,
 {\tt ProbLongWait} 
@@ -5401,7 +5450,7 @@ pair of coordinates: {\tt (alpha, beta)}.
 
 Here is the definition of the Paintball suite:
 
-\begin{verbatim}
+\begin{code}
 class Paintball(thinkbayes.Suite, thinkbayes.Joint):
 
     def __init__(self, alphas, betas, locations):
@@ -5410,7 +5459,7 @@ class Paintball(thinkbayes.Suite, thinkbayes.Joint):
                  for alpha in alphas 
                  for beta in betas]
         thinkbayes.Suite.__init__(self, pairs)
-\end{verbatim}
+\end{code}
 
 {\tt Paintball} inherits from {\tt Suite}, which we have seen before,
 and {\tt Joint}, which I will explain soon.
@@ -5433,13 +5482,13 @@ the wall; it is stored for use in {\tt Likelihood}.
 The room is 30 feet wide and 50 feet long, so here's the code that
 creates the suite:
 
-\begin{verbatim}
+\begin{code}
     alphas = range(0, 31)
     betas = range(1, 51)
     locations = range(0, 31)
 
     suite = Paintball(alphas, betas, locations)
-\end{verbatim}
+\end{code}
 
 This prior distribution assumes that all locations in the room are
 equally likely.  Given a map of the room, we might choose a more
@@ -5486,12 +5535,12 @@ inversely related to strafing speed.
 If we know the coordinates of the shooter and a location 
 along the wall, we can compute strafing speed:
 
-\begin{verbatim}
+\begin{code}
 def StrafingSpeed(alpha, beta, x):
     theta = math.atan2(x - alpha, beta)
     speed = beta / math.cos(theta)**2
     return speed
-\end{verbatim}
+\end{code}
 
 {\tt alpha} and {\tt beta} are the coordinates of the shooter;
 {\tt x} is the location of a spatter.  The result is
@@ -5510,7 +5559,7 @@ any location on the wall.  {\tt MakeLocationPmf} takes {\tt alpha} and
 {\tt beta}, the coordinates of the shooter, and {\tt locations}, a
 list of possible values of {\tt x}.
 
-\begin{verbatim}
+\begin{code}
 def MakeLocationPmf(alpha, beta, locations):
     pmf = thinkbayes.Pmf()
     for x in locations:
@@ -5518,7 +5567,7 @@ def MakeLocationPmf(alpha, beta, locations):
         pmf.Set(x, prob)
     pmf.Normalize()
     return pmf
-\end{verbatim}
+\end{code}
 
 {\tt MakeLocationPmf} computes the probability of hitting
 each location, which is inversely related to
@@ -5539,14 +5588,14 @@ We can use {\tt MakeLocationPmf} to compute the likelihood
 of any value of {\tt x}, given the coordinates of the opponent.
 \index{likelihood}
 
-\begin{verbatim}
+\begin{code}
     def Likelihood(self, data, hypo):
         alpha, beta = hypo
         x = data
         pmf = MakeLocationPmf(alpha, beta, self.locations)
         like = pmf.Prob(x)
         return like
-\end{verbatim}
+\end{code}
 
 Again, {\tt alpha} and {\tt beta} are the hypothetical coordinates of
 the shooter, and {\tt x} is the location of an observed spatter.
@@ -5558,9 +5607,9 @@ of the observed location.
 And we're done.  To update the suite, we can use {\tt UpdateSet},
 which is inherited from {\tt Suite}.
 
-\begin{verbatim}
+\begin{code}
 suite.UpdateSet([15, 16, 18, 21])
-\end{verbatim}
+\end{code}
 
 The result is a distribution that maps each {\tt (alpha, beta)} pair
 to a posterior probability.
@@ -5584,7 +5633,7 @@ distributions}.
 {\tt thinkbayes.Joint} provides a method that computes marginal
 distributions:
 
-\begin{verbatim}
+\begin{code}
 # class Joint:
 
     def Marginal(self, i):
@@ -5592,7 +5641,7 @@ distributions:
         for vs, prob in self.Items():
             pmf.Incr(vs[i], prob)
         return pmf
-\end{verbatim}
+\end{code}
 
 {\tt i} is the index of the variable we want; in this example
 {\tt i=0} indicates the distribution of {\tt alpha}, and
@@ -5600,10 +5649,10 @@ distributions:
 
 Here's the code that extracts the marginal distributions:
 
-\begin{verbatim}
+\begin{code}
     marginal_alpha = suite.Marginal(0)
     marginal_beta = suite.Marginal(1)
-\end{verbatim}
+\end{code}
 
 Figure~\ref{fig.paintball2} shows the results (converted to CDFs).
 The median value for {\tt alpha} is 18, near the center of mass of
@@ -5616,10 +5665,10 @@ Given the posterior marginals, we can compute credible intervals
 for each coordinate independently:
 \index{credible interval}
 
-\begin{verbatim}
+\begin{code}
     print 'alpha CI', marginal_alpha.CredibleInterval(50)
     print 'beta CI', marginal_beta.CredibleInterval(50)
-\end{verbatim}
+\end{code}
 
 The 50\% credible intervals are {\tt (14, 21)} for {\tt alpha} and
 {\tt (5, 31)} for {\tt beta}.  So the data provide evidence that the
@@ -5651,7 +5700,7 @@ does that:
 \index{conditional distribution}
 \index{Joint}
 
-\begin{verbatim}
+\begin{code}
     def Conditional(self, i, j, val):
         pmf = Pmf()
         for vs, prob in self.Items():
@@ -5660,7 +5709,7 @@ does that:
 
         pmf.Normalize()
         return pmf
-\end{verbatim}
+\end{code}
 
 Again, {\tt i} is the index of the variable we want; {\tt j}
 is the index of the conditioning variable, and {\tt val} is the
@@ -5672,12 +5721,12 @@ condition that the $j$th variable is {\tt val}.
 For example, the following code computes the conditional distributions
 of {\tt alpha} for a range of values of {\tt beta}:
 
-\begin{verbatim}
+\begin{code}
     betas = [10, 20, 40]
 
     for beta in betas:
         cond = suite.Conditional(0, 1, beta)
-\end{verbatim}
+\end{code}
 
 Figure~\ref{fig.paintball3} shows the results, which we could
 fully describe as ``posterior conditional marginal distributions.''
@@ -5727,7 +5776,7 @@ percentage).
 likelihood credible intervals. 
 \index{Joint}
 
-\begin{verbatim}
+\begin{code}
 # class Joint:
 
     def MaxLikeInterval(self, percentage=90):
@@ -5744,7 +5793,7 @@ likelihood credible intervals.
                 break
 
         return interval
-\end{verbatim}
+\end{code}
 
 The first step is to make a list of the values in the suite,
 sorted in descending order by probability.  Next we traverse the
@@ -5756,7 +5805,7 @@ is not necessarily contiguous.
 To visualize the intervals, I wrote a function that ``colors''
 each value according to how many intervals it appears in:
 
-\begin{verbatim}
+\begin{code}
 def MakeCrediblePlot(suite):
     d = dict((pair, 0) for pair in suite.Values())
 
@@ -5767,7 +5816,7 @@ def MakeCrediblePlot(suite):
             d[pair] += 1
 
     return d
-\end{verbatim}
+\end{code}
 
 {\tt d} is a dictionary that maps from each value in the suite
 to the number of intervals it appears in.  The loop computes intervals
@@ -5961,7 +6010,7 @@ the mean, {\tt mu}, and the standard deviation, {\tt sigma}.
 For this problem, I define a Suite called {\tt Height} that
 represents a map from each {\tt mu, sigma} pair to its probability:
 
-\begin{verbatim}
+\begin{code}
 class Height(thinkbayes.Suite, thinkbayes.Joint):
 
     def __init__(self, mus, sigmas):
@@ -5970,7 +6019,7 @@ class Height(thinkbayes.Suite, thinkbayes.Joint):
                  for sigma in sigmas]
 
         thinkbayes.Suite.__init__(self, pairs)
-\end{verbatim}
+\end{code}
 
 {\tt mus} is a sequence of possible values for {\tt mu}; {\tt sigmas}
 is a sequence of values for {\tt sigma}.  The prior distribution
@@ -5984,7 +6033,7 @@ of a particular value, {\tt x}.  That's what {\tt EvalGaussianPdf}
 does, so all we have to do is use it:
 \index{likelihood}
 
-\begin{verbatim}
+\begin{code}
 # class Height
 
     def Likelihood(self, data, hypo):
@@ -5992,7 +6041,7 @@ does, so all we have to do is use it:
         mu, sigma = hypo
         like = thinkbayes.EvalGaussianPdf(x, mu, sigma)
         return like
-\end{verbatim}
+\end{code}
 
 If you have studied statistics from a mathematical perspective,
 you know that when you evaluate a PDF, you get a probability
@@ -6031,7 +6080,7 @@ $s / \sqrt{2 (n-1)}$.
 
 Here's the code to compute all that:
 
-\begin{verbatim}
+\begin{code}
 def FindPriorRanges(xs, num_points, num_stderrs=3.0):
 
     # compute m and s
@@ -6047,7 +6096,7 @@ def FindPriorRanges(xs, num_points, num_stderrs=3.0):
     sigmas = MakeRange(s, stderr_s, num_stderrs)
 
     return mus, sigmas
-\end{verbatim}
+\end{code}
 
 {\tt xs} is the dataset.  \verb"num_points" is the desired number of
 values in the range.  \verb"num_stderrs" is the width of the range on
@@ -6059,14 +6108,14 @@ value is a pair of sequences, {\tt mus} and {\tt sigmas}.
 Here's {\tt MakeRange}:
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 def MakeRange(estimate, stderr, num_stderrs):
     spread = stderr * num_stderrs
     array = numpy.linspace(estimate-spread,
                            estimate+spread,
                            num_points)
     return array
-\end{verbatim}
+\end{code}
 
 {\tt numpy.linspace} makes an array of equally spaced elements between
 {\tt estimate-spread} and {\tt estimate+spread}, including both.
@@ -6077,12 +6126,12 @@ def MakeRange(estimate, stderr, num_stderrs):
 
 Finally here's the code to make and update the suite:
 
-\begin{verbatim}
+\begin{code}
     mus, sigmas = FindPriorRanges(xs, num_points)
     suite = Height(mus, sigmas)
     suite.UpdateSet(xs)
     print suite.MaximumLikelihood()    
-\end{verbatim}
+\end{code}
 
 This process might seem bogus, because we use the data to choose the
 range of the prior distribution, and then use the data again to do the
@@ -6110,13 +6159,13 @@ then the probability that one exceeds the other.
 To compute the distribution of CV, we enumerate pairs of
 {\tt mu} and {\tt sigma}:
 
-\begin{verbatim}
+\begin{code}
 def CoefVariation(suite):
     pmf = thinkbayes.Pmf()
     for (mu, sigma), p in suite.Items():
         pmf.Incr(sigma/mu, p)
     return pmf
-\end{verbatim}
+\end{code}
 
 Then we use \verb"thinkbayes.PmfProbGreater" to compute the
 probability that men are more variable.
@@ -6149,9 +6198,9 @@ distributions that look reasonable.
 If we select the first 1000 values and run the program again, we get
 an error in \verb"Pmf.Normalize":
 
-\begin{verbatim}
+\begin{code}
 ValueError: total probability is zero.
-\end{verbatim}
+\end{code}
 
 The problem is that we are using probability densities to compute
 likelihoods, and densities from continuous distributions tend to be
@@ -6175,7 +6224,7 @@ up log likelihoods.  {\tt Pmf} provides methods {\tt Log}, {\tt
 
 {\tt Log} computes the log of the probabilities in a Pmf:
 
-\begin{verbatim}
+\begin{code}
 # class Pmf
 
     def Log(self):
@@ -6185,7 +6234,7 @@ up log likelihoods.  {\tt Pmf} provides methods {\tt Log}, {\tt
                 self.Set(x, math.log(p/m))
             else:
                 self.Remove(x)
-\end{verbatim}
+\end{code}
 
 Before applying the log transform {\tt Log} uses {\tt MaxLike} to find
 {\tt m}, the highest probability in the Pmf.  It divide all
@@ -6203,24 +6252,24 @@ and {\tt LogUpdateSet}.
 
 Here's the implementation of {\tt LogUpdateSet}:
 
-\begin{verbatim}
+\begin{code}
 # class Suite
 
     def LogUpdateSet(self, dataset):
         for data in dataset:
             self.LogUpdate(data)
-\end{verbatim}
+\end{code}
 
 {\tt LogUpdateSet} loops through the data and calls {\tt LogUpdate}:
 
-\begin{verbatim}
+\begin{code}
 # class Suite
 
     def LogUpdate(self, data):
         for hypo in self.Values():
             like = self.LogLikelihood(data, hypo)
             self.Incr(hypo, like)
-\end{verbatim}
+\end{code}
 
 {\tt LogUpdate} is just like {\tt Update} except that it calls
 {\tt LogLikelihood} instead of {\tt Likelihood}, and {\tt Incr}
@@ -6230,14 +6279,14 @@ Using log-likelihoods avoids the problem with underflow, but while
 the Pmf is under the log transform, there's not much we can do with
 it.  We have to use {\tt Exp} to invert the transform:
 
-\begin{verbatim}
+\begin{code}
 # class Pmf
 
     def Exp(self):
         m = self.MaxLike()
         for x, p in self.d.iteritems():
             self.Set(x, math.exp(p-m))
-\end{verbatim}
+\end{code}
 
 If the log-likelihoods are large negative numbers, the resulting
 likelihoods might underflow.  So {\tt Exp} finds the maximum
@@ -6251,7 +6300,7 @@ process inverts the log transform with minimal loss of precision.
 
 Now all we need is {\tt LogLikelihood}.
 
-\begin{verbatim}
+\begin{code}
 # class Height
 
     def LogLikelihood(self, data, hypo):
@@ -6259,7 +6308,7 @@ Now all we need is {\tt LogLikelihood}.
         mu, sigma = hypo
         loglike = scipy.stats.norm.logpdf(x, mu, sigma)
         return loglike
-\end{verbatim}
+\end{code}
 
 {\tt norm.logpdf} computes the log-likelihood of the
 Gaussian PDF.
@@ -6269,12 +6318,12 @@ Gaussian PDF.
 
 Here's what the whole update process looks like:
 
-\begin{verbatim}
+\begin{code}
     suite.Log()
     suite.LogUpdateSet(xs)
     suite.Exp()
     suite.Normalize()
-\end{verbatim}
+\end{code}
 
 To review, {\tt Log} puts the suite under a log transform.
 {\tt LogUpdateSet} calls {\tt LogUpdate}, which calls
@@ -6325,7 +6374,7 @@ Pulling out the terms that don't depend on $i$, we get
 %
 which we can translate into Python:
 
-\begin{verbatim}
+\begin{code}
 # class Height
 
     def LogUpdateSetFast(self, data):
@@ -6337,7 +6386,7 @@ which we can translate into Python:
             total = Summation(xs, mu)
             loglike = -n * math.log(sigma) - total / 2 / sigma**2
             self.Incr(hypo, loglike)
-\end{verbatim}
+\end{code}
 
 By itself, this would be a small improvement, but it
 creates an opportunity for a bigger one.  Notice that the
@@ -6350,7 +6399,7 @@ summation, and {\bf memoize} it so it stores previously computed
 results in a dictionary (see
 \url{http://en.wikipedia.org/wiki/Memoization}): \index{memoization}
 
-\begin{verbatim}
+\begin{code}
 def Summation(xs, mu, cache={}):
     try:
         return cache[xs, mu]
@@ -6359,7 +6408,7 @@ def Summation(xs, mu, cache={}):
         total = sum(ds)
         cache[xs, mu] = total
         return total
-\end{verbatim}
+\end{code}
 
 {\tt cache} stores previously computed sums.  The {\tt try} statement
 returns a result from the cache if possible; otherwise it computes
@@ -6435,7 +6484,7 @@ sample statistics, $m$ and $s$, given hypothetical values
 for $\mu$ and $\sigma$.  Here's a new version of \verb"LogUpdateSet"
 that does it:
 
-\begin{verbatim}
+\begin{code}
     def LogUpdateSetABC(self, data):
         xs = data
         n = len(xs)
@@ -6456,7 +6505,7 @@ that does it:
             loglike += EvalGaussianLogPdf(s, sigma, stderr_s)
 
             self.Incr(hypo, loglike)
-\end{verbatim}
+\end{code}
 
 On my computer this function processes the entire dataset in about a
 second, and the result agrees with the exact result with about 5
@@ -6509,7 +6558,7 @@ and inter-quartile range
 More generally, we could compute an inter-percentile range (IPR) that
 spans any given fraction of the distribution, {\tt p}:
 
-\begin{verbatim}
+\begin{code}
 def MedianIPR(xs, p):
     cdf = thinkbayes.MakeCdfFromList(xs)
     median = cdf.Percentile(50)
@@ -6517,7 +6566,7 @@ def MedianIPR(xs, p):
     alpha = (1-p) / 2
     ipr = cdf.Value(1-alpha) - cdf.Value(alpha)
     return median, ipr
-\end{verbatim}
+\end{code}
 
 {\tt xs} is a sequence of values.  {\tt p} is the desired range;
 for example, {\tt p=0.5} yields the inter-quartile range.
@@ -6540,7 +6589,7 @@ More generally we could use any number of {\tt sigmas}.
 {\tt MedianS} performs the more general version of this
 computation:
 
-\begin{verbatim}
+\begin{code}
 def MedianS(xs, num_sigmas):
     half_p = thinkbayes.StandardGaussianCdf(num_sigmas) - 0.5
 
@@ -6548,7 +6597,7 @@ def MedianS(xs, num_sigmas):
     s = ipr / 2 / num_sigmas
 
     return median, s
-\end{verbatim}
+\end{code}
 
 Again, {\tt xs} is the sequence of values; \verb"num_sigmas" is the
 number of standard deviations the results should be based on.  The
@@ -6747,22 +6796,22 @@ If the coin is fair, it is easy to compute the likelihood of the
 data, \p{D|F}.  In fact, we already wrote the function
 that does it.
 
-\begin{verbatim}
+\begin{code}
     def Likelihood(self, data, hypo):
         x = hypo / 100.0
         head, tails = data
         like = x**heads * (1-x)**tails
         return like
-\end{verbatim}
+\end{code}
 
 To use it we can
 create a {\tt Euro} suite and invoke
 {\tt Likelihood}:
 
-\begin{verbatim}
+\begin{code}
     suite = Euro()
     likelihood = suite.Likelihood(data, 50)
-\end{verbatim}
+\end{code}
 
 \p{D|F} is $5.5 \cdot 10^{-76}$, which doesn't tell us much except
 that the probability of seeing any particular dataset is very small.
@@ -6776,10 +6825,10 @@ One possibility is to cheat and look at the data before we define
 the hypothesis.  In that case we would say that ``biased'' means that
 the probability of heads is 140/250.
 
-\begin{verbatim}
+\begin{code}
     actual_percent = 100.0 * 140 / 250
     likelihood = suite.Likelihood(data, actual_percent)
-\end{verbatim}
+\end{code}
 
 This version of $B$ I call \verb"B_cheat"; the likelihood of
 \verb"b_cheat" is $34 \cdot 10^{-76}$ and the likelihood ratio is
@@ -6810,11 +6859,11 @@ as a hypothesis made up of two
 sub-hypotheses.  We can compute the likelihood for each
 sub-hypothesis and then compute the average likelihood.
 
-\begin{verbatim}
+\begin{code}
     like40 = suite.Likelihood(data, 40)
     like60 = suite.Likelihood(data, 60)
     likelihood = 0.5 * like40 + 0.5 * like60
-\end{verbatim}
+\end{code}
 
 The likelihood ratio (or Bayes factor) for \verb"b_two" is 1.3, which
 means the data provide weak evidence in favor of \verb"b_two".
@@ -6827,11 +6876,11 @@ have no clue about the value of $x$.  In that case you might build a
 Suite, which I call \verb"b_uniform", to represent sub-hypotheses from
 0 to 100.
 
-\begin{verbatim}
+\begin{code}
     b_uniform = Euro(xrange(0, 101))
     b_uniform.Remove(50)
     b_uniform.Normalize()
-\end{verbatim}
+\end{code}
 
 I initialize \verb"b_uniform" with values from 0 to 100.
 I removed the sub-hypothesis that $x$ is 50\%, because if
@@ -6842,14 +6891,14 @@ To compute the likelihood of
 \verb"b_uniform" we compute the likelihood of each sub-hypothesis
 and accumulate a weighted average.
 
-\begin{verbatim}
+\begin{code}
 def SuiteLikelihood(suite, data):
     total = 0
     for hypo, prob in suite.Items():
         like = suite.Likelihood(data, hypo)
         total += prob * like
     return total
-\end{verbatim}
+\end{code}
 
 The likelihood ratio for \verb"b_uniform" is 0.47, which means
 that the data are weak evidence against \verb"b_uniform",
@@ -6860,17 +6909,17 @@ If you think about the computation performed by
 \verb"SuiteLikelihood", you might notice that it is similar to an
 update.  To refresh your memory, here's the {\tt Update} function:
 
-\begin{verbatim}
+\begin{code}
     def Update(self, data):
         for hypo in self.Values():
             like = self.Likelihood(data, hypo)
             self.Mult(hypo, like)
         return self.Normalize()
-\end{verbatim}
+\end{code}
 
 And here's {\tt Normalize}:
 
-\begin{verbatim}
+\begin{code}
     def Normalize(self):
         total = self.Total()
         
@@ -6879,7 +6928,7 @@ And here's {\tt Normalize}:
             self.d[x] *= factor
 
         return total
-\end{verbatim}
+\end{code}
 
 The return value from {\tt Normalize} is the total of the
 probabilities in the Suite, which is the average of the likelihoods
@@ -6888,9 +6937,9 @@ for the sub-hypotheses, weighted by the prior probabilities.  And {\tt
   SuiteLikelihood}, we could compute the likelihood of
 \verb"b_uniform" like this:
 
-\begin{verbatim}
+\begin{code}
     likelihood = b_uniform.Update(data)
-\end{verbatim}
+\end{code}
 
 
 
@@ -6902,10 +6951,10 @@ this prior as a suite of sub-hypotheses, we can compute its likelihood
 like this:
 \index{triangle distribution}
 
-\begin{verbatim}
+\begin{code}
     b_triangle = TrianglePrior()
     likelihood = b_triangle.Update(data)
-\end{verbatim}
+\end{code}
 
 The likelihood ratio for \verb"b_triangle" is 0.84, compared to $F$, so
 again we would say that the data are weak evidence against $B$.
@@ -7107,7 +7156,7 @@ prior distribution of \verb"p_correct".
 
 Here is the code that reads and processes the data:
 
-\begin{verbatim}
+\begin{code}
 class Exam(object):
 
     def __init__(self):
@@ -7117,7 +7166,7 @@ class Exam(object):
         self.raw = self.ReverseScale(score_pmf)
         self.max_score = max(self.raw.Values())
         self.prior = DivideValues(self.raw, self.max_score)
-\end{verbatim}
+\end{code}
 
 {\tt Exam} encapsulates the information we have about the exam.
 {\tt ReadScale} and {\tt ReadRanks} read files and return
@@ -7147,7 +7196,7 @@ the mean, and less power outside that range.
 For each test-taker, I define a Suite called {\tt Sat} that
 represents the distribution of \verb"p_correct".  Here's the definition:
 
-\begin{verbatim}
+\begin{code}
 class Sat(thinkbayes.Suite):
 
     def __init__(self, exam, score):
@@ -7162,7 +7211,7 @@ class Sat(thinkbayes.Suite):
 
         # update based on an exam score
         self.Update(score)
-\end{verbatim}
+\end{code}
 
 \verb"__init__" takes an Exam object and a scaled score.  It makes a
 copy of the prior distribution and then updates itself based on the
@@ -7171,7 +7220,7 @@ exam score.
 As usual, we inherit {\tt Update} from {\tt Suite} and provide
 {\tt Likelihood}:
 
-\begin{verbatim}
+\begin{code}
     def Likelihood(self, data, hypo):
         p_correct = hypo
         score = data
@@ -7180,7 +7229,7 @@ As usual, we inherit {\tt Update} from {\tt Suite} and provide
         n = self.exam.max_score
         like = thinkbayes.EvalBinomialPmf(k, n, p_correct)
         return like
-\end{verbatim}
+\end{code}
 
 {\tt hypo} is a hypothetical
 value of \verb"p_correct", and {\tt data} is a scaled score.
@@ -7232,7 +7281,7 @@ that does that.
 So we can define a Suite that computes the posterior probabilities
 of $A$ and $B$:
 
-\begin{verbatim}
+\begin{code}
 class TopLevel(thinkbayes.Suite):
 
     def Update(self, data):
@@ -7249,7 +7298,7 @@ class TopLevel(thinkbayes.Suite):
         self.Mult('B', b_like)
 
         self.Normalize()
-\end{verbatim}
+\end{code}
 
 Usually when we define a new Suite, we inherit {\tt Update}
 and provide {\tt Likelihood}.  In this case I override {\tt Update},
@@ -7273,7 +7322,7 @@ and \verb"b_like".
 
 Here is the code that creates {\tt TopLevel} and updates it:
 
-\begin{verbatim}
+\begin{code}
     exam = Exam()
     a_sat = Sat(exam, 780)
     b_sat = Sat(exam, 740)
@@ -7281,7 +7330,7 @@ Here is the code that creates {\tt TopLevel} and updates it:
     top = TopLevel('AB')
     top.Update((a_sat, b_sat))
     top.Print()
-\end{verbatim}
+\end{code}
 
 The likelihood of $A$ is 0.79 and the likelihood of $B$ is 0.21.  The
 likelihood ratio (or Bayes factor) is 3.8, which means that these test
@@ -7327,10 +7376,10 @@ read on...
   question correctly is related to {\tt efficacy} and {\tt difficulty}
   according to this function:
 
-\begin{verbatim}
+\begin{code}
 def ProbCorrect(efficacy, difficulty, a=1):
     return 1 / (1 + math.exp(-a * (efficacy - difficulty)))
-\end{verbatim}
+\end{code}
 
 \end{itemize}
 
@@ -7354,7 +7403,7 @@ can compute the expected distribution of raw scores.  We'll do that
 in two steps.  First, for a person with given {\tt efficacy},
 we'll compute the distribution of raw scores.
 
-\begin{verbatim}
+\begin{code}
 def PmfCorrect(efficacy, difficulties):
     pmf0 = thinkbayes.Pmf([0])
 
@@ -7362,19 +7411,19 @@ def PmfCorrect(efficacy, difficulties):
     pmfs = [BinaryPmf(p) for p in ps]
     dist = sum(pmfs, pmf0)
     return dist
-\end{verbatim}
+\end{code}
 
 {\tt difficulties} is a list of difficulties, one for each question.
 {\tt ps} is a list of probabilities, and {\tt pmfs} is a list of
 two-valued Pmf objects; here's the function that makes them:
 
-\begin{verbatim}
+\begin{code}
 def BinaryPmf(p):
     pmf = thinkbayes.Pmf()
     pmf.Set(1, p)
     pmf.Set(0, 1-p)
     return pmf
-\end{verbatim}
+\end{code}
 
 {\tt dist} is the sum of these Pmfs.  Remember from Section~\ref{addends}
 that when we add up Pmf objects, the result is the distribution
@@ -7387,7 +7436,7 @@ of raw scores.  For a group of people with a different efficacies, the
 resulting distribution of raw scores is a mixture.  Here's the code
 that computes the mixture:
 
-\begin{verbatim}
+\begin{code}
 # class Exam:
 
     def MakeRawScoreDist(self, efficacies):
@@ -7398,7 +7447,7 @@ that computes the mixture:
 
         mix = thinkbayes.MakeMixture(pmfs)
         return mix
-\end{verbatim}
+\end{code}
 
 {\tt MakeRawScoreDist} takes {\tt efficacies}, which is a Pmf that
 represents the distribution of efficacy across test-takers.  I assume
@@ -7435,11 +7484,11 @@ parameters {\tt center} and {\tt width}.  {\tt MakeDifficulties}
 makes a list of difficulties with these parameters.
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 def MakeDifficulties(center, width, n):
     low, high = center-width, center+width
     return numpy.linspace(low, high, n)
-\end{verbatim}
+\end{code}
 
 By trying out a few combinations, I found that
 {\tt center=-0.05} and {\tt width=1.8} yield a distribution
@@ -7490,7 +7539,7 @@ Now that the model is calibrated, we can compute the posterior
 distribution of efficacy for Alice and Bob.  Here is a version of the
 Sat class that uses the new model:
 
-\begin{verbatim}
+\begin{code}
 class Sat2(thinkbayes.Suite):
 
     def __init__(self, exam, score):
@@ -7503,13 +7552,13 @@ class Sat2(thinkbayes.Suite):
 
         # update based on an exam score
         self.Update(score)
-\end{verbatim}
+\end{code}
 
 \verb"Update" invokes
 \verb"Likelihood", which computes the likelihood of a given test score
 for a hypothetical level of efficacy.
 
-\begin{verbatim}
+\begin{code}
     def Likelihood(self, data, hypo):
         efficacy = hypo
         score = data
@@ -7518,7 +7567,7 @@ for a hypothetical level of efficacy.
         pmf = self.exam.PmfCorrect(efficacy)
         like = pmf.Prob(raw)
         return like
-\end{verbatim}
+\end{code}
 
 {\tt pmf} is the distribution of raw scores for a test-taker
 with the given efficacy; {\tt like} is the probability of
@@ -7568,23 +7617,23 @@ the probability that Alice gets a higher score again.
 We already have most of the code we need.  To compute
 the predictive distributions, we can use \verb"MakeRawScoreDist" again:
 
-\begin{verbatim}
+\begin{code}
     exam = Exam()
     a_sat = Sat(exam, 780)
     b_sat = Sat(exam, 740)
 
     a_pred = exam.MakeRawScoreDist(a_sat)
     b_pred = exam.MakeRawScoreDist(b_sat)
-\end{verbatim}
+\end{code}
 
 Then we can find the likelihood that Alice does better on the second
 test, Bob does better, or they tie:
 
-\begin{verbatim}
+\begin{code}
     a_like = thinkbayes.PmfProbGreater(a_pred, b_pred)
     b_like = thinkbayes.PmfProbLess(a_pred, b_pred)
     c_like = thinkbayes.PmfProbEqual(a_pred, b_pred)
-\end{verbatim}
+\end{code}
 
 The probability that Alice does better on the second exam is 63\%,
 which means that Bob has a 37\% chance of doing as well or better.
@@ -7624,14 +7673,14 @@ to plot the space of these parameters.  \verb"thinkbayes.MakeJoint"
 takes two Pmfs, computes their joint distribution, and returns
 a joint pmf of each possible pair of values and its probability.
 
-\begin{verbatim}
+\begin{code}
 def MakeJoint(pmf1, pmf2):
     joint = Joint()
     for v1, p1 in pmf1.Items():
         for v2, p2 in pmf2.Items():
             joint.Set((v1, v2), p1 * p2)
     return joint
-\end{verbatim}
+\end{code}
 
 This function assumes that the two distributions are independent.
 \index{joint distribution}
@@ -7751,7 +7800,7 @@ The median volume doubling time reported by Zhang et al is 811 days.
 Assuming 3-dimensional geometry, the doubling time for a linear
 measure is three times longer.
 
-\begin{verbatim}
+\begin{code}
     # time between discharge and diagnosis, in days 
     interval = 3291.0
 
@@ -7764,7 +7813,7 @@ measure is three times longer.
     # how big was the tumor at time of discharge (diameter in cm)
     d1 = 15.5
     d0 = d1 / 2.0 ** doublings
-\end{verbatim}
+\end{code}
 
 You can download the code in this chapter from
 \url{http://thinkbayes.com/kidney.py}.  For more information
@@ -7780,7 +7829,7 @@ if this tumor had formed after the date of discharge.  If we
 assume an initial size of 0.1 cm, we can compute the number of
 doublings to get to a final size of 15.5 cm:
 
-\begin{verbatim}
+\begin{code}
     # assume an initial linear measure of 0.1 cm
     d0 = 0.1
     d1 = 15.5
@@ -7794,7 +7843,7 @@ doublings to get to a final size of 15.5 cm:
     # compute the volumetric doubling time and RDT
     vdt = dt / 3
     rdt = 365 / vdt
-\end{verbatim}
+\end{code}
 
 {\tt dt} is linear doubling time, so {\tt vdt} is volumetric
 doubling time, and {\tt rdt} is reciprocal doubling
@@ -7898,7 +7947,7 @@ diameter.
 Here is the kernel of the simulation:
 \index{simulation}
 
-\begin{verbatim}
+\begin{code}
 def MakeSequence(rdt_seq, v0=0.01, interval=0.67, vmax=Volume(20.0)):
     seq = v0,
     age = 0
@@ -7910,7 +7959,7 @@ def MakeSequence(rdt_seq, v0=0.01, interval=0.67, vmax=Volume(20.0)):
             break
 
     return seq
-\end{verbatim}
+\end{code}
 
 \verb"rdt_seq" is an iterator that yields 
 random values from the CDF of growth rate.
@@ -7922,15 +7971,15 @@ measurement of 20 cm.
 {\tt Volume} converts from linear measurement in cm to volume
 in mL, based on the simplification that the tumor is a sphere:
 
-\begin{verbatim}
+\begin{code}
 def Volume(diameter, factor=4*math.pi/3):
     return factor * (diameter/2.0)**3
-\end{verbatim}
+\end{code}
 
 {\tt ExtendSequence} computes the volume of the tumor at the
 end of the interval.
 
-\begin{verbatim}
+\begin{code}
 def ExtendSequence(age, seq, rdt, interval):
     initial = seq[-1]
     doublings = rdt * interval
@@ -7939,7 +7988,7 @@ def ExtendSequence(age, seq, rdt, interval):
     cache.Add(age, new_seq, rdt)
     
     return final, new_seq
-\end{verbatim}
+\end{code}
 
 {\tt age} is the age of the tumor at the end of the interval.
 {\tt seq} is a tuple that contains the volumes so far.  {\tt rdt} is
@@ -7967,12 +8016,12 @@ of each interval, as explained in the next section.
 
 Here's how the cache works.  
 
-\begin{verbatim}
+\begin{code}
 class Cache(object):
 
     def __init__(self):
         self.joint = thinkbayes.Joint()
-\end{verbatim}
+\end{code}
 
 {\tt joint} is a joint Pmf that records the
 frequency of each age-size pair, so it approximates the
@@ -7982,7 +8031,7 @@ joint distribution of age and size.
 At the end of each simulated interval, {\tt ExtendSequence} calls
 {\tt Add}:
 
-\begin{verbatim}
+\begin{code}
 # class Cache
 
     def Add(self, age, seq):
@@ -7990,7 +8039,7 @@ At the end of each simulated interval, {\tt ExtendSequence} calls
         cm = Diameter(final)
         bucket = round(CmToBucket(cm))
         self.joint.Incr((age, bucket))
-\end{verbatim}
+\end{code}
 
 Again, {\tt age} is the age of the tumor, and {\tt seq} is the
 sequence of volumes so far.
@@ -8005,19 +8054,19 @@ sequence of volumes so far.
 Before adding the new data to the joint distribution, we use {\tt
   Diameter} to convert from volume to diameter in centimeters:
 
-\begin{verbatim}
+\begin{code}
 def Diameter(volume, factor=3/math.pi/4, exp=1/3.0):
     return 2 * (factor * volume) ** exp
-\end{verbatim}
+\end{code}
 
 And
 {\tt CmToBucket} to convert from centimeters to a discrete bucket
 number:
 
-\begin{verbatim}
+\begin{code}
 def CmToBucket(x, factor=10):
     return factor * math.log(x)
-\end{verbatim}
+\end{code}
 
 The buckets are equally spaced on a log scale.  Using {\tt factor=10}
 yields a reasonable number of buckets; for example,
@@ -8052,14 +8101,14 @@ Here's the code that reads the joint distribution and builds
 the conditional distribution for a given size.
 \index{joint distribution}
 
-\begin{verbatim}
+\begin{code}
 # class Cache
 
     def ConditionalCdf(self, bucket):
         pmf = self.joint.Conditional(0, 1, bucket)
         cdf = pmf.MakeCdf()
         return cdf
-\end{verbatim}
+\end{code}
 
 \verb"bucket" is the integer bucket number corresponding to
 tumor size.  {\tt Joint.Conditional} computes the
@@ -8071,13 +8120,13 @@ a range of sizes.  To summarize these distributions, we can
 compute percentiles as a function of size.
 \index{percentile}
 
-\begin{verbatim}
+\begin{code}
     percentiles = [95, 75, 50, 25, 5]
 
     for bucket in cache.GetBuckets():
         cdf = ConditionalCdf(bucket)      
         ps = [cdf.Percentile(p) for p in percentiles]
-\end{verbatim}
+\end{code}
 
 Figure~\ref{fig.kidney7} shows these percentiles for each
 size bucket.  The data points are computed from the estimated
@@ -8163,7 +8212,7 @@ correlated series from a given Cdf.  Here's how the algorithm works:
 
 Here's what that looks like in code:
 
-\begin{verbatim}
+\begin{code}
 def CorrelatedGenerator(cdf, rho):
     x = random.gauss(0, 1)
     yield Transform(x)
@@ -8172,7 +8221,7 @@ def CorrelatedGenerator(cdf, rho):
     while True:
         x = random.gauss(x * rho, sigma)
         yield Transform(x)
-\end{verbatim}
+\end{code}
 
 {\tt cdf} is the desired Cdf; {\tt rho} is the desired correlation.
 The values of {\tt x} are Gaussian; {\tt Transform} converts them
@@ -8187,12 +8236,12 @@ next value is {\tt x * rho}, and the variance is {\tt 1 - rho**2}.
 {\tt Transform} maps from each
 Gaussian value, {\tt x}, to a value from the given Cdf, {\tt y}.
 
-\begin{verbatim}
+\begin{code}
     def Transform(x):
         p = thinkbayes.GaussianCdf(x)
         y = cdf.Value(p)
         return y
-\end{verbatim}
+\end{code}
 
 {\tt GaussianCdf} computes the CDF of the standard Gaussian
 distribution at {\tt x}, returning a cumulative probability.
@@ -8211,13 +8260,13 @@ Remember that {\tt MakeSequence} takes an iterator as an argument.
 That interface allows it to work with different generators:
 \index{generator}
 
-\begin{verbatim}
+\begin{code}
     iterator = UncorrelatedGenerator(cdf)
     seq1 = MakeSequence(iterator)
 
     iterator = CorrelatedGenerator(cdf, rho)
     seq2 = MakeSequence(iterator)
-\end{verbatim}
+\end{code}
 
 In this example, {\tt seq1} and {\tt seq2} are
 drawn from the same distribution, but the values in {\tt seq1}
@@ -8249,7 +8298,7 @@ we started with: given a tumor with a linear dimension of
 
 Here's the code:
 
-\begin{verbatim}
+\begin{code}
 # class Cache
 
     def ProbOlder(self, cm, age):
@@ -8257,7 +8306,7 @@ Here's the code:
         cdf = self.ConditionalCdf(bucket)
         p = cdf.Prob(age)
         return 1-p
-\end{verbatim}
+\end{code}
 
 {\tt cm} is the size of the tumor; {\tt age} is the age threshold
 in years.  {\tt ProbOlder} converts size to a bucket number,
@@ -8397,7 +8446,7 @@ have to do is estimate $n$.
 I define a Suite called {\tt Detector} that models the behavior
 of the detector and estimates $n$.
 
-\begin{verbatim}
+\begin{code}
 class Detector(thinkbayes.Suite):
 
     def __init__(self, r, f, high=500, step=1):
@@ -8405,7 +8454,7 @@ class Detector(thinkbayes.Suite):
         thinkbayes.Suite.__init__(self, pmf, name=r)
         self.r = r
         self.f = f
-\end{verbatim}
+\end{code}
 
 If the average emission rate is $r$ particles per second, the
 distribution of $n$ is Poisson with parameter $r$.
@@ -8416,7 +8465,7 @@ and the step size between hypothetical values.
 Now we need a likelihood function:
 \index{likelihood}
 
-\begin{verbatim}
+\begin{code}
 # class Detector
 
     def Likelihood(self, data, hypo):
@@ -8425,7 +8474,7 @@ Now we need a likelihood function:
         p = self.f
 
         return thinkbayes.EvalBinomialPmf(k, n, p)
-\end{verbatim}
+\end{code}
 
 {\tt data} is the number of particles detected, and {\tt hypo} is
 the hypothetical number of particles emitted, $n$.
@@ -8438,7 +8487,7 @@ given by the binomial distribution.
 That's it for the Detector.  We can try it out for a range
 of values of $r$:
 
-\begin{verbatim}
+\begin{code}
     f = 0.1
     k = 15
 
@@ -8446,7 +8495,7 @@ of values of $r$:
         suite = Detector(r, f, step=1)
         suite.Update(k)
         print suite.MaximumLikelihood()
-\end{verbatim}
+\end{code}
 
 Figure~\ref{fig.jaynes1} shows the posterior distribution of $n$ for
 several given values of $r$.
@@ -8458,13 +8507,13 @@ In the previous section, we assume $r$ is known.  Now let's
 relax that assumption.  I define another Suite, called {\tt Emitter},
 that models the behavior of the emitter and estimates $r$:
 
-\begin{verbatim}
+\begin{code}
 class Emitter(thinkbayes.Suite):
 
     def __init__(self, rs, f=0.1):
         detectors = [Detector(r, f) for r in rs]
         thinkbayes.Suite.__init__(self, detectors)
-\end{verbatim}
+\end{code}
 
 {\tt rs} is a sequence of hypothetical value for $r$.  {\tt detectors}
 is a sequence of Detector objects, one for each value of $r$.  The
@@ -8480,7 +8529,7 @@ To compute the likelihood of the data for a given Detector, we loop
 through the values of $n$ and add up the total probability of $k$.
 That's what {\tt SuiteLikelihood} does:
 
-\begin{verbatim}
+\begin{code}
 # class Detector
 
     def SuiteLikelihood(self, data):
@@ -8489,18 +8538,18 @@ That's what {\tt SuiteLikelihood} does:
             like = self.Likelihood(data, hypo)
             total += prob * like
         return total
-\end{verbatim}
+\end{code}
 
 Now we can write the Likelihood function for the Emitter:
 
-\begin{verbatim}
+\begin{code}
 # class Emitter
 
     def Likelihood(self, data, hypo):
         detector = hypo
         like = detector.SuiteLikelihood(data)
         return like
-\end{verbatim}
+\end{code}
 
 Each {\tt hypo} is a Detector, so we can invoke
 {\tt SuiteLikelihood} to get the likelihood of the data under
@@ -8509,7 +8558,7 @@ the hypothesis.
 After we update the Emitter, we have to update each of the
 Detectors, too.  
 
-\begin{verbatim}
+\begin{code}
 # class Emitter
 
     def Update(self, data):
@@ -8517,7 +8566,7 @@ Detectors, too.
         
         for detector in self.Values():
             detector.Update()
-\end{verbatim}
+\end{code}
 
 A model like this, with multiple levels of Suites, is called {\bf
   hierarchical}.  \index{hierarchical model}
@@ -8539,12 +8588,12 @@ of Emitter.
 
 Here's the streamlined version of {\tt Emitter.Likelihood}:
 
-\begin{verbatim}
+\begin{code}
 # class Emitter
 
     def Likelihood(self, data, hypo):
         return hypo.Update(data)
-\end{verbatim}
+\end{code}
 
 And with this version of {\tt Likelihood} we can use the
 default version of {\tt Update}.  So this version has fewer
@@ -8565,13 +8614,13 @@ the normalizing constant twice.
 After we update the Emitter, we can get the posterior distribution
 of $r$ by looping through the Detectors and their probabilities:
 
-\begin{verbatim}
+\begin{code}
 # class Emitter
 
     def DistOfR(self):
         items = [(detector.r, prob) for detector, prob in self.Items()]
         return thinkbayes.MakePmfFromItems(items)
-\end{verbatim}
+\end{code}
 
 {\tt items} is a list of values of $r$ and their probabilities.
 The result is the Pmf of $r$.
@@ -8582,12 +8631,12 @@ the mixture of the Detectors.  We can use
 from each distribution to its probability.  And that's exactly
 what the Emitter is:
 
-\begin{verbatim}
+\begin{code}
 # class Emitter
 
     def DistOfN(self):
         return thinkbayes.MakeMixture(self)
-\end{verbatim}
+\end{code}
 
 Figure~\ref{fig.jaynes2} shows the results.  Not surprisingly, the
 most likely value for $n$ is 150.  Given $f$ and $n$, the expected
@@ -8738,9 +8787,9 @@ distribution.  If the prevalence of lions and tigers and bears is
 seeing 3 lions, 2 tigers and one bear is proportional to
 \index{multinomial distribution}
 
-\begin{verbatim}
+\begin{code}
 p_lion**3 * p_tiger**2 * p_bear**1
-\end{verbatim}
+\end{code}
 
 An approach that is tempting, but not correct, is to use beta
 distributions, as in Section~\ref{beta}, to describe the prevalence of
@@ -8749,11 +8798,11 @@ if we think of that as 3 ``heads'' and 3 ``tails,'' then the posterior
 distribution of \verb"p_lion" is:
 \index{beta distribution}
 
-\begin{verbatim}
+\begin{code}
     beta = thinkbayes.Beta()
     beta.Update((3, 3))
     print beta.MaximumLikelihood()
-\end{verbatim}
+\end{code}
 
 The maximum likelihood estimate for \verb"p_lion" is the observed
 rate, 50\%.  Similarly the MLEs for \verb"p_tiger" and \verb"p_bear"
@@ -8799,13 +8848,13 @@ Here's the definition, from {\tt thinkbayes.py}, of a class that
 represents a Dirichlet distribution:
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 class Dirichlet(object):
 
     def __init__(self, n):
         self.n = n
         self.params = numpy.ones(n, dtype=numpy.int)
-\end{verbatim}
+\end{code}
 
 {\tt n} is the number of dimensions; initially the parameters
 are all 1.  I use a {\tt numpy} array to store the parameters
@@ -8815,12 +8864,12 @@ Given a Dirichlet distribution, the marginal distribution
 for each prevalence is a beta distribution, which we can
 compute like this:
 
-\begin{verbatim}
+\begin{code}
     def MarginalBeta(self, i):
         alpha0 = self.params.sum()
         alpha = self.params[i]
         return Beta(alpha, alpha0-alpha)
-\end{verbatim}
+\end{code}
 
 {\tt i} is the index of the marginal distribution we want.
 {\tt alpha0} is the sum of the parameters; {\tt alpha} is the
@@ -8831,23 +8880,23 @@ In the example, the prior marginal distribution for each species
 is {\tt Beta(1, 2)}.  We can compute the prior means like
 this:
 
-\begin{verbatim}
+\begin{code}
     dirichlet = thinkbayes.Dirichlet(3)
     for i in range(3):
         beta = dirichlet.MarginalBeta(i)
         print beta.Mean()
-\end{verbatim}
+\end{code}
 
 As expected, the prior mean prevalence for each species is 1/3.
 
 To update the Dirichlet distribution, we add the
 observations to the parameters like this:
 
-\begin{verbatim}
+\begin{code}
     def Update(self, data):
         m = len(data)
         self.params[:m] += data
-\end{verbatim}
+\end{code}
 
 Here {\tt data} is a sequence of counts in the same order as {\tt
   params}, so in this example, it should be the number of lions,
@@ -8860,7 +8909,7 @@ observed.
 Here's code that updates {\tt dirichlet} with the observed data and
 computes the posterior marginal distributions.
 
-\begin{verbatim}
+\begin{code}
     data = [3, 2, 1]
     dirichlet.Update(data)
 
@@ -8868,7 +8917,7 @@ computes the posterior marginal distributions.
         beta = dirichlet.MarginalBeta(i)
         pmf = beta.MakePmf()
         print i, pmf.Mean()
-\end{verbatim}
+\end{code}
 
 \begin{figure}
 % species.py
@@ -8898,23 +8947,23 @@ species; the bottom level contains hypotheses about prevalences.
 
 Here's the class definition:
 
-\begin{verbatim}
+\begin{code}
 class Species(thinkbayes.Suite):
 
     def __init__(self, ns):
         hypos = [thinkbayes.Dirichlet(n) for n in ns]
         thinkbayes.Suite.__init__(self, hypos)
-\end{verbatim}
+\end{code}
 
 \verb"__init__" takes a list of possible values for {\tt n} and
 makes a list of Dirichlet objects.
 
 Here's the code that creates the top-level suite:
 
-\begin{verbatim}
+\begin{code}
     ns = range(3, 30)
     suite = Species(ns)
-\end{verbatim}
+\end{code}
 
 {\tt ns} is the list of possible values for {\tt n}.  We have seen 3
 species, so there have to be at least that many.  I chose an upper
@@ -8927,21 +8976,21 @@ Usually you have to update the bottom
 level first and work up, but in this case we can
 update the top level first:
 
-\begin{verbatim}
+\begin{code}
 #class Species
 
     def Update(self, data):
         thinkbayes.Suite.Update(self, data)
         for hypo in self.Values():
             hypo.Update(data)
-\end{verbatim}
+\end{code}
 
 {\tt Species.Update} invokes {\tt Update} in the parent class,
 then loops through the sub-hypotheses and updates them.
 
 Now all we need is a likelihood function:
 
-\begin{verbatim}
+\begin{code}
 # class Species
 
     def Likelihood(self, data, hypo):
@@ -8951,7 +9000,7 @@ Now all we need is a likelihood function:
             like += dirichlet.Likelihood(data)
 
         return like
-\end{verbatim}
+\end{code}
 
 {\tt data} is a sequence of
 observed counts; {\tt hypo} is a Dirichlet object.
@@ -8966,7 +9015,7 @@ of the data under the sampled set of prevalences.
 
 Here's what it looks like:
 
-\begin{verbatim}
+\begin{code}
 # class Dirichlet
 
     def Likelihood(self, data):
@@ -8978,7 +9027,7 @@ Here's what it looks like:
         p = self.Random()
         q = p[:m]**x
         return q.prod()
-\end{verbatim}
+\end{code}
 
 The length of {\tt data} is the number of species observed.  If
 we see more species than we thought existed, the likelihood is 0.
@@ -9019,24 +9068,24 @@ Here's the code:
 \index{numpy}
 \index{gamma distribution}
 
-\begin{verbatim}
+\begin{code}
 # class Dirichlet
 
     def Random(self):
         p = numpy.random.gamma(self.params)
         return p / p.sum()
-\end{verbatim}
+\end{code}
 
 Now we're ready to look at some results.  Here is the code that extracts
 the posterior distribution of {\tt n}:
 
-\begin{verbatim}
+\begin{code}
     def DistOfN(self):
         pmf = thinkbayes.Pmf()
         for hypo, prob in self.Items():
             pmf.Set(hypo.n, prob)
         return pmf
-\end{verbatim}
+\end{code}
 
 {\tt DistOfN} iterates
 through the top-level hypotheses and accumulates the probability
@@ -9124,14 +9173,14 @@ We can eliminate them and merge the parameters into
 the top-level suite.  {\tt Species2} implements this optimization:
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 class Species2(object):
     
     def __init__(self, ns):
         self.ns = ns
         self.probs = numpy.ones(len(ns), dtype=numpy.double)
         self.params = numpy.ones(self.high, dtype=numpy.int)
-\end{verbatim}
+\end{code}
 
 {\tt ns} is the list of hypothetical values for {\tt n};
 {\tt probs} is the list of corresponding probabilities.  And
@@ -9143,7 +9192,7 @@ the hierarchy: first the probability for each value of {\tt n},
 then the Dirichlet parameters:
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 # class Species2
 
     def Update(self, data):
@@ -9156,7 +9205,7 @@ then the Dirichlet parameters:
 
         m = len(data)
         self.params[:m] += data
-\end{verbatim}
+\end{code}
 
 {\tt SampleLikelihood} returns an array of likelihoods, one for each
 value of {\tt n}.  {\tt like} accumulates the total likelihood for
@@ -9194,7 +9243,7 @@ it is the same for all hypotheses, so we can drop it.
 Here's the code:
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 # class Species2
 
     def SampleLikelihood(self, data):
@@ -9218,7 +9267,7 @@ Here's the code:
         likes *= coefs
 
         return likes
-\end{verbatim}
+\end{code}
 
 {\tt gammas} is an array of values from a gamma distribution; its
 length is the largest hypothetical value of {\tt n}.  {\tt row} is
@@ -9290,7 +9339,7 @@ a good one is much better.
 Here's a new version that updates one species at a time:
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 class Species4(Species):
 
     def Update(self, data):
@@ -9300,7 +9349,7 @@ class Species4(Species):
             one = numpy.zeros(i+1)
             one[i] = data[i]            
             Species.Update(self, one)
-\end{verbatim}
+\end{code}
 
 This version inherits \verb"__init__" from {\tt Species}, so it
 represents the hypotheses as a list of Dirichlet objects (unlike
@@ -9318,7 +9367,7 @@ is ``I have seen one bear and no more lions and tigers.''
 
 Here's the new version of {\tt Likelihood}:
 
-\begin{verbatim}
+\begin{code}
 # class Species4
 
     def Likelihood(self, data, hypo):
@@ -9334,7 +9383,7 @@ Here's the new version of {\tt Likelihood}:
         like *= num_unseen
 
         return like
-\end{verbatim}
+\end{code}
 
 This is almost the same as {\tt Species.Likelihood}.  The difference
 is the factor, \verb"num_unseen".  This correction is necessary
@@ -9365,7 +9414,7 @@ Section~\ref{collapsing}: we'll get rid of the Dirichlet objects and
 collapse the two levels of the hierarchy into a single object.  So
 here's yet another version of {\tt Species}:
 
-\begin{verbatim}
+\begin{code}
 class Species5(Species2):
     
     def Update(self, data):
@@ -9373,7 +9422,7 @@ class Species5(Species2):
         for i in range(m):
             self.UpdateOne(i+1, data[i])
             self.params[i] += data[i]
-\end{verbatim}
+\end{code}
 
 This version inherits \verb"__init__" from {\tt Species2}, so
 it uses {\tt ns} and {\tt probs} to represent the distribution
@@ -9384,7 +9433,7 @@ the Dirichlet distribution.
 It loops through the observed species and calls {\tt UpdateOne}:
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 # class Species5
 
     def UpdateOne(self, i, count):
@@ -9397,7 +9446,7 @@ It loops through the observed species and calls {\tt UpdateOne}:
 
         self.probs *= likes
         self.probs /= self.probs.sum()
-\end{verbatim}
+\end{code}
 
 This function is similar to {\tt Species2.Update}, with two changes:
 
@@ -9417,7 +9466,7 @@ This function is similar to {\tt Species2.Update}, with two changes:
 Finally, here's {\tt SampleLikelihood}:
 \index{numpy}
 
-\begin{verbatim}
+\begin{code}
 # class Species5
 
     def SampleLikelihood(self, i, count):
@@ -9432,7 +9481,7 @@ Finally, here's {\tt SampleLikelihood}:
         likes = numpy.exp(log_likes)
 
         return likes
-\end{verbatim}
+\end{code}
 
 This is similar to {\tt Species2.SampleLikelihood}; the
 difference is that each update only includes a single species,
@@ -9454,12 +9503,12 @@ data look like, consider subject B1242,
 whose sample of 400 reads yielded 61 species with the following
 counts:
 
-\begin{verbatim}
+\begin{code}
 92, 53, 47, 38, 15, 14, 12, 10, 8, 7, 7, 5, 5, 
 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2,
 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-\end{verbatim}
+\end{code}
 
 There are a few dominant species that make up a large
 fraction of the whole, but many species that yielded only
@@ -9491,13 +9540,13 @@ Now let's process some of the belly button data.  I define
 a class called {\tt Subject} to represent information about
 each subject in the study:
 
-\begin{verbatim}
+\begin{code}
 class Subject(object):
 
     def __init__(self, code):
         self.code = code
         self.species = []
-\end{verbatim}
+\end{code}
 
 Each subject has a string code, like ``B1242'', and a list of
 (count, species name) pairs, sorted in increasing order by count.
@@ -9522,14 +9571,14 @@ which represents the distributions of {\tt n} and the prevalences.
 And {\tt Suite2} provides {\tt DistOfN}, which returns the posterior
 distribution of {\tt n}.
 
-\begin{verbatim}
+\begin{code}
 # class Suite2
 
     def DistN(self):
         items = zip(self.ns, self.probs)
         pmf = thinkbayes.MakePmfFromItems(items)
         return pmf
-\end{verbatim}
+\end{code}
 
 Figure~\ref{species-ndist} shows the distribution of {\tt n} for
 subject B1242.  The probability that there are exactly 61 species, and
@@ -9540,7 +9589,7 @@ there are as many as 87 species.
 Next we compute the posterior distribution of prevalence for
 each species.  {\tt Species2} provides {\tt DistOfPrevalence}:
 
-\begin{verbatim}
+\begin{code}
 # class Species2
 
     def DistOfPrevalence(self, index):
@@ -9553,7 +9602,7 @@ each species.  {\tt Species2} provides {\tt DistOfPrevalence}:
 
         mix = thinkbayes.MakeMixture(metapmf)
         return metapmf, mix
-\end{verbatim}
+\end{code}
 
 {\tt index} indicates which species we want.  For each
 {\tt n}, we have a different posterior distribution
@@ -9647,7 +9696,7 @@ The kernel of these simulations looks like this:
 
 And here's the code.  {\tt RunSimulation} runs a single simulation:
 
-\begin{verbatim}
+\begin{code}
 # class Subject
 
     def RunSimulation(self, num_reads):
@@ -9662,7 +9711,7 @@ And here's the code.  {\tt RunSimulation} runs a single simulation:
             curve.append((k+1, num_new))
 
         return curve
-\end{verbatim}
+\end{code}
 
 \verb"num_reads" is the number of additional reads to simulate.
 {\tt m} is the number of seen species, and {\tt seen} is a set of
@@ -9682,7 +9731,7 @@ the number of new species.
 Before we see the results, let's look at {\tt GetSeenSpecies} and
 {\tt GenerateObservations}.
 
-\begin{verbatim}
+\begin{code}
 #class Subject
 
     def GetSeenSpecies(self):
@@ -9690,7 +9739,7 @@ Before we see the results, let's look at {\tt GetSeenSpecies} and
         m = len(names)
         seen = set(SpeciesGenerator(names, m))
         return m, seen
-\end{verbatim}
+\end{code}
 
 {\tt GetNames} returns the list of species names that appear in
 the data files, but for many subjects these names are not unique.
@@ -9698,7 +9747,7 @@ So I use {\tt SpeciesGenerator} to extend each name with a serial
 number:
 \index{generator}
 
-\begin{verbatim}
+\begin{code}
 def SpeciesGenerator(names, num):
     i = 0
     for name in names:
@@ -9708,7 +9757,7 @@ def SpeciesGenerator(names, num):
     while i < num:
         yield 'unseen-%d' % i
         i += 1
-\end{verbatim}
+\end{code}
 
 Given a name like {\tt Corynebacterium}, {\tt SpeciesGenerator} yields
 {\tt Corynebacterium-1}.  When the list of names is exhausted, it
@@ -9716,7 +9765,7 @@ yields names like {\tt unseen-62}.
 
 Here is {\tt GenerateObservations}:
 
-\begin{verbatim}
+\begin{code}
 # class Subject
 
     def GenerateObservations(self, num_reads):
@@ -9730,7 +9779,7 @@ Here is {\tt GenerateObservations}:
         observations = cdf.Sample(num_reads)
 
         return n, observations
-\end{verbatim}
+\end{code}
 
 Again, \verb"num_reads" is the number of additional reads
 to generate.  {\tt n} and {\tt prevalences} are samples from
@@ -9744,20 +9793,20 @@ to generate a random sequence of species names.
 
 Finally, here is {\tt Species2.SamplePosterior}:
 
-\begin{verbatim}
+\begin{code}
     def SamplePosterior(self):
         pmf = self.DistOfN()
         n = pmf.Random()
         prevalences = self.SamplePrevalences(n)
         return n, prevalences
-\end{verbatim}
+\end{code}
 
 And {\tt SamplePrevalences}, which generates a sample of
 prevalences conditioned on {\tt n}:
 \index{numpy}
 \index{random sample}
 
-\begin{verbatim}
+\begin{code}
 # class Species2
 
     def SamplePrevalences(self, n):
@@ -9765,7 +9814,7 @@ prevalences conditioned on {\tt n}:
         gammas = numpy.random.gamma(params)
         gammas /= gammas.sum()
         return gammas
-\end{verbatim}
+\end{code}
 
 We saw this algorithm for generating random values from a Dirichlet
 distribution in Section~\ref{randomdir}.
@@ -9793,7 +9842,7 @@ we can get the distribution of \verb"num_new" conditioned on any
 value of {\tt k}.
 \index{joint distribution}
 
-\begin{verbatim}
+\begin{code}
 def MakeJointPredictive(curves):
     joint = thinkbayes.Joint()
     for curve in curves:
@@ -9801,7 +9850,7 @@ def MakeJointPredictive(curves):
             joint.Incr((k, num_new))
     joint.Normalize()
     return joint
-\end{verbatim}
+\end{code}
 
 {\tt MakeJointPredictive} makes a Joint object, which is a
 Pmf whose values are tuples.
@@ -9823,7 +9872,7 @@ get the distribution of \verb"num_new" conditioned on {\tt k}
 and computes the conditional distribution of \verb"num_new"
 for each {\tt k}.  The result is a list of Cdf objects.
 
-\begin{verbatim}
+\begin{code}
 def MakeConditionals(curves, ks):
     joint = MakeJointPredictive(curves)
 
@@ -9835,7 +9884,7 @@ def MakeConditionals(curves, ks):
         cdfs.append(cdf)
 
     return cdfs
-\end{verbatim}
+\end{code}
 
 Figure~\ref{species-cond} shows the results.  After 100 reads, the
 median predicted number of new species is 2; the 90\% credible
@@ -9861,7 +9910,7 @@ To answer this question, we need a version of {\tt RunSimulation}
 that computes the fraction of observed species rather than the
 number of new species.
 
-\begin{verbatim}
+\begin{code}
 # class Subject
 
     def RunSimulation(self, num_reads):
@@ -9876,14 +9925,14 @@ number of new species.
             curve.append((k+1, frac_seen))
 
         return curve
-\end{verbatim}
+\end{code}
 
 Next we loop through each curve and make a dictionary, {\tt d},
 that maps from the number of additional reads, {\tt k}, to
 a list of {\tt fracs}; that is, a list of values for the
 coverage achieved after {\tt k} reads.
 
-\begin{verbatim}
+\begin{code}
     def MakeFracCdfs(self, curves):
         d = {}
         for curve in curves:
@@ -9896,7 +9945,7 @@ coverage achieved after {\tt k} reads.
             cdfs[k] = cdf
 
         return cdfs
-\end{verbatim}
+\end{code}
 
 Then for each value of {\tt k} we make a Cdf of {\tt fracs}; this Cdf
 represents the distribution of coverage after {\tt k} reads.
