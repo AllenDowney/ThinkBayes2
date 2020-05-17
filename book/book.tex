@@ -930,7 +930,7 @@ table['likelihood'] = 3/4, 1/2
 
 This table shows the results so far:
 
-\input{table01-01}
+\input{tables/table01-01}
 
 If we multiply the priors by the likelihoods, the results are {\bf unnormalized posteriors}; they are proportional to the posterior probabilities, but they don't add up to 1.
 
@@ -944,7 +944,7 @@ table['posterior'] = table['unnorm'] / prob_data
 
 The following table shows the result:
 
-\input{table01-02}
+\input{tables/table01-02}
 
 The posterior probability for Bowl 1 is 0.6, which is what we got using Bayes's Theorem.  As a bonus, we also get the posterior probability for Bowl 2, which is 0.4.
 
@@ -963,7 +963,7 @@ If I chose the 8-sided die, the probability is 1/8, and if I chose the 12-sided 
 
 Plugging the priors and likelihoods into a Bayes table, I get these results:
 
-\input{table01-03}
+\input{tables/table01-03}
 
 The posterior probability that I chose the 6-sided die is $4/9$.
 
@@ -1042,7 +1042,7 @@ So let's consider the probability of the data under each hypothesis:
 
 Once we figure out prior probabilities and likelihoods, the Bayes table does the rest.  Here is the result:
 
-\input{table01-04}
+\input{tables/table01-04}
 
 After Monty opens Door 3, the posterior probability of Door 1 is $1/3$; the posterior probability of Door 2 is $2/3$.
 
@@ -1070,6 +1070,7 @@ In this chapter...
 In the next chapter
 
 But first you might want to work on these exercises.
+
 
 \section{Exercises}
 
@@ -1134,8 +1135,6 @@ one is green.  What is the probability that the yellow one came
 from the 1994 bag?
 
 \end{exercise}
-
-
 
 
 \chapter{Computational Statistics}
@@ -1217,7 +1216,7 @@ letters = Pmf.from_seq(list('Mississippi'))
 
 The following table shows the results.
 
-\input{table02-01}
+\input{tables/table02-01}
 
 The \py{qs} are the values or ``quantities'' in the distribution; the \py{ps} are the corresponding probabilities.  In the word ``Mississippi'', about 36\% of the letters are ``s''.
 
@@ -1492,7 +1491,7 @@ posterior.normalize()
 
 Here's the result:
 
-\input{table02-02}
+\input{tables/table02-02}
 
 The posterior probability for the 6-sided die is $4/9$.
 
@@ -1509,7 +1508,7 @@ The likelihood for the 6-sided die is $0$ because it is not possible to get a 7 
 The other two likelihoods are the same as in the previous update.
 And here's the result:
 
-\input{table02-03}
+\input{tables/table02-03}
 
 After rolling a 1 and a 7, the posterior probability of the 8-sided die is about 69\%.
 
@@ -1640,65 +1639,204 @@ A statistical statement appeared in ``The Guardian" on Friday January 4, 2002:
 But do these data give evidence that the coin is biased rather than fair?
 \end{quote}
 
-To answer that question, we'll proceed in two steps.  The first
-is to estimate the probability that the coin comes up heads.  The second
-is to evaluate whether the data support the hypothesis that the
-coin is biased.
+To answer that question, we'll proceed in three steps:
 
-You can download the code in this section from
-\url{http://thinkbayes.com/euro.py}.
-  For more information
-see Section~\ref{download}.
+\begin{enumerate}
 
-Any given coin has some probability, $x$, of landing heads up when spun
-on edge.  It seems reasonable to believe that the value of $x$ depends
-on some physical characteristics of the coin, primarily the distribution
-of weight.
+\item First we'll use the binomial distribution to see where that 7\% came from.
 
-If a coin is perfectly balanced, we expect $x$ to be close to 50\%, but
-for a lopsided coin, $x$ might be substantially different.  We can use
-Bayes's theorem and the observed data to estimate $x$.
+\item Then we'll use Bayes's Theorem to estimate the probability that this coin comes up heads.
 
-Let's define 101 hypotheses, where $H_x$ is the hypothesis that the
-probability of heads is $x$\%, for values from 0 to 100.  I'll
-start with a uniform prior where the probability of $H_x$ is the same
-for all $x$.  We'll come back later to consider other priors.
-\index{uniform distribution}
+\item Finally, we'll answer MacKay's question, ``Do these data give evidence that the coin is biased?''
+
+\end{enumerate}
+
+We'll start with the binomial distribution.
+
+
+\section{The Binomial Distribution}
+
+Suppose we have a coin that we know is fair; if we spin it once, the possible outcomes are heads and tails with equal probability.
+I'll denote these outcomes \py{H} and \py{T}.
+
+If you spin it twice, there are four outcomes with equal probability: \py{HH}, \py{HT}, \py{TH}, and \py{TT}. 
+
+If we add up the total number of heads, there are three possible outcomes: 0, 1, or 2.  The probability of 0 and 2 is 25\%, and the probability of 1 is 50\%.
+
+More generally, suppose the probability of heads is \py{p} and we spin the coin \py{n} times.  What is the probability that we get a total of \py{k} heads?
+
+The answer is given by the binomial distribution:
+%
+\[ P(k; n, p) = \binom{n}{k} p^k (1-p)^{n-k} \]
+%
+where $\binom{n}{k}$ is the {\bf binomial coefficient}, usually pronounced "n choose k" (see \url{https://en.wikipedia.org/wiki/Binomial_coefficient}).
+
+We can compute this expression ourselves, but we can also use the SciPy function \py{binom.pmf}:
+
+\begin{code}
+from scipy.stats import binom
+
+n = 2
+p = 0.5
+ks = np.arange(n+1)
+a = binom.pmf(ks, n, p)
+\end{code}
+
+The return value is a NumPy array.
+If we put it in a \py{Pmf}, the result is the distribution of \py{k} for the given values of \py{n} and \py{p}.
+
+\begin{code}
+pmf_k = Pmf(a, ks)
+\end{code}
+
+Here's what it looks like:
+
+\input{tables/table02-01}
+
+We can do the same calculation with \py{n=250}; Figure~\ref{fig03-01} shows the result.
 
 \begin{figure}
-% euro.py
-\centerline{\includegraphics[height=2.5in]{figs/euro1.pdf}}
-\caption{Posterior distribution for the Euro problem
-on a uniform prior.}
-\label{fig.euro1}
+% chap03soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig03-01.pdf}}
+\caption{Binomial distribution with \py{n=250} and \py{p=0.5}}
+\label{fig03-01}
 \end{figure}
 
-The likelihood function is relatively easy: If $H_x$ is true, the
-probability of heads is $x/100$ and the probability of tails is $1-
-x/100$.
+The most likely outcome is 125, which is \py{n*p}.
+But the probability of getting exactly 125 heads is only about 5\%.
+The probability of getting 140 heads, as in the Euro problem is lower, around 0.8\%, but it is still possible even if the coin is fair.
+
+In the article MacKay quotes, the statistician says, ``If the coin were unbiased the chance of getting a result as extreme as that would be less than 7\%''.
+
+We can use the binomial distribution to check his math.  The following function takes a PMF and computes the total probability of values greater than or equal to \py{threshold}. 
 
 \begin{code}
-class Euro(Suite):
-
-    def Likelihood(self, data, hypo):
-        x = hypo
-        if data == 'H':
-            return x/100.0
-        else:
-            return 1 - x/100.0
+def ge_dist(pmf, threshold):
+    ge = (pmf.index >= threshold)
+    total = pmf[ge].sum()
+    return total
 \end{code}
 
-Here's the code that makes the suite and updates it:
+We can call it like this:
 
 \begin{code}
-    suite = Euro(xrange(0, 101))
-    dataset = 'H' * 140 + 'T' * 110
+ge_dist(pmf_k, 140)
+\end{code}
 
+Or \py{Pmf} provides a function that computes the same thing:
+
+\begin{code}
+pmf_k.ge_dist(140)
+\end{code}
+
+Either way, the probability is about 3.3\% that we get 140 heads or more.
+But that's less than 7%.  
+
+The reason is that the statistician includes all values ``as extreme as'' 140, which includes values less than or equal to 110, because 140 exceeds the expected value by 15 and 110 falls short by 15.
+
+The probability of values less than or equal to 110 is also 3.3\%,
+so the total probability of values ``as extreme'' as 140 is 6.6\%.
+
+The point of this calculation is that these extreme values are unlikely if the coin is fair.
+And that's why the statistician concludes that the results are ``very suspicious''.
+
+That's interesting, but it doesn't answer MacKay's question.  So let's move on to the next step, estimating the proportion of heads.
+
+
+\section{Estimating Proportions}
+
+Any given coin has some probability of landing heads up when spun
+on edge; I'll call this probability \py{x}.
+
+It seems reasonable to believe that \py{x} depends
+on physical characteristics of the coin, like the distribution
+of weight.
+
+If a coin is perfectly balanced, we expect \py{x} to be close to 50\%, but
+for a lopsided coin, \py{x} might be substantially different.  We can use
+Bayes's theorem and the observed data to estimate \py{x}.
+
+For simplicity, I'll start with a uniform prior, which assume that all values of \py{x} are equally likely.
+That might not be a reasonable assumption, so we'll come back and consider other priors later.
+
+Here's the uniform prior:
+
+\begin{code}
+hypos = np.arange(0, 101)
+prior = Pmf(1, hypos)
+\end{code}
+
+And here are the likelihoods:
+
+\begin{code}
+likelihood = {
+    'H': hypos/100,
+    'T': 1 - hypos/100
+}
+\end{code}
+
+I put the likelihoods for heads and tails in a dictionary to make it easier to do the update.
+
+To represent the data, I'll use a list of strings, where each string is \py{H} or \py{T}:
+
+\begin{code}
+dataset = 'H' * 140 + 'T' * 110
+\end{code}
+
+The following function does the update.
+
+\begin{code}
+def update_euro(pmf, dataset):
     for data in dataset:
-        suite.Update(data)
+        pmf *= likelihood[data]
+
+    pmf.normalize()
 \end{code}
 
-The result is in Figure~\ref{fig.euro1}.
+The first argument is a \py{Pmf} that represents the prior.
+The second argument is a list of strings.
+Each time through the loop, we multiply \py{pmf} by the likelihood of one outcome, heads or tails.
+
+Notice that \py{normalize} is outside the loop, so the posterior distribution only gets normalized one, at the end.
+That's more efficient than normalizing it after each spin (although we'll see later that it can also cause problems with floating-point arithmetic).
+
+%TODO: Forward reference
+
+Here's how we do the update:
+
+\begin{code}
+posterior = prior.copy()
+update_euro(posterior, dataset)
+\end{code}
+
+Figure~\ref{fig03-02} shows the posterior distribution of \py{x}.
+
+\begin{figure}
+% chap03soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig03-02.pdf}}
+\caption{Posterior distribution of $x$ after 140 heads in 250 spins.}
+\label{fig03-02}
+\end{figure}
+
+Now, it's easy to get this distribution mixed up with the previous one, but rememeber:
+
+\begin{itemize}
+
+\item Figure~\ref{fig03-01} shows the distribution of \py{k}, which is the number of heads we get with \py{n=250} and \py{p=0.5}.
+
+\item Figure ~\ref{fig03-02} shows the posterior distribution of \py{x} which is the proportion of heads for the coin we observed. 
+
+\end{itemize}
+
+The posterior distribution represents our beliefs about \py{x} after seeing the data.
+It indicates that values less than 40 and greater than 80 are unlikely; values between 50 and 60 are the most likely.
+
+In fact, the most likely value for \py{x} is 56\% which is the proportion of heads in the dataset, \py{140/250}.
+
+
+\section{Posterior Mean}
+
+
 
 
 \section{Summarizing the posterior}
@@ -1764,6 +1902,9 @@ The result is 0.021, but that value is almost meaningless.  The
 decision to evaluate 101 hypotheses was arbitrary; we could have
 divided the range into more or fewer pieces, and if we had, the
 probability for any given hypothesis would be greater or less.
+
+
+\section{Making predictions}
 
 
 \section{Swamping the priors}
@@ -1915,6 +2056,10 @@ And then we can call \verb"Update" like this:
 
 Since we have replaced repeated multiplication with exponentiation,
 this version takes the same time for any number of spins.
+
+\section{The binomial distribution}
+\label{binomial}
+
 
 
 %TODO: postpone this section
@@ -7075,6 +7220,10 @@ Miracles,'' at \url{http://en.wikipedia.org/wiki/Of_Miracles}.
 
 \end{exercise}
 
+\begin{exercise}
+
+\url{https://en.wikipedia.org/wiki/Doomsday_argument}
+\end{exercise}
 
 
 \chapter{Evidence}
@@ -8281,7 +8430,7 @@ with target $\rho = 0.4$.
 \index{percentile}
 
 \begin{table}
-\input{kidney_table2}
+\input{tables/kidney_table2}
 \caption{Percentiles of tumor age conditioned on size.}
 \end{table}
 
