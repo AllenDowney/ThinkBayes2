@@ -714,18 +714,24 @@ is 0.5, the chance of rain on two consecutive days is not
 \section{The cookie problem}
 \label{cookie}
 
-We'll get to Bayes's theorem soon, but I want to motivate it with an
-example called the cookie problem.\footnote{Based on an example from
-  \url{http://en.wikipedia.org/wiki/Bayes'_theorem} that is no longer
-  there.}  Suppose there are two bowls of cookies.  Bowl 1 contains
-  30 vanilla cookies and 10 chocolate cookies.  Bowl 2 contains 20 of
-  each.
 \index{Bayes's theorem}
 \index{cookie problem}
 
+We'll get to Bayes's theorem soon, but I want to motivate it with an
+example called the cookie problem.\footnote{Based on an example from
+  \url{http://en.wikipedia.org/wiki/Bayes'_theorem} that is no longer
+  there.}  
+  
+\begin{quote}
+Suppose there are two bowls of cookies.  
+Bowl 1 contains 30 vanilla cookies and 10 chocolate cookies.
+Bowl 2 contains 20 of each.
+
 Now suppose you choose one of the bowls at random and, without
-looking, select a cookie at random.  The cookie is vanilla.  What is
-the probability that it came from Bowl 1?
+looking, select a cookie at random.  
+The cookie is vanilla.  
+What is the probability that it came from Bowl 1?
+\end{quote}
 
 This is a conditional probability; we want $\p{\T{Bowl 1} |
   \T{vanilla}}$, but it is not obvious how to compute it.  If I asked a
@@ -1327,6 +1333,7 @@ After two vanilla cookies and one chocolate, the posterior probabilities are clo
 
 
 \section{More Bowls}
+\label{morebowls}
 
 Next let's solve a cookie problem with 101 bowls:
 
@@ -1359,15 +1366,15 @@ As in the previous version, there are only two kinds of cookies, vanilla and cho
 \label{fig02-01}
 \end{figure}
 
-Suppose we choose a bowl at random, choose a cookie at random, and it turns out to be vanilla.  What is the probability that the cookie came from Bowl $x$, for each value of $x$?
+Suppose we choose a bowl at random, choose a cookie at random, and it turns out to be vanilla.  What is the probability that the cookie came from Bowl \py{x}, for each value of \py{x}?
 
-To solve this problem, I'll use `np.arange` to represent 101 hypotheses, numbered from 0 to 100.
+To solve this problem, I'll use \py{np.arange} to represent 101 hypotheses, numbered from 0 to 100.
 
 \begin{code}
 hypos = np.arange(101)
 \end{code}
 
-And use it to make the prior distribution:
+The result is a NumPy array, which we can use to make the prior distribution:
 
 \begin{code}
 prior = Pmf(1, hypos)
@@ -1514,6 +1521,7 @@ After rolling a 1 and a 7, the posterior probability of the 8-sided die is about
 
 
 \section{Updating Dice}
+\label{dice2}
 
 The following function is a more general version of the update in the previous section:
 
@@ -1579,6 +1587,11 @@ The notebook provides space where you can work on the following problems.
 
 
 \begin{exercise}
+%TODO: medical test (or maybe chapter 1)
+\end{exercise}
+
+
+\begin{exercise}
 Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
 I choose one of the dice at random, roll it four times, and get 1, 3, 5, and 7.
 What is the probability that I chose the 8-sided die?
@@ -1617,6 +1630,8 @@ Hint: In 1935, about 2/3 of twins were fraternal and 1/3 were identical.
 \chapter{Estimation}
 \label{more}
 
+%TODO: Intro
+
 
 \section{The Euro problem}
 \label{euro}
@@ -1626,7 +1641,7 @@ Hint: In 1935, about 2/3 of twins were fraternal and 1/3 were identical.
 In {\it Information Theory, Inference, and Learning Algorithms}, David MacKay poses this problem:
 
 \begin{quote}
-A statistical statement appeared in ``The Guardian" on Friday January 4, 2002:
+A statistical statement appeared in ``The Guardian'' on Friday January 4, 2002:
 
   \begin{quote}
         When spun on edge 250 times, a Belgian one-euro coin came
@@ -1639,19 +1654,8 @@ A statistical statement appeared in ``The Guardian" on Friday January 4, 2002:
 But do these data give evidence that the coin is biased rather than fair?
 \end{quote}
 
-To answer that question, we'll proceed in three steps:
-
-\begin{enumerate}
-
-\item First we'll use the binomial distribution to see where that 7\% came from.
-
-\item Then we'll use Bayes's Theorem to estimate the probability that this coin comes up heads.
-
-\item Finally, we'll answer MacKay's question, ``Do these data give evidence that the coin is biased?''
-
-\end{enumerate}
-
-We'll start with the binomial distribution.
+To answer that question, we'll proceed in two steps.
+First we'll use the binomial distribution to see where that 7\% came from; then we'll use Bayes's Theorem to estimate the probability that this coin comes up heads.
 
 
 \section{The Binomial Distribution}
@@ -1744,6 +1748,7 @@ That's interesting, but it doesn't answer MacKay's question.  So let's move on t
 
 
 \section{Estimating Proportions}
+\label{estprop}
 
 Any given coin has some probability of landing heads up when spun
 on edge; I'll call this probability \py{x}.
@@ -1799,8 +1804,7 @@ Each time through the loop, we multiply \py{pmf} by the likelihood of one outcom
 
 Notice that \py{normalize} is outside the loop, so the posterior distribution only gets normalized one, at the end.
 That's more efficient than normalizing it after each spin (although we'll see later that it can also cause problems with floating-point arithmetic).
-
-%TODO: Forward reference
+%TODO:  add forward reference
 
 Here's how we do the update:
 
@@ -1814,7 +1818,7 @@ Figure~\ref{fig03-02} shows the posterior distribution of \py{x}.
 \begin{figure}
 % chap03soln.ipynb
 \centerline{\includegraphics[width=4in]{figs/fig03-02.pdf}}
-\caption{Posterior distribution of $x$ after 140 heads in 250 spins.}
+\caption{Posterior distribution of \py{x} after 140 heads in 250 spins.}
 \label{fig03-02}
 \end{figure}
 
@@ -1834,565 +1838,249 @@ It indicates that values less than 40 and greater than 80 are unlikely; values b
 In fact, the most likely value for \py{x} is 56\% which is the proportion of heads in the dataset, \py{140/250}.
 
 
-\section{Posterior Mean}
-
-
-
-
-\section{Summarizing the posterior}
-
-Again, there are several ways to summarize the posterior distribution.
-One option is to find the most likely value in the posterior
-distribution.  \verb"thinkbayes" provides a function that does 
-that:
-\index{posterior distribution}
-\index{maximum likelihood}
-
-\begin{code}
-def MaximumLikelihood(pmf):
-    """Returns the value with the highest probability."""
-    prob, val = max((prob, val) for val, prob in pmf.Items())
-    return val
-\end{code}
-
-In this case the result is 56, which is also the observed percentage of
-heads, $140/250 = 56\%$.  So that suggests (correctly) that the
-observed percentage is the maximum likelihood estimator
-for the population.
-
-We might also summarize the posterior by computing the mean
-and median:
-\index{median}
-
-\begin{code}
-    print 'Mean', suite.Mean()
-    print 'Median', thinkbayes.Percentile(suite, 50)
-\end{code}
-
-The mean is 55.95; the median is 56.  Finally, we can compute a
-credible interval: 
-
-\begin{code}
-    print 'CI', thinkbayes.CredibleInterval(suite, 90)
-\end{code}
-
-The result is $(51, 61)$.
-
-Now, getting back to the original question, we would like to know
-whether the coin is fair.  We observe that the posterior credible
-interval does not include 50\%, which suggests that the coin is not
-fair.
-
-But that is not exactly the question we started with.  MacKay asked,
-`` Do these data give evidence that the coin is biased rather than
-fair?''  To answer that question, we will have to be more precise
-about what it means to say that data constitute evidence for
-a hypothesis.  And that is the subject of the next chapter.
-\index{evidence}
-
-But before we go on, I want to address one possible source of confusion.
-Since we want to know whether the coin is fair, it might be tempting
-to ask for the probability that {\tt x} is 50\%:
-
-\begin{code}
-    print suite.Prob(50)
-\end{code}
-
-The result is 0.021, but that value is almost meaningless.  The
-decision to evaluate 101 hypotheses was arbitrary; we could have
-divided the range into more or fewer pieces, and if we had, the
-probability for any given hypothesis would be greater or less.
-
-
-\section{Making predictions}
-
-
-\section{Swamping the priors}
+\section{Triangle Prior}
 \label{triangle}
 
-\begin{figure}
-% euro.py
-\centerline{\includegraphics[height=2.5in]{figs/euro2.pdf}}
-\caption{Uniform and triangular priors for the
-Euro problem.}
-\label{fig.euro2}
-\end{figure}
-
-\begin{figure}
-% euro.py
-\centerline{\includegraphics[height=2.5in]{figs/euro3.pdf}}
-\caption{Posterior distributions for the Euro problem.}
-\label{fig.euro3}
-\end{figure}
-
-We started with a uniform prior, but that might not be a good
-choice.  I can believe
-that if a coin is lopsided, $x$ might deviate substantially from
-50\%, but it seems unlikely that the Belgian Euro coin is so
-imbalanced that $x$ is 10\% or 90\%.
+So far we've been using a uniform prior, but that might not be a reasonable choice based on what we know about coins.  
+I can believe that if a coin is lopsided, \py{x} might deviate substantially from 50\%, but it seems unlikely that the Belgian Euro coin is so imbalanced that \py{x} is 10\% or 90\%.
 
 It might be more reasonable to choose a prior that gives
-higher probability to values of $x$ near 50\% and lower probability
+higher probability to values of \py{x} near 50\% and lower probability
 to extreme values.
 
-As an example, I constructed a triangular prior, shown in
-Figure~\ref{fig.euro2}.  Here's the code that constructs the prior:
+\index{triangle distribution}
+
+As an example, let's try a triangule-shaped prior.
+Here's the code that constructs it:
 
 \begin{code}
-def TrianglePrior():
-    suite = Euro()
-    for x in range(0, 51):
-        suite.Set(x, x)
-    for x in range(51, 101):
-        suite.Set(x, 100-x) 
-    suite.Normalize()
+ramp_up = np.arange(50)
+ramp_down = np.arange(50, -1, -1)
+a = np.append(ramp_up, ramp_down)
+
+triangle = Pmf(a, hypos, name='triangle')
+triangle.normalize()
 \end{code}
 
-Figure~\ref{fig.euro2} shows the result (and the uniform prior for
-comparison).
-Updating this prior with the same dataset yields the posterior
-distribution shown in Figure~\ref{fig.euro3}.  Even with substantially
-different priors, the posterior distributions are very similar.  The
-medians and the credible intervals are identical; the means differ by
-less than 0.5\%.  \index{triangle distribution}
+\py{arange} returns a NumPy array, so we can use \py{np.append} to append \py{ramp_down} to the end of \py{ramp_up}.
+Then we use \py{a} and \py{hypos} to make a \py{Pmf}.
+
+Figure~\ref{fig03-03} shows the result, along with the uniform distribution.
+ 
+\begin{figure}
+% chap03soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig03-03.pdf}}
+\caption{Uniform and trianlge-shaped prior distributions.}
+\label{fig03-03}
+\end{figure}
+
+Now we can update both priors with the same data: 
+ 
+\begin{code}
+update_euro(uniform, dataset)
+update_euro(triangle, dataset)
+\end{code}
+
+Figure~\ref{fig03-04} shows the posterior distributions.
+
+\begin{figure}
+% chap03soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig03-04.pdf}}
+\caption{Posterior distributions based on uniform and triangle priors.}
+\label{fig03-04}
+\end{figure}
+
+The differences between the posterior distributions are barely visible, and so small they would hardly matter in practice.
+
+And that's good news.
+To see why, imagine two people who disagree angrily about which prior is better, uniform or triangle.
+Each of them has reasons for their preference, but neither of them can persuade the other to change their mind.
+
+But suppose they agree to use the data to update their beliefs.
+When they compare their posterior distributions, they find that there is almost nothing left to argue about.
 
 This is an example of {\bf swamping the priors}: with enough
 data, people who start with different priors will tend to
-converge on the same posterior.
+converge on the same posterior distribution.
+
 \index{swamping the priors}
 \index{convergence}
 
 
-\section{Optimization}
+\section{Binomial Likelihood}
 
-The code I have shown so far is meant to be easy to read, but it
-is not very efficient.  In general, I like to develop code that
-is demonstrably correct, then check whether it is fast enough for
-my purposes.  If so, there is no need to optimize.
-For this example, if we care about run time,
-there are several ways we can speed it up.
-\index{optimization}
+So far we've been computing the updates one spin at a time, so we have to 
 
-The first opportunity is to reduce the number of times we
-normalize the suite.
-In the original code, we call \verb"Update" once for each spin.
+A more efficient alternative is to compute the likelihood of the entire dataset at once.
+For each hypothetical value of \py{x}, we have to compute the probability of getting 140 heads out of 250 spins.
 
-\begin{code}
-    dataset = 'H' * heads + 'T' * tails
-
-    for data in dataset:
-        suite.Update(data)
-\end{code}
-
-And here's what \verb"Update" looks like:
+Well, we know how to do that.  This is the question the binomial distribution answer.
+If the probability of heads is $p$, the probability of $k$ heads in $n$ spins is:
+%
+\[ P(k; n, p) = \binom{n}{k} p^k (1-p)^{n-k} \]
+%
+And we can use SciPy to compute it.
+The following function takes a \py{Pmf} that represents a prior distribution and a tuple of integers, \py{k} and \py{n}:
 
 \begin{code}
-    def Update(self, data):
-        for hypo in self.Values():
-            like = self.Likelihood(data, hypo)
-            self.Mult(hypo, like)
-        return self.Normalize()
+from scipy.stats import binom
+
+def update_binomial(pmf, data):
+    k, n = data
+    xs = pmf.qs
+    likelihood = binom.pmf(k, n, xs)
+    pmf *= likelihood
+    pmf.normalize()
 \end{code}
 
-Each update iterates through the hypotheses, then calls \verb"Normalize",
-which iterates through the hypotheses again.  We can save some
-time by doing all of the updates before normalizing.
+It extracts the hypothetical values of \py{x} from the \py{Pmf} and passes them to `binom.pmf`, which computes the binomial PMF for the given values of \py{k} and \py{n}, and all values of \py{x}.
 
-\verb"Suite" provides a method called \verb"UpdateSet" that does
-exactly that.  Here it is:
+Here's how we use it:
 
 \begin{code}
-    def UpdateSet(self, dataset):
-        for data in dataset:
-            for hypo in self.Values():
-                like = self.Likelihood(data, hypo)
-                self.Mult(hypo, like)
-        return self.Normalize()
+uniform2 = Pmf(1, hypos)
+data = 140, 250
+update_binomial(uniform2, data)
 \end{code}
 
-And here's how we can invoke it:
-
-\begin{code}
-    dataset = 'H' * heads + 'T' * tails
-    suite.UpdateSet(dataset)
-\end{code}
-
-This optimization speeds things up, but the run time is still
-proportional to the amount of data.  We can speed things up
-even more by rewriting \verb"Likelihood" to process the entire
-dataset, rather than one spin at a time.
-
-In the original version,
-\verb"data" is a string that encodes either heads or tails:
-
-\begin{code}
-    def Likelihood(self, data, hypo):
-        x = hypo / 100.0
-        if data == 'H':
-            return x
-        else:
-            return 1-x
-\end{code}
-
-As an alternative, we could encode the dataset as a tuple of 
-two integers: the number of heads and tails.
-In that case \verb"Likelihood" looks like this:
-\index{tuple}
-
-\begin{code}
-    def Likelihood(self, data, hypo):
-        x = hypo / 100.0
-        heads, tails = data
-        like = x**heads * (1-x)**tails
-        return like
-\end{code}
-
-And then we can call \verb"Update" like this:
-
-\begin{code}
-    heads, tails = 140, 110
-    suite.Update((heads, tails))
-\end{code}
-
-Since we have replaced repeated multiplication with exponentiation,
-this version takes the same time for any number of spins.
-
-\section{The binomial distribution}
-\label{binomial}
+The result is the same as in Section~\ref{estprop} except for a small floating-point round-off.
 
 
+\section{Bayesian Statistics}
 
-%TODO: postpone this section
-\section{The beta distribution}
-\label{beta}
+You might have noticed some similarity between the Euro problem and the 101 bowls problem in Section~\ref{morebowls}.
+The prior distributions are the same, the likelihoods are the same, and with the same data the results would be the same.
 
-\index{beta distribution}
-There is one more optimization that solves this problem
-even faster.
+But there are two differences.
 
-So far we have used a Pmf object to represent a discrete set of
-values for {\tt x}.  Now we will use a continuous
-distribution, specifically the beta distribution (see
-\url{http://en.wikipedia.org/wiki/Beta_distribution}).
-\index{continuous distribution}
+The first is the choice of the prior.
+In the 101 bowls problem, the uniform prior is implied by the statement of the problem, which says that we choose one of the bowls at random with equal probability.
 
-The beta distribution is defined on the interval from 0 to 1
-(including both), so it is a natural choice for describing
-proportions and probabilities.  But wait, it gets better.
+In the Euro problem, the choice of the prior is subjective; that is, reasonable people could disagree, maybe because they have different information about coins or because they interpret the same information differently.
 
-%TODO: explain the binomial distribution in the previous section
+Because the priors are subjective, the posteriors are subjective, too.
+And some people find that problematic.
 
-It turns out that if you do a Bayesian update with a binomial
-likelihood function, which is what we did in the previous section, the beta
-distribution is a {\bf conjugate prior}.  That means that if the prior
-distribution for {\tt x} is a beta distribution, the posterior is also
-a beta distribution.  But wait, it gets even better.
-\index{binomial likelihood function}
-\index{conjugate prior}
+The other difference is the nature of what we are estimating.
+In the 101 bowls problem, we choose the bowl randomly, so it is uncontroversial to compute the probability of choosing each bowl.
+In the Euro problem, the proportion of heads is a physical property of a given coin.
+Under some interpretations of probability, that's a problem because physical properties are not considered random.
 
-The shape of the beta distribution depends on two parameters, written
-$\alpha$ and $\beta$, or {\tt alpha} and {\tt beta}.  If the prior
-is a beta distribution with parameters {\tt alpha} and {\tt beta}, and
-we see data with {\tt h} heads and {\tt t} tails, the posterior is a
-beta distribution with parameters {\tt alpha+h} and {\tt beta+t}.  In
-other words, we can do an update with two additions.
-\index{parameter}
+As an example, consider the age of the universe.
+Currently, our best estimate is 13.80 billion years, but it might be off by 0.02 billion years in either direction (see \url{https://en.wikipedia.org/wiki/Age_of_the_universe}).
 
-So that's great, but it only works if we can find a beta distribution
-that is a good choice for a prior.  Fortunately, for many realistic
-priors there is a beta distribution that is at least a good
-approximation, and for a uniform prior there is a perfect match.  The
-beta distribution with {\tt alpha=1} and {\tt beta=1} is uniform from
-0 to 1.
+Now suppose we would like to know the probability that the age of the universe is actually greater than 13.81 billion years.
+Under some interpretations of probability, we would not be able to answer that question.
+We would be required to say something like, ``The age of the universe is not a random quantity, so it has no probability of exceeding any particular value.''
 
-Let's see how we can take advantage of all this.  
-{\tt thinkbayes.py} provides 
-a class that represents a beta distribution:
-\index{Beta object}
+Under the Bayesian interpretation of probability, it is meaningful and useful to treat physical quantities as if they were random and compute probabilities about them.
 
-\begin{code}
-class Beta(object):
+In the Euro problem, the prior distribution represents what we believe about coins in general and the posterior distribution represents what we believe about a particular coin after seeing the data.
+So we can use the posterior distribution to compute probabilities about the coin and its proportion of heads.
 
-    def __init__(self, alpha=1, beta=1):
-        self.alpha = alpha
-        self.beta = beta
-\end{code}
+These differences, the subjectivity of the prior and the interpretation of the posterior, are key differences between Bayes's Theorem and Bayesian statistics.
 
-By default \verb"__init__" makes a uniform distribution.
-{\tt Update} performs a Bayesian update:
+Bayes's Theorem is a mathematical law of probability; no reasonable person objects to it.
+But Bayesian statistics is surprisingly controversial.
+Historically, many people have been bothered by its subjectivity and its use of probability for things that are not random.
 
-\begin{code}
-    def Update(self, data):
-        heads, tails = data
-        self.alpha += heads
-        self.beta += tails
-\end{code}
+If you are interested in this history, I recommend Sharon Bertsch McGrayne's book, {\it The Theory That Would Not Die} (\url{https://yalebooks.yale.edu/book/9780300188226/theory-would-not-die}).
 
-{\tt data} is a pair of integers representing the number of
-heads and tails.
+\index{McGrayne, Sharon Bertsch}
+\index{The Theory That Would Not Die}
 
-So we have yet another way to solve the Euro problem:
+%TODO: Italicize the index entry
 
-\begin{code}
-    beta = thinkbayes.Beta()
-    beta.Update((140, 110))
-    print beta.Mean()
-\end{code}
+\section{Summary}
 
-{\tt Beta} provides {\tt Mean}, which 
-computes a simple function of {\tt alpha}
-and {\tt beta}:
+In this chapter I posed David MacKay's Euro problem and we started to solve it.
+Given the data, we computed the posterior distribution for \py{x}, the probability a Euro coin comes up heads.
 
-\begin{code}
-    def Mean(self):
-        return float(self.alpha) / (self.alpha + self.beta)
-\end{code}
+We computed the posterior distribution with two different priors and found that the posteriors were nearly the same.
+This is good news, because it suggests that if two people start with different beliefs but they see the same data, their beliefs will tend to converge.
 
-For the Euro problem the posterior mean is 56\%, which is the
-same result we got using Pmfs.  
+This chapter introduces the binomial distribution, which we used to compute the posterior distribution more efficiently.
+And I discussed the difference between applying Bayes's Theorem, as in the 101 bowls problem, and computing Bayesian statistics, as in the Euro problem.
 
-{\tt Beta} also provides {\tt EvalPdf}, which evaluates
-the probability density
-function (PDF)  of the beta distribution:
-\index{probability density function}
-\index{PDF}
-
-\begin{code}
-    def EvalPdf(self, x):
-        return x**(self.alpha-1) * (1-x)**(self.beta-1)
-\end{code}
-
-Finally, {\tt Beta} provides {\tt MakePmf}, which
-uses {\tt EvalPdf} to generate a discrete approximation
-of the beta distribution.
-
-%This expression might look familiar.  Here's {\tt
-%  thinkbayes.EvalBinomialPmf}
-
-%\begin{code}
-%def EvalBinomialPmf(x, yes, no): 
-%    return x**yes * (1-x)**no
-%\end{code}
-
-%It's the same function, but in {\tt EvalPdf}, we think of {\tt x} as a
-%random variable and {\tt alpha} and {\tt beta} as parameters; in {\tt
-%  EvalBinomialPmf}, {\tt x} is the parameter, and {\tt yes} and {\tt
-%  no} are random variables.  Distributions like these that share the
-%same PDF are called {\bf conjugate distributions}.
-%\index{conjugate distribution}
-
-
-\section{Discussion}
-
-In this chapter we solved the same problem with two different 
-priors and found that with a large dataset, the priors get
-swamped.  If two people start with different
-prior beliefs, they generally find, as they see more data, that
-their posterior distributions converge.  At some point the
-difference between their distributions is small enough that it has
-no practical effect.
-\index{swamping the priors}
 \index{convergence}
 
-When this happens, it relieves some of the worry about objectivity
-that I discussed in the previous chapter.  And for many real-world
-problems even stark prior beliefs can eventually be reconciled
-by data.
+However, we still haven't answered MacKay's question: ``Do these data give evidence that the coin is biased rather than fair?''
+I'm going to leave this question hanging a little longer; we'll come back to it in Chapter~\ref{hypotest}.
 
-But that is not always the case.  First, remember that all Bayesian
-analysis is based on modeling decisions.  If you and I do not
-choose the same model, we might interpret data differently.  So
-even with the same data, we would compute different likelihoods,
-and our posterior beliefs might not converge.
-\index{modeling}
-
-Also, notice that in a Bayesian update, we multiply
-each prior probability by a likelihood, so if \p{H} is 0,
-\p{H|D} is also 0, regardless of $D$.  In the Euro problem,
-if you are convinced that $x$ is less than 50\%, and you assign
-probability 0 to all other hypotheses, no amount of data will
-convince you otherwise.
-\index{Euro problem}
-
-This observation is the basis of {\bf Cromwell's rule}, which is the
-recommendation that you should avoid giving a prior probability of
-0 to any hypothesis that is even remotely possible
-(see \url{http://en.wikipedia.org/wiki/Cromwell's_rule}).
-\index{Cromwell's rule}
-
-Cromwell's rule is named after Oliver Cromwell, who wrote, ``I beseech
-you, in the bowels of Christ, think it possible that you may be
-mistaken.''  For Bayesians, this turns out to be good advice (even if
-it's a little overwrought).
-\index{Cromwell, Oliver}
-
+In the next chapter, I want to get back to the dice problem.
 
 \section{Exercises}
 
+The code for this chapter is in {\tt chap03.ipynb}, which is in the repository for this book.  See Section~\ref{codeinfo} for details.
+You can run the notebook on Colab at \url{https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/code/chap03.ipynb}.
+
+The notebook provides space where you can work on the following problems.
+
+
 \begin{exercise}
+In major league baseball, most players have a batting average between 200 and 330, which means that the probability of getting a hit is between 0.2 and 0.33.
 
-Suppose that instead of observing coin tosses directly, you measure
-the outcome using an instrument that is not always correct.  Specifically,
-suppose there is a probability {\tt y} that an actual heads is reported
-as tails, or actual tails reported as heads.
-
-Write a class that estimates the bias of a coin given a series of
-outcomes and the value of {\tt y}.
-
-How does the spread of the posterior distribution depend on
-{\tt y}?
-
+Suppose a new player appearing in his first game gets 3 hits out of 3 attempts.  What is the posterior distribution for his probability of getting a hit?
 \end{exercise}
 
 
 \begin{exercise}
+Whenever you survey people about sensitive issues, you have to deal with ``social desirability bias'', which is the tendency of people to shade their answers to show themselves in the most positive light (see \url{https://en.wikipedia.org/wiki/Social_desirability_bias}).
 
-\index{Reddit}
-This exercise is inspired by a question posted by a
-``redditor'' named dominosci on Reddit's statistics ``subreddit'' at
-\url{http://reddit.com/r/statistics}.
+One of the ways to improve the accuracy of the results is ``randomized response'' (see \url{https://en.wikipedia.org/wiki/Randomized_response}).
 
-Reddit is an online forum with many interest groups called
-subreddits.  Users, called redditors, post links to online
-content and other web pages.  Other redditors vote on the links,
-giving an ``upvote'' to high-quality links and a ``downvote'' to
-links that are bad or irrelevant.
+As an example, suppose you ask 100 people to flip a coin and:
 
-A problem, identified by dominosci, is that some redditors
-are more reliable than others, and Reddit does not take
-this into account.
+\begin{itemize}
 
-The challenge is to devise a system so that when a redditor
-casts a vote, the estimated quality of the link is updated
-in accordance with the reliability of the redditor, and the
-estimated reliability of the redditor is updated in accordance
-with the quality of the link.
+\item If they get heads, they report YES.
 
-One approach is to model the quality of the link as the
-probability of garnering an upvote, and to model the reliability
-of the redditor as the probability of correctly giving an upvote
-to a high-quality item.
+\item If they get tails, they honestly answer the question ``Do you cheat on your taxes?''
 
-Write class definitions for redditors and links and an update function
-that updates both objects whenever a redditor casts a vote.
+\end{itemize}
 
+And suppose you get 80 YESes and 20 NOs.  Based on this data, what is the posterior distribution for the fraction of people who cheat on their taxes?  What is the most likely value in the posterior distribution?
+\end{exercise}
+
+
+\begin{exercise}
+Suppose that instead of observing coin spins directly, you measure the outcome using an instrument that is not always correct.  Specifically, suppose the probability is \py{y=0.2} that an actual heads is reported
+as tails, or actual tails reported as heads.
+
+If we spin a coin 250 times and the instrument reports 140 heads, what is the posterior distribution of \py{x}?
+
+What happens as you vary the value of \py{y}?
+\end{exercise}
+
+
+\begin{exercise}
+In preparation for an alien invasion, the Earth Defense League (EDL) has been working on new missiles to shoot down space invaders.  Of course, some missile designs are better than others; let's assume that each design has some probability of hitting an alien ship, \py{x}.
+
+Based on previous tests, the distribution of \py{x} in the population of designs is approximately uniform between 0.1 and 0.4.
+
+Now suppose the new ultra-secret Alien Blaster 9000 is being tested.  In a press conference, an EDL general reports that the new design has been tested twice, taking two shots during each test.  The results of the test are confidential, so the general won't say how many targets were hit, but they report: ``The same number of targets were hit in the two tests, so we have reason to think this new design is consistent.''
+
+Is this data good or bad; that is, does it increase or decrease your estimate of \py{x} for the Alien Blaster 9000?
+
+Hint: If the probability of hitting each target is $x$, the probability of hitting one target in both tests is $[2x(1-x)]^2$.
 \end{exercise}
 
 
 \chapter{More Estimation}
 \label{estimation}
 
-\section{The dice problem}
+\section{The train problem}
 
-\index{Dice problem}
-Suppose I have a box of dice that contains a 4-sided die, a 6-sided
-die, an 8-sided die, a 12-sided die, and a 20-sided die.  If you
-have ever played {\it Dungeons~\&~Dragons}, you know what I am talking about.
-\index{Dungeons and Dragons}
-
-Suppose I select a die from the box at random, roll it, and get a 6.
-What is the probability that I rolled each die?
-\index{dice}
-
-Let me suggest a three-step strategy for approaching a problem like this.
-
-\begin{enumerate}
-
-\item Choose a representation for the hypotheses.
-
-\item Choose a representation for the data.
-
-\item Write the likelihood function.
-
-\end{enumerate}
-
-In previous examples I used strings to represent hypotheses and
-data, but for the die problem I'll use numbers.  Specifically,
-I'll use the integers 4, 6, 8, 12, and 20 to represent hypotheses:
-
-\begin{code}
-    suite = Dice([4, 6, 8, 12, 20])
-\end{code}
-
-And integers from 1 to 20 for the data.
-These representations make it easy to
-write the likelihood function:
-
-\begin{code}
-class Dice(Suite):
-    def Likelihood(self, data, hypo):
-        if hypo < data:
-            return 0
-        else:
-            return 1.0/hypo
-\end{code}
-
-Here's how \verb"Likelihood" works.  If \verb"hypo<data", that
-means the roll is greater than the number of sides on the die.
-That can't happen, so the likelihood is 0.
-
-Otherwise the question is, ``Given that there are {\tt hypo}
-sides, what is the chance of rolling {\tt data}?''  The
-answer is \verb"1/hypo", regardless of {\tt data}.
-
-Here is the statement that does the update (if I roll a 6):
-
-\begin{code}
-    suite.Update(6)
-\end{code}
-
-And here is the posterior distribution:
-
-\begin{code}
-4 0.0
-6 0.392156862745
-8 0.294117647059
-12 0.196078431373
-20 0.117647058824
-\end{code}
-
-After we roll a 6, the probability for the 4-sided die is 0.  The
-most likely alternative is the 6-sided die, but there is still
-almost a 12\% chance for the 20-sided die.
-
-What if we roll a few more times and get 6, 8, 7, 7, 5, and 4?
-
-\begin{code}
-    for roll in [6, 8, 7, 7, 5, 4]:
-        suite.Update(roll)
-\end{code}
-
-With this data the 6-sided die is eliminated, and the 8-sided
-die seems quite likely.  Here are the results:
-
-\begin{code}
-4 0.0
-6 0.0
-8 0.943248453672
-12 0.0552061280613
-20 0.0015454182665
-\end{code}
-
-Now the probability is 94\% that we are rolling the 8-sided die,
-and less than 1\% for the 20-sided die.
-
-The dice problem is based on an example I saw in Sanjoy Mahajan's class on
-Bayesian inference.  You can download the code in this section from
-\url{http://thinkbayes.com/dice.py}.
-  For more information
-see Section~\ref{download}.
-
-\section{The locomotive problem}
-
-\index{locomotive problem}
+\index{train problem}
 \index{Mosteller, Frederick}
 \index{German tank problem}
-I found the locomotive problem 
+
+I found the train problem 
 in Frederick Mosteller's, {\it Fifty Challenging Problems in
-  Probability with Solutions} (Dover, 1987):
+  Probability with Solutions} (\url{https://store.doverpublications.com/0486653552.html}):
 
 \begin{quote}
-``A railroad numbers its locomotives in order 1..N.  One day you see a
+``A railroad numbers its locomotives in order $1..N$.  One day you see a
 locomotive with the number 60.  Estimate how many locomotives the
 railroad has.''
 \end{quote}
@@ -2421,107 +2109,112 @@ on a uniform prior.}
 \label{fig.train1}
 \end{figure}
 
-We don't have much basis to choose a prior, but we can start with
+We don't have much basis to choose a prior, so let's start with
 something simple and then consider alternatives.  Let's assume that
 $N$ is equally likely to be any value from 1 to 1000.
 
 \begin{code}
-    hypos = xrange(1, 1001)
+hypos = np.arange(1, 1001)
+prior = Pmf(1, hypos)
 \end{code}
 
-Now all we need is a likelihood function.  In a hypothetical fleet of
-$N$ locomotives, what is the probability that we would see number 60?
-If we assume that there is only one train-operating company (or only
-one we care about) and that we are equally likely to see any of its
-locomotives, then the chance of seeing any particular locomotive is
+Now let's figure out the likelihood of the data.
+In a hypothetical fleet of $N$ locomotives, what is the probability that we would see number 60?
+If we assume that we are equally likely to see any
+locomotive, the chance of seeing any particular one is
 $1/N$.
 
-Here's the likelihood function:
-\index{likelihood function}
+Here's the function that does the update:
 
 \begin{code}
-class Train(Suite):
-    def Likelihood(self, data, hypo):
-        if hypo < data:
-            return 0
-        else:
-            return 1.0/hypo
+def update_train(pmf, data):
+    hypos = pmf.qs
+    likelihood = 1 / hypos
+    impossible = (data > hypos)
+    likelihood[impossible] = 0
+    pmf *= likelihood
+    pmf.normalize()
 \end{code}
 
-This might look familiar; the likelihood functions for the locomotive
-problem and the dice problem are identical.
+The first parameter is a \py{Pmf} that represents the possible values of $N$ and their probabilities.
+The second parameter is the number of the train we observed.
+
+This function might look familiar; it is the same as the update function for the dice problem in Section~\ref{dice2}.
+
 \index{dice problem}
 
 Here's the update:
 
 \begin{code}
-    suite = Train(hypos)
-    suite.Update(60)
+data = 60
+posterior = prior.copy()
+update_train(posterior, data)
 \end{code}
 
-There are too many hypotheses to print, so I plotted the
-results in Figure~\ref{fig.train1}.  Not surprisingly, all
+Figure~\ref{fig04-01} shows the results.
+ 
+\begin{figure}
+% chap04soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig04-01.pdf}}
+\caption{Posterior distribution of the number of trains, $N$, after seeing train number 60.}
+\label{fig04-01}
+\end{figure}
+
+Not surprisingly, all
 values of $N$ below 60 have been eliminated.
 
-The most likely
-value, if you had to guess, is 60.  That might not seem like
-a very good guess; after all, what are the chances that you just
-happened to see the train with the highest number?
+The most likely value, if you had to guess, is 60.  
+That might not seem like a very good guess; after all, what are the chances that you just happened to see the train with the highest number?
 Nevertheless, if you want to maximize the chance of getting
 the answer exactly right, you should guess 60.
 
-But maybe that's
-not the right goal.  An alternative is to compute the
-mean of the posterior distribution:
+But maybe that's not the right goal.  
+An alternative is to compute the mean of the posterior distribution.
+Given a set of possible quantities, $q_i$, and their probabilities, $p_i$, the mean of the distribution is:
+%
+\[ \mathrm{mean} = \sum_i p_i q_i \]
+%
+Which we can compute like this:
 
 \begin{code}
-def Mean(suite):
-    total = 0
-    for hypo, prob in suite.Items():
-        total += hypo * prob
-    return total
-
-print Mean(suite)
+np.sum(posterior.ps * posterior.qs)
 \end{code}
 
-Or you could use the very similar method provided by {\tt Pmf}:
+Or {\tt Pmf} provides a function that does the same thing:
 
 \begin{code}
-    print suite.Mean()
+posterior.mean()
 \end{code}
 
-The mean of the posterior is 333, so that might be a
-good guess if you wanted to minimize error.  If you played this
-guessing game over and over, using the mean of the posterior as your
-estimate would minimize the mean squared error over the long run (see
-\url{http://en.wikipedia.org/wiki/Minimum_mean_square_error}).
+The mean of the posterior is 333, so that might be a good guess if you want to minimize error.  
+If you played this guessing game over and over, using the mean of the posterior as your estimate would minimize the mean squared error over the long run (see \url{http://en.wikipedia.org/wiki/Minimum_mean_square_error}).
+
 \index{mean squared error}
 
-You can download this example from \url{http://thinkbayes.com/train.py}.
-  For more information
-see Section~\ref{download}.
 
 \section{What about that prior?}
 
-To make any progress on the locomotive problem we had to make
-assumptions, and some of them were pretty arbitrary.  In
-particular, we chose a uniform prior from 1 to 1000, without
-much justification for choosing 1000, or for choosing a uniform
+The prior I chose in the previous section is uniform from 1 to 1000, but I offered no justification for choosing 1000, or for choosing a uniform
 distribution.
+
 \index{prior distribution}
 
-It is not crazy to believe that a railroad company might operate 1000
-locomotives, but a reasonable person might guess more or fewer.  So we
-might wonder whether the posterior distribution is sensitive to these
-assumptions.  With so little data---only one observation---it probably
-is.
+It is reasonable to believe that a railroad company might operate 1000 locomotives, but it might be just as reasonable to think they have 500, or 2000.
+So we might wonder whether the posterior distribution is sensitive to the prior.  
+With so little data---only one observation---it probably is.
 
-Recall that with a uniform prior from 1 to 1000, the mean of
-the posterior is 333.  With an upper bound of 500, we get a
-posterior mean of 207, and with an upper bound of 2000,
-the posterior mean is 552.
+\begin{itemize}
 
-So that's bad.  There are two ways to proceed:
+\item With a uniform prior from 1 to 1000, the posterior mean is 207.
+
+\item With an upper bound of 1000, it's 333.
+
+\item With an upper bound of 2000, it's 552.
+
+\end{itemize}
+
+So that's bad.  
+When the posterior is sensitive to the prior, there are two ways to proceed:
 
 \begin{itemize}
 
@@ -2532,32 +2225,33 @@ So that's bad.  There are two ways to proceed:
 \end{itemize}
 
 With more data, posterior distributions based on different
-priors tend to converge.  For example, suppose that in addition
-to train 60 we also see trains 30 and 90.  We can update the
-distribution like this:
+priors tend to converge.  
+For example, suppose that in addition
+to train 60 we also see trains 30 and 90.  
+We can update the distribution like this:
 
 \begin{code}
-    for data in [60, 30, 90]:
-        suite.Update(data)
+for data in [30, 60, 90]:
+    update_train(pmf, data)
 \end{code}
 
 With these data, the means of the posteriors are
 
-  \begin{tabular}{|l|l|}
-  \hline
-  Upper & Posterior \\
-  Bound & Mean \\
-  \hline
-  500 & 152 \\
-  1000 & 164\\
-  2000 & 171\\
-  \hline
-  \end{tabular}
+\begin{tabular}{r r}
+\toprule
+Upper & Posterior \\
+Bound & Mean \\
+\midrule
+500 & 152 \\
+1000 & 164\\
+2000 & 171\\
+\bottomrule
+\end{tabular}
 
-So the differences are smaller.
+The differences are smaller, but apparently three trains is not enough for the posteriors to converge.
 
 
-\section{An alternative prior}
+\section{Another prior}
 
 \begin{figure}
 % train.py
@@ -2568,21 +2262,24 @@ compared to a uniform prior.}
 \end{figure}
 
 If more data are not available, another option is to improve the
-priors by gathering more background information.  It is probably
-not reasonable to assume that a train-operating company with 1000 locomotives
-is just as likely as a company with only 1.
+priors by gathering more background information.  
+It is probably not reasonable to assume that a train-operating company with 1000 locomotives is just as likely as a company with only 1.
 
 With some effort, we could probably find a list of companies that
-operate locomotives in the area of observation.  Or we could
-interview an expert in rail shipping to gather information about
-the typical size of companies.
+operate locomotives in the area of observation.
+Or we could interview an expert in rail shipping to gather information about the typical size of companies.
 
 But even without getting into the specifics of railroad economics, we
-can make some educated guesses.  In most fields, there are many small
+can make some educated guesses.  
+In most fields, there are many small
 companies, fewer medium-sized companies, and only one or two very
-large companies.  In fact, the distribution of company sizes tends to
+large companies.  
+In fact, the distribution of company sizes tends to
 follow a power law, as Robert Axtell reports in {\it Science} (see
-\url{http://www.sciencemag.org/content/293/5536/1818.full.pdf}).
+\url{https://sci-hub.tw/10.1126/science.1062081}).
+
+% \url{http://www.sciencemag.org/content/293/5536/1818.full.pdf}
+
 \index{power law}
 \index{Axtell, Robert}
 
@@ -2593,52 +2290,47 @@ This law suggests that if there are 1000 companies with fewer than
 Mathematically, a power law means that the number of companies
 with a given size is inversely proportional to size, or
 %
-\[ \PMF(x) \propto \left( \frac{1}{x} \right)^{\alpha}   \]
+\[ \PMF(N) \propto \left( \frac{1}{N} \right)^{\alpha}   \]
 %
-where $\PMF(x)$ is the probability mass function of $x$ and $\alpha$ is
+where $\PMF(N)$ is the probability mass function of $N$ and $\alpha$ is
 a parameter that is often near 1.
 
 We can construct a power law prior like this:
 
 \begin{code}
-class Train(Dice):
-
-    def __init__(self, hypos, alpha=1.0):
-        Pmf.__init__(self)
-        for hypo in hypos:
-            self.Set(hypo, hypo**(-alpha))
-        self.Normalize()
+alpha = 1.0
+hypos = np.arange(1, 1001)
+ps = hypos**(-alpha)
+power = Pmf(ps, hypos, name='power law')
+power.normalize()
 \end{code}
 
-And here's the code that constructs the prior:
+Again, the upper bound is arbitrary, but with a power law prior, the posterior is less sensitive to this choice.
 
-\begin{code}
-    hypos = range(1, 1001)
-    suite = Train(hypos)
-\end{code}
+\begin{figure}
+% chap04soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig04-02.pdf}}
+\caption{Posterior distributions for the uniform and power law priors
+after seeing train 60.}
+\label{fig04-02}
+\end{figure}
 
-Again, the upper bound is arbitrary, but with a power law
-prior, the posterior is less sensitive to this choice.
+Figure~\ref{fig04-02} shows the new posterior based on the power law prior, compared to the posterior based on the uniform prior, both after seeing train number 60.
 
-Figure~\ref{fig.train4} shows the new posterior based on
-the power law, compared to the posterior based on the
-uniform prior.  Using the background information
-represented in the power law prior, we can all but eliminate
-values of $N$ greater than 700.
+With the power law prior, we assign higher probability to smaller numbers of trains.
+And the posterior is less sensitive to the choice of the upper bound.
+If we observe trains 30, 60, and 90, the means of the posteriors are
 
-If we start with this prior and observe trains 30, 60, and 90,
-the means of the posteriors are
-
-  \begin{tabular}{|l|l|}
-  \hline
-  Upper & Posterior \\
-  Bound & Mean \\
-  \hline
+\begin{tabular}{rr}
+\toprule
+Upper & Posterior \\
+Bound & Mean \\
+\midrule
   500 & 131 \\
   1000 & 133 \\
   2000 & 134 \\
-  \hline
-  \end{tabular}
+\bottomrule
+\end{tabular}
 
 Now the differences are much smaller.  In fact,
 with an arbitrarily large upper bound, the mean converges on 134.
@@ -2647,10 +2339,6 @@ So the power law prior is more realistic, because it is based on
 general information about the size of companies, and it
 behaves better in practice.
 
-You can download the examples in this section from
-\url{http://thinkbayes.com/train3.py}.
-  For more information
-see Section~\ref{download}.
 
 \section{Credible intervals}
 \label{credible}
@@ -2658,86 +2346,67 @@ see Section~\ref{download}.
 Once you have computed a posterior distribution, it is often useful
 to summarize the results with a single point estimate or an interval.
 For point estimates it is common to use the mean, median, or the
-value with maximum likelihood.
+value with maximum posterior probability.
+
 \index{credible interval}
 \index{maximum likelihood}
 
-For intervals we usually report two values computed
-so that there is a 90\% chance that the unknown value falls
-between them (or any other probability).
-These values define a {\bf credible interval}.
+For intervals we often choose two values so that there is a 90\% chance that the estimated value falls between them (or some other probability).
+These values define a {\bf credible interval} or {\bf CI}.
 
-A simple way to compute a credible interval is to add up the
-probabilities in the posterior distribution and record the values
-that correspond to probabilities 5\% and 95\%.  In other words,
-the 5th and 95th percentiles.
+\py{Pmf} provides a function called \py{credible_interval} that takes a probability and computes an interval that contains that probability.
+To compute a 90\% CI, we can call it like this:
+
 \index{percentile}
 
-\verb"thinkbayes" provides a function that computes percentiles:
-
 \begin{code}
-def Percentile(pmf, percentage):
-    p = percentage / 100.0
-    total = 0
-    for val, prob in pmf.Items():
-        total += prob
-        if total >= p:
-            return val    
-\end{code}
-
-And here's the code that uses it:
-
-\begin{code}
-    interval = Percentile(suite, 5), Percentile(suite, 95)
-    print interval
+posterior.credible_interval(0.9)
 \end{code}
 
 For the previous example---the locomotive problem with a power law prior
-and three trains---the 90\% credible interval is $(91, 243)$.  The
+and three trains---the 90\% credible interval is $(91, 242)$.  The
 width of this range suggests, correctly, that we are still quite
 uncertain about how many locomotives there are.
+
+\py{credible_interval} uses another function called \py{quantile} that takes a probability and returns a value.
+If the probability is 0.05, it returns the 5th percentile; for example,
+\py{power.quantile(0.05)} returns 91, which means that there's a 5\% chance that the number of trains is less than or equal to 91.
+
+And \py{power.quantile(0.95)} returns 242, so there's a 95\% chance that the number of trains is less than or equal to 242.
+
+Putting those results together, there's a 90\% chance that the number of trains falls between 91 and 242.
+
+The next section explains how \py{quantile} works.
 
 
 \section{Cumulative distribution functions}
 
-In the previous section we computed percentiles by iterating through
-the values and probabilities in a Pmf.  If we need to compute more
-than a few percentiles, it is more efficient to use a cumulative
-distribution function, or Cdf.
+%TODO: Do a better job explaining the CDF
+
+\py{quantile} is based on the {\bf cumulative distribution function}, or CDF, which is the cumulative sum of the PMF.
+If we compute $CDF(x)$ the result is the probability that the estimated value is less than or equal to $x$.
+
 \index{cumulative distribution function}
-\index{Cdf}
+\index{CDF}
 
-Cdfs and Pmfs are equivalent in the sense that they contain the
+\py{Pmf} provides \py{make_cdf}, which returns a \py{Cdf} object.
+I'll use CDF and PMF for the mathematical concepts and \py{Pmf} and \py{Cdf} for the classes defined in \py{empiricaldist}.
+
+Figure~\ref{fig04-03} shows the CDF of the posterior distribution from the previous section.
+
+\begin{figure}
+% chap04soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig04-03.pdf}}
+\caption{Cumulative distribution function (CDF) for the posterior distribution based on the power law prior.}
+\label{fig04-03}
+\end{figure}
+
+The $y$-axis shows cumulative probabilities from 0 to 1.
+
+CDFs and PMFs are equivalent in the sense that they contain the
 same information about the distribution, and you can always convert
-from one to the other.  The advantage of the Cdf is that you can
-compute percentiles more efficiently.
-
-{\tt thinkbayes} provides a {\tt Cdf} class that represents a
-cumulative distribution function.  {\tt Pmf} provides a method
-that makes the corresponding Cdf:
-
-\begin{code}
-cdf = suite.MakeCdf()
-\end{code}
-
-And {\tt Cdf} provides a function named \verb"Percentile"
-
-\begin{code}
-    interval = cdf.Percentile(5), cdf.Percentile(95)
-\end{code}
-
-Converting from a Pmf to a Cdf takes time proportional to the number
-of values, {\tt len(pmf)}.  The Cdf stores the values and
-probabilities in sorted lists, so looking up a probability to get the
-corresponding value takes ``log time'': that is, time proportional to
-the logarithm of the number of values.  Looking up a value to get the
-corresponding probability is also logarithmic, so Cdfs are efficient
-for many calculations.
-
-The examples in this section are in \url{http://thinkbayes.com/train3.py}.
-  For more information
-see Section~\ref{download}.
-
+from one to the other.  
+The advantage of the CDF is that it computes percentiles more efficiently.
 
 \section{The German tank problem}
 
@@ -2800,6 +2469,7 @@ modeling decisions.  Choosing the prior is one of those decisions, but
 it is not the only one, and it might not even be the most subjective.
 So even if an uninformative prior is more objective, the entire analysis
 is still subjective.
+
 \index{modeling}
 \index{subjectivity}
 \index{objectivity}
@@ -2825,25 +2495,102 @@ objectivity by pretending to know less than you do.
 \section{Exercises}
 
 \begin{exercise}
-To write a likelihood function for the locomotive problem, we had
-to answer this question:  ``If the railroad has $N$ locomotives, what
-is the probability that we see number 60?''
+Something with CDFs and credible intervals
+\end{exercise}
 
-The answer depends on what sampling process we use when we observe the
-locomotive.  In this chapter, I resolved the ambiguity by specifying
-that there is only one train-operating company (or only one that we
-care about).
+\begin{exercise}
+I often see rabbits in the garden behind my house, but it's not easy to tell them apart, so I don't really know how many rabbits there are.
 
-But suppose instead that there are many companies with different
-numbers of trains.  And suppose that you are equally likely to see any
-train operated by any company.
-In that case, the likelihood function is different because you
-are more likely to see a train operated by a large company.
+Suppose I deploy a motion-sensing camera trap that takes a picture of the first rabbit it sees each day.  After three days, I compare the pictures and conclude that two of them are the same rabbit and the other is different.
 
-As an exercise, implement the likelihood function for this variation
-of the locomotive problem, and compare the results.
+How many rabbits visit my garden?
+
+To answer this question, we have to think about the prior distribution and the likelihood of the data:
+
+\begin{itemize}
+
+\item I have sometimes seen four rabbits at the same time, so I know there are at least that many.  I would be surprised if there were more than 10.  So, at least as a starting place, I think a uniform prior from 4 to 10 is reasonable.
+
+\item To keep things simple, let's assume that all rabbits who visit my garden are equally likely to be caught by the camera trap in a given day.  Let's also assume it is guaranteed that the camera trap gets a picture every day.
+
+\end{itemize}
 
 \end{exercise}
+
+\begin{exercise}
+Suppose that in the criminal justice system, all prison sentences are either 1, 2, or 3 years, with an equal number of each.  One day, you visit a prison and choose a prisoner at random.  What is the probability that they are serving a 3-year sentence?  What is the average remaining sentence of the prisoners you observe?
+\end{exercise}
+
+
+\begin{exercise}
+If I chose a random adult in the U.S., what is the probability that they have a sibling? To be precise, what is the probability that their mother has had at least one other child.
+
+This article from the Pew Research Center provides some relevant data: \url{https://www.pewsocialtrends.org/2015/05/07/family-size-among-mothers}.  You will have to make some simplifying assumptions.
+\end{exercise}
+
+
+\begin{exercise}
+The Doomsday argument is ``a probabilistic argument that claims to predict the number of future members of the human species given an estimate of the total number of humans born so far.''  See \url{https://en.wikipedia.org/wiki/Doomsday_argument}.
+
+Suppose there are only two kinds of civilizations that can happen in the universe. The ``short-lived'' kind go exinct after only 200 billion individuals are born. The ``long-lived'' kind survive until 2,000 billion individuals are born. And suppose that the two kinds of civilization are equally likely.  Which kind of civilization do you think we live in? 
+
+The Doomsday argument says we can use the total number of humans born so far as evidence.
+According to the Population Reference Bureau, the total number of people who have ever lived is about 108 billion. 
+
+Since you were born quite recently, let's assume that you are, in fact, human being number 108 billion.
+If $N$ is the total number who will ever live and we consider you to be a randomly-chosen person, it is equally likely that you could have been person 1, or $N$, or any number in between.
+So what is the probability that you would be number 108 billion?
+
+Given this data and dubious prior, what is the probability that our civilization will be short-lived?
+
+\end{exercise}
+
+
+
+%\begin{exercise}
+%To write a likelihood function for the locomotive problem, we had
+%to answer this question:  ``If the railroad has $N$ locomotives, what
+%is the probability that we see number 60?''
+%
+%The answer depends on what sampling process we use when we observe the
+%locomotive.  In this chapter, I resolved the ambiguity by specifying
+%that there is only one train-operating company (or only one that we
+%care about).
+%
+%But suppose instead that there are many companies with different
+%numbers of trains.  And suppose that you are equally likely to see any
+%train operated by any company.
+%In that case, the likelihood function is different because you
+%are more likely to see a train operated by a large company.
+%
+%As an exercise, implement the likelihood function for this variation
+%of the locomotive problem, and compare the results.
+%
+%# Solution
+%
+%# Suppose Company A has N trains and all other companies have M.
+%# The chance that we would observe one of Company A's trains is 
+%# $N/(N+M)$.
+%
+%# Given that we observe one of Company A's trains, the chance that we
+%# observe number 60 is $1/N$ for $N \ge 60$.
+%
+%# The product of these probabilities is $1/(N+M)$, which is the
+%# probability of observing any given train.
+%
+%# If N<<M, this converges to a constant, which means that all values
+%# of $N$ have the same likelihood, so we learn nothing about how many 
+%# trains Company A has.
+%
+%# If N>>M, this converges to $1/N$, which is what we saw in the 
+%# previous solution.
+%
+%# More generally, if M is unknown, we would need a prior distribution 
+%# for M, then we can do a two-dimensional update, and then extract the posterior
+%# distribution for N.
+%
+%# We'll see how to do that soon.
+%\end{exercise}
 
 
 
@@ -2859,6 +2606,7 @@ One way to represent a probability is with a number between
 0 and 1, but that's not the only way.  If you have ever bet
 on a football game or a horse race, you have probably encountered
 another representation of probability, called {\bf odds}.
+
 \index{odds}
 
 You might have heard expressions like ``the odds are
@@ -2870,7 +2618,7 @@ So if I think my team has a 75\% chance of winning, I would
 say that the odds in their favor are three to one, because
 the chance of winning is three times the chance of losing.
 
-You can write odds in decimal form, but it is most common to
+You can write odds in decimal form, but it is also common to
 write them as a ratio of integers.  So ``three to one'' is
 written $3:1$.
 
@@ -2884,7 +2632,7 @@ same information.  Given a probability, you can compute the
 odds like this:
 
 \begin{code}
-def Odds(p):
+def odds(p):
     return p / (1-p)
 \end{code}
 
@@ -2892,7 +2640,7 @@ Given the odds in favor, in decimal form, you can convert to
 probability like this:
 
 \begin{code}
-def Probability(o):
+def prob(o):
     return o / (o+1)
 \end{code}
 
@@ -2900,7 +2648,7 @@ If you represent odds with a numerator and denominator, you
 can convert to probability like this:
 
 \begin{code}
-def Probability2(yes, no):
+def prob2(yes, no):
     return yes / (yes + no)
 \end{code}
 
@@ -2912,12 +2660,14 @@ $1:4$.
 If the odds are $5:1$ against my horse, then five out of six
 people think she will lose, so the probability of winning
 is $1/6$.
+
 \index{horse racing}
 
 
-\section{The odds form of Bayes's theorem}
+\section{Bayes's Rule}
 
-\index{Bayes's theorem!odds form}
+\index{Bayes's Rule}
+
 In Chapter~\ref{intro} I wrote Bayes's theorem in the {\bf probability
 form}:
 %
@@ -2929,9 +2679,8 @@ we can write the ratio of posterior probabilities like this:
 \[ \frac{\p{A|D}}{\p{B|D}} = \frac{\p{A}~\p{D|A}}
                                         {\p{B}~\p{D|B}} \]
 %
-Notice that the normalizing constant, \p{D}, drops out of
+Notice that the total probability of the data, \p{D}, drops out of
 this equation.
-\index{normalizing constant}
 
 If $A$ and $B$ are mutually exclusive and collectively exhaustive,
 that means $\p{B} = 1 - \p{A}$, so we can rewrite the ratio of
@@ -2942,7 +2691,7 @@ Writing \odds{A} for odds in favor of $A$, we get:
 \[ \odds{A|D} = \odds{A}~\frac{\p{D|A}}{\p{D|B}} \]
 %
 In words, this says that the posterior odds are the prior odds times
-the likelihood ratio.  This is the {\bf odds form} of Bayes's theorem.
+the likelihood ratio.  This is Bayes's Rule.
 
 This form is most convenient for computing a Bayesian update on
 paper or in your head.  For example, let's go back to the
@@ -2950,13 +2699,14 @@ cookie problem:
 \index{cookie problem}
 
 \begin{quote}
-Suppose there are two bowls of cookies.  Bowl 1 contains
-  30 vanilla cookies and 10 chocolate cookies.  Bowl 2 contains 20 of
-  each.
+Suppose there are two bowls of cookies.  
+Bowl 1 contains 30 vanilla cookies and 10 chocolate cookies.
+Bowl 2 contains 20 of each.
 
-Now suppose you choose one of the bowls at random and, without looking,
-select a cookie at random.  The cookie is vanilla.  What is the probability
-that it came from Bowl 1?
+Now suppose you choose one of the bowls at random and, without
+looking, select a cookie at random.  
+The cookie is vanilla.  
+What is the probability that it came from Bowl 1?
 \end{quote}
 
 The prior probability is 50\%, so the prior odds are $1:1$, or just
@@ -2988,24 +2738,25 @@ To answer this question, we need to think about what it means
 for data to give evidence in favor of (or against) a hypothesis.
 Intuitively, we might say that data favor a hypothesis if the
 hypothesis is more likely in light of the data than it was before.
+
 \index{evidence}
 
 In the cookie problem, the prior odds are $1:1$, or probability 50\%.
 The posterior odds are $3:2$, or probability 60\%.  So we could say
 that the vanilla cookie is evidence in favor of Bowl 1.
 
-The odds form of Bayes's theorem provides a way to make this
-intuition more precise.  Again
+The odds form of Bayes's theorem provides a way to make this intuition more precise.  Again
 %
 \[ \odds{A|D} = \odds{A}~\frac{\p{D|A}}{\p{D|B}} \]
 %
-Or dividing through by \odds{A}:
+Dividing through by \odds{A}, we get:
 %
 \[ \frac{\odds{A|D}}{\odds{A}} = \frac{\p{D|A}}{\p{D|B}} \]
 %
 The term on the left is the ratio of the posterior and prior odds.
 The term on the right is the likelihood ratio, also called the {\bf Bayes
 factor}.
+
 \index{likelihood ratio}
 \index{Bayes factor}
 
@@ -3023,8 +2774,8 @@ likely under either hypothesis, so the odds do not change.
 
 Now we can get back to the Oliver's blood problem.  If Oliver is
 one of the people who left blood at the crime scene, then he
-accounts for the `O' sample, so the probability of the data
-is just the probability that a random member of the population
+accounts for the `O' sample; in that case, the probability of the data
+is the probability that a random member of the population
 has type `AB' blood, which is 1\%.
 
 If Oliver did not leave blood at the scene, then we have two
@@ -3038,6 +2789,7 @@ $2 (0.6) (0.01) = 1.2\%$.
 The likelihood of the data is slightly higher if Oliver is
 {\it not} one of the people who left blood at the scene, so
 the blood data is actually evidence against Oliver's guilt.
+
 \index{evidence}
 
 This example is a little contrived, but it is an example of
@@ -6897,6 +6649,7 @@ long, consider random sampling.
 
 
 \chapter{Hypothesis Testing}
+\label{hypotest}
 
 \section{Back to the Euro problem}
 
@@ -7183,6 +6936,126 @@ factor 100, your posterior odds would be 100:1 or more than 99\%.
 Whether or not you agree that such evidence is ``decisive,''
 it is certainly strong.
 
+%TODO: postpone this section
+\section{The beta distribution}
+\label{beta}
+
+\index{beta distribution}
+There is one more optimization that solves this problem
+even faster.
+
+So far we have used a Pmf object to represent a discrete set of
+values for {\tt x}.  Now we will use a continuous
+distribution, specifically the beta distribution (see
+\url{http://en.wikipedia.org/wiki/Beta_distribution}).
+\index{continuous distribution}
+
+The beta distribution is defined on the interval from 0 to 1
+(including both), so it is a natural choice for describing
+proportions and probabilities.  But wait, it gets better.
+
+%TODO: explain the binomial distribution in the previous section
+
+It turns out that if you do a Bayesian update with a binomial
+likelihood function, which is what we did in the previous section, the beta
+distribution is a {\bf conjugate prior}.  That means that if the prior
+distribution for {\tt x} is a beta distribution, the posterior is also
+a beta distribution.  But wait, it gets even better.
+\index{binomial likelihood function}
+\index{conjugate prior}
+
+The shape of the beta distribution depends on two parameters, written
+$\alpha$ and $\beta$, or {\tt alpha} and {\tt beta}.  If the prior
+is a beta distribution with parameters {\tt alpha} and {\tt beta}, and
+we see data with {\tt h} heads and {\tt t} tails, the posterior is a
+beta distribution with parameters {\tt alpha+h} and {\tt beta+t}.  In
+other words, we can do an update with two additions.
+\index{parameter}
+
+So that's great, but it only works if we can find a beta distribution
+that is a good choice for a prior.  Fortunately, for many realistic
+priors there is a beta distribution that is at least a good
+approximation, and for a uniform prior there is a perfect match.  The
+beta distribution with {\tt alpha=1} and {\tt beta=1} is uniform from
+0 to 1.
+
+Let's see how we can take advantage of all this.  
+{\tt thinkbayes.py} provides 
+a class that represents a beta distribution:
+\index{Beta object}
+
+\begin{code}
+class Beta(object):
+
+    def __init__(self, alpha=1, beta=1):
+        self.alpha = alpha
+        self.beta = beta
+\end{code}
+
+By default \verb"__init__" makes a uniform distribution.
+{\tt Update} performs a Bayesian update:
+
+\begin{code}
+    def Update(self, data):
+        heads, tails = data
+        self.alpha += heads
+        self.beta += tails
+\end{code}
+
+{\tt data} is a pair of integers representing the number of
+heads and tails.
+
+So we have yet another way to solve the Euro problem:
+
+\begin{code}
+    beta = thinkbayes.Beta()
+    beta.Update((140, 110))
+    print beta.Mean()
+\end{code}
+
+{\tt Beta} provides {\tt Mean}, which 
+computes a simple function of {\tt alpha}
+and {\tt beta}:
+
+\begin{code}
+    def Mean(self):
+        return float(self.alpha) / (self.alpha + self.beta)
+\end{code}
+
+For the Euro problem the posterior mean is 56\%, which is the
+same result we got using Pmfs.  
+
+{\tt Beta} also provides {\tt EvalPdf}, which evaluates
+the probability density
+function (PDF)  of the beta distribution:
+\index{probability density function}
+\index{PDF}
+
+\begin{code}
+    def EvalPdf(self, x):
+        return x**(self.alpha-1) * (1-x)**(self.beta-1)
+\end{code}
+
+Finally, {\tt Beta} provides {\tt MakePmf}, which
+uses {\tt EvalPdf} to generate a discrete approximation
+of the beta distribution.
+
+%This expression might look familiar.  Here's {\tt
+%  thinkbayes.EvalBinomialPmf}
+
+%\begin{code}
+%def EvalBinomialPmf(x, yes, no): 
+%    return x**yes * (1-x)**no
+%\end{code}
+
+%It's the same function, but in {\tt EvalPdf}, we think of {\tt x} as a
+%random variable and {\tt alpha} and {\tt beta} as parameters; in {\tt
+%  EvalBinomialPmf}, {\tt x} is the parameter, and {\tt yes} and {\tt
+%  no} are random variables.  Distributions like these that share the
+%same PDF are called {\bf conjugate distributions}.
+%\index{conjugate distribution}
+
+
 \section{Exercises}
 
 \begin{exercise}
@@ -7201,6 +7074,27 @@ Now compute the strength of the evidence it would take to
 convince you that ESP is at least 50\% likely to exist.
 What Bayes factor would be needed to make you 90\% sure
 that ESP exists?
+
+%TODO: figure out where to talk about Cromwell's rule
+Also, notice that in a Bayesian update, we multiply
+each prior probability by a likelihood, so if \p{H} is 0,
+\p{H|D} is also 0, regardless of $D$.  In the Euro problem,
+if you are convinced that \py{x} is less than 50\%, and you assign
+probability 0 to all other hypotheses, no amount of data will
+convince you otherwise.
+\index{Euro problem}
+
+This observation is the basis of {\bf Cromwell's rule}, which is the
+recommendation that you should avoid giving a prior probability of
+0 to any hypothesis that is even remotely possible
+(see \url{http://en.wikipedia.org/wiki/Cromwell's_rule}).
+\index{Cromwell's rule}
+
+Cromwell's rule is named after Oliver Cromwell, who wrote, ``I beseech
+you, in the bowels of Christ, think it possible that you may be
+mistaken.''  For Bayesians, this turns out to be good advice (even if
+it's a little overwrought).
+\index{Cromwell, Oliver}
 \end{exercise}
 
 
