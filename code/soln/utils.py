@@ -7,7 +7,7 @@ import re
 def write_table(table, label, **options):
     """
     """
-    filename = label + '.tex'
+    filename = f'tables/{label}.tex'
     fp = open(filename, 'w')
     s = table.to_latex(**options)
     fp.write(s)

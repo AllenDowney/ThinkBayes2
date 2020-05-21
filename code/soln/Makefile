@@ -1,4 +1,4 @@
-tables:
-	cp *.tex ../../book
+copy:
+	cp tables/*.tex ../../book/tables
 	cp figs/* ../../book/figs
 
