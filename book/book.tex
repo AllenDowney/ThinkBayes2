@@ -1147,6 +1147,7 @@ from the 1994 bag?
 \label{compstat}
 
 \section{Distributions}
+\label{distributions}
 
 In statistics a {\bf distribution} is a set of values and their
 corresponding probabilities.
@@ -2682,20 +2683,27 @@ we can write the ratio of posterior probabilities like this:
 Notice that the total probability of the data, \p{D}, drops out of
 this equation.
 
+Writing \odds{A} for odds in favor of $A$, we use the definition of odds to write:
+%
+\[ \odds{A} = \frac{\p{A}}{1-\p{A}} \]
+%
 If $A$ and $B$ are mutually exclusive and collectively exhaustive,
-that means $\p{B} = 1 - \p{A}$, so we can rewrite the ratio of
-the priors, and the ratio of the posteriors, as odds.
-
-Writing \odds{A} for odds in favor of $A$, we get:
+that means $\p{B} = 1 - \p{A}$, so we can write
+%
+\[ \odds{A} = \frac{\p{A}}{\p{B}}  \]
+%
+By the same process, we can write the posterior odds like this:
+%
+\[ \odds{A|D} = \frac{\p{A|D}}{\p{B|D}}  \]
+%
+Putting it all together, we have:
 %
 \[ \odds{A|D} = \odds{A}~\frac{\p{D|A}}{\p{D|B}} \]
 %
-In words, this says that the posterior odds are the prior odds times
-the likelihood ratio.  This is Bayes's Rule.
+This is Bayes's Rule, which says that the posterior odds are the prior odds times the likelihood ratio.  
 
-This form is most convenient for computing a Bayesian update on
-paper or in your head.  For example, let's go back to the
-cookie problem:
+This form of Bayes's Theorem is convenient for computing a Bayesian update on paper or in your head.  
+For example, let's go back to the cookie problem:
 \index{cookie problem}
 
 \begin{quote}
@@ -2709,9 +2717,9 @@ The cookie is vanilla.
 What is the probability that it came from Bowl 1?
 \end{quote}
 
-The prior probability is 50\%, so the prior odds are $1:1$, or just
-1.  The likelihood ratio is $\frac{3}{4} / \frac{1}{2}$, or $3/2$.
-So the posterior odds are $3:2$, which corresponds to probability
+The prior probability is 50\%, so the prior odds are $1$.
+The likelihood ratio is $\frac{3}{4} / \frac{1}{2}$, or $3/2$.
+So the posterior odds are $3/2$, which corresponds to probability
 $3/5$.
 
 
@@ -2720,8 +2728,8 @@ $3/5$.
 
 \index{Oliver's blood problem}
 \index{MacKay, David}
-Here is another problem from MacKay's {\it Information Theory,
-  Inference, and Learning Algorithms}:
+
+I'll use Bayes's Rule to solve another problem from MacKay's {\it Information Theory, Inference, and Learning Algorithms}:
 
 \begin{quote}
 Two people have left traces of their own blood at the scene of
@@ -2741,11 +2749,11 @@ hypothesis is more likely in light of the data than it was before.
 
 \index{evidence}
 
-In the cookie problem, the prior odds are $1:1$, or probability 50\%.
-The posterior odds are $3:2$, or probability 60\%.  So we could say
-that the vanilla cookie is evidence in favor of Bowl 1.
+In the cookie problem, the prior odds are $1$, or probability 50\%.
+The posterior odds are $3/2$, or probability 60\%.  
+So the vanilla cookie is evidence in favor of Bowl 1.
 
-The odds form of Bayes's theorem provides a way to make this intuition more precise.  Again
+Bayes's Rule provides a way to make this intuition more precise.  Again
 %
 \[ \odds{A|D} = \odds{A}~\frac{\p{D|A}}{\p{D|B}} \]
 %
@@ -2760,10 +2768,9 @@ factor}.
 \index{likelihood ratio}
 \index{Bayes factor}
 
-If the Bayes factor value is greater than 1, that means that the
-data were more likely under $A$ than under $B$.  And since the
-odds ratio is also greater than 1, that means that the odds are
-greater, in light of the data, than they were before.
+If the Bayes factor is greater than 1, that means that the
+data were more likely under $A$ than under $B$.  
+And that means that the odds are greater, in light of the data, than they were before.
 
 If the Bayes factor is less than 1, that means the data were
 less likely under $A$ than under $B$, so the odds in
@@ -2772,17 +2779,17 @@ favor of $A$ go down.
 Finally, if the Bayes factor is exactly 1, the data are equally
 likely under either hypothesis, so the odds do not change.
 
-Now we can get back to the Oliver's blood problem.  If Oliver is
-one of the people who left blood at the crime scene, then he
+Let's apply that to the problem at hand.  If Oliver is
+one of the people who left blood at the crime scene, he
 accounts for the `O' sample; in that case, the probability of the data
 is the probability that a random member of the population
 has type `AB' blood, which is 1\%.
 
-If Oliver did not leave blood at the scene, then we have two
+If Oliver did not leave blood at the scene, we have two
 samples to account for.  If we choose two random people from
 the population, what is the chance of finding one with type `O'
 and one with type `AB'?  Well, there are two ways it might happen:
-the first person we choose might have type `O' and the second
+the first person might have type `O' and the second
 `AB', or the other way around.  So the total probability is
 $2 (0.6) (0.01) = 1.2\%$.
 
@@ -2792,17 +2799,15 @@ the blood data is actually evidence against Oliver's guilt.
 
 \index{evidence}
 
-This example is a little contrived, but it is an example of
+This example is a little contrived, but it is demonstrates
 the counterintuitive result that data {\it consistent} with
 a hypothesis are not necessarily {\it in favor of}
 the hypothesis.
 
-If this result is so counterintuitive that it bothers you,
-this way of thinking might help: the data consist of a common
-event, type `O' blood, and a rare event, type `AB' blood.
+If this result still bothers you, this way of thinking might help: the data consist of a common event, type `O' blood, and a rare event, type `AB' blood.
 If Oliver accounts for the common event, that leaves the rare
-event still unexplained.  If Oliver doesn't account for the
-`O' blood, then we have two chances to find someone in the
+event unexplained.  If Oliver doesn't account for the
+`O' blood, we have two chances to find someone in the
 population with `AB' blood.  And that factor of two makes
 the difference.
 
@@ -2810,144 +2815,281 @@ the difference.
 \section{Addends}
 \label{addends}
 
-The fundamental operation of Bayesian statistics is
-{\tt Update}, which takes a prior distribution and a set
-of data, and produces a posterior distribution.  But solving
-real problems usually involves a number of other operations,
-including scaling, addition and other arithmetic operations,
-max and min, and mixtures.
-\index{distribution!operations}
-
-This chapter presents addition and max; I will present
-other operations as we need them.
-
-The first example is based on
-{\it Dungeons~\&~Dragons}, a role-playing game where the results
-of players' decisions are usually determined by rolling dice.
-In fact, before game play starts, players generate each
-attribute of their characters---strength, intelligence, wisdom,
-dexterity, constitution, and charisma---by rolling three
-6-sided dice and adding them up.
-\index{Dungeons and Dragons}
-
-So you might be curious to know the distribution of this sum.
-There are two ways you might compute it:
-\index{simulation}
-\index{enumeration}
-
-\begin{description}
-
-\item[Simulation:] Given a Pmf that represents the distribution
-for a single die, you can draw random samples, add them up,
-and accumulate the distribution of simulated sums.
-
-\item[Enumeration:] Given two Pmfs, you can enumerate all possible
-pairs of values and compute the distribution of the sums.
-
-\end{description}
-
-\verb"thinkbayes" provides functions for both.  Here's an example
-of the first approach.  First, I'll define a class to represent
-a single die as a Pmf:
+Suppose you roll two dice and add them up.  What is the distribution of the sum?
+In Section~\ref{distributions} we created a \py{Pmf} that represents the outcome of a six-sided die:
 
 \begin{code}
-class Die(thinkbayes.Pmf):
-
-    def __init__(self, sides):
-        thinkbayes.Pmf.__init__(self)
-        for x in xrange(1, sides+1):
-            self.Set(x, 1)
-        self.Normalize()
+die = Pmf.from_seq([1,2,3,4,5,6])
 \end{code}
 
-Now I can create a 6-sided die:
+There are six possible outcomes, all equally likely.
+If we roll two dice and add them up, there are 11 possible outcomes, 2 through 12, but they are not equally likely.
+
+To compute the distribution of the sum, we can enumerate the possible outcomes.
+As a starting place, the following loop enumerates the quantities and probabilities from a \py{Pmf}:
 
 \begin{code}
-d6 = Die(6)
+for q, p in die.items():
+    print(q, p)
 \end{code}
 
-And use \verb"thinkbayes.SampleSum" to generate a sample of 1000 rolls.
+And this loop enumerates all pairs of quantities:
 
 \begin{code}
-dice = [d6] * 3
-three = thinkbayes.SampleSum(dice, 1000)
+for q1, p1 in pmf1.items():
+    for q2, p2 in pmf2.items():
+        q = q1 + q2
+        p = p1 * p2
 \end{code}
 
-\verb"SampleSum" takes list of distributions (either Pmf or Cdf
-objects) and the sample size, {\tt n}.  It generates {\tt n} random
-sums and returns their distribution as a Pmf object.
+Each time through the loop \py{q} gets the sum of two quantities, and \py{p} gets the probability of those quantities, in that order.
+Because the same sum might appear more than once, we have to add up the total probability for each sum.
+And that's how this function works:
 
 \begin{code}
-def SampleSum(dists, n):
-    pmf = MakePmfFromList(RandomSum(dists) for i in xrange(n))
-    return pmf
+def add_dist(pmf1, pmf2):
+    res = Pmf()
+    for q1, p1 in pmf1.items():
+        for q2, p2 in pmf2.items():
+            q = q1 + q2
+            p = p1 * p2
+            res[q] = res(q) + p
+    return res
 \end{code}
 
-\verb"SampleSum" uses \verb"RandomSum", also in \verb"thinkbayes.py":
+The parameters are \py{Pmf} objects representing distributions.
+The first line creates an empty \py{Pmf}.
+Each time through the loop, we compute \py{q} and \py{p} and then increment the probability associated with \py{q}.
+
+Notice a subtle element of this line:
 
 \begin{code}
-def RandomSum(dists):
-    total = sum(dist.Random() for dist in dists)
+            res[q] = res(q) + p
+\end{code}
+
+I use parentheses on the right side of the assignment, which returns 0 if \py{q} does not appear yet in \py{res}.
+I use brackets on the left side in order to create or update an element in \py{res}; using parentheses here would not work.
+
+Fortunately, \py{Pmf} provides a version of this function.
+You can use it as a method, like this:
+
+\begin{code}
+twice = die.add_dist(die)
+\end{code}
+
+Or as a function, like this:
+
+\begin{code}
+twice = Pmf.add_dist(die, die)
+\end{code}
+
+If we have a sequence of \py{Pmf} objects that represent dice, we can compute the distribution of the sum like this:
+
+\begin{code}
+def add_dist_seq(seq):
+    total = seq[0]
+    for other in seq[1:]:
+        total = total.add_dist(other)
     return total
 \end{code}
 
-{\tt RandomSum} invokes {\tt Random} on each distribution and
-adds up the results.
-
-The drawback of simulation is that the result
-is only approximately correct.  As \verb"n" gets larger, it gets
-more accurate, but of course the run time increases as well.
-
-The other approach is to enumerate all pairs of values and
-compute the sum and probability of each pair.  This is implemented
-in \verb"Pmf.__add__":
+So we can compute the sum of three dice like this:
 
 \begin{code}
-# class Pmf
-
-    def __add__(self, other):
-        pmf = Pmf()
-        for v1, p1 in self.Items():
-            for v2, p2 in other.Items():
-                pmf.Incr(v1+v2, p1*p2)
-        return pmf
+dice = [die] * 3
+thrice = add_dist_seq(dice)
 \end{code}
 
-{\tt self} is a Pmf, of course; {\tt other} can be a Pmf or anything
-else that provides {\tt Items}.  The result is a new Pmf.  The time to
-run \verb"__add__" depends on the number of items in {\tt self} and
-{\tt other}; it is proportional to {\tt len(self) * len(other)}.
+Figure~\ref{fig05-01} shows what these three distributions look like:
 
-And here's how it's used:
+\begin{itemize}
 
-\begin{code}
-    three_exact = d6 + d6 + d6
-\end{code}
+\item The distribution of a single die is uniform from 1 to 6.
 
-When you apply the {\tt +} operator to a Pmf, Python invokes
-\verb"__add__".  In this example, \verb"__add__" is invoked twice.
+\item The sum of two dice has a triangle distribution between 2 and 12.
 
-Figure~\ref{fig.dungeons1} shows an approximate result generated
-by simulation and the exact result computed by enumeration.
+\item The sum of three dice has a bell-shaped distribution between 3 and 18.
+
+\end{itemize}
 
 \begin{figure}
-% dungeons.py
-\centerline{\includegraphics[height=2.5in]{figs/dungeons1.pdf}}
-\caption{Approximate and exact distributions for the sum of
-three 6-sided dice.}
-\label{fig.dungeons1}
+% chap05soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig05-01.pdf}}
+\caption{Distribution of outcomes for one six-sided die, two dice, and three dice.}
+\label{fig05-01}
 \end{figure}
 
-\verb"Pmf.__add__" is based on the assumption that the random
-selections from each Pmf are independent.  In the example of rolling
-several dice, this assumption is pretty good.  In other cases, we
-would have to extend this method to use conditional probabilities.
-\index{independence}
+As an aside, this example demonstrates the Central Limit Theorem, which says that the distribution of a sum converges on a bell-shaped normal distribution, at least under some conditions.
 
-The code from this section is available from
-\url{http://thinkbayes.com/dungeons.py}.
-  For more information
-see Section~\ref{download}.
+\section{Gluten}
+
+In 2015 I read a paper that tested whether people diagnosed with gluten sensitivity (but not celiac disease) were not able to distinguish gluten flour from non-gluten flour in a blind challenge (\url{https://onlinelibrary.wiley.com/doi/full/10.1111/apt.13372}).
+
+Out of 35 subjects, 12 correctly identified the gluten flour based on resumption of symptoms while they were eating it.  Another 17 wrongly identified the gluten-free flour based on their symptoms, and 6 were unable to distinguish.  
+
+The authors conclude, ``Double-blind gluten challenge induces symptom recurrence in just one-third of patients.''
+
+This conclusion seems odd to me, because if none of the patients were sensitive to gluten, we would expect some of them to identify the gluten flour by chance.
+So here's the question: based on this data, how many of the subjects are sensitive to gluten?
+
+We can use Bayes's Theorem to answer this question, but first we have to make some modeling decisions.
+I'll assume:
+
+\begin{itemize}
+
+\item People who are sensitive to gluten have a 95\% chance of correctly identifying gluten flour under the challenge conditions, and 
+
+\item People who are not sensitive have a 40\% chance of identifying the gluten flour by chance (and a 60\% chance of either choosing the other flour or failing to distinguish).
+
+\end{itemize}
+
+These particular values are arbitrary, but the results are not sensitive to these choices.
+
+I will solve this problem in two steps.  First, assuming that we know how many subjects are sensitive, I will compute the distribution of the data.  Then, using the likelihood of the data, I will compute the posterior distribution of the number of sensitive patients.
+
+The first is the {\bf forward problem}; the second is the {\bf inverse problem}.
+
+\section{Forward problem}
+
+Suppose we know that 10 of the 35 subjects are sensitive to gluten.  That means that 25 are not:
+
+\begin{code}
+n = 35
+n_sensitive = 10
+n_insensitive = n - n_sensitive
+\end{code}
+
+Each sensitive subject has a 95\% chance of identifying the gluten flour, so the number of correct identifications follows a binomial distribution with \py{p=0.95}:
+
+\begin{code}
+dist_sensitive = make_binomial(n_sensitive, 0.95)
+\end{code}
+
+And similarly for the insensitive subjects:
+
+\begin{code}
+dist_insensitive = make_binomial(n_insensitive, 0.4)
+\end{code}
+
+\py{make_binomial} returns a \py{Pmf} that represents the distribution of correct identifications.
+So we can use \py{add_dist} to compute the total number of correct identifications in both groups:
+
+\begin{code}
+dist_total = Pmf.add_dist(dist_sensitive, dist_insensitive)
+\end{code}
+
+Figure~\ref{fig05-02} shows the distribution of correct identifications among sensitive and insensitive subjects, and the total.
+
+\begin{figure}
+% chap02soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig05-02.pdf}}
+\caption{Distribution of correct identifications among sensitive and insensitive subjects, and the total.}
+\label{fig05-02}
+\end{figure}
+
+Of the 10 sensitive subject, we expect most of them to identify the gluten flour correctly.
+Of the 25 insensitive subjects, we expect about 10 to identify the gluten flour by chance.
+So we expect about 20 correct identifications in total.
+
+This is the answer to the forward problem: given the number of sensitive subjects, we can compute the distribution of the data.
+
+\section{Inverse Problem}
+
+Now let's solve the inverse problem: given the data, we'll compute the posterior distribution of the number of sensitive subjects.
+
+Here's how.  I'll loop through the possible values of \py{n_sensitive} and compute the distribution of the data for each:
+
+\begin{code}
+table = pd.DataFrame()
+for n_sensitive in range(1, n):
+    n_insensitive = n - n_sensitive
+
+    dist_sensitive = make_binomial(n_sensitive, 0.95)
+    dist_insensitive = make_binomial(n_insensitive, 0.4)
+    dist_total = Pmf.add_dist(dist_sensitive, dist_insensitive)    
+    table[n_sensitive] = dist_total
+\end{code}
+
+I store each distribution as a column in a Pandas DataFrame.
+When \py{n_sensitive} is 0 or \py{n}, the distribution of the data is a simple binomial, not the sum of two binomials:
+
+\begin{code}
+table[0] = make_binomial(n, 0.4)
+table[n] = make_binomial(n, 0.95)
+\end{code}
+
+Figure~\ref{fig05-03} shows several columns from this table, corresponding to several hypothetical values of \py{n_sensitive}:
+
+\begin{figure}
+% chap05soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig05-03.pdf}}
+\caption{Distribution of the number of correct identification for different values of \py{n_sensitive}.}
+\label{fig05-03}
+\end{figure}
+
+Now we can use this table to compute the likelihood of the data:
+
+\begin{code}
+likelihood = table.loc[12]
+\end{code}
+
+\py{loc} selects a row from the table.
+The row with index 12 contains the probability of 12 correct identifications for each hypothetical value of \py{n_sensitive}.
+And that's exactly the likelihood we need to do a Bayesian update.
+
+I'll use a uniform prior, which implies that I would be equally surprised by any value of \py{n_sensitive}:
+
+\begin{code}
+hypos = np.arange(n+1)
+prior = Pmf(1, hypos)
+\end{code}
+
+And here's the update:
+
+\begin{code}
+posterior = prior * likelihood
+posterior.normalize()
+\end{code}
+
+Figure~\ref{fig05-04} shows posterior distributions of \py{n_sensitive} based on the actual data, 12 correct identifications, and another hypothetical outcome, 20 correct identifications.
+
+\begin{figure}
+% chap05soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig05-04.pdf}}
+\caption{Posterior distributions of \py{n_sensitive}.}
+\label{fig05-04}
+\end{figure}
+
+With 12 correct identifications, the most likely conclusion is that none of the subjects are sensitive to gluten.
+If there had been 20 correct identifications, the most likely conclusion would be that 11-12 of the subjects were sensitive.
+
+
+\section{Summary}
+
+\section{Exercises}
+
+\begin{exercise}
+\end{exercise}
+
+
+\begin{exercise}
+\end{exercise}
+
+
+\begin{exercise}
+\end{exercise}
+
+
+\begin{exercise}
+\end{exercise}
+
+
+\begin{exercise}
+\end{exercise}
+
+
+
+\chapter{Maxima and Mixtures}
 
 \section{Maxima}
 
@@ -3218,6 +3360,588 @@ distributions, like \verb"Pmf.__add__", {\tt Cdf.Max}, and {\tt
 introduce them now to encourage you to think of a distribution as a
 fundamental unit of computation, not just a container for values and
 probabilities.
+
+\section{Exercises}
+
+\begin{exercise}
+Poincare bread problem?
+\end{exercise}
+
+
+\begin{exercise}
+\end{exercise}
+
+
+\begin{exercise}
+\end{exercise}
+
+
+\begin{exercise}
+\end{exercise}
+
+
+
+
+\chapter{Prediction}
+\label{prediction}
+
+\section{The Boston Bruins problem}
+
+In the 2010-11 National Hockey League (NHL) Finals, my beloved Boston
+Bruins played a best-of-seven championship series against the despised
+Vancouver Canucks.  Boston lost the first two games 0-1 and 2-3, then
+won the next two games 8-1 and 4-0.  At this point in the series, what
+is the probability that Boston will win the next game, and what is
+their probability of winning the championship?
+\index{hockey}
+\index{Boston Bruins}
+\index{Vancouver Canucks}
+
+As always, to answer a question like this, we need to make some
+assumptions.  First, it is reasonable to believe that goal scoring in
+hockey is at least approximately a Poisson process, which means that
+it is equally likely for a goal to be scored at any time during a
+game.  Second, we can assume that against a particular opponent, each team
+has some long-term average goals per game, denoted $\lambda$.
+\index{Poisson process}
+
+Given these assumptions, my strategy for answering this question is
+
+\begin{enumerate}
+
+\item Use statistics from previous games to choose a prior
+distribution for $\lambda$.
+
+\item Use the score from the first four games to estimate $\lambda$
+for each team.
+
+\item Use the posterior distributions of $\lambda$ to compute 
+distribution of goals for each team, the distribution of the
+goal differential, and the probability that each team wins
+the next game.
+
+\item Compute the probability that each team wins the series.
+
+\end{enumerate}
+
+To choose a prior distribution, I got some statistics from
+\url{http://www.nhl.com}, specifically the average goals per game
+for each team in the 2010-11 season.  The distribution is roughly
+Gaussian with mean 2.8 and standard deviation 0.3.
+\index{National Hockey League}
+\index{NHL}
+
+The Gaussian distribution is continuous, but we'll approximate it with
+a discrete Pmf.  \verb"thinkbayes" provides \verb"MakeGaussianPmf" to
+do exactly that:
+\index{numpy}
+\index{Gaussian distribution}
+
+\begin{code}
+def MakeGaussianPmf(mu, sigma, num_sigmas, n=101):
+    pmf = Pmf()
+    low = mu - num_sigmas*sigma
+    high = mu + num_sigmas*sigma
+
+    for x in numpy.linspace(low, high, n):
+        p = scipy.stats.norm.pdf(x, mu, sigma)
+        pmf.Set(x, p)
+    pmf.Normalize()
+    return pmf
+\end{code}  
+
+{\tt mu} and {\tt sigma} are the mean and standard deviation of the
+Gaussian distribution.  \verb"num_sigmas" is the number of standard
+deviations above and below the mean that the Pmf will span, and {\tt
+  n} is the number of values in the Pmf.
+
+Again we use {\tt numpy.linspace} to make an array of {\tt n}
+equally spaced values between {\tt low} and {\tt high}, including
+both.
+
+\verb"norm.pdf" evaluates the Gaussian probability density function (PDF).
+\index{PDF}
+\index{probability density function}
+
+Getting back to the hockey problem, here's the definition for a suite
+of hypotheses about the value of $\lambda$.
+
+\begin{code}
+class Hockey(thinkbayes.Suite):
+
+    def __init__(self):
+        pmf = thinkbayes.MakeGaussianPmf(2.7, 0.3, 4)
+        thinkbayes.Suite.__init__(self, pmf)
+\end{code}  
+
+So the prior distribution is Gaussian with mean 2.7, standard deviation
+0.3, and it spans 4 sigmas above and below the mean.
+
+As always, we have to decide how to represent each hypothesis; in
+this case I represent the hypothesis that $\lambda=x$ with the
+floating-point value {\tt x}. 
+
+
+\section{Poisson processes}
+
+In mathematical statistics, a {\bf process} is a stochastic model of a
+physical system (``stochastic'' means that the model has some kind of
+randomness in it).  For example, a Bernoulli process is a model of a
+sequence of events, called trials, in which each trial has two
+possible outcomes, like success and failure.  So a Bernoulli process
+is a natural model for a series of coin flips, or a series of shots on
+goal.  \index{process} \index{Poisson process}
+
+A Poisson process is the continuous version of a Bernoulli process,
+where an event can occur at any point in time with equal probability.
+Poisson processes can be used to model customers arriving in a store,
+buses arriving at a bus stop, or goals scored in a hockey game.
+\index{Bernoulli process}
+
+In many real systems the probability of an event changes over time.
+Customers are more likely to go to a store at certain times of day,
+buses are supposed to arrive at fixed intervals, and goals are more
+or less likely at different times during a game.
+
+But all models are based on simplifications, and in this case modeling
+a hockey game with a Poisson process is a reasonable choice.  Heuer,
+M\"{u}ller and Rubner (2010) analyze scoring in a German soccer league
+and come to the same conclusion; see
+\url{http://www.cimat.mx/Eventos/vpec10/img/poisson.pdf}.
+\index{Heuer, Andreas}
+
+The benefit of using this model is that we can compute the distribution
+of goals per game efficiently, as well as the distribution of time
+between goals.  Specifically, if the average number of goals
+in a game is {\tt lam}, the distribution of goals per game is
+given by the Poisson PMF:
+\index{Poisson distribution}
+
+\begin{code}
+def EvalPoissonPmf(k, lam):
+    return (lam)**k * math.exp(-lam) / math.factorial(k)
+\end{code}  
+
+And the distribution of time between goals is given by the
+exponential PDF:
+\index{exponential distribution}
+
+\begin{code}
+def EvalExponentialPdf(x, lam):
+    return lam * math.exp(-lam * x)
+\end{code}  
+
+I use the variable
+{\tt lam} because {\tt lambda} is a reserved keyword in Python.
+Both of these functions are in \verb"thinkbayes.py".
+
+
+\section{The posteriors}
+
+\begin{figure}
+% hockey.py
+\centerline{\includegraphics[height=2.5in]{figs/hockey1.pdf}}
+\caption{Posterior distribution of the number of
+goals per game.}
+\label{fig.hockey1}
+\end{figure}
+
+Now we can compute the likelihood that a team with a hypothetical
+value of {\tt lam} scores {\tt k} goals in a game:
+
+\begin{code}
+# class Hockey
+
+    def Likelihood(self, data, hypo):
+        lam = hypo
+        k = data
+        like = thinkbayes.EvalPoissonPmf(k, lam)
+        return like
+\end{code}
+
+Each hypothesis is a possible value of $\lambda$;  {\tt
+  data} is the observed number of goals, {\tt k}.
+
+With the likelihood function in place, we can make a suite for each
+team and update them with the scores from the first four games.
+
+\begin{code}
+    suite1 = Hockey('bruins')
+    suite1.UpdateSet([0, 2, 8, 4])
+     
+    suite2 = Hockey('canucks')
+    suite2.UpdateSet([1, 3, 1, 0])
+\end{code}  
+
+Figure~\ref{fig.hockey1} shows the resulting posterior distributions
+for {\tt lam}.  Based on the first four games, the most likely
+values for {\tt lam} are 2.6 for the Canucks and 2.9 for the Bruins.
+
+
+\section{The distribution of goals}
+
+\begin{figure}
+% hockey.py
+\centerline{\includegraphics[height=2.5in]{figs/hockey2.pdf}}
+\caption{Distribution of goals in a single game.}
+\label{fig.hockey2}
+\end{figure}
+
+To compute the probability that each team wins the next game,
+we need to compute the distribution of goals for each team.
+
+If we knew the value of {\tt lam} exactly, we could use the
+Poisson distribution again.  \verb"thinkbayes" provides a
+method that computes a truncated approximation of a Poisson
+distribution:
+\index{Poisson distribution}
+
+\begin{code}
+def MakePoissonPmf(lam, high):
+    pmf = Pmf()
+    for k in xrange(0, high+1):
+        p = EvalPoissonPmf(k, lam)
+        pmf.Set(k, p)
+    pmf.Normalize()
+    return pmf
+\end{code}  
+
+The range of values in the computed Pmf is from 0 to {\tt high}.
+So if the value of {\tt lam} were exactly 3.4, we would compute:
+
+\begin{code}
+lam = 3.4
+goal_dist = thinkbayes.MakePoissonPmf(lam, 10)
+\end{code}
+
+I chose the upper bound, 10, because the probability of scoring
+more than 10 goals in a game is quite low.
+
+That's simple enough so far; the problem is that we don't know
+the value of {\tt lam} exactly.  Instead, we have a distribution
+of possible values for {\tt lam}.
+
+For each value of {\tt lam}, the distribution of goals is Poisson.
+So the overall distribution of goals is a mixture of these
+Poisson distributions, weighted according to the probabilities
+in the distribution of {\tt lam}.
+\index{mixture}
+\index{Poisson distribution}
+
+Given the posterior distribution of {\tt lam}, here's the code
+that makes the distribution of goals:
+
+\begin{code}
+def MakeGoalPmf(suite):
+    metapmf = thinkbayes.Pmf()
+
+    for lam, prob in suite.Items():
+        pmf = thinkbayes.MakePoissonPmf(lam, 10)
+        metapmf.Set(pmf, prob)
+
+    mix = thinkbayes.MakeMixture(metapmf)
+    return mix
+\end{code}  
+
+For each value of {\tt lam} we make a Poisson Pmf and add it to the
+meta-Pmf.  I call it a meta-Pmf because it is a Pmf that contains
+Pmfs as its values.
+\index{meta-Pmf}
+
+Then we use \verb"MakeMixture" to compute the mixture
+(we saw {\tt MakeMixture} in Section~\ref{mixture}).
+\index{mixture}
+\index{MakeMixture}
+
+Figure~\ref{fig.hockey2} shows the resulting distribution of goals for
+the Bruins and Canucks.  The Bruins are less likely to
+score 3 goals or fewer in the next game, and more likely to score 4 or
+more.
+
+
+\section{The probability of winning}
+
+\begin{figure}
+% hockey.py
+\centerline{\includegraphics[height=2.5in]{figs/hockey3.pdf}}
+\caption{Distribution of time between goals.}
+\label{fig.hockey3}
+\end{figure}
+
+To get the probability of winning, first we compute the
+distribution of the goal differential:
+
+\begin{code}
+    goal_dist1 = MakeGoalPmf(suite1)
+    goal_dist2 = MakeGoalPmf(suite2)
+    diff = goal_dist1 - goal_dist2
+\end{code}  
+
+The subtraction operator invokes \verb"Pmf.__sub__", which enumerates
+pairs of values and computes the difference.  Subtracting two
+distributions is almost the same as adding, which we saw in
+Section~\ref{addends}.
+
+If the goal differential is positive, the Bruins win; if negative, the
+Canucks win; if 0, it's a tie:
+
+\begin{code}
+    p_win = diff.ProbGreater(0)
+    p_loss = diff.ProbLess(0)
+    p_tie = diff.Prob(0)
+\end{code}  
+
+With the distributions from the previous section, \verb"p_win"
+is 46\%, \verb"p_loss" is 37\%, and \verb"p_tie" is 17\%.
+
+In the event of a tie at the end of ``regulation play,'' the teams play
+overtime periods until one team scores.  Since the game ends
+immediately when the first goal is scored, this overtime format
+is known as ``sudden death.''
+\index{overtime}
+\index{sudden death}
+
+
+\section{Sudden Death}
+
+To compute the probability of winning in a sudden death overtime,
+the important statistic is not goals per game, but time until the
+first goal.  The assumption that goal-scoring is a Poisson process
+implies that the time between goals
+is exponentially distributed.
+\index{Poisson process}
+\index{exponential distribution}
+
+Given {\tt lam}, we can compute the time between goals like this: 
+
+\begin{code}
+lam = 3.4
+time_dist = thinkbayes.MakeExponentialPmf(lam, high=2, n=101)
+\end{code}  
+
+{\tt high} is the upper bound of the distribution.  In this case
+I chose 2, because the probability of going more than two games
+without scoring is small.  {\tt n} is the number of values in
+the Pmf.
+
+If we know {\tt lam} exactly, that's all there is to it.
+But we don't; instead we have a posterior
+distribution of possible values.  So as we did with the distribution
+of goals, we make a meta-Pmf and compute a mixture of
+Pmfs.
+\index{MakeMixture}
+\index{meta-Pmf}
+\index{mixture}
+
+\begin{code}
+def MakeGoalTimePmf(suite):
+    metapmf = thinkbayes.Pmf()
+
+    for lam, prob in suite.Items():
+        pmf = thinkbayes.MakeExponentialPmf(lam, high=2, n=2001)
+        metapmf.Set(pmf, prob)
+
+    mix = thinkbayes.MakeMixture(metapmf)
+    return mix
+\end{code}  
+
+Figure~\ref{fig.hockey3} shows the resulting distributions.  For
+time values less than one period (one third of a game), the Bruins
+are more likely to score.  The time until the Canucks score is
+more likely to be longer.
+
+I set the number of values, {\tt n}, fairly high in order to minimize
+the number of ties, since it is not possible for both teams
+to score simultaneously.
+
+Now we compute the probability that the Bruins score first:
+
+\begin{code}
+    time_dist1 = MakeGoalTimePmf(suite1)
+    time_dist2 = MakeGoalTimePmf(suite2)
+    p_overtime = thinkbayes.PmfProbLess(time_dist1, time_dist2)
+\end{code}  
+
+For the Bruins, the probability of winning in overtime is 52\%.
+
+Finally, the total probability of winning is the chance of
+winning at the end of regulation play plus the probability
+of winning in overtime.
+
+\begin{code}
+    p_tie = diff.Prob(0)
+    p_overtime = thinkbayes.PmfProbLess(time_dist1, time_dist2)
+
+    p_win = diff.ProbGreater(0) + p_tie * p_overtime
+\end{code}  
+
+For the Bruins, the overall chance of winning the next game is 55\%.
+
+To win the series, the Bruins can either win the next two games
+or split the next two and win the third.  Again, we can compute
+the total probability:
+
+\begin{code}
+    # win the next two
+    p_series = p_win**2
+
+    # split the next two, win the third
+    p_series += 2 * p_win * (1-p_win) * p_win
+\end{code}  
+
+The Bruins chance of winning the series is 57\%.  And in 2011,
+they did.
+
+
+\section{Discussion}
+
+As always, the analysis in this chapter is based on modeling decisions,
+and modeling is almost always an iterative process.  In general,
+you want to start with something simple that yields an approximate
+answer, identify likely sources of error, and look for opportunities
+for improvement.
+\index{modeling}
+\index{iterative modeling}
+
+In this example, I would consider these options:
+
+\begin{itemize}
+
+\item I chose a prior based on the average goals per game for each
+  team.  But this statistic is averaged across all opponents.  Against
+  a particular opponent, we might expect more variability.  For
+  example, if the team with the best offense plays the team with the
+  worst defense, the expected goals per game might be several standard
+  deviations above the mean.
+
+\item For data I used only the first four games of the championship
+  series.  If the same teams played each other during the
+  regular season, I could use the results from those games as well.
+  One complication is that the composition of teams changes during
+  the season due to trades and injuries.  So it might be best to
+  give more weight to recent games.
+
+\item To take advantage of all available information, we could
+  use results from all regular season games to estimate each team's
+  goal scoring rate, possibly adjusted by estimating
+  an additional factor for each pairwise match-up.  This approach
+  would be more complicated, but it is still feasible.
+
+\end{itemize}
+
+For the first option, we could use the results from the regular season
+to estimate the variability across all pairwise match-ups.  Thanks to
+Dirk Hoag at \url{http://forechecker.blogspot.com/}, I was able to get
+the number of goals scored during regulation play (not overtime) for
+each game in the regular season.
+\index{Hoag, Dirk}
+
+Teams in different conferences only play each other one or two
+times in the regular season, so I focused on pairs that played
+each other 4--6 times.  For each pair, I computed the average
+goals per game, which is an estimate of $\lambda$, then plotted
+the distribution of these estimates.
+
+The mean of these estimates is 2.8, again, but the standard
+deviation is 0.85, substantially higher than what we got computing
+one estimate for each team.
+
+If we run the analysis again with the higher-variance prior, the
+probability that the Bruins win the series is 80\%, substantially
+higher than the result with the low-variance prior, 57\%.
+
+So it turns out that the results are sensitive to the prior, which
+makes sense considering how little data we have to work with.  Based
+on the difference between the low-variance model and the high-variable
+model, it seems worthwhile to put some effort into getting the prior
+right.
+
+The code and data for this chapter are available from
+\url{http://thinkbayes.com/hockey.py} and
+\url{http://thinkbayes.com/hockey_data.csv}.
+  For more information
+see Section~\ref{download}.
+
+\section{Exercises}
+
+\begin{exercise}
+
+If buses arrive at a bus stop every 20 minutes, and you
+arrive at the bus stop at a random time, your wait time until
+the bus arrives is uniformly distributed from 0 to 20 minutes.
+\index{bus stop problem}
+
+But in reality, there is variability in the time between
+buses.  Suppose you are waiting for a bus, and you know the historical
+distribution of time between buses.  Compute your distribution
+of wait times.
+
+Hint: Suppose that the time between buses is either
+5 or 10 minutes with equal probability.  What is the probability
+that you arrive during one of the 10 minute intervals?
+
+I solve a version of this problem in the next chapter.
+
+\end{exercise}
+
+
+\begin{exercise}
+
+Suppose that passengers arriving at the bus stop are well-modeled
+by a Poisson process with parameter $\lambda$.  If you arrive at the
+stop and find 3 people waiting, what is your posterior distribution
+for the time since the last bus arrived.
+\index{Poisson process}
+\index{bus stop problem}
+
+I solve a version of this problem in the next chapter.
+
+\end{exercise}
+
+
+\begin{exercise}
+
+Suppose that you are an ecologist sampling the insect population in
+a new environment.  You deploy 100 traps in a test area and come back
+the next day to check on them.  You find that 37 traps have been
+triggered, trapping an insect inside.  Once a trap triggers, it
+cannot trap another insect until it has been reset.
+\index{insect sampling problem}
+
+If you reset the traps and come back in two days, how many traps
+do you expect to find triggered?  Compute a posterior predictive
+distribution for the number of traps.
+\index{predictive distribution}
+
+\end{exercise}
+
+
+\begin{exercise}
+
+Suppose you are the manager of an apartment building with
+100 light bulbs in common areas.  It is your responsibility
+to replace light bulbs when they break.
+\index{light bulb problem}
+
+On January 1, all 100 bulbs are working.  When you inspect
+them on February 1, you find 3 light bulbs out.  If you
+come back on April 1, how many light bulbs do you expect to
+find broken?
+
+In the previous exercise, you could reasonably assume that an event is
+equally likely at any time.  For light bulbs, the likelihood of
+failure depends on the age of the bulb.  Specifically, old bulbs
+have an increasing failure rate due to evaporation of the filament.
+
+This problem is more open-ended than some; you will have to make
+modeling decisions.  You might want to read about the Weibull
+distribution
+(\url{http://en.wikipedia.org/wiki/Weibull_distribution}).
+Or you might want to look around for information about
+light bulb survival curves.
+\index{Weibull distribution}
+
+\end{exercise}
 
 
 
@@ -3938,567 +4662,6 @@ kind of decision analysis, as we did in this chapter, or some kind of
 prediction, as we see in the next chapter.
 
 
-
-\chapter{Prediction}
-\label{prediction}
-
-\section{The Boston Bruins problem}
-
-In the 2010-11 National Hockey League (NHL) Finals, my beloved Boston
-Bruins played a best-of-seven championship series against the despised
-Vancouver Canucks.  Boston lost the first two games 0-1 and 2-3, then
-won the next two games 8-1 and 4-0.  At this point in the series, what
-is the probability that Boston will win the next game, and what is
-their probability of winning the championship?
-\index{hockey}
-\index{Boston Bruins}
-\index{Vancouver Canucks}
-
-As always, to answer a question like this, we need to make some
-assumptions.  First, it is reasonable to believe that goal scoring in
-hockey is at least approximately a Poisson process, which means that
-it is equally likely for a goal to be scored at any time during a
-game.  Second, we can assume that against a particular opponent, each team
-has some long-term average goals per game, denoted $\lambda$.
-\index{Poisson process}
-
-Given these assumptions, my strategy for answering this question is
-
-\begin{enumerate}
-
-\item Use statistics from previous games to choose a prior
-distribution for $\lambda$.
-
-\item Use the score from the first four games to estimate $\lambda$
-for each team.
-
-\item Use the posterior distributions of $\lambda$ to compute 
-distribution of goals for each team, the distribution of the
-goal differential, and the probability that each team wins
-the next game.
-
-\item Compute the probability that each team wins the series.
-
-\end{enumerate}
-
-To choose a prior distribution, I got some statistics from
-\url{http://www.nhl.com}, specifically the average goals per game
-for each team in the 2010-11 season.  The distribution is roughly
-Gaussian with mean 2.8 and standard deviation 0.3.
-\index{National Hockey League}
-\index{NHL}
-
-The Gaussian distribution is continuous, but we'll approximate it with
-a discrete Pmf.  \verb"thinkbayes" provides \verb"MakeGaussianPmf" to
-do exactly that:
-\index{numpy}
-\index{Gaussian distribution}
-
-\begin{code}
-def MakeGaussianPmf(mu, sigma, num_sigmas, n=101):
-    pmf = Pmf()
-    low = mu - num_sigmas*sigma
-    high = mu + num_sigmas*sigma
-
-    for x in numpy.linspace(low, high, n):
-        p = scipy.stats.norm.pdf(x, mu, sigma)
-        pmf.Set(x, p)
-    pmf.Normalize()
-    return pmf
-\end{code}  
-
-{\tt mu} and {\tt sigma} are the mean and standard deviation of the
-Gaussian distribution.  \verb"num_sigmas" is the number of standard
-deviations above and below the mean that the Pmf will span, and {\tt
-  n} is the number of values in the Pmf.
-
-Again we use {\tt numpy.linspace} to make an array of {\tt n}
-equally spaced values between {\tt low} and {\tt high}, including
-both.
-
-\verb"norm.pdf" evaluates the Gaussian probability density function (PDF).
-\index{PDF}
-\index{probability density function}
-
-Getting back to the hockey problem, here's the definition for a suite
-of hypotheses about the value of $\lambda$.
-
-\begin{code}
-class Hockey(thinkbayes.Suite):
-
-    def __init__(self):
-        pmf = thinkbayes.MakeGaussianPmf(2.7, 0.3, 4)
-        thinkbayes.Suite.__init__(self, pmf)
-\end{code}  
-
-So the prior distribution is Gaussian with mean 2.7, standard deviation
-0.3, and it spans 4 sigmas above and below the mean.
-
-As always, we have to decide how to represent each hypothesis; in
-this case I represent the hypothesis that $\lambda=x$ with the
-floating-point value {\tt x}. 
-
-
-\section{Poisson processes}
-
-In mathematical statistics, a {\bf process} is a stochastic model of a
-physical system (``stochastic'' means that the model has some kind of
-randomness in it).  For example, a Bernoulli process is a model of a
-sequence of events, called trials, in which each trial has two
-possible outcomes, like success and failure.  So a Bernoulli process
-is a natural model for a series of coin flips, or a series of shots on
-goal.  \index{process} \index{Poisson process}
-
-A Poisson process is the continuous version of a Bernoulli process,
-where an event can occur at any point in time with equal probability.
-Poisson processes can be used to model customers arriving in a store,
-buses arriving at a bus stop, or goals scored in a hockey game.
-\index{Bernoulli process}
-
-In many real systems the probability of an event changes over time.
-Customers are more likely to go to a store at certain times of day,
-buses are supposed to arrive at fixed intervals, and goals are more
-or less likely at different times during a game.
-
-But all models are based on simplifications, and in this case modeling
-a hockey game with a Poisson process is a reasonable choice.  Heuer,
-M\"{u}ller and Rubner (2010) analyze scoring in a German soccer league
-and come to the same conclusion; see
-\url{http://www.cimat.mx/Eventos/vpec10/img/poisson.pdf}.
-\index{Heuer, Andreas}
-
-The benefit of using this model is that we can compute the distribution
-of goals per game efficiently, as well as the distribution of time
-between goals.  Specifically, if the average number of goals
-in a game is {\tt lam}, the distribution of goals per game is
-given by the Poisson PMF:
-\index{Poisson distribution}
-
-\begin{code}
-def EvalPoissonPmf(k, lam):
-    return (lam)**k * math.exp(-lam) / math.factorial(k)
-\end{code}  
-
-And the distribution of time between goals is given by the
-exponential PDF:
-\index{exponential distribution}
-
-\begin{code}
-def EvalExponentialPdf(x, lam):
-    return lam * math.exp(-lam * x)
-\end{code}  
-
-I use the variable
-{\tt lam} because {\tt lambda} is a reserved keyword in Python.
-Both of these functions are in \verb"thinkbayes.py".
-
-
-\section{The posteriors}
-
-\begin{figure}
-% hockey.py
-\centerline{\includegraphics[height=2.5in]{figs/hockey1.pdf}}
-\caption{Posterior distribution of the number of
-goals per game.}
-\label{fig.hockey1}
-\end{figure}
-
-Now we can compute the likelihood that a team with a hypothetical
-value of {\tt lam} scores {\tt k} goals in a game:
-
-\begin{code}
-# class Hockey
-
-    def Likelihood(self, data, hypo):
-        lam = hypo
-        k = data
-        like = thinkbayes.EvalPoissonPmf(k, lam)
-        return like
-\end{code}
-
-Each hypothesis is a possible value of $\lambda$;  {\tt
-  data} is the observed number of goals, {\tt k}.
-
-With the likelihood function in place, we can make a suite for each
-team and update them with the scores from the first four games.
-
-\begin{code}
-    suite1 = Hockey('bruins')
-    suite1.UpdateSet([0, 2, 8, 4])
-     
-    suite2 = Hockey('canucks')
-    suite2.UpdateSet([1, 3, 1, 0])
-\end{code}  
-
-Figure~\ref{fig.hockey1} shows the resulting posterior distributions
-for {\tt lam}.  Based on the first four games, the most likely
-values for {\tt lam} are 2.6 for the Canucks and 2.9 for the Bruins.
-
-
-\section{The distribution of goals}
-
-\begin{figure}
-% hockey.py
-\centerline{\includegraphics[height=2.5in]{figs/hockey2.pdf}}
-\caption{Distribution of goals in a single game.}
-\label{fig.hockey2}
-\end{figure}
-
-To compute the probability that each team wins the next game,
-we need to compute the distribution of goals for each team.
-
-If we knew the value of {\tt lam} exactly, we could use the
-Poisson distribution again.  \verb"thinkbayes" provides a
-method that computes a truncated approximation of a Poisson
-distribution:
-\index{Poisson distribution}
-
-\begin{code}
-def MakePoissonPmf(lam, high):
-    pmf = Pmf()
-    for k in xrange(0, high+1):
-        p = EvalPoissonPmf(k, lam)
-        pmf.Set(k, p)
-    pmf.Normalize()
-    return pmf
-\end{code}  
-
-The range of values in the computed Pmf is from 0 to {\tt high}.
-So if the value of {\tt lam} were exactly 3.4, we would compute:
-
-\begin{code}
-lam = 3.4
-goal_dist = thinkbayes.MakePoissonPmf(lam, 10)
-\end{code}
-
-I chose the upper bound, 10, because the probability of scoring
-more than 10 goals in a game is quite low.
-
-That's simple enough so far; the problem is that we don't know
-the value of {\tt lam} exactly.  Instead, we have a distribution
-of possible values for {\tt lam}.
-
-For each value of {\tt lam}, the distribution of goals is Poisson.
-So the overall distribution of goals is a mixture of these
-Poisson distributions, weighted according to the probabilities
-in the distribution of {\tt lam}.
-\index{mixture}
-\index{Poisson distribution}
-
-Given the posterior distribution of {\tt lam}, here's the code
-that makes the distribution of goals:
-
-\begin{code}
-def MakeGoalPmf(suite):
-    metapmf = thinkbayes.Pmf()
-
-    for lam, prob in suite.Items():
-        pmf = thinkbayes.MakePoissonPmf(lam, 10)
-        metapmf.Set(pmf, prob)
-
-    mix = thinkbayes.MakeMixture(metapmf)
-    return mix
-\end{code}  
-
-For each value of {\tt lam} we make a Poisson Pmf and add it to the
-meta-Pmf.  I call it a meta-Pmf because it is a Pmf that contains
-Pmfs as its values.
-\index{meta-Pmf}
-
-Then we use \verb"MakeMixture" to compute the mixture
-(we saw {\tt MakeMixture} in Section~\ref{mixture}).
-\index{mixture}
-\index{MakeMixture}
-
-Figure~\ref{fig.hockey2} shows the resulting distribution of goals for
-the Bruins and Canucks.  The Bruins are less likely to
-score 3 goals or fewer in the next game, and more likely to score 4 or
-more.
-
-
-\section{The probability of winning}
-
-\begin{figure}
-% hockey.py
-\centerline{\includegraphics[height=2.5in]{figs/hockey3.pdf}}
-\caption{Distribution of time between goals.}
-\label{fig.hockey3}
-\end{figure}
-
-To get the probability of winning, first we compute the
-distribution of the goal differential:
-
-\begin{code}
-    goal_dist1 = MakeGoalPmf(suite1)
-    goal_dist2 = MakeGoalPmf(suite2)
-    diff = goal_dist1 - goal_dist2
-\end{code}  
-
-The subtraction operator invokes \verb"Pmf.__sub__", which enumerates
-pairs of values and computes the difference.  Subtracting two
-distributions is almost the same as adding, which we saw in
-Section~\ref{addends}.
-
-If the goal differential is positive, the Bruins win; if negative, the
-Canucks win; if 0, it's a tie:
-
-\begin{code}
-    p_win = diff.ProbGreater(0)
-    p_loss = diff.ProbLess(0)
-    p_tie = diff.Prob(0)
-\end{code}  
-
-With the distributions from the previous section, \verb"p_win"
-is 46\%, \verb"p_loss" is 37\%, and \verb"p_tie" is 17\%.
-
-In the event of a tie at the end of ``regulation play,'' the teams play
-overtime periods until one team scores.  Since the game ends
-immediately when the first goal is scored, this overtime format
-is known as ``sudden death.''
-\index{overtime}
-\index{sudden death}
-
-
-\section{Sudden death}
-
-To compute the probability of winning in a sudden death overtime,
-the important statistic is not goals per game, but time until the
-first goal.  The assumption that goal-scoring is a Poisson process
-implies that the time between goals
-is exponentially distributed.
-\index{Poisson process}
-\index{exponential distribution}
-
-Given {\tt lam}, we can compute the time between goals like this: 
-
-\begin{code}
-lam = 3.4
-time_dist = thinkbayes.MakeExponentialPmf(lam, high=2, n=101)
-\end{code}  
-
-{\tt high} is the upper bound of the distribution.  In this case
-I chose 2, because the probability of going more than two games
-without scoring is small.  {\tt n} is the number of values in
-the Pmf.
-
-If we know {\tt lam} exactly, that's all there is to it.
-But we don't; instead we have a posterior
-distribution of possible values.  So as we did with the distribution
-of goals, we make a meta-Pmf and compute a mixture of
-Pmfs.
-\index{MakeMixture}
-\index{meta-Pmf}
-\index{mixture}
-
-\begin{code}
-def MakeGoalTimePmf(suite):
-    metapmf = thinkbayes.Pmf()
-
-    for lam, prob in suite.Items():
-        pmf = thinkbayes.MakeExponentialPmf(lam, high=2, n=2001)
-        metapmf.Set(pmf, prob)
-
-    mix = thinkbayes.MakeMixture(metapmf)
-    return mix
-\end{code}  
-
-Figure~\ref{fig.hockey3} shows the resulting distributions.  For
-time values less than one period (one third of a game), the Bruins
-are more likely to score.  The time until the Canucks score is
-more likely to be longer.
-
-I set the number of values, {\tt n}, fairly high in order to minimize
-the number of ties, since it is not possible for both teams
-to score simultaneously.
-
-Now we compute the probability that the Bruins score first:
-
-\begin{code}
-    time_dist1 = MakeGoalTimePmf(suite1)
-    time_dist2 = MakeGoalTimePmf(suite2)
-    p_overtime = thinkbayes.PmfProbLess(time_dist1, time_dist2)
-\end{code}  
-
-For the Bruins, the probability of winning in overtime is 52\%.
-
-Finally, the total probability of winning is the chance of
-winning at the end of regulation play plus the probability
-of winning in overtime.
-
-\begin{code}
-    p_tie = diff.Prob(0)
-    p_overtime = thinkbayes.PmfProbLess(time_dist1, time_dist2)
-
-    p_win = diff.ProbGreater(0) + p_tie * p_overtime
-\end{code}  
-
-For the Bruins, the overall chance of winning the next game is 55\%.
-
-To win the series, the Bruins can either win the next two games
-or split the next two and win the third.  Again, we can compute
-the total probability:
-
-\begin{code}
-    # win the next two
-    p_series = p_win**2
-
-    # split the next two, win the third
-    p_series += 2 * p_win * (1-p_win) * p_win
-\end{code}  
-
-The Bruins chance of winning the series is 57\%.  And in 2011,
-they did.
-
-
-\section{Discussion}
-
-As always, the analysis in this chapter is based on modeling decisions,
-and modeling is almost always an iterative process.  In general,
-you want to start with something simple that yields an approximate
-answer, identify likely sources of error, and look for opportunities
-for improvement.
-\index{modeling}
-\index{iterative modeling}
-
-In this example, I would consider these options:
-
-\begin{itemize}
-
-\item I chose a prior based on the average goals per game for each
-  team.  But this statistic is averaged across all opponents.  Against
-  a particular opponent, we might expect more variability.  For
-  example, if the team with the best offense plays the team with the
-  worst defense, the expected goals per game might be several standard
-  deviations above the mean.
-
-\item For data I used only the first four games of the championship
-  series.  If the same teams played each other during the
-  regular season, I could use the results from those games as well.
-  One complication is that the composition of teams changes during
-  the season due to trades and injuries.  So it might be best to
-  give more weight to recent games.
-
-\item To take advantage of all available information, we could
-  use results from all regular season games to estimate each team's
-  goal scoring rate, possibly adjusted by estimating
-  an additional factor for each pairwise match-up.  This approach
-  would be more complicated, but it is still feasible.
-
-\end{itemize}
-
-For the first option, we could use the results from the regular season
-to estimate the variability across all pairwise match-ups.  Thanks to
-Dirk Hoag at \url{http://forechecker.blogspot.com/}, I was able to get
-the number of goals scored during regulation play (not overtime) for
-each game in the regular season.
-\index{Hoag, Dirk}
-
-Teams in different conferences only play each other one or two
-times in the regular season, so I focused on pairs that played
-each other 4--6 times.  For each pair, I computed the average
-goals per game, which is an estimate of $\lambda$, then plotted
-the distribution of these estimates.
-
-The mean of these estimates is 2.8, again, but the standard
-deviation is 0.85, substantially higher than what we got computing
-one estimate for each team.
-
-If we run the analysis again with the higher-variance prior, the
-probability that the Bruins win the series is 80\%, substantially
-higher than the result with the low-variance prior, 57\%.
-
-So it turns out that the results are sensitive to the prior, which
-makes sense considering how little data we have to work with.  Based
-on the difference between the low-variance model and the high-variable
-model, it seems worthwhile to put some effort into getting the prior
-right.
-
-The code and data for this chapter are available from
-\url{http://thinkbayes.com/hockey.py} and
-\url{http://thinkbayes.com/hockey_data.csv}.
-  For more information
-see Section~\ref{download}.
-
-\section{Exercises}
-
-\begin{exercise}
-
-If buses arrive at a bus stop every 20 minutes, and you
-arrive at the bus stop at a random time, your wait time until
-the bus arrives is uniformly distributed from 0 to 20 minutes.
-\index{bus stop problem}
-
-But in reality, there is variability in the time between
-buses.  Suppose you are waiting for a bus, and you know the historical
-distribution of time between buses.  Compute your distribution
-of wait times.
-
-Hint: Suppose that the time between buses is either
-5 or 10 minutes with equal probability.  What is the probability
-that you arrive during one of the 10 minute intervals?
-
-I solve a version of this problem in the next chapter.
-
-\end{exercise}
-
-
-\begin{exercise}
-
-Suppose that passengers arriving at the bus stop are well-modeled
-by a Poisson process with parameter $\lambda$.  If you arrive at the
-stop and find 3 people waiting, what is your posterior distribution
-for the time since the last bus arrived.
-\index{Poisson process}
-\index{bus stop problem}
-
-I solve a version of this problem in the next chapter.
-
-\end{exercise}
-
-
-\begin{exercise}
-
-Suppose that you are an ecologist sampling the insect population in
-a new environment.  You deploy 100 traps in a test area and come back
-the next day to check on them.  You find that 37 traps have been
-triggered, trapping an insect inside.  Once a trap triggers, it
-cannot trap another insect until it has been reset.
-\index{insect sampling problem}
-
-If you reset the traps and come back in two days, how many traps
-do you expect to find triggered?  Compute a posterior predictive
-distribution for the number of traps.
-\index{predictive distribution}
-
-\end{exercise}
-
-
-\begin{exercise}
-
-Suppose you are the manager of an apartment building with
-100 light bulbs in common areas.  It is your responsibility
-to replace light bulbs when they break.
-\index{light bulb problem}
-
-On January 1, all 100 bulbs are working.  When you inspect
-them on February 1, you find 3 light bulbs out.  If you
-come back on April 1, how many light bulbs do you expect to
-find broken?
-
-In the previous exercise, you could reasonably assume that an event is
-equally likely at any time.  For light bulbs, the likelihood of
-failure depends on the age of the bulb.  Specifically, old bulbs
-have an increasing failure rate due to evaporation of the filament.
-
-This problem is more open-ended than some; you will have to make
-modeling decisions.  You might want to read about the Weibull
-distribution
-(\url{http://en.wikipedia.org/wiki/Weibull_distribution}).
-Or you might want to look around for information about
-light bulb survival curves.
-\index{Weibull distribution}
-
-\end{exercise}
 
 
 \chapter{Observer Bias}
