@@ -35,6 +35,17 @@
 \usepackage{xcolor}
 \usepackage{textcomp}
 \usepackage{listings}
+%\usepackage[utf8]{inputenc}
+
+
+
+% TODO: see if we can get a texttt version of Greek letters
+% sudo apt-get install texlive-lang-greek
+%\usepackage[greek,english]{babel}
+
+\input{latexonly}
+
+
 
 % include this so we can compile without hyperref
 % https://tex.stackexchange.com/questions/44088/when-do-i-need-to-invoke-phantomsection
@@ -101,8 +112,6 @@
     \@esphack%
 }
 \else
-
-\input{latexonly}
 
 \begin{latexonly}
 
@@ -1111,12 +1120,12 @@ Hint: Start with four equally likely hypotheses.
 
 There are many variations of the Monty Hall problem (see \url{https://en.wikipedia.org/wiki/Monty_Hall_problem}).  
 
-For example, suppose that Monty always chooses Door 2 if he can, and
+For example, suppose that Monty always chooses Door 2 if he can and
 only chooses Door 3 if he has to (because the car is behind Door 2).
 
 If you choose Door 1 and Monty opens Door 2, what is the probability the car is behind Door 3?
 
-And if he opens Door 3, what is the probability the car is behind Door 2?
+If you choose Door 1 and Monty opens Door 3, what is the probability the car is behind Door 2?
 
 \end{exercise}
 
@@ -1580,6 +1589,7 @@ But first you might want to work on the exercises.
 
 
 \section{Exercises}
+\label{elvis}
 
 The code for this chapter is in {\tt chap02.ipynb}, which is in the repository for this book.  See Section~\ref{codeinfo} for details.
 You can run the notebook on Colab at \url{https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/code/chap02.ipynb}.
@@ -1660,6 +1670,7 @@ First we'll use the binomial distribution to see where that 7\% came from; then 
 
 
 \section{The Binomial Distribution}
+\label{binomial}
 
 Suppose we have a coin that we know is fair; if we spin it once, the possible outcomes are heads and tails with equal probability.
 I'll denote these outcomes \py{H} and \py{T}.
@@ -1909,13 +1920,14 @@ converge on the same posterior distribution.
 
 
 \section{Binomial Likelihood}
+\label{binomlike}
 
-So far we've been computing the updates one spin at a time, so we have to 
+So far we've been computing the updates one spin at a time, so for the Euro problem we have to do 250 updates.
 
 A more efficient alternative is to compute the likelihood of the entire dataset at once.
 For each hypothetical value of \py{x}, we have to compute the probability of getting 140 heads out of 250 spins.
 
-Well, we know how to do that.  This is the question the binomial distribution answer.
+Well, we know how to do that; this is the question the binomial distribution answers.
 If the probability of heads is $p$, the probability of $k$ heads in $n$ spins is:
 %
 \[ P(k; n, p) = \binom{n}{k} p^k (1-p)^{n-k} \]
@@ -1934,7 +1946,7 @@ def update_binomial(pmf, data):
     pmf.normalize()
 \end{code}
 
-It extracts the hypothetical values of \py{x} from the \py{Pmf} and passes them to `binom.pmf`, which computes the binomial PMF for the given values of \py{k} and \py{n}, and all values of \py{x}.
+It extracts the hypothetical values of \py{x} from the \py{Pmf} and passes them to \py{binom.pmf}, which computes the binomial PMF for the given values of \py{k} and \py{n}, and all values of \py{x}.
 
 Here's how we use it:
 
@@ -1945,11 +1957,12 @@ update_binomial(uniform2, data)
 \end{code}
 
 The result is the same as in Section~\ref{estprop} except for a small floating-point round-off.
+But it's much more efficient.
 
 
 \section{Bayesian Statistics}
 
-You might have noticed some similarity between the Euro problem and the 101 bowls problem in Section~\ref{morebowls}.
+You might have noticed similarities between the Euro problem and the 101 bowls problem in Section~\ref{morebowls}.
 The prior distributions are the same, the likelihoods are the same, and with the same data the results would be the same.
 
 But there are two differences.
@@ -1972,14 +1985,14 @@ Currently, our best estimate is 13.80 billion years, but it might be off by 0.02
 
 Now suppose we would like to know the probability that the age of the universe is actually greater than 13.81 billion years.
 Under some interpretations of probability, we would not be able to answer that question.
-We would be required to say something like, ``The age of the universe is not a random quantity, so it has no probability of exceeding any particular value.''
+We would be required to say something like, ``The age of the universe is not a random quantity, so it has no probability of exceeding a particular value.''
 
 Under the Bayesian interpretation of probability, it is meaningful and useful to treat physical quantities as if they were random and compute probabilities about them.
 
 In the Euro problem, the prior distribution represents what we believe about coins in general and the posterior distribution represents what we believe about a particular coin after seeing the data.
 So we can use the posterior distribution to compute probabilities about the coin and its proportion of heads.
 
-These differences, the subjectivity of the prior and the interpretation of the posterior, are key differences between Bayes's Theorem and Bayesian statistics.
+The subjectivity of the prior and the interpretation of the posterior are key differences between Bayes's Theorem and Bayesian statistics.
 
 Bayes's Theorem is a mathematical law of probability; no reasonable person objects to it.
 But Bayesian statistics is surprisingly controversial.
@@ -1997,8 +2010,8 @@ If you are interested in this history, I recommend Sharon Bertsch McGrayne's boo
 In this chapter I posed David MacKay's Euro problem and we started to solve it.
 Given the data, we computed the posterior distribution for \py{x}, the probability a Euro coin comes up heads.
 
-We computed the posterior distribution with two different priors and found that the posteriors were nearly the same.
-This is good news, because it suggests that if two people start with different beliefs but they see the same data, their beliefs will tend to converge.
+We tried two different priors, updated them with the same data, and found that the posteriors were nearly the same.
+This is good news, because it suggests that if two people start with different beliefs and see the same data, their beliefs tend to converge.
 
 This chapter introduces the binomial distribution, which we used to compute the posterior distribution more efficiently.
 And I discussed the difference between applying Bayes's Theorem, as in the 101 bowls problem, and computing Bayesian statistics, as in the Euro problem.
@@ -2019,7 +2032,7 @@ The notebook provides space where you can work on the following problems.
 
 
 \begin{exercise}
-In major league baseball, most players have a batting average between 200 and 330, which means that the probability of getting a hit is between 0.2 and 0.33.
+In Major League Baseball, most players have a batting average between 200 and 330, which means that the probability of getting a hit is between 0.2 and 0.33.
 
 Suppose a new player appearing in his first game gets 3 hits out of 3 attempts.  What is the posterior distribution for his probability of getting a hit?
 \end{exercise}
@@ -2110,9 +2123,9 @@ on a uniform prior.}
 \label{fig.train1}
 \end{figure}
 
-We don't have much basis to choose a prior, so let's start with
-something simple and then consider alternatives.  Let's assume that
-$N$ is equally likely to be any value from 1 to 1000.
+We don't have much basis to choose a prior, so we'll start with
+something simple and then consider alternatives.  
+Let's assume that $N$ is equally likely to be any value from 1 to 1000.
 
 \begin{code}
 hypos = np.arange(1, 1001)
@@ -2121,9 +2134,7 @@ prior = Pmf(1, hypos)
 
 Now let's figure out the likelihood of the data.
 In a hypothetical fleet of $N$ locomotives, what is the probability that we would see number 60?
-If we assume that we are equally likely to see any
-locomotive, the chance of seeing any particular one is
-$1/N$.
+If we assume that we are equally likely to see any locomotive, the chance of seeing any particular one is $1/N$.
 
 Here's the function that does the update:
 
@@ -2161,8 +2172,7 @@ Figure~\ref{fig04-01} shows the results.
 \label{fig04-01}
 \end{figure}
 
-Not surprisingly, all
-values of $N$ below 60 have been eliminated.
+Not surprisingly, all values of $N$ below 60 have been eliminated.
 
 The most likely value, if you had to guess, is 60.  
 That might not seem like a very good guess; after all, what are the chances that you just happened to see the train with the highest number?
@@ -2181,7 +2191,7 @@ Which we can compute like this:
 np.sum(posterior.ps * posterior.qs)
 \end{code}
 
-Or {\tt Pmf} provides a function that does the same thing:
+Or we can use the method provided by \py{Pmf}:
 
 \begin{code}
 posterior.mean()
@@ -2195,14 +2205,12 @@ If you played this guessing game over and over, using the mean of the posterior 
 
 \section{What about that prior?}
 
-The prior I chose in the previous section is uniform from 1 to 1000, but I offered no justification for choosing 1000, or for choosing a uniform
-distribution.
+The prior I chose in the previous section is uniform from 1 to 1000, but I offered no justification for choosing a uniform distribution or that particular upper bound.
 
 \index{prior distribution}
 
-It is reasonable to believe that a railroad company might operate 1000 locomotives, but it might be just as reasonable to think they have 500, or 2000.
-So we might wonder whether the posterior distribution is sensitive to the prior.  
-With so little data---only one observation---it probably is.
+We might wonder whether the posterior distribution is sensitive to the prior.  
+With so little data---only one observation---it is:
 
 \begin{itemize}
 
@@ -2221,7 +2229,7 @@ When the posterior is sensitive to the prior, there are two ways to proceed:
 
 \item Get more data.
 
-\item Get more background information.
+\item Get more background information and choose a better prior.
 
 \end{itemize}
 
@@ -2318,8 +2326,7 @@ after seeing train 60.}
 
 Figure~\ref{fig04-02} shows the new posterior based on the power law prior, compared to the posterior based on the uniform prior, both after seeing train number 60.
 
-With the power law prior, we assign higher probability to smaller numbers of trains.
-And the posterior is less sensitive to the choice of the upper bound.
+With the power law prior, the posterior is less sensitive to the choice of the upper bound.
 If we observe trains 30, 60, and 90, the means of the posteriors are
 
 \begin{tabular}{rr}
@@ -2337,77 +2344,86 @@ Now the differences are much smaller.  In fact,
 with an arbitrarily large upper bound, the mean converges on 134.
 
 So the power law prior is more realistic, because it is based on
-general information about the size of companies, and it
-behaves better in practice.
+general information about the size of companies, and it behaves better in practice.
 
 
 \section{Credible intervals}
 \label{credible}
 
-Once you have computed a posterior distribution, it is often useful
-to summarize the results with a single point estimate or an interval.
-For point estimates it is common to use the mean, median, or the
-value with maximum posterior probability.
+So far we have seen two ways to summarize a posterior distribution: the value with the highest posterior probability (the MAP) and the posterior mean.
+These are both {\bf point estimates}, that is, single values that estimate the quantity we are interested in.
 
-\index{credible interval}
-\index{maximum likelihood}
+Another way to summarize posterior distribution is with percentiles.
+If you have taken a standardized test, you might be familiar with percentiles.
+For example, if your score is the 90th percentile, that means you did as well as or better than 90\% of the people who took the test.
 
-For intervals we often choose two values so that there is a 90\% chance that the estimated value falls between them (or some other probability).
-These values define a {\bf credible interval} or {\bf CI}.
-
-\py{Pmf} provides a function called \py{credible_interval} that takes a probability and computes an interval that contains that probability.
-To compute a 90\% CI, we can call it like this:
-
-\index{percentile}
+If we are given a value, \py{x}, we can compute its {\bf percentile rank} by finding all values less than or equal to \py{x} and adding up their probabilities.
+\py{Pmf} provides a method that does this computation.
+So, for example, we can compute the probability that the company has less than or equal to 100 trains:
 
 \begin{code}
-posterior.credible_interval(0.9)
+power.lt_dist(100)
 \end{code}
 
-For the previous example---the locomotive problem with a power law prior
-and three trains---the 90\% credible interval is $(91, 242)$.  The
-width of this range suggests, correctly, that we are still quite
-uncertain about how many locomotives there are.
+With a power law prior and a dataset of three trains, the result is about 27\%.
+So 100 trains is the 27th percentile.
 
-\py{credible_interval} uses another function called \py{quantile} that takes a probability and returns a value.
-If the probability is 0.05, it returns the 5th percentile; for example,
-\py{power.quantile(0.05)} returns 91, which means that there's a 5\% chance that the number of trains is less than or equal to 91.
+Going the other way, suppose we want to compute a particular percentile; for example, the median of a distriution is the 50th percentile.
+We can compute it by adding up probabilities until the total exceeds 0.5.
+Here's a function that does it:
 
-And \py{power.quantile(0.95)} returns 242, so there's a 95\% chance that the number of trains is less than or equal to 242.
+\begin{code}
+def quantile(pmf, prob):
+    total = 0
+    for q, p in pmf.items():
+        total += p
+        if total >= prob:
+            return q
+    return np.nan
+\end{code}
 
-Putting those results together, there's a 90\% chance that the number of trains falls between 91 and 242.
+\py{pmf} represents a normalized distribution.
+\py{prob} is the probability of the percentile we want to compute.
 
-The next section explains how \py{quantile} works.
+The loop uses \py{items}, which iterates the quantities and probabilities in the distribution.
+Inside the loop we add up the probabilities of the quantities in order.
+When the total equals or exceeds \py{prob}, we return the corresponding quantity.
+
+This function is called \py{quantile} because it computes a quantile rather than a percentile.
+The difference is the way we specify \py{prob}.
+If \py{prob} is a percentage between 0 and 100, we call the corresponding quantity a percentile.
+If \py{prob} is a probability between 0 and 1, we call the corresponding quantity a {\bf quantile}.
+
+Here's how we can use this function to compute the median of the posterior distribution:
+
+\begin{code}
+quantile(power, 0.5)
+\end{code}
+
+The result is 115 trains.
+\py{Pmf} provides a method called \py{quantile} that does the same thing.
+We can call it like this to compute the 5th and 9th percentiles:
+
+\begin{code}
+power.quantile([0.05, 0.95])
+\end{code}
+
+The result is the interval from 91 to 242 trains, which implies:
+
+\begin{itemize}
+
+\item The probability is 5\% that the number of trains is less than or equal to 91.
+
+\item The probability is 5\% that the number of trains is greater than 242.
+
+\end{itemize}
+
+Therefore the probability is 90\% that the number of trains falls between 91 and 242 (excluding 91 and including 242).
+For this reason, this interval is called a 90\% {\bf confidence interval}.
 
 
-\section{Cumulative distribution functions}
 
-%TODO: Do a better job explaining the CDF
 
-\py{quantile} is based on the {\bf cumulative distribution function}, or CDF, which is the cumulative sum of the PMF.
-If we compute $CDF(x)$ the result is the probability that the estimated value is less than or equal to $x$.
-
-\index{cumulative distribution function}
-\index{CDF}
-
-\py{Pmf} provides \py{make_cdf}, which returns a \py{Cdf} object.
-I'll use CDF and PMF for the mathematical concepts and \py{Pmf} and \py{Cdf} for the classes defined in \py{empiricaldist}.
-
-Figure~\ref{fig04-03} shows the CDF of the posterior distribution from the previous section.
-
-\begin{figure}
-% chap04soln.ipynb
-\centerline{\includegraphics[width=4in]{figs/fig04-03.pdf}}
-\caption{Cumulative distribution function (CDF) for the posterior distribution based on the power law prior.}
-\label{fig04-03}
-\end{figure}
-
-The $y$-axis shows cumulative probabilities from 0 to 1.
-
-CDFs and PMFs are equivalent in the sense that they contain the
-same information about the distribution, and you can always convert
-from one to the other.  
-The advantage of the CDF is that it computes percentiles more efficiently.
 
 \section{The German tank problem}
 
@@ -2495,6 +2511,12 @@ objectivity by pretending to know less than you do.
 
 \section{Exercises}
 
+The code for this chapter is in {\tt chap04.ipynb}, which is in the repository for this book.  See Section~\ref{codeinfo} for details.
+You can run the notebook on Colab at \url{https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/code/chap04.ipynb}.
+
+The notebook provides space where you can work on the following problems.
+
+
 \begin{exercise}
 Suppose you are giving a talk in a large lecture hall and you want to estimate the number of people in the audience.  There are too many to count, so you ask how many people were born on May 11 and two people raise their hands.  You ask how many were born on May 23 and 1 person raises their hand.  Finally, you ask how many were born on August 1, and no one raises their hand.
 
@@ -2502,7 +2524,7 @@ How many people are in the audience?  What is the 90\% credible interval for you
 \end{exercise}
 
 \begin{exercise}
-I often see rabbits in the garden behind my house, but it's not easy to tell them apart, so I don't really know how many rabbits there are.
+I often see rabbits in the garden behind my house, but it's not easy to tell them apart, so I don't really know how many there are.
 
 Suppose I deploy a motion-sensing camera trap that takes a picture of the first rabbit it sees each day.  After three days, I compare the pictures and conclude that two of them are the same rabbit and the other is different.
 
@@ -2816,24 +2838,32 @@ the difference.
 \label{addends}
 
 Suppose you roll two dice and add them up.  What is the distribution of the sum?
-In Section~\ref{distributions} we created a \py{Pmf} that represents the outcome of a six-sided die:
+I'll use the following function to create a \py{Pmf} that represents the outcome of a die:
 
 \begin{code}
-die = Pmf.from_seq([1,2,3,4,5,6])
+def make_die(sides):
+    outcomes = np.arange(1, sides+1)
+    die = Pmf(1/sides, outcomes)
+    return die
 \end{code}
 
-There are six possible outcomes, all equally likely.
-If we roll two dice and add them up, there are 11 possible outcomes, 2 through 12, but they are not equally likely.
+On a six-sided die, there are six possible outcomes, 1 through 6, all equally likely.
 
+\begin{code}
+die = make_die(6)
+\end{code}
+
+If we roll two dice and add them up, there are 11 possible outcomes, 2 through 12, but they are not equally likely.
 To compute the distribution of the sum, we can enumerate the possible outcomes.
-As a starting place, the following loop enumerates the quantities and probabilities from a \py{Pmf}:
+The following loop enumerates the quantities and probabilities from a \py{Pmf}:
 
 \begin{code}
 for q, p in die.items():
     print(q, p)
 \end{code}
 
-And this loop enumerates all pairs of quantities:
+\py{items} iterates though the quantities and probabilities in the \py{Pmf}.
+And this loop enumerates all pairs of quantities and their probabilities:
 
 \begin{code}
 for q1, p1 in pmf1.items():
@@ -2842,7 +2872,7 @@ for q1, p1 in pmf1.items():
         p = p1 * p2
 \end{code}
 
-Each time through the loop \py{q} gets the sum of two quantities, and \py{p} gets the probability of those quantities, in that order.
+Each time through the loop \py{q} gets the sum of the pair of quantities, and \py{p} gets the probability of the pair.
 Because the same sum might appear more than once, we have to add up the total probability for each sum.
 And that's how this function works:
 
@@ -2868,10 +2898,10 @@ Notice a subtle element of this line:
 \end{code}
 
 I use parentheses on the right side of the assignment, which returns 0 if \py{q} does not appear yet in \py{res}.
-I use brackets on the left side in order to create or update an element in \py{res}; using parentheses here would not work.
+I use brackets on the left side of the assignment to create or update an element in \py{res}; using parentheses on the left side would not work.
 
-Fortunately, \py{Pmf} provides a version of this function.
-You can use it as a method, like this:
+\py{Pmf} provides a method that does the same thing.
+You can call it as a method, like this.
 
 \begin{code}
 twice = die.add_dist(die)
@@ -3070,13 +3100,29 @@ If there had been 20 correct identifications, the most likely conclusion would b
 \section{Exercises}
 
 \begin{exercise}
+Let's use Bayes's Rule to solve the Elvis problem from Section~\ref{elvis}:
+
+\begin{quote}
+Elvis Presley had a twin brother who died at birth. What is the probability that Elvis was an identical twin?
+\end{quote}
+
+In 1935, about 2/3 of twins were fraternal and 1/3 were identical.
+The question contains two pieces of information we can use to update this prior.
+First, Elvis's twin was also male, which is more likely if they were identical twins, with a likelihood ratio of 2.
+Also, Elvis's twin died at birth, which is more likely if they were identical twins, with a likelihood ratio of 1.25.
+
+If you are curious about where those number come from, I wrote a blog post about it at \url{https://www.allendowney.com/blog/2020/01/28/the-elvis-problem-revisited}.
+\end{exercise}
+
+
+\begin{exercise}
 The following is an interview question that appeared on glassdoor.com, attributed to Facebook (\url{https://www.glassdoor.com/Interview/You-re-about-to-get-on-a-plane-to-Seattle-You-want-to-know-if-you-should-bring-an-umbrella-You-call-3-random-friends-of-y-QTN_519262.htm}):
 
 \begin{quote}
 You're about to get on a plane to Seattle. You want to know if you should bring an umbrella. You call 3 random friends of yours who live there and ask each independently if it's raining. Each of your friends has a 2/3 chance of telling you the truth and a 1/3 chance of messing with you by lying. All 3 friends tell you that ``Yes'' it is raining. What is the probability that it's actually raining in Seattle?
 \end{quote}
 
-Use Bayes's Rule to solve this problem.
+Use Bayes's Rule to solve this problem.  As a prior you can assume that it rains in Seattle about 10\% of the time.
 \end{exercise}
 
 
@@ -3085,7 +3131,17 @@ According to the CDC, people who smoke are about 25 times more likely to develop
 
 Also according to the CDC, about 14\% of adults in the U.S. are smokers (see \url{https://www.cdc.gov/tobacco/data_statistics/fact_sheets/adult_data/cig_smoking/index.htm}). 
 
-What percentage of lung cancers are caused by smoking?
+If you learn that someone has lung cancer, what is the probability they are a smoker?
+\end{exercise}
+
+
+\begin{exercise}
+In {\it Dungeons~\&~Dragons}, the amount of damage a goblin can withstand is the sum of two six-sided dice. The amount of damage you inflict with a short sword is determined by rolling one six-sided die.
+A goblin is defeated if the total damage you inflict is greater than or equal to the amount it can withstand.
+
+Suppose you are fighting a goblin and you have already inflicted 3 points of damage. What is your probability of defeating the goblin with your next successful attack?
+
+Hint: You can use \py{Pmf.add_dist} to add a constant amount, like 3, to a \py{Pmf}. 
 \end{exercise}
 
 
@@ -3093,279 +3149,432 @@ What percentage of lung cancers are caused by smoking?
 Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
 I choose one of the dice at random, roll it twice, multiply the outcomes, and report that the product is 12.
 What is the probability that I chose the 8-sided die?
+
 Hint: \py{Pmf} provides a function called \py{mul_dist} that takes two \py{Pmf} objects and returns a \py{Pmf} that represents the distribution of the product.
 \end{exercise}
 
 
 \begin{exercise}
-Something with a difference, product, or ratio.
+{\it Betrayal at House on the Hill} is a strategy game in which characters with different attributes explore a haunted house.  Depending on their attributes, the characters roll different numbers of dice.  For example, if attempting a task that depends on knowledge, Professor Longfellow rolls 5 dice, Madame Zostra rolls 4, and Ox Bellows rolls 3.  Each die yields 0, 1, or 2 with equal probability.  
+
+If a randomly chosen character attempts a task three times and rolls a total of 3 on the first attempt, 4 on the second, and 5 on the third, which character do you think it was?
 \end{exercise}
 
 
 \begin{exercise}
-The in U.S. there are 538 members of Congress.  Suppose we audit their investment portfolios and find that 312 of them out-perform the market.
-Let's assume that an honest member of Congress has only a 50\% chance of ourperforming the market, but a dishonest member who trades on inside information has a 90\% chance.  How many members of Congress are honest?
+There are 538 members of the United States Congress.  
+Suppose we audit their investment portfolios and find that 312 of them out-perform the market.
+Let's assume that an honest member of Congress has only a 50\% chance of out-performing the market, but a dishonest member who trades on inside information has a 90\% chance.  How many members of Congress are honest?
 \end{exercise}
 
 
 
-\chapter{Maxima and Mixtures}
+\chapter{Maximum and Mixture}
 
-\section{Maxima}
+\section{Cumulative distribution functions}
+
+So far we have been using \py{Pmf} objects to represent distributions.
+In this section, I'll introduce an alternative, the {\bf cumulative distribution function}, or CDF.
+
+As an example, I'll use the posterior distribution from the Euro problem, which we computed in Section~\ref{binomlike}.
+
+\begin{code}
+hypos = np.linspace(0, 1, 101)
+pmf = Pmf(1, hypos)
+data = 140, 250
+update_binomial(pmf, data)
+\end{code}
+
+The CDF is the cumulative sum of the PMF, so we can compute it like this:
+
+\begin{code}
+cumulative = pmf.cumsum()
+\end{code}
+
+The result is a Pandas Series, so we can use the bracket operator to select an element:
+
+\begin{code}
+cumulative[0.61]
+\end{code}
+
+The result is about 0.96, which means that the total probability of all values less than or equal to 0.61 is 96\%.
+
+To go the other way --- to look up a probability and get the corresponding quantile --- we can use interpolation:
+
+\begin{code}
+from scipy.interpolate import interp1d
+
+ps = cumulative.values
+qs = cumulative.index
+
+interp = interp1d(ps, qs)
+interp(0.96)
+\end{code}
+
+The result is about 0.61, so that confirms that the 96th percentile of this distribution is 0.61.
+
+\py{empiricaldist} provides a class called \py{Cdf} that represents a cumulative distribution function.
+Given a \py{Pmf}, you can compute a \py{Cdf} like this:
+
+\begin{code}
+cdf = pmf.make_cdf()
+\end{code}
+
+\py{make_cdf} uses \py{np.cumsum} to compute the cumulative sum of the probabilities.
+Figure~\ref{fig06-01} shows the PMF and CDF of this distribution.
+The range of the CDF is always from 0 to 1, in contrast with the PMF, where the maximum can be any probability.
 
 \begin{figure}
-% dungeons.py
-\centerline{\includegraphics[height=2.5in]{figs/dungeons2.pdf}}
-\caption{Distribution of the maximum of six rolls of three dice.}
-\label{fig.dungeons2}
+% chap06soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig06-01.pdf}}
+\caption{Posterior distribution from the Euro problem represented as a PMF and CDF.}
+\label{fig06-01}
 \end{figure}
 
-When you generate a {\it Dungeons~\&~Dragons} character, you are
-particularly interested in the character's best attributes, so
-you might like to know the
-distribution of the maximum attribute.
-
-There are three ways to compute the distribution of a maximum:
-\index{maximum}
-\index{simulation}
-\index{enumeration}
-\index{exponentiation}
-
-\begin{description}
-
-\item[Simulation:] Given a Pmf that represents the distribution
-for a single selection, you can generate random samples, find the maximum,
-and accumulate the distribution of simulated maxima.
-
-\item[Enumeration:] Given two Pmfs, you can enumerate all possible
-pairs of values and compute the distribution of the maximum.
-
-\item[Exponentiation:] If we convert a Pmf to a Cdf, there is a simple
-and efficient algorithm for finding the Cdf of the maximum.
-
-\end{description}
-
-The code to simulate maxima is almost identical to the code for
-simulating sums:
+You can use brackets to select an element from a \py{Cdf}:
 
 \begin{code}
-def RandomMax(dists):
-    total = max(dist.Random() for dist in dists)
-    return total
-
-def SampleMax(dists, n):
-    pmf = MakePmfFromList(RandomMax(dists) for i in xrange(n))
-    return pmf
+cdf[0.61]
 \end{code}
 
-All I did was replace ``sum'' with ``max''.  And the code
-for enumeration is almost identical, too:
+But if you look up a value that's not in the distribution, you get a \py{KeyError}.
+You can also call a \py{Cdf} as a function, using parentheses.
+If the argument does not appear in the \py{Cdf}, it interpolates between values.
 
 \begin{code}
-def PmfMax(pmf1, pmf2):
-    res = thinkbayes.Pmf()
-    for v1, p1 in pmf1.Items():
-        for v2, p2 in pmf2.Items():
-            res.Incr(max(v1, v2), p1*p2)
-    return res
+cdf(0.615)
 \end{code}
 
-In fact, you could generalize this function by taking the
-appropriate operator as a parameter.
-
-The only problem with this algorithm is that if each Pmf
-has $m$ values, the run time is proportional to $m^2$.
-And if we want the maximum of {\tt k} selections, it takes
-time proportional to $k m^2$.
-
-If we convert the Pmfs to Cdfs, we can do the same calculation
-much faster!  The key is to remember the definition of the
-cumulative distribution function:
-%
-\[ CDF(x) = \p{X \le~x} \]
-%
-where $X$ is a random variable that means ``a value chosen
-randomly from this distribution.''  So, for example, $CDF(5)$
-is the probability that a value from this distribution is less
-than or equal to 5.
-
-If I draw $X$ from $CDF_1$ and $Y$ from $CDF_2$, and compute
-the maximum $Z = max(X, Y)$, what is the chance that $Z$ is
-less than or equal to 5?  Well, in that case both $X$ and $Y$
-must be less than or equal to 5.
-
-\index{independence}
-If the selections of $X$ and $Y$ are independent,
-%
-\[ CDF_3(5) = CDF_1(5) CDF_2(5) \] 
-%
-where $CDF_3$ is the distribution of $Z$.  I chose the value
-5 because I think it makes the formulas easy to read, but we
-can generalize for any value of $z$:
-%
-\[ CDF_3(z) = CDF_1(z) CDF_2(z) \]
-%
-In the special case where we draw $k$ values from the same
-distribution, 
-%
-\[ CDF_k(z) = CDF_1(z)^k \]
-%
-So to find the distribution of the maximum of $k$ values,
-we can enumerate the probabilities in the given Cdf
-and raise them to the $k$th power.
-\verb"Cdf" provides a method that does just that:
+Going the other way, you can use \py{quantile} to look up a cumulative probability and get the corresponding value:
 
 \begin{code}
-# class Cdf
-
-    def Max(self, k):
-        cdf = self.Copy()
-        cdf.ps = [p**k for p in cdf.ps]
-        return cdf
+cdf.quantile(0.96)
 \end{code}
 
-\verb"Max" takes the number of selections, {\tt k}, and returns a new
-Cdf that represents the distribution of the maximum of {\tt k}
-selections.  The run time for this method is proportional to 
-$m$, the number of items in the Cdf.
-
-\verb"Pmf.Max" does the same thing for Pmfs.  It has to do a little
-more work to convert the Pmf to a Cdf, so the run time is proportional
-to $m \log m$, but that's still better than quadratic.
-
-Finally, here's an example that computes the distribution of
-a character's best attribute:
+\py{Cdf} also provides \py{credible_interval}, which computes a credible interval that contains the given probability:
 
 \begin{code}
-    best_attr_cdf = three_exact.Max(6)
-    best_attr_pmf = best_attr_cdf.MakePmf()
+cdf.credible_interval(0.9)
 \end{code}
 
-Where \verb"three_exact" is defined in the previous section.
-If we print the results, we see that the chance of generating
-a character with at least one attribute of 18 is about 3\%.
-Figure~\ref{fig.dungeons2} shows the distribution.
+CDFs and PMFs are equivalent in the sense that they contain the
+same information about the distribution, and you can always convert
+from one to the other.
+Given a \py{Cdf}, you can get the equivalent \py{Pmf} like this:
+
+\begin{code}
+pmf = cdf.make_pmf()
+\end{code}
+
+\py{make_pmf} uses \py{np.diff} to compute differences between consecutive cumulative probabilities.
+
+One reasons \py{Cdf} objects are useful is that they compute quantiles efficiently.
+Another is that they make it easy to compute the distribution of a maximum or minimum.
+
+In the next section, we will see another use of CDFs: computing the distribution of a maximum.
+
+
+\section{Best Three of Four}
+
+In {\it Dungeons~\&~Dragons}, each character has six attributes: strength, intelligence, wisdom, dexterity, constitution, and charisma.
+
+To generate a new character, players roll four 6-sided dice for each attribute and add up the best three.
+For example, if I roll for strength and get 1, 2, 3, 4 on the dice, my character's strength would be 9.
+
+As an exercise, let's figure out the distribution of these attributes.
+Then, for each character, we'll figure out the distribution of their best attribute.
+
+In Section~\ref{addends}, we computed the distribution of the sum of three dice like this:
+
+\begin{code}
+die = make_die(6)
+dice = [die] * 3
+pmf_3d6 = add_dist_seq(dice)
+\end{code}
+
+The definitions of \py{make_die} and \py{add_dist_seq} are in that section.
+
+But if we roll four dice and add up the best three, computing the distribution of the sum is a bit more complicated.
+I'll estimate the distribution by simulating 10,000 rolls.
+
+First I'll create an array of random values from 1 to 6, with 10,000 rows and 4 columns:
+
+\begin{code}
+n = 10000
+a = np.random.randint(1, 7, size=(n, 4))
+\end{code}
+
+To find the best three outcomes in each row, I'll sort along \py{axis=1}, which means across the columns.
+
+\begin{code}
+a.sort(axis=1)
+\end{code}
+
+Finally, I'll select the last three columns and add them up.
+
+\begin{code}
+t = a[:, 1:].sum(axis=1)
+\end{code}
+
+Now \py{t} is an array with a single column and 10,000 rows.
+We can compute the PMF of the values in \py{t} like this:
+
+\begin{code}
+pmf_4d6 = Pmf.from_seq(t)
+\end{code}
+
+Figure~\ref{fig06-02} shows the distribution of the sum of three dice, \py{pmf_3d6}, and the distribution of the best three out of four, \py{pmf_4d6}.
+
+\begin{figure}
+% chap06soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig06-02.pdf}}
+\caption{Distributions of the sum of three dice and the best three of four.}
+\label{fig06-02}
+\end{figure}
+
+Next we'll find the distribution for the maximum of six attributes, each the sum of the best three of four dice.
+
+
+\section{Maximum of Six}
+
+To compute the distribution of a maximum or minimum, we can make good use of the cumulative distribution function.
+First, I'll compute the \py{Cdf} of the best three of four distribution:
+
+\begin{code}
+cdf_4d6 = pmf_4d6.make_cdf()
+\end{code}
+
+Recall that \py{Cdf(x)} is the sum of probabilities for values less than or equal to \py{x}.
+Equivalently, it is the probability that a random value chosen from the distribution is less than or equal to \py{x}.
+
+Now suppose I draw 6 values from this distribution.
+The probability that all 6 of them are less than or equal to \py{x} is \py{Cdf(X)} raised to the 6th power, which we can compute like this:
+
+\begin{code}
+cdf_4d6**6
+\end{code}
+
+If all 6 values are less than or equal to \py{x}, that means that their maximum is less than or equal to \py{x}.
+So the result is the CDF of their maximum.
+We can convert it to a \py{Cdf} object, like this:
+
+\begin{code}
+cdf_max6 = Cdf(cdf_4d6**6)
+\end{code}
+
+And compute the equivalent \py{Pmf} like this:
+
+\begin{code}
+pmf_max6 = cdf_max6.make_pmf()
+\end{code}
+
+Figure~\ref{fig06-03} shows the result.
+
+\begin{figure}
+% chap06soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig06-03.pdf}}
+\caption{Distribution for the minimum and maximum of six attributes.}
+\label{fig06-03}
+\end{figure}
+
+\py{Pmf} and \py{Cdf} provide \py{max_dist}, which does the same computation.
+We can compute the \py{Pmf} of the maximum like this:
+
+\begin{code}
+pmf_4d6.max_dist(6)
+\end{code}
+
+And the \py{Cdf} of the maximum like this:
+
+\begin{code}
+cdf_4d6.max_dist(6)
+\end{code}
+
+In the next section we'll find the distribution of the minimum.
+The process is similar, but a little more complicated.
+See if you can figure it out before you go on.
+
+
+
+
+%In mathematical notation, we use $X$ to represent a random value from a %distribution, so we can write:
+%
+%\[ \CDF(x) = \p{X \le x} \]
+%
+
+\section{Minimum of Six}
+
+To compute the distribution of the minimum, we'll need the {\bf complementary} CDF, which we can compute like this:
+
+\begin{code}
+prob_gt = 1 - cdf_4d6
+\end{code}
+
+As the variable name suggests, the complementary CDF is the probability that a value from the distribution exceeds \py{x}.
+If we draw 6 values from the distribution, the probability that all 6 exceed \py{x} is:
+
+\begin{code}
+prob_gt6 = prob_gt**6
+\end{code}
+
+If all 6 exceed \py{x}, that means their minimum exceeds \py{x}, so \py{prob_gt6} is the complementary CDF of the minimum.
+And that means we can compute the CDF of the minimum like this:
+
+\begin{code}
+prob_le6 = 1 - prob_gt6
+\end{code}
+
+And convert it to a \py{Cdf} object:
+
+\begin{code}
+cdf_min6 = Cdf(prob_le6)
+\end{code}
+
+Figure~\ref{fig06-03} shows the result.
+
+\py{Pmf} and \py{Cdf} provide \py{min_dist}, which does the same computation.
+We can compute the \py{Pmf} of the minimum like this:
+
+\begin{code}
+pmf_4d6.min_dist(6)
+\end{code}
+
+And the \py{Cdf} of the minimum like this:
+
+\begin{code}
+cdf_4d6.min_dist(6)
+\end{code}
 
 
 \section{Mixtures}
 \label{mixture}
 
+Let's do one more example inspired by {\it Dungeons~\&~Dragons}.
+Suppose I have a 4-sided die and a 6-sided die.
+I choose one of them at random and roll it.
+What is the distribution of the outcome?
+
+If you know which die it is, the answer is easy.
+A die with {\tt n} sides yields a uniform distribution from 1 to {\tt n}, including both.
+We can compute \py{Pmf} objects to represent the dice, like this:
+
+\begin{code}
+d4 = make_die(4)
+d6 = make_die(6)
+\end{code}
+
+To compute the distribution of the mixture, we can compute the average of the two distributions by adding them and dividing the result by 2:
+
+\begin{code}
+total = Pmf.add(d4, d6, fill_value=0) / 2
+\end{code}
+
+We have to use \py{Pmf.add} with \py{fill_value=0} because the two distributions don't have the same set of values.
+If they did, we could use the \py{+} operator.
+
+Now suppose I have a 4-sided die and {\it two} 6-sided dice.
+Again, I choose one of them at random and roll it.
+What is the distribution of the outcome?
+
+We can solve this problem by computing a weighted average of the distributions, like this:
+
+\begin{code}
+total = Pmf.add(d4, 2*d6, fill_value=0) / 3
+\end{code}
+
+Finally, suppose we have a box with the following mix:
+
+\begin{verbatim}
+1  4-sided die
+2  6-sided dice
+3  8-sided dice
+\end{verbatim}
+
+If I draw a die from this mix at random, we can use a \py{Pmf} to represent the hypothetical number of sides on the die:
+
+\begin{code}
+hypos = [4,6,8]
+counts = [1,2,3]
+pmf_dice = Pmf(counts, hypos)
+\end{code}
+
+And I'll make a sequence of \py{Pmf} objects to represent the dice:
+
+\begin{code}
+dice = [make_die(sides) for sides in hypos]
+\end{code}
+
+Now we have to multiply each distribution in \py{dice} by the corresponding probabilities in \py{pmf_dice}.
+To express this computation concisely, it is convenient to put the distributions into a Pandas DataFrame:
+
+\begin{code}
+pd.DataFrame(dice)
+\end{code}
+
+The result is a DataFrame with one row for each distribution and one column for each possible outcome.
+Not all rows are the same length, so Pandas fills the extra spaces with the special value \py{NaN}, which stands for ``not a number''.
+We can use `fillna` to replace the \py{NaN} values with 0.
+
+\begin{code}
+pd.DataFrame(dice).fillna(0)
+\end{code}
+
+Before we multiply by the probabilities in \py{pmf_dice}, we have to transpose the matrix so the distributions run down the columns rather than across the rows:
+
+\begin{code}
+df = pd.DataFrame(dice).fillna(0).transpose()
+\end{code}
+
+Now we can multiply by the probabilities:
+
+\begin{code}
+df *= pmf_dice.ps
+\end{code}
+
+And add up the weighted distributions:
+
+\begin{code}
+total = df.sum(axis=1)
+\end{code}
+
+The argument \py{axis=1} means we want to sum across the rows.
+The result is a Pandas Series.
+Putting it all together, here's a function that makes a weighted mixture of distributions.
+
+\begin{code}
+def make_mixture(pmf, pmf_seq):
+    df = pd.DataFrame(pmf_seq).fillna(0).transpose()
+    df *= pmf.ps
+    total = df.sum(axis=1)
+    return Pmf(total)
+\end{code}
+
+%TODO: Add make_mixture to empiricaldist
+
+The first parameter is a \py{Pmf} that makes from each hypothesis to a probability.
+The second parameter is a sequence of \py{Pmf} objects, one for each hypothesis.
+We can call it like this:
+
+\begin{code}
+mix = make_mixture(pmf_dice, dice)
+\end{code}
+
+Figure~\ref{fig06-04} shows the result, which is a mixture of uniform distributions.
+In the next chapter, we'll use mixtures of distributions to make predictions.
+
 \begin{figure}
-% dungeons.py
-\centerline{\includegraphics[height=2.5in]{figs/dungeons3.pdf}}
-\caption{Distribution outcome for random die from a box.}
-\label{fig.dungeons3}
+% chap06soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig06-04.pdf}}
+\caption{Mixture of uniform distributions from three kinds of dice.}
+\label{fig06-04}
 \end{figure}
 
-Let's do one more example from {\it Dungeons~\&~Dragons}.  Suppose
-I have a box of dice with the following inventory:
-
-\begin{code}
-5   4-sided dice
-4   6-sided dice
-3   8-sided dice
-2  12-sided dice
-1  20-sided die
-\end{code}
-
-I choose a die from the box and roll it.  What is the distribution
-of the outcome?
-
-If you know which die it is, the answer is easy.  A die with {\tt n}
-sides yields a uniform distribution from 1 to {\tt n}, including both.
-\index{uniform distribution}
-
-But if we don't know which die it is, the resulting distribution is
-a {\bf mixture} of uniform distributions with different bounds.
-In general, this kind of mixture does not fit any simple mathematical
-model, but it is straightforward to compute the distribution in
-the form of a PMF.
-\index{mixture}
-
-As always, one option is to simulate the scenario, generate a random
-sample, and compute the PMF of the sample.  This approach is simple
-and it generates an approximate solution quickly.  But if we want an
-exact solution, we need a different approach.
-\index{simulation}
-
-Let's start with a simple version of the problem where there are
-only two dice, one with 6 sides and one with 8.  We can make a Pmf to
-represent each die:
-
-\begin{code}
-    d6 = Die(6)
-    d8 = Die(8)
-\end{code}
-
-Then we create a Pmf to represent the mixture:
-
-\begin{code}
-    mix = thinkbayes.Pmf()
-    for die in [d6, d8]:
-        for outcome, prob in die.Items():
-            mix.Incr(outcome, prob)
-    mix.Normalize()
-\end{code}
-
-The first loop enumerates the dice; the second enumerates the
-outcomes and their probabilities.  Inside the loop,
-{\tt Pmf.Incr} adds up the contributions from the two distributions.
-
-This code assumes that the two dice are equally likely.  More
-generally, we need to know the probability of each die so we can
-weight the outcomes accordingly.
-
-First we create a Pmf that maps from each die to the probability it is
-selected:
-
-\begin{code}
-    pmf_dice = thinkbayes.Pmf()
-    pmf_dice.Set(Die(4), 5)
-    pmf_dice.Set(Die(6), 4)
-    pmf_dice.Set(Die(8), 3)
-    pmf_dice.Set(Die(12), 2)
-    pmf_dice.Set(Die(20), 1)
-    pmf_dice.Normalize()
-\end{code}
-
-Next we need a more general version of the mixture algorithm:
-
-\begin{code}
-    mix = thinkbayes.Pmf()
-    for die, weight in pmf_dice.Items():
-        for outcome, prob in die.Items():
-            mix.Incr(outcome, weight*prob)
-\end{code}
-
-Now each die has a weight associated with it (which makes it a
-weighted die, I suppose).  When we add each outcome to the mixture,
-its probability is multiplied by {\tt weight}.
-
-Figure~\ref{fig.dungeons3} shows the result.  As expected, values 1
-through 4 are the most likely because any die can produce them.
-Values above 12 are unlikely because there is only one die in the box
-that can produce them (and it does so less than half the time).
-
-{\tt thinkbayes} provides a function named {\tt MakeMixture}
-that encapsulates this algorithm, so we could have written:
-
-\begin{code}
-    mix = thinkbayes.MakeMixture(pmf_dice)
-\end{code}
-
-We'll use {\tt MakeMixture} again in Chapters~\ref{prediction} and
-~\ref{observer}.
 
 
-\section{Discussion}
 
-Other than the odds form of Bayes's theorem, this chapter is not
-specifically Bayesian.  But Bayesian analysis is all about
-distributions, so it is important to understand the concept of a
-distribution well.  From a computational point of view, a distribution
-is any data structure that represents a set of values (possible
-outcomes of a random process) and their probabilities.
-\index{distribution}
+
+\section{Summary}
+
 
 We have seen two representations of distributions: Pmfs and Cdfs.
 These representations are equivalent in the sense that they contain
@@ -3374,82 +3583,216 @@ primary difference between them is performance: some operations are
 faster and easier with a Pmf; others are faster with a Cdf.
 \index{Pmf} \index{Cdf}
 
-The other goal of this chapter is to introduce operations that act on
-distributions, like \verb"Pmf.__add__", {\tt Cdf.Max}, and {\tt
-  thinkbayes.MakeMixture}.  We will use these operations later, but I
-introduce them now to encourage you to think of a distribution as a
-fundamental unit of computation, not just a container for values and
-probabilities.
+
 
 \section{Exercises}
 
 \begin{exercise}
-Poincare bread problem?
+When you generate a {\it Dungeons~\&~Dragons} character, instead of rolling dice, you can use the "standard array" of attributes, which is 15, 14, 13, 12, 10, and 8.
+
+Do you think you are better off using the standard array or (literally) rolling the dice?
+
+Compare the distribution of the values in the standard array to the distribution we computed for the best three out of four:
+
+\begin{itemize}
+
+\item Which distribution has higher mean?  Use the \py{mean} method.
+
+\item Which distribution has higher standard deviation?  Use the \py{std} method.
+
+\item The lowest value in the standard array is 8.  For each attribute, what is the probability of getting a value less than 8?  If you roll the dice six times, what's the probability that at least one of your attributes is less than 8?
+
+\item The highest value in the standard array is 15.  For each attribute, what is the probability of getting a value greater than 15?  If you roll the dice six times, what's the probability that at least one of your attributes is greater than 15?
+
+\end{itemize}
+
+\end{exercise}
+
+\newcommand{\Poincare}{Poincar\'{e}}
+
+\begin{exercise}
+Henri \Poincare~was a French mathematician who taught at the Sorbonne around 1900. The following anecdote about him is probably fabricated, but it makes an interesting probability problem.
+
+Supposedly \Poincare~suspected that his local bakery was selling loaves of bread that were lighter than the advertised weight of 1 kg, so every day for a year he bought a loaf of bread, brought it home and weighed it. At the end of the year, he plotted the distribution of his measurements and showed that it fit a normal distribution with mean 950 g and standard deviation 50 g. He brought this evidence to the bread police, who gave the baker a warning.
+
+For the next year, \Poincare~continued the practice of weighing his bread every day. At the end of the year, he found that the average weight was 1000 g, just as it should be, but again he complained to the bread police, and this time they fined the baker.
+
+Why? Because the shape of the distribution was asymmetric. Unlike the normal distribution, it was skewed to the right, which is consistent with the hypothesis that the baker was still making 950 g loaves, but deliberately giving \Poincare~the heavier ones.
+
+To see whether this anecdote is plausible, let's suppose that when the baker sees \Poincare~coming, he hefts \py{n} loaves of bread and gives \Poincare~the heaviest one.  How many loaves would the baker have to heft to make the average of the maximum 1000 g?
 \end{exercise}
 
 
 \begin{exercise}
+Suppose I have two boxes of dice:
+
+\begin{itemize}
+\item One contains a 4-sided die and a 6-sided die.
+
+\item The other contains a 6-sided die and an 8-sided die.
+\end{itemize}
+
+I choose a box at random, choose a die, and roll it 3 times.  If I get 2, 4, and 6, which box do you think I chose?
 \end{exercise}
 
 
 \begin{exercise}
+Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
+I choose one of the dice at random, roll it, and report that the outcome is a 1.
+If I roll the same die again, what is the probability that I get another 1?
+
+Hint: Compute the posterior distribution as we have done before and pass it as one of the arguments to \py{make_mixture}.
 \end{exercise}
-
-
-\begin{exercise}
-\end{exercise}
-
-
 
 
 \chapter{Poisson Processes}
 \label{prediction}
 
-\section{The Boston Bruins problem}
+\section{The World Cup Problem}
 
-In the 2010-11 National Hockey League (NHL) Finals, my beloved Boston
-Bruins played a best-of-seven championship series against the despised
-Vancouver Canucks.  Boston lost the first two games 0-1 and 2-3, then
-won the next two games 8-1 and 4-0.  At this point in the series, what
-is the probability that Boston will win the next game, and what is
-their probability of winning the championship?
-\index{hockey}
-\index{Boston Bruins}
-\index{Vancouver Canucks}
+In the 2018 FIFA World Cup final, France defeated Croatia 4 goals to 2.  Based on this outcome:
 
-As always, to answer a question like this, we need to make some
-assumptions.  First, it is reasonable to believe that goal scoring in
-hockey is at least approximately a Poisson process, which means that
-it is equally likely for a goal to be scored at any time during a
-game.  Second, we can assume that against a particular opponent, each team
-has some long-term average goals per game, denoted $\lambda$.
-\index{Poisson process}
+\begin{enumerate}
 
-Given these assumptions, my strategy for answering this question is
+\item How confident should we be that France is the better team?
+
+\item If the same teams played again, what is the chance France would win again?
+
+\end{enumerate}
+
+
+To answer these questions, we have to make some modeling decisions.
+
+First, I'll assume that for any team against any other team there is some unknown goal-scoring rate, measured in goals per game, which I'll denote \py{λ}.
+
+Second, I'll assume that a goal is equally likely during any minute of a game.  So, in a 90 minute game, the probability of scoring during any minute is \py{λ/90}.
+
+Third, I'll assume that a team never scores twice during the same minute.
+
+Of course, none of these assumptions is absolutely true in the real world, but I think they are reasonable simplifications, and as we will see, they allow use to derive some useful results.
+As George Box said, ``All models are wrong; some are useful''
+(see \url{https://en.wikipedia.org/wiki/All_models_are_wrong}).
+
+My strategy for answering this question is
 
 \begin{enumerate}
 
 \item Use statistics from previous games to choose a prior
 distribution for $\lambda$.
 
-\item Use the score from the first four games to estimate $\lambda$
+\item Use the score from the game to estimate $\lambda$
 for each team.
 
 \item Use the posterior distributions of $\lambda$ to compute 
-distribution of goals for each team, the distribution of the
-goal differential, and the probability that each team wins
+distribution of goals for each team and the probability that each team wins
 the next game.
-
-\item Compute the probability that each team wins the series.
 
 \end{enumerate}
 
-To choose a prior distribution, I got some statistics from
-\url{http://www.nhl.com}, specifically the average goals per game
-for each team in the 2010-11 season.  The distribution is roughly
-Gaussian with mean 2.8 and standard deviation 0.3.
-\index{National Hockey League}
-\index{NHL}
+\section{Poisson processes}
+
+In mathematical statistics, a {\bf process} is a stochastic model of a
+physical system (``stochastic'' means that the model has some kind of
+randomness in it).  
+
+For example, a {\bf Bernoulli process} is a model of a
+sequence of events, called trials, in which each trial has two
+possible outcomes, usually called success and failure.  
+So a Bernoulli process
+is a natural model for a series of coin flips, or a series of shots on
+goal.  \index{process} 
+\index{Bernoulli process}
+
+A {\bf Poisson process} is the continuous version of a Bernoulli process,
+where an event can occur at any point in time with equal probability.
+Poisson processes can be used to model customers arriving in a store,
+buses arriving at a bus stop, or goals scored in a soccer game.
+\index{Poisson process}
+
+In many real systems the probability of an event changes over time.
+Customers are more likely to go to a store at certain times of day,
+buses are supposed to arrive at fixed intervals, and goals are more
+or less likely at different times during a game.
+
+But all models are based on simplifications, and in this case modeling
+a soccer game with a Poisson process is a reasonable choice.  Heuer,
+M\"{u}ller and Rubner (2010) analyze scoring in a German soccer league
+and come to the same conclusion (see
+\url{http://www.cimat.mx/Eventos/vpec10/img/poisson.pdf}).
+
+The benefit of using this model is that we can compute the distribution
+of goals per game efficiently, as well as the distribution of time
+between goals.  Specifically, if the average number of goals
+in a game is $\lambda$, the distribution of goals per game is
+given by the Poisson PMF:
+\index{Poisson distribution}
+%
+\[ f(k; \lambda) = \lambda^k \exp(-\lambda) ~/~ k! \]
+%
+And the distribution of time between goals is given by the
+exponential PDF:
+\index{exponential distribution}
+%
+\[ f(t; \lambda) = \lambda exp(-\lambda t) \]
+%
+Let's start with the Poisson distribution.
+
+
+\section{The Poisson Distribution}
+
+\newcommand{\lam}{$\lambda$}
+
+Suppose we know that the goal-scoring rate for one team against another is $\lambda = 1.4$ goals per game.
+The following function computes Poisson distribution for the number of goals, \py{k}.
+
+\begin{code}
+from scipy.stats import poisson
+
+def make_poisson_pmf($\lambda$, high):
+    qs = np.arange(high)
+    ps = poisson.pmf(qs, λ)
+    pmf = Pmf(ps, qs)
+    pmf.normalize()
+    return pmf
+\end{code}
+
+The first parameter is the goal-scoring rate.  
+The second is the upper bound of the distribution.
+In theory the Poisson distribution goes to infinity, but we can cut if off when we get to values with negligible probability.
+
+As usual, the \py{qs} are the quantities in the distribution and the \py{ps} are their probabilities.
+SciPy provides \py{poisson}, which has a function called \py{pmf} that evaluates the PMF of the Poisson distribution.
+
+The return value is a normalized \py{Pmf}.
+We can call \py{make_poisson_pmf} like this:
+
+\begin{code}
+pmf_goals = make_poisson_pmf(λ=1.4, high=10)
+\end{code}
+
+
+\begin{figure}
+% chap07soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig07-01.pdf}}
+\caption{Poisson distribution with $\lambda=1.4$.}
+\label{fig07-01}
+\end{figure}
+
+Figure~\ref{fig07-01} shows the Poisson distribution with $\lambda=1.4$.
+The most likely outcomes are 0, 1, and 2; higher values are possible but increasingly unlikely.
+Values above 7 are negligible.
+
+If we know the goal scoring rate, we can predict the number of goals.
+Now let's turn it around: given a number of goals, what can we say about the goal-scoring rate?
+
+
+\section{The Gamma Distribution}
+
+
+
+
+
+To choose a prior distribution, ...
 
 The Gaussian distribution is continuous, but we'll approximate it with
 a discrete Pmf.  \verb"thinkbayes" provides \verb"MakeGaussianPmf" to
@@ -3501,59 +3844,6 @@ As always, we have to decide how to represent each hypothesis; in
 this case I represent the hypothesis that $\lambda=x$ with the
 floating-point value {\tt x}. 
 
-
-\section{Poisson processes}
-
-In mathematical statistics, a {\bf process} is a stochastic model of a
-physical system (``stochastic'' means that the model has some kind of
-randomness in it).  For example, a Bernoulli process is a model of a
-sequence of events, called trials, in which each trial has two
-possible outcomes, like success and failure.  So a Bernoulli process
-is a natural model for a series of coin flips, or a series of shots on
-goal.  \index{process} \index{Poisson process}
-
-A Poisson process is the continuous version of a Bernoulli process,
-where an event can occur at any point in time with equal probability.
-Poisson processes can be used to model customers arriving in a store,
-buses arriving at a bus stop, or goals scored in a hockey game.
-\index{Bernoulli process}
-
-In many real systems the probability of an event changes over time.
-Customers are more likely to go to a store at certain times of day,
-buses are supposed to arrive at fixed intervals, and goals are more
-or less likely at different times during a game.
-
-But all models are based on simplifications, and in this case modeling
-a hockey game with a Poisson process is a reasonable choice.  Heuer,
-M\"{u}ller and Rubner (2010) analyze scoring in a German soccer league
-and come to the same conclusion; see
-\url{http://www.cimat.mx/Eventos/vpec10/img/poisson.pdf}.
-\index{Heuer, Andreas}
-
-The benefit of using this model is that we can compute the distribution
-of goals per game efficiently, as well as the distribution of time
-between goals.  Specifically, if the average number of goals
-in a game is {\tt lam}, the distribution of goals per game is
-given by the Poisson PMF:
-\index{Poisson distribution}
-
-\begin{code}
-def EvalPoissonPmf(k, lam):
-    return (lam)**k * math.exp(-lam) / math.factorial(k)
-\end{code}  
-
-And the distribution of time between goals is given by the
-exponential PDF:
-\index{exponential distribution}
-
-\begin{code}
-def EvalExponentialPdf(x, lam):
-    return lam * math.exp(-lam * x)
-\end{code}  
-
-I use the variable
-{\tt lam} because {\tt lambda} is a reserved keyword in Python.
-Both of these functions are in \verb"thinkbayes.py".
 
 
 \section{The posteriors}
@@ -3883,6 +4173,26 @@ The code and data for this chapter are available from
 see Section~\ref{download}.
 
 \section{Exercises}
+
+\begin{exercise}
+In the 2010-11 National Hockey League (NHL) Finals, my beloved Boston
+Bruins played a best-of-seven championship series against the despised
+Vancouver Canucks.  Boston lost the first two games 0-1 and 2-3, then
+won the next two games 8-1 and 4-0.  At this point in the series, what
+is the probability that Boston will win the next game, and what is
+their probability of winning the championship?
+
+To choose a prior distribution, I got some statistics from
+\url{http://www.nhl.com}, specifically the average goals per game
+for each team in the 2010-11 season.  The distribution is roughly
+Gaussian with mean 2.8 and standard deviation 0.3.
+\index{National Hockey League}
+\index{NHL}
+
+\index{hockey}
+\index{Boston Bruins}
+\index{Vancouver Canucks}
+\end{exercise}
 
 \begin{exercise}
 
@@ -7297,11 +7607,7 @@ Miracles,'' at \url{http://en.wikipedia.org/wiki/Of_Miracles}.
 
 \end{exercise}
 
-\begin{exercise}
-
-\url{https://en.wikipedia.org/wiki/Doomsday_argument}
-\end{exercise}
-
+\
 
 \chapter{Evidence}
 \label{evidence}
