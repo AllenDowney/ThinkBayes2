@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-import re
+from empiricaldist import Pmf
+
 
 def write_table(table, label, **options):
     """
@@ -69,3 +70,18 @@ def savefig(root, **options):
     for format in formats:
         fname = f'figs/{root}.{format}'
         plt.savefig(fname, **options)
+        
+        
+def make_mixture(pmf, pmf_seq):
+    """Make a mixture of distributions.
+    
+    pmf: mapping from each hypothesis to its probability
+    pmf_seq: sequence of Pmfs, each representing 
+             a conditional distribution for one hypothesis
+             
+    returns: Pmf representing the mixture
+    """
+    df = pd.DataFrame(pmf_seq).fillna(0).transpose()
+    df *= pmf.ps
+    total = df.sum(axis=1)
+    return Pmf(total)
