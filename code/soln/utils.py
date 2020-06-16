@@ -85,3 +85,17 @@ def make_mixture(pmf, pmf_seq):
     df *= pmf.ps
     total = df.sum(axis=1)
     return Pmf(total)
+
+def outer_product(s1, s2):
+    """Compute the outer product of two Series.
+    
+    First Series goes down the rows;
+    second goes across the columns.
+    
+    s1: Series
+    s2: Series
+    
+    return: DataFrame
+    """
+    a = np.multiply.outer(s1.to_numpy(), s2.to_numpy())
+    return pd.DataFrame(a, index=s1.index, columns=s2.index)
