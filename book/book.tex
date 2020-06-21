@@ -2214,7 +2214,7 @@ With so little data---only one observation---it is:
 
 \begin{itemize}
 
-\item With a uniform prior from 1 to 1000, the posterior mean is 207.
+\item With a uniform prior from 1 to 500, the posterior mean is 207.
 
 \item With an upper bound of 1000, it's 333.
 
@@ -2299,7 +2299,7 @@ This law suggests that if there are 1000 companies with fewer than
 Mathematically, a power law means that the number of companies
 with a given size is inversely proportional to size, or
 %
-\[ \PMF(N) \propto \left( \frac{1}{N} \right)^{\alpha}   \]
+\[ \PMF(N) \sim \left( \frac{1}{N} \right)^{\alpha}   \]
 %
 where $\PMF(N)$ is the probability mass function of $N$ and $\alpha$ is
 a parameter that is often near 1.
@@ -2400,7 +2400,8 @@ Here's how we can use this function to compute the median of the posterior distr
 quantile(power, 0.5)
 \end{code}
 
-The result is 115 trains.
+The result, 113 trains, is the median of the posterior distribution.
+
 \py{Pmf} provides a method called \py{quantile} that does the same thing.
 We can call it like this to compute the 5th and 9th percentiles:
 
@@ -2419,8 +2420,13 @@ The result is the interval from 91 to 242 trains, which implies:
 \end{itemize}
 
 Therefore the probability is 90\% that the number of trains falls between 91 and 242 (excluding 91 and including 242).
-For this reason, this interval is called a 90\% {\bf confidence interval}.
+For this reason, this interval is called a 90\% {\bf credible interval}.
 
+\py{Pmf} also provides \py{credible_interval}, which computes an interval that contains the given probability.
+
+\begin{code}
+power.credible_interval(0.9)
+\end{code}
 
 
 
@@ -2462,7 +2468,7 @@ approach we are taking, that it provides such a short path from a
 basic introduction to the research frontier.
 
 
-\section{Discussion}
+\section{Informative priors}
 
 Among Bayesians, there are two approaches to choosing prior
 distributions.  Some recommend choosing the prior that best represents
@@ -2522,6 +2528,7 @@ Suppose you are giving a talk in a large lecture hall and you want to estimate t
 
 How many people are in the audience?  What is the 90\% credible interval for your estimate?  Hint: Remember the binomial distribution.
 \end{exercise}
+
 
 \begin{exercise}
 I often see rabbits in the garden behind my house, but it's not easy to tell them apart, so I don't really know how many there are.
@@ -4818,6 +4825,7 @@ But first I will introduce a tool we will use to construct joint distributions a
 
 
 \section{Outer operations}
+\label{outer-operations}
 
 Many useful operations can be expressed in the form of an {\bf outer operation} of two sequences.
 Suppose you have sequences like \py{t1} and \py{t2}:
@@ -5242,6 +5250,695 @@ To answer this question:
 \end{enumerate}
 
 \end{exercise}
+
+
+
+\chapter{Classification}
+\label{classification}
+
+
+Classification might be the most well-known application of Bayesian
+methods, made famous as the basis of the first generation of spam
+filters in the 1990s (see \url{https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering}).
+
+In this chapter, I'll demonstrate Bayesian classification using data
+collected and made available by Dr.~Kristen Gorman at the Palmer
+Long-Term Ecological Research Station in Antarctica. We'll use this data
+to classify penguins by species.
+
+This dataset was published to support this article: Gorman, Williams,
+and Fraser, ``Ecological
+Sexual Dimorphism and Environmental Variability within a Community of
+Antarctic Penguins (Genus \emph{Pygoscelis})'', March 2014, which you can read at \url{https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081}.
+
+The dataset contains one row for each penguin and one column for each
+variable, including the measurements we will use for classification.
+We can read it into a \py{DataFrame} like this:
+
+\begin{code}
+df = pd.read_csv('penguins_raw.csv')
+\end{code}
+
+Three species of penguins are represented in the dataset: Adelie,
+Chinstrap and Gentoo.
+The measurements we'll use to classify them are:
+
+\begin{itemize}
+\item
+  Body Mass in grams (g).
+\item
+  Flipper Length in millimeters (mm).
+\item
+  Culmen Length in millimeters.
+\item
+  Culmen Depth in millimeters.
+\end{itemize}
+
+If you are not familiar with the word ``culmen'', it refers to the
+top margin of the beak (see \url{https://en.wikipedia.org/wiki/Bird_measurement\#Culmen}).
+
+
+\section{Distributions of measurements}
+\label{distributions-of-measurements}
+
+These measurements will be most useful for classification if there are
+substantial differences between species and small variation within
+species. To see whether that is true, and to what degree, I will plot
+cumulative distribution functions (CDFs) of each measurement for each
+species.
+
+The following function takes the \py{DataFrame} and
+a column name, and returns a dictionary that maps from each species name
+to a \py{Cdf} of the values in the given column.
+
+\begin{code}
+def make_cdf_map(df, varname, by='Species2'):
+    cdf_map = {}
+    grouped = df.groupby(by)[varname]
+    for species, group in grouped:
+        cdf_map[species] = Cdf.from_seq(group, name=species)
+    return cdf_map
+\end{code}
+
+Figure~\ref{fig10-01} shows
+
+\begin{figure}
+% chap01soln.ipynb
+\centerline{\includegraphics[width=5.5in]{figs/fig10-01.pdf}}
+\caption{}
+\label{fig10-01}
+\end{figure}
+
+It looks like we can use culmen length to identify Adelie penguins, but
+the distributions for the other two species almost entirely overlap.
+
+Using flipper length, we can distinguish Gentoo penguins from the other
+two species. So with just these two features, it seems like we should be
+able to classify penguins with some accuracy.
+
+Culmen depth and body mass distinguish Gentoo penguins from the other
+two species, but these features might not add a lot of additional
+information, beyond flipper length and culmen length.
+
+All of these CDFs show the sigmoid shape characteristic of the normal
+distribution; I will take advantage of that observation in the next
+section.
+
+\section{Normal models}
+\label{normal-models}
+
+Now let's use these features to classify penguins. I'll proceed in the
+usual Bayesian way:
+
+\begin{enumerate}
+
+\item
+  I'll define a prior distribution that represents a hypothesis for each
+  species and a prior probability.
+\item
+  I'll compute the likelihood of the data under each hypothesis, and
+  then
+\item
+  Compute the posterior probability of each hypothetical species.
+\end{enumerate}
+
+To compute the likelihood of the data under each hypothesis, I will use
+the data to estimate the parameters of a normal distribution for each
+feature and each species.
+
+The following function takes a \py{DataFrame} and a
+column name; it returns a dictionary that maps from each species name to
+a \py{norm} object. \py{norm}
+is defined in SciPy; it represents a normal distribution with a given
+mean and standard deviation.
+
+\begin{code}
+from scipy.stats import norm
+
+def make_norm_map(df, varname, by='Species2'):
+    norm_map = {}
+    grouped = df.groupby(by)[varname]
+    for species, group in grouped:
+        mean = group.mean()
+        std = group.std()
+        norm_map[species] = norm(mean, std)
+    return norm_map
+\end{code}
+
+For example, here's how we estimate the distributions of flipper length
+for the three species.
+
+\begin{code}
+flipper_map = make_norm_map(df, 'Flipper Length (mm)')
+\end{code}
+
+As usual I will use a \py{Pmf} to represent the
+prior distribution. For simplicity, I'll assume that the three species
+are equally likely.
+
+\begin{code}
+hypos = flipper_map.keys()
+prior = Pmf(1/3, hypos)
+prior
+\end{code}
+
+Now suppose we measure a penguin and find that its flipper is 210 cm.
+What is the probability of that measurement under each hypothesis?
+
+The \py{norm} object provides
+\py{pdf}, which computes the probability density
+function (PDF) of the normal distribution. We can use it to compute the
+likelihood of the observed data in a given distribution.
+
+\begin{code}
+data = 210
+flipper_map['Adelie'].pdf(data)
+\end{code}
+
+The result is a probability density, so we can't interpret it as a
+probability. But it is proportional to the likelihood of the data, so we
+can use it to update the prior.
+
+Here's how we compute the likelihood of the data in each distribution.
+
+\begin{code}
+likelihood = [flipper_map[hypo].pdf(data) for hypo in hypos]
+\end{code}
+
+Now we can do the update in the usual way.
+
+\begin{code}
+posterior = prior * likelihood
+posterior.normalize()
+\end{code}
+
+And here are the results:
+
+\input{tables/table10-01}
+
+A penguin with a 210 mm flipper has an 80\% chance of being a Gentoo and
+about an 19\% chance of being a Chinstrap (assuming that the three
+species were equally likely before the measurement).
+
+The following function encapsulates the steps we just ran. It takes a
+\py{Pmf} representing the prior distribution, the
+observed data, and a map from each hypothesis to the distribution of the
+feature.
+
+\begin{code}
+def update_penguin(prior, data, norm_map):
+    hypos = prior.qs
+    likelihood = [norm_map[hypo].pdf(data) for hypo in hypos]
+    posterior = prior * likelihood
+    posterior.normalize()
+    return posterior
+\end{code}
+
+The return value is the posterior distribution.
+
+As we saw in the CDFs, flipper length does not distinguish strongly
+between Adelie and Chinstrap penguins. If a penguin has a 190 mm
+flipper, it is almost certainly not a Gentoo, but it is almost equally
+likely to be Adelie or Chinstrap.
+
+\begin{code}
+posterior2 = update_penguin(prior, 190, flipper_map)
+\end{code}
+
+But culmen length \emph{can} make this distinction. We can estimate
+distributions of culmen length for each species like this:
+
+\begin{code}
+culmen_map = make_norm_map(df, 'Culmen Length (mm)')
+\end{code}
+
+A penguin with culmen length 38 mm is almost certainly an Adelie.
+
+\begin{code}
+posterior3 = update_penguin(prior, 38, culmen_map)
+\end{code}
+
+With culmen length 48 mm, it is probably not an Adelie, but it's about
+equally likely to be a Chinstrap or Gentoo.
+
+\begin{code}
+posterior4 = update_penguin(prior, 48, culmen_map)
+\end{code}
+
+Using one feature at a time, sometimes we can classify penguins with
+high confidence; sometimes we can't. We can do better using multiple
+features.
+
+\section{Naive Bayesian classification}
+\label{naive-bayesian-classification}
+
+To make it easier to do multiple updates, I'll use the following
+function, which takes a prior \py{Pmf}, sequence of
+measurements and a corresponding sequence of dictionaries containing
+estimated distributions.
+
+\begin{code}
+def update_naive(prior, data_seq, norm_maps):
+    posterior = prior.copy()
+    for data, norm_map in zip(data_seq, norm_maps):
+        posterior = update_penguin(posterior, data, norm_map)
+    return posterior
+\end{code}
+
+The return value is a posterior \py{Pmf}.
+
+I'll use the same features we looked at in the previous section: culmen
+length and flipper length.
+
+\begin{code}
+varnames = ['Culmen Length (mm)', 'Flipper Length (mm)']
+norm_maps = [culmen_map, flipper_map]
+\end{code}
+
+Now suppose we find a penguin with culmen length 48 mm and flipper
+length 210 mm. Here's the update:
+
+\begin{code}
+data_seq = 48, 210
+posterior = update_naive(prior, data_seq, norm_maps)
+\end{code}
+
+It's most likely to be a Gentoo.
+
+I'll loop through the dataset and classify each penguin with these two
+features.
+
+\begin{code}
+df['Classification'] = np.nan
+for i, row in df.iterrows():
+    data_seq = row[varnames]
+    posterior = update_naive(prior, data_seq, norm_maps)
+    df.loc[i, 'Classification'] = posterior.max_prob()
+\end{code}
+
+The result is a new column in the \py{DataFrame}.
+So let's see how many we got right.
+
+There are 344 penguins in the dataset, but two of them are missing
+measurements, so we have 342 valid cases.
+Of those, 324 are classified correctly, which is almost 95\%.
+
+The classifier we used in this section is called ``naive'' because it
+ignores correlations between the features. To see why that matters, I'll
+make a less naive classifier: one that takes into account the joint
+distribution of the features.
+
+\section{Joint distributions}
+\label{joint-distributions}
+
+Let's see what the joint distribution looks like.
+I'll start by making a scatter plot of the data.
+
+\begin{code}
+def scatterplot(df, var1, var2):
+    grouped = df.groupby('Species2')
+    for species, group in grouped:
+        plt.plot(group[var2], group[var1], 'o',
+                 alpha=0.4, label=species)
+    
+    decorate(ylabel=var1, xlabel=var2)
+\end{code}
+
+Figure~\ref{fig01-02} shows a scatter plot of culmen length and flipper length for the three
+species.
+
+\begin{figure}
+\centerline{\includegraphics[width=4in]{figs/fig10-02.pdf}}
+\caption{}
+\label{fig01-02}
+\end{figure}
+
+Within each species, there is a clear correlation between culmen length
+and flipper length.
+
+If we ignore these correlations, we are assuming that the features are
+independent. To see what that looks like, I'll make a joint distribution
+for each species assuming independence.
+
+The following function makes a discrete \py{Pmf}
+that approximates a normal distribution.
+It takes a \py{norm} object as a parameter; \py{sigmas} is the number of standard deviations to include above and below the mean; \py{n} is the number of points in the result.
+
+\begin{code}
+def make_pmf(dist, sigmas=3, n=101):
+    mean, std = dist.mean(), dist.std()
+    low = mean - sigmas * std
+    high = mean + sigmas * std
+    qs = np.linspace(low, high, n)
+    ps = dist.pdf(qs)
+    pmf = Pmf(ps, qs)
+    pmf.normalize()
+    return pmf
+\end{code}
+
+We can use it, along with \py{outer_product} from Section~\ref{outer-operations}, to make a joint distribution of culmen length and
+flipper length for each species.
+
+\begin{code}
+joint_map = {}
+for species in hypos:
+    pmf1 = make_pmf(culmen_map[species])
+    pmf2 = make_pmf(flipper_map[species])
+    joint_map[species] = outer_product(pmf1, pmf2)
+\end{code}
+
+And we can use the joint distribution to generate a contour plot.
+
+\begin{code}
+def plot_contour(joint, **options):
+    plt.contour(joint.columns, joint.index, joint, **options)
+\end{code}
+
+Figure~\ref{fig10-03} compares the data to joint distributions that
+assume independence.
+
+\begin{figure}
+\centerline{\includegraphics[width=4in]{figs/fig10-03.pdf}}
+\caption{}
+\label{fig10-03}
+\end{figure}
+
+The contours of a joint normal distribution form ellipses.
+In this example, because the features are uncorrelated, the ellipses are
+aligned with the axes. But they are not well aligned with the data.
+
+We can make a better model of the data, and use it to compute better
+likelihoods, with a multivariate normal distribution.
+
+
+\section{Multivariate normal distribution}
+\label{multivariate-normal-distribution}
+
+As we have seen, a univariate normal distribution is characterized by
+its mean and standard deviation or variance (where variance is the
+square of standard deviation).
+
+A multivariate normal distribution is characterized by the means of the
+features and the \textbf{covariance matrix}, which contains the
+variances, which quantify the spread of the features, and the
+covariances, which quantify the relationships among them.
+
+We can use the data to estimate the means and covariance matrix for the
+population of penguins. First I'll select the columns we want.
+
+\begin{code}
+features = df[[var1, var2]]
+features.head()
+\end{code}
+
+And compute the means.
+
+\begin{code}
+mean = features.mean()
+mean
+\end{code}
+
+\begin{code}
+# convert to a DataFrame and write as a table
+mean_df = pd.DataFrame(mean, columns=['mean'])
+write_table(mean_df, 'table10-04')
+\end{code}
+
+The result is a \py{Series} containing the mean
+culmen length and flipper length.
+
+We can also compute the covariance matrix:
+
+\begin{code}
+cov = features.cov()
+write_table(cov, 'table10-05')
+cov
+\end{code}
+
+The results is a \py{DataFrame} with one row and
+one column for each feature. The elements on the diagonal are the
+variances; the elements off the diagonal are covariances.
+
+SciPy provides a \py{multivariate_normal} object
+we can use to represent a multivariate normal distribution. It takes a
+sequence of means and a covariance matrix as parameters:
+
+\begin{code}
+from scipy.stats import multivariate_normal
+
+multinorm = multivariate_normal(mean, cov)
+multinorm
+\end{code}
+
+The following function makes a
+\py{multivariate_normal} object for each species.
+
+\begin{code}
+def make_multinorm_map(df, varnames):
+    multinorm_map = {}
+    grouped = df.groupby('Species2')
+    for species, group in grouped:
+        features = group[varnames]
+        mean = features.mean()
+        cov = features.cov()
+        multinorm_map[species] = multivariate_normal(mean, cov)
+    return multinorm_map
+\end{code}
+
+And here's how we use it.
+
+\begin{code}
+multinorm_map = make_multinorm_map(df, [var1, var2])
+\end{code}
+
+In the next section we'll see what the multivariate normal distribution
+looks like.
+
+Then we'll use them to classify penguins, and we'll see if the results
+are more accurate than the naive Bayesian classifier.
+
+
+\section{Visualizing a multivariate normal distribution}
+\label{visualizing-a-multivariate-normal-distribution}
+
+This section uses some NumPy magic to generate contour plots for
+multivariate normal distributions. If that's interesting for you, great!
+Otherwise, feel free to skip to the results. In the next section we'll
+do the actual classification, which turns out to be easier than the
+visualization.
+
+I'll start by making a contour map for the distribution of features
+among Adelie penguins.\\
+Here are the univariate distributions for the two features we'll use and
+the multivariate distribution we just computed.
+
+\begin{code}
+norm1 = culmen_map['Adelie']
+norm2 = flipper_map['Adelie']
+multinorm = multinorm_map['Adelie']
+\end{code}
+
+I'll make a discrete \py{Pmf} approximation for
+each of the univariate distributions.
+
+\begin{code}
+pmf1 = make_pmf(norm1)
+pmf2 = make_pmf(norm2)
+\end{code}
+
+And use them to make a mesh that contains all pairs of values.
+
+\begin{code}
+X, Y = np.meshgrid(pmf1.qs, pmf2.qs)
+\end{code}
+
+The mesh is represented by two arrays, one containing the values along
+the $x$ axis, the other containing the values along the $y$ axis.
+
+In order to evaluate the multivariate distribution for each pair of
+values, we have to ``stack'' the arrays.
+
+\begin{code}
+pos = np.dstack((X, Y))
+\end{code}
+
+The result is a 3-D array that you can think of as a 2-D array of pairs.
+When we pass this array to \py{multinorm.pdf}, it
+evaluates the probability density function of the distribution for each
+pair of values.
+
+\begin{code}
+a = multinorm.pdf(pos)
+\end{code}
+
+The result is an array of probability densities. If we put them in a
+\py{DataFrame} and normalize them, the result is a
+discrete approximation of the joint distribution of the two features.
+
+\begin{code}
+joint = pd.DataFrame(a, index=pmf1.qs, columns=pmf2.qs)
+normalize(joint)
+\end{code}
+
+Which we can plot with \py{plot_contour}:
+
+\begin{code}
+plot_contour(joint)
+\end{code}
+
+Figure~\ref{fig10-04} shows a scatter plot of the data along with the
+contours of the multivariate normal distribution for each species.
+
+\begin{figure}
+% chap01soln.ipynb
+\centerline{\includegraphics[width=4in]{figs/fig10-04.pdf}}
+\caption{}
+\label{fig10-04}
+\end{figure}
+
+The contours of a multivariate normal distribution are still ellipses,
+but now that we have taken into account the correlation between the
+features, the ellipses are no longer aligned with the axes.
+
+Because it takes the correlations into account, the multivariate normal
+distribution is a better model for the data. And there is less overlap
+in the contours of the three distributions, which suggests that they
+should yield better classifications.
+
+\section{A less naive classifier}
+\label{a-less-naive-classifier}
+
+In a previous section we used \py{update_penguin}
+to update a prior \py{Pmf} based on observed data
+and a collection of \py{norm} objects that model
+the distribution of observations under each hypothesis. Here it is
+again:
+
+\begin{code}
+def update_penguin(prior, data, norm_map):
+    hypos = prior.qs
+    likelihood = [norm_map[hypo].pdf(data) for hypo in hypos]
+    posterior = prior * likelihood
+    posterior.normalize()
+    return posterior
+\end{code}
+
+I wrote this function with \py{norm} objects in
+mind, but it also works if the distributions in
+\py{norm_map} are
+\py{multivariate_normal} objects. So we can call
+it like this:
+
+\begin{code}
+data = 38, 190
+update_penguin(prior, data, multinorm_map)
+\end{code}
+
+A penguin with culmen length 38 and flipper length 190 is almost
+certainly an Adelie.
+
+\begin{code}
+data = 48, 195
+update_penguin(prior, data, multinorm_map)
+\end{code}
+
+A penguin with culmen length 48 and flipper length 195 is almost
+certainly a Chinstrap.
+
+\begin{code}
+data = 48, 215
+update_penguin(prior, data, multinorm_map)
+\end{code}
+
+And a penguin with culmen length 48 and flipper length 215 is almost
+certainly a Gentoo.
+
+Let's see if this classifier does any better than the naive Bayesian
+classifier. I'll apply it to each penguin in the dataset:
+
+\begin{code}
+df['Classification'] = np.nan
+
+for i, row in df.iterrows():
+    data = row[varnames]
+    posterior = update_penguin(prior, data, multinorm_map)
+    df.loc[i, 'Classification'] = posterior.idxmax()
+\end{code}
+
+And compute the accuracy:
+
+\begin{code}
+accuracy(df)
+\end{code}
+
+It turns out to be only a little better: the accuracy is 95.3\%,
+compared to 94.7\% for the naive Bayesian classifier.
+
+In one way, that's disappointing. After all that work, it would have
+been nice to see a bigger difference.
+
+But in another way, it's good news. In general, a naive Bayesian
+classifier is easier to implement and requires less computation. If it
+works nearly as well as a more complex algorithm, it might be a good
+choice for practical purposes.
+
+But speaking of practical purposes, you might have noticed that this
+example isn't very useful. If we want to identify the species of a
+penguin, there are easier ways than measuring its flippers and beak.
+
+However, there is are valid scientific uses for this type of
+classification. One of them is the subject of the research paper we
+started with:
+\href{https://en.wikipedia.org/wiki/Sexual_dimorphism}{sexual
+dimorphism}, that is, differences in shape between male and female
+animals.
+
+In some species, like angler fish, males and females look very
+different. In other species, like mockingbirds, they are difficult to
+tell apart. And dimorphism is worth studying because it provides insight
+into social behavior, sexual selection, and evolution.
+
+One way to quantify the degree of sexual dimorphism in a species is to
+use a classification algorithm like the one in this chapter. If you can
+find a set of features that makes it possible to classify individuals by
+sex with high accuracy, that's evidence of high dimorphism.
+
+As an exercise, you can use the dataset from this chapter to classify
+penguins by sex and see which of the three species is the most
+dimorphic.
+
+\section{Exercises}
+
+The code for this chapter is in \py{chap10.ipynb}, which is in the repository for this book.  See Section~\ref{codeinfo} for details.
+You can run the notebook on Colab at \url{https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/code/chap10.ipynb}.
+
+The notebook provides space where you can work on the following problems.
+
+\begin{exercise} In my example I used culmen length and flipper length
+because they seemed to provide the most power to distinguish the three
+species. But maybe we can do better by using more features.
+
+Make a naive Bayesian classifier that uses all four measurements in the
+dataset: culmen length and depth, flipper length, and body mass. Is it
+more accurate than the model with two features?
+
+\end{exercise} 
+
+
+\begin{exercise} 
+
+One of the reasons the penguin dataset was collected
+was to quantify sexual dimorphism in different penguin species, that is,
+physical differences between male and female penguins. One way to
+quantify dimorphism is to use measurements to classify penguins by sex.
+If a species is more dimorphic, we expect to be able to classify them
+more accurately.
+
+As an exercise, pick a species and use a Bayesian classifier (naive or
+not) to classify the penguins by sex. Which features are most useful?
+What accuracy can you achieve?
+\end{exercise} 
+
 
 
 
@@ -7965,7 +8662,7 @@ scaled scores.   \py{self.raw} is the Pmf of raw scores, and
 \begin{figure}
 % sat.py
 \centerline{\includegraphics[height=2.5in]{figs/sat_prior.pdf}}
-\caption{Prior distribution of \py{p\_correct} for SAT test-takers.}
+\caption{Prior distribution of \py{p_correct} for SAT test-takers.}
 \label{fig.satprior}
 \end{figure}
 
@@ -8031,7 +8728,7 @@ responses out of $n$ questions.
 \begin{figure}
 % sat.py
 \centerline{\includegraphics[height=2.5in]{figs/sat_posteriors_p_corr.pdf}}
-\caption{Posterior distributions of \py{p\_correct} for Alice and Bob.}
+\caption{Posterior distributions of \py{p_correct} for Alice and Bob.}
 \label{fig.satposterior1}
 \end{figure}
 
@@ -8432,7 +9129,7 @@ the next exam.
 \begin{figure}
 % sat.py
 \centerline{\includegraphics[height=2.5in]{figs/sat_joint.pdf}}
-\caption{Joint posterior distribution of \py{p\_correct} for Alice and Bob.}
+\caption{Joint posterior distribution of \py{p_correct} for Alice and Bob.}
 \label{fig.satjoint}
 \end{figure}
 
