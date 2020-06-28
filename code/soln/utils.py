@@ -99,3 +99,24 @@ def outer_product(s1, s2):
     """
     a = np.multiply.outer(s1.to_numpy(), s2.to_numpy())
     return pd.DataFrame(a, index=s1.index, columns=s2.index)
+
+def normalize(joint):
+    """Normalize a joint distribution.
+    
+    joint: DataFrame
+    """
+    prob_data = joint.to_numpy().sum()
+    joint /= prob_data
+    
+def marginal(joint, axis):
+    """Compute a marginal distribution.
+    
+    axis=1 returns the marginal distribution of the first variable
+    axis=0 returns the marginal distribution of the second variable
+    
+    joint: DataFrame representing a joint distribution
+    axis: int axis to sum along
+    
+    returns: Pmf
+    """
+    return Pmf(joint.sum(axis=axis))
