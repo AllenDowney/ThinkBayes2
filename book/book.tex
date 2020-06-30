@@ -2627,15 +2627,30 @@ Given this data and dubious prior, what is the probability that our civilization
 
 
 
-
-
-
 \chapter{Odds and Addends}
+
+
+This chapter presents a new way to represent a degree of certainty, called ``odds'', and a new form of Bayes's Theorem, called Bayes's Rule.
+Bayes's Rule is convenient if you want to do a Bayesian update on paper or in your head.
+It also sheds light on the important idea of ``evidence'' and how we can quantify the strength of evidence.
+
+The second part of the chapter is about ``addends'', that is, quantities being added, and how we can compute their distributions.
+We'll define functions that compute the distribution of a sum, difference, or result of another operation.
+And then we'll use those distributions as part of a Bayesian update.
+
+As an exercise, you'll have a chance to solve the Congress problem:
+
+\begin{quote}
+There are 538 members of the United States Congress.  
+Suppose we audit their investment portfolios and find that 312 of them outperform the market.
+Let's assume that an honest member of Congress has only a 50\% chance of outperforming the market, but a dishonest member who trades on inside information has a 90\% chance.  How many members of Congress are honest?
+\end{quote}
+
 
 \section{Odds}
 
-One way to represent a probability is with a number between 0 and 1, but that's not the only way.  
-If you have ever bet on a football game or a horse race, you have probably encountered another representation of probability, called {\bf odds}.
+One way to represent a degree of certainty is a probability in the form of a number between 0 and 1, but that's not the only way.  
+If you have ever bet on a football game or a horse race, you might have encountered another representation of certainty, called {\bf odds}.
 
 \index{odds}
 
@@ -2666,8 +2681,7 @@ def odds(p):
     return p / (1-p)
 \end{code}
 
-Given the odds in favor, in decimal form, you can convert to
-probability like this:
+Given the odds in favor, in decimal form, you can convert to probability like this:
 
 \begin{code}
 def prob(o):
@@ -2870,7 +2884,7 @@ for q, p in die.items():
 \end{code}
 
 \py{items} iterates though the quantities and probabilities in the \py{Pmf}.
-And this loop enumerates all pairs of quantities and their probabilities:
+So this loop enumerates all pairs of quantities and their probabilities:
 
 \begin{code}
 for q1, p1 in pmf1.items():
@@ -3104,6 +3118,16 @@ If there had been 20 correct identifications, the most likely conclusion would b
 
 \section{Summary}
 
+This chapter presents two topics that are almost unrelated except that they make the title of the chapter catchy.
+
+The first part of the chapter is about Bayes's Rule, evidence, and how we can quantify the strength of evidence using a likelihood ratio or Bayes factor.
+
+The second part is about functions that compute the distribution of a sum, product, or the result of another binary operation.
+We can use these functions to solve a forward problem and inverse problems; that is, given the parameters of a system, we can compute the distribution of the data or, given the data, we can compute the distribution of the parameters.
+
+In the following exercises, you'll have a chance to practice what you learned.
+
+
 \section{Exercises}
 
 The code for this chapter is in \py{chap05.ipynb}, which is in the repository for this book.  See Section~\ref{codeinfo} for details.
@@ -3176,13 +3200,13 @@ If a randomly chosen character attempts a task three times and rolls a total of 
 
 \begin{exercise}
 There are 538 members of the United States Congress.  
-Suppose we audit their investment portfolios and find that 312 of them out-perform the market.
-Let's assume that an honest member of Congress has only a 50\% chance of out-performing the market, but a dishonest member who trades on inside information has a 90\% chance.  How many members of Congress are honest?
+Suppose we audit their investment portfolios and find that 312 of them outperform the market.
+Let's assume that an honest member of Congress has only a 50\% chance of outperforming the market, but a dishonest member who trades on inside information has a 90\% chance.  How many members of Congress are honest?
 \end{exercise}
 
 
 
-\chapter{Maximum and Mixture}
+\chapter{Minima, Maxima, and Mixtures}
 
 \section{Cumulative distribution functions}
 
@@ -5062,6 +5086,7 @@ For all hypotheses where \py{A} is not taller than \py{B}, the posterior probabi
 
 
 \section{The marginals}
+\label{marginals}
 
 The joint posterior distribution represents what we believe about the heights of \py{A} and \py{B}, given the prior distributions and the information that \py{A} is taller.
 
@@ -5889,7 +5914,7 @@ penguin, there are easier ways than measuring its flippers and beak.
 However, there is are valid scientific uses for this type of
 classification. One of them is the subject of the research paper we
 started with:
-\href{https://en.wikipedia.org/wiki/Sexual_dimorphism}{sexual
+\url{https://en.wikipedia.org/wiki/Sexual_dimorphism}{sexual
 dimorphism}, that is, differences in shape between male and female
 animals.
 
@@ -5940,6 +5965,672 @@ What accuracy can you achieve?
 \end{exercise} 
 
 
+\chapter{Bayesian inference}
+
+Whenever people compare the Bayesian inference with conventional
+approaches, one of the questions that comes up most often is something
+like, ``What about p-values?'' And one of the most common examples is
+the comparison of two groups to see if there is a difference in their
+means.
+
+In classical statistical inference, the usual tool for this scenario is
+a (\url{https://en.wikipedia.org/wiki/Student\%27s_t-test}) Student's
+\textit{t}-test, and the result is a
+(\url{https://en.wikipedia.org/wiki/P-value}) p-value. This process is
+an example of``null
+hypothesis significance testing''.
+
+A Bayesian alternative is to compute the posterior distribution of the
+difference between the groups. Then we can use that distribution to
+answer whatever questions we are interested in, including the most
+likely size of the difference, a credible interval that's likely to
+contain the true difference, the probability of superiority, or the
+probability that the difference exceeds some threshold.
+
+To demonstrate this process, I'll solve a standard problem from a
+statistical textbook, comparing the effect of an educational
+``treatment'' compared to a control.
+
+\section{Improving Reading Ability}
+
+We'll use data from a
+(\url{https://docs.lib.purdue.edu/dissertations/AAI8807671/})
+Ph.D.~dissertation in educational psychology written in 1987, which was used as an example
+in a
+(\url{https://books.google.com/books/about/Introduction_to_the_practice_of_statisti.html?id=pGBNhajABlUC})
+statistics textbook from 1989 and published on
+(\url{https://web.archive.org/web/20000603124754/http://lib.stat.cmu.edu/DASL/Datafiles/DRPScores.html}) DASL,
+a web page that collects data stories.
+
+Here's the description from DASL:
+
+\begin{quote}
+An educator conducted an experiment to test whether new directed reading
+activities in the classroom will help elementary school pupils improve
+some aspects of their reading ability. She arranged for a third grade
+class of 21 students to follow these activities for an 8-week period. A
+control classroom of 23 third graders followed the same curriculum
+without the activities. At the end of the 8 weeks, all students took a
+Degree of Reading Power (DRP) test, which measures the aspects of
+reading ability that the treatment is designed to improve.
+\end{quote}
+
+The data are in the repository for this book.
+I'll use Pandas to load the data into a \py{DataFrame}:
+
+\begin{code}
+import pandas as pd
+
+df = pd.read_csv('drp_scores.csv', skiprows=21, delimiter='\t')
+\end{code}
+
+And \py{groupby} to separate the data for the
+\py{Treated} and \py{Control}
+groups:
+
+\begin{code}
+grouped = df.groupby('Treatment')
+responses = {}
+
+for name, group in grouped:
+    responses[name] = group['Response']
+\end{code}
+
+Figure~\ref{fig11-01} shows the cumulative distributions of the scores for the two groups, and here are their summary statistics.
+
+\begin{stdout}
+Group      n     mean    std
+-----      --    ----    ---    
+Control    23    41.5    17.1
+Treated    21    51.5    11.0
+\end{stdout}
+
+\begin{figure}
+\centerline{\includegraphics[width=4in]{figs/fig11-01.pdf}}
+\caption{CDF of test scores for treated group and control group.}
+\label{fig11-01}
+\end{figure}
+
+The distribution of scores is not exactly normal for either group, but
+it is close enough that the normal model is a reasonable choice.
+
+So I'll assume that in the entire population of students (not just the
+ones in the experiment), the distribution of scores is well modeled by a
+normal distribution with unknown mean and standard deviation. I'll use
+\py{mu} and \py{sigma} to
+denote these unknown population parameters.
+
+And we'll do a Bayesian update to estimate what they are.
+
+\section{Estimating parameters}
+
+As always, we need a prior distribution for the parameters.
+Since there are two parameters, it will be a joint distribution.
+I'll construct it by choosing marginal distributions for each parameter
+and computing their outer product.
+
+As a simple starting place, I'll assume that the prior distributions for
+\py{mu} and \py{sigma} are
+uniform.
+
+\begin{code}
+mus = np.linspace(20, 80, 101)
+prior_mu = Pmf(1, mus, name='mean')
+
+sigmas = np.linspace(5, 30, 101)
+prior_sigma = Pmf(1, sigmas, name='std')
+\end{code}
+
+Assuming that the parameters are independent, we can use \py{outer_product} from Section~\ref{outer-operations} to construct the joint prior distribution.
+
+\begin{code}
+from utils import outer_product
+
+prior = outer_product(prior_mu, prior_sigma)
+\end{code}
+
+Now, we would like to know the probability of each score in the dataset
+for each hypothetical pair of values, \py{mu} and
+\py{sigma}. I'll do that by making a 3-dimensional
+grid with values of \py{sigma} on the first axis,
+values of \py{mu} on the second axis, and the
+scores from the control group on the third axis.
+
+\begin{code}
+data = responses['Control']
+
+sigmas, mus, data_mesh = np.meshgrid(prior.columns, 
+                                     prior.index, 
+                                     data)
+\end{code}
+
+Now we can use \py{norm.pdf} to compute the
+probability density of each score for each hypothetical pair of
+parameters.
+
+\begin{code}
+from scipy.stats import norm
+
+densities = norm.pdf(data_mesh, sigmas, mus)
+\end{code}
+
+The result is a 3-D array. To compute likelihoods, I'll compute the
+product of these densities along the third axis, that is, 
+\py{axis=2}:
+
+\begin{code}
+likelihood = densities.prod(axis=2)
+likelihood.shape
+\end{code}
+
+The result is a 2-D array that contains the likelihood of the entire
+dataset for each hypothetical pair of parameters.
+
+We can use this array as part of a Bayesian update, as in this function:
+
+\begin{code}
+from utils import normalize
+
+def update_norm(prior, data):
+    X, Y, Z = np.meshgrid(prior.columns, prior.index, data)
+    likelihood = norm.pdf(Z, Y, X).prod(axis=2)
+
+    posterior = prior * likelihood
+    normalize(posterior)
+    return posterior
+\end{code}
+
+Here are the updates for the control and treatment groups:
+
+\begin{code}
+data = responses['Control']
+posterior_control = update_norm(prior, data)
+
+data = responses['Treated']
+posterior_treated = update_norm(prior, data)
+\end{code}
+
+Figure~\ref{fig11-02} shows what the joint posterior distributions look like.
+
+\begin{figure}
+\centerline{\includegraphics[width=4in]{figs/fig11-02.pdf}}
+\caption{Joint posterior distributions for the treated and control groups.}
+\label{fig11-02}
+\end{figure}
+
+Along the vertical axis, it looks like the mean score for the treated
+group is higher. Along the horizontal axis, it looks like the standard
+deviation for the control group is higher.
+
+If we think the treatment causes these differences, the data suggest
+that the treatment increases the mean score and decreases their spread.
+We can see these differences more clearly by looking at the marginal
+distributions for \py{mu} and
+\py{sigma}.
+
+\section{Posterior marginal distributions}
+
+I'll use \py{marginal}, which we saw in Section~\ref{marginals},
+to extract the posterior marginal distributions for the population means.
+
+\begin{code}
+from utils import marginal
+
+pmf_mean_control = marginal(posterior_control, 1)
+pmf_mean_treated = marginal(posterior_treated, 1)
+\end{code}
+
+Figure~\ref{fig11-03} shows what they look like.
+It seems like we are pretty sure that the population mean in the treated
+group is higher.
+
+\begin{figure}
+\centerline{\includegraphics[width=4in]{figs/fig11-03.pdf}}
+\caption{}
+\label{fig11-03}
+\end{figure}
+
+We can use \py{prob_gt} to
+compute the probability of superiority:
+
+\begin{code}
+Pmf.prob_gt(pmf_mean_treated, pmf_mean_control)
+\end{code}
+
+There is a 98\% chance that the mean in the treated group is higher.
+
+We can use \py{sub_dist} to compute the
+distribution of the difference.
+
+\begin{code}
+diff = Pmf.sub_dist(pmf_mean_treated, pmf_mean_control)
+\end{code}
+
+But there are two things to be careful about when we use methods like
+\py{sub_dist}.
+
+The first is that the result usually contains more elements than the
+original \py{Pmf}.
+In this example, the original distributions have the same quantities, so
+the size increase is moderate.
+But in the worst case, the size of the result can be the product of the
+sizes of the originals.
+
+The other thing to be aware of is that plotting a
+\py{Pmf} does not always work well. In this
+example, if we plot the distribution of differences, the result is
+pretty noisy.
+
+There are two ways to work around that limitation. One is to plot the
+CDF, which smooths out the noise.
+
+The other option is to use kernel density estimation (KDE) to make a
+smooth approximation of the PDF on an equally-spaced grid.
+The following function takes a \py{Pmf} and the number of points on the grid, and returns a smooth \py{Pmf}, ready for plotting.
+
+\begin{code}
+from scipy.stats import gaussian_kde
+
+def make_kde(pmf, n=101):
+    kde = gaussian_kde(pmf.qs, weights=pmf.ps)
+    qs = np.linspace(pmf.qs.min(), pmf.qs.max(), n)
+    ps = kde.evaluate(qs)
+    pmf = Pmf(ps, qs)
+    pmf.normalize()
+    return pmf
+\end{code}
+
+Figure~\ref{fig11-04} shows what it looks like.
+The mean is almost 10 points, which is substantial.
+
+Finally, we can use \py{credible_interval} to
+compute a 90\% credible interval.
+
+\begin{code}
+diff.credible_interval(0.9)
+\end{code}
+
+Based on the data, we are pretty sure the treatment improves test scores
+by 2.4 to 17.4 points.
+
+\section{Using summary statistics}
+
+In this example the dataset is not very big, so it doesn't take too long
+to compute the probability of every score under every hypothesis. But
+the result is a 3-D array; for larger datasets, it might be too big to
+compute practically.
+
+Also, with larger datasets the likelihoods get very small, sometimes so
+small that we can't compute them with normal floating-point arithmetic.
+That's because we are computing the probability of a particular dataset;
+the number of possible datasets is astronomically big, so the
+probability of any of them is very small.
+
+An alternative is to compute a summary of the dataset and compute the
+likelihood of the summary. For example, if we compute the sample mean of
+the data and the sample standard deviation, we could compute the
+likelihood of those summary statistics under each hypothesis.
+
+As an example, suppose we know that the population mean is 40 and the
+standard deviation is 17. We can make a \py{norm}
+object that represents a normal distribution with these parameters:
+
+\begin{code}
+mu = 40
+sigma = 17
+dist = norm(mu, sigma)
+\end{code}
+
+Now suppose we draw 1000 samples from this distribution with sample size
+\py{n=20}. I'll use \py{rvs},
+which generates a random sample, to simulate this experiment.
+
+\begin{code}
+n = 20
+samples = dist.rvs((1000, n))
+samples.shape
+\end{code}
+
+The result is an array with 1000 rows, each containing a sample with 20
+columns.
+
+If we compute the mean of each row, the result is an array that contains
+1000 sample means; that is, each value is the mean of a sample with
+\py{n=20}.
+
+\begin{code}
+sample_means = samples.mean(axis=1)
+sample_means.shape
+\end{code}
+
+Now, we would like to know what the distribution of these sample means
+is. Using the properties of the normal distribution,
+(\url{https://en.wikipedia.org/wiki/Sum_of_normally_distributed_random_variables}) we
+can show that their distribution is normal with mean $\mu$ and
+standard deviation $\sigma/\sqrt{n}$:
+
+\begin{code}
+dist_m = norm(mu, sigma/np.sqrt(n))
+\end{code}
+
+\py{dist_m} represents the ``sampling distribution
+of the mean''.
+In the notebook for this chapter, you'll see that the random sample means follow the theoretical
+distribution closely, as expected.
+
+We can also compute standard deviations for each row in
+\py{samples}.
+
+\begin{code}
+sample_stds = samples.std(axis=1)
+sample_stds.shape
+\end{code}
+
+The result is an array of sample standard deviations. We might wonder
+what the distribution of these values is. The
+(\url{https://en.wikipedia.org/wiki/Normal_distribution\#Sample_variance}) derivation
+is not as easy, but if we transform the sample standard deviations like
+this:
+
+$t = n s^2 / \sigma^2$
+
+where $n$ is the sample size, $s$ is the sample standard deviation,
+and $\sigma$ is the population standard deviation, the transformed
+values follow a
+(\url{https://en.wikipedia.org/wiki/Chi-square_distribution}) chi-square
+distribution with $n-1$ degrees of freedom.
+
+Here are the transformed values.
+
+\begin{code}
+transformed = n * sample_stds**2 / sigma**2
+\end{code}
+
+And I'll create a \py{chi2} object that represents
+a chi-square distribution.
+
+\begin{code}
+from scipy.stats import chi2
+
+dist_s = chi2(n-1)
+\end{code}
+
+In the notebook you'll see that the distribution of transformed sample standard deviations agrees with
+the theoretical distribution.
+
+I think it is useful to check theoretical results like this, for a few
+reasons:
+
+\begin{itemize}
+\item
+  It confirms that my understanding of the theory is correct,
+
+\item
+  It confirms that the conditions where I am applying the theory are
+  conditions where the theory holds,
+
+\item
+  It confirms that the implementation details are correct. For many
+  distributions, there is more than one way to specify the parameters.
+  If you use the wrong specification, this kind of testing will help you
+  catch the error.
+\end{itemize}
+
+Before we move on, I'll mention one other theoretical result we will
+use: (\url{https://en.wikipedia.org/wiki/Basu\%27s_theorem})
+Basu's theorem, which states that the sample mean and sample standard
+deviation are independent.
+
+
+\section{Update with summary statistics}
+
+Now we're ready to do an update. I'll compute summary statistics for the
+two groups.
+
+\begin{code}
+summary = {}
+for name, response in responses.items():
+    summary[name] = (len(response), 
+                     response.mean(), 
+                     response.std())
+\end{code}
+
+The result is a dictionary that maps from group name to a tuple that
+contains the sample size, \py{n}, the sample mean,
+\py{m}, and the sample standard deviation
+\py{s}, for each group.
+
+I'll demonstrate the update with the summary statistics from the control
+group.
+
+\begin{code}
+n, m, s = summary['Control']
+\end{code}
+
+I'll make a mesh with hypothetical values of
+\py{mu} on the vertical axis and values of
+\py{sigma} on the horizontal axis.
+
+\begin{code}
+sigmas, mus = np.meshgrid(prior.columns, prior.index)
+sigmas.shape
+\end{code}
+
+Now we can compute the likelihood of seeing the sample mean,
+\py{m}, for each pair of parameters.
+
+\begin{code}
+like1 = norm.pdf(m, mus, sigmas/np.sqrt(n))
+\end{code}
+
+And use it to update the prior.
+
+\begin{code}
+posterior1 = prior * like1
+normalize(posterior1)
+\end{code}
+
+Next we compute the likelihood of seeing the sample standard deviation, \py{s}, for each pair of parameters.
+
+\begin{code}
+like2 = chi2.pdf(n * s**2 / sigmas**2, n-1)
+\end{code}
+
+And here's the second update:
+
+\begin{code}
+posterior2 = posterior1 * like2
+normalize(posterior2)
+\end{code}
+
+The following function does both updates, using the sample mean and
+standard deviation.
+
+\begin{code}
+def update_norm_summary(prior, data):
+    n, m, s = data
+    sigmas, mus = np.meshgrid(prior.columns, prior.index)
+    
+    like1 = norm.pdf(m, mus, sigmas/np.sqrt(n))
+    like2 = chi2.pdf(n * s**2 / sigmas**2, n-1)
+    
+    posterior = prior * like1 * like2
+    normalize(posterior)
+    
+    return posterior
+\end{code}
+
+Here are the updates for the two groups.
+
+\begin{code}
+data = summary['Control']
+posterior_control2 = update_norm_summary(prior, data)
+
+data = summary['Treated']
+posterior_treated2 = update_norm_summary(prior, data)
+\end{code}
+
+You can see the results in the notebook for this chapter.
+Visually, these posterior joint distributions are similar to the ones we
+computed using the entire datasets, not just the summary statistics. 
+But they are not exactly the same, as we'll see by comparing the marginal
+distributions.
+
+\section{Comparing marginals}
+
+Again, let's extract the marginal posterior distributions.
+
+\begin{code}
+pmf_mean_control2 = marginal(posterior_control2, 1)
+pmf_mean_treated2 = marginal(posterior_treated2, 1)
+\end{code}
+
+And compare them to results we got using the entire dataset.
+Figure~\ref{fig11-05} shows the results.
+
+\begin{figure}
+\centerline{\includegraphics[width=4in]{figs/fig11-05.pdf}}
+\caption{}
+\label{fig11-05}
+\end{figure}
+
+For both groups, the distribution of \py{mu} is a little wider when we use only the summary statistics; that is, we are a little less certain about the values of the means.
+
+If we compute the posterior distribution of the difference in means,
+the mean difference is nearly the same, but the credible interval is a bit wider.
+
+That's because the update we did is based on the implicit assumption
+that the distribution of the data is actually normal, but it's not.  
+As a result, when we replace the dataset with the summary statistics, we lose some information about the true distribution of the data. With less
+information, we are less certain about the parameters.
+
+\section{Summary}
+
+In this chapter we used a joint distribution to represent prior
+probabilities for the parameters of a normal distribution,
+\py{mu} and \py{sigma}.
+
+And we updated that distribution two ways: first using the entire
+dataset and the normal PDF; then using summary statistics, the normal
+PDF, and the chi-square PDF.
+
+Using summary statistics is computationally more efficient, but it loses
+some information in the process.
+
+Normal distributions appear in many domains, as well as other
+distributions that are well approximated by normal distributions. So the
+methods in this chapter are broadly applicable. The exercises at the end
+of the chapter will give you a chance to apply them.
+
+\section{Exercises}
+
+\begin{exercise} Looking again at the posterior joint distribution of
+\py{mu} and \py{sigma}, it
+seems like the standard deviation of the treated group might be lower;
+if so, that would suggest that the treatment is more effective for
+students with lower scores.
+
+But before we speculate too much, we should estimate the size of the
+difference and see whether it might actually be 0.
+
+As we did with the values of \py{mu} in the
+previous section, extract the posterior marginal distributions of
+\py{sigma} for the two groups. What is the
+probability that the standard deviation is higher in the control group?
+
+Compute the distribution of the difference in
+\py{sigma} between the two groups. What is the mean
+of this difference? What is the 90\% credible interval?
+
+\end{exercise}
+
+
+\begin{exercise} 
+This exercise is inspired by
+(\url{https://www.reddit.com/r/statistics/comments/hcvl2j/q_reverse_empirical_distribution_rule_question/}) a
+question that appeared on Reddit.
+
+An instructor announces the results of an exam like this, ``The average
+score on this exam was 81. Out of 25 students, 5 got more than 90, and I
+am happy to report that no one failed (got less than 60).''
+
+Based on this information, what do you think the standard deviation of
+scores was?
+
+You can assume that the distribution of scores is approximately normal.
+And let's assume that the sample mean, 81, is actually the population
+mean, so we only have to estimate \py{sigma}.
+
+Hint: To compute the probability of a score greater than 90, you can use
+\py{norm.sf}, which computes the survival function,
+also known as the complementary CDF, or
+\py{1 - cdf(x)}.
+
+\end{exercise}
+
+\begin{exercise} 
+I have a soft spot for crank science, so this
+exercise is about the
+\url{http://en.wikipedia.org/wiki/Variability_hypothesis}{Variability
+Hypothesis}, which
+
+\begin{quote}
+``originated in the early nineteenth century with Johann Meckel, who
+argued that males have a greater range of ability than females,
+especially in intelligence. In other words, he believed that most
+geniuses and most mentally retarded people are men. Because he
+considered males to be the 'superior animal,' Meckel concluded that
+females' lack of variation was a sign of inferiority.''
+\end{quote}
+
+I particularly like that last part because I suspect that if it turned
+out that women were \emph{more} variable, Meckel would have taken that
+as a sign of inferiority, too.
+
+Nevertheless, the Variability Hypothesis suggests an exercise we can use
+to practice the methods in this chapter. Let's look at the distribution
+of heights for men and women in the U.S. and see who is more variable.
+
+I used 2018 data from the CDC's
+\url{https://www.cdc.gov/brfss/annual_data/annual_2018.html}{Behavioral
+Risk Factor Surveillance System} (BRFSS), which includes self-reported
+heights from 154407 men and 254722 women.
+
+Here's what I found:
+
+\begin{itemize}
+\item
+  The average height for men is 178 cm; the average height for women is
+  163 cm. So men are taller on average; no surprise there.
+\item
+  For men the standard deviation is 8.27 cm; for women it is 7.75 cm. So
+  in absolute terms, men's heights are more variable.
+\end{itemize}
+
+But to compare variability between groups, it is more meaningful to use
+the
+(\url{https://en.wikipedia.org/wiki/Coefficient_of_variation}) coefficient
+of variation (CV), which is the standard deviation divided by the mean.
+It is a dimensionless measure of variability relative to scale.
+
+For men CV is 0.0465; for women it is 0.0475. The coefficient of
+variation is higher for women, so this dataset provides evidence against
+the Variability Hypothesis. But we can use Bayesian methods to make that
+conclusion more precise.
+
+Use these summary statistics to compute the posterior distribution of
+\py{mu} and \py{sigma} for the
+distributions of male and female height. Use
+\py{Pmf.div_dist} to compute posterior
+distributions of CV. Based on this dataset and the assumption that the
+distribution of height is normal, what is the probability that the
+coefficient of variation is higher for men? What is the most likely
+ratio of the CVs and what is the 90\% credible interval for that ratio?
+
+Hint: Use different prior distributions for the two groups, and chose
+them so they cover all parameters with non-negligible probability.
+
+\end{exercise}
 
 
 \chapter{Observer Bias}
