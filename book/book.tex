@@ -3208,10 +3208,17 @@ Let's assume that an honest member of Congress has only a 50\% chance of outperf
 
 \chapter{Minima, Maxima, and Mixtures}
 
+In the previous chapter we computed distributions of sums, differences, products, and quotients.
+
+In this chapter, we'll compute distributions of mimima and maxima use them to solve inference problems.
+Then we'll look at distributions that are mixtures of other distributions, which will turn out to be particularly useful for making predictions.
+
+But we'll start with a powerful tool for working with distributions, the cumulative distribution function.
+
 \section{Cumulative distribution functions}
 
-So far we have been using \py{Pmf} objects to represent distributions.
-In this section, I'll introduce an alternative, the {\bf cumulative distribution function}, or CDF.
+So far we have been using probability mass functions to represent distributions.
+A useful alternative is the {\bf cumulative distribution function}, or CDF.
 
 As an example, I'll use the posterior distribution from the Euro problem, which we computed in Section~\ref{binomlike}.
 
@@ -3234,7 +3241,7 @@ The result is a Pandas Series, so we can use the bracket operator to select an e
 cumulative[0.61]
 \end{code}
 
-The result is about 0.96, which means that the total probability of all values less than or equal to 0.61 is 96\%.
+The result is about 0.96, which means that the total probability of all quantities less than or equal to 0.61 is 96\%.
 
 To go the other way --- to look up a probability and get the corresponding quantile --- we can use interpolation:
 
@@ -3276,13 +3283,13 @@ cdf[0.61]
 
 But if you look up a value that's not in the distribution, you get a \py{KeyError}.
 You can also call a \py{Cdf} as a function, using parentheses.
-If the argument does not appear in the \py{Cdf}, it interpolates between values.
+If the argument does not appear in the \py{Cdf}, it interpolates between quantities.
 
 \begin{code}
 cdf(0.615)
 \end{code}
 
-Going the other way, you can use \py{quantile} to look up a cumulative probability and get the corresponding value:
+Going the other way, you can use \py{quantile} to look up a cumulative probability and get the corresponding quantity:
 
 \begin{code}
 cdf.quantile(0.96)
@@ -3305,10 +3312,8 @@ pmf = cdf.make_pmf()
 
 \py{make_pmf} uses \py{np.diff} to compute differences between consecutive cumulative probabilities.
 
-One reasons \py{Cdf} objects are useful is that they compute quantiles efficiently.
-Another is that they make it easy to compute the distribution of a maximum or minimum.
-
-In the next section, we will see another use of CDFs: computing the distribution of a maximum.
+One reason \py{Cdf} objects are useful is that they compute quantiles efficiently.
+Another is that they make it easy to compute the distribution of a maximum or minimum, as we'll see in the next section.
 
 
 \section{Best Three of Four}
@@ -3369,6 +3374,8 @@ Figure~\ref{fig06-02} shows the distribution of the sum of three dice, \py{pmf_3
 \label{fig06-02}
 \end{figure}
 
+As you might expect, choosing the best three out of four tends to yield higher values.
+
 Next we'll find the distribution for the maximum of six attributes, each the sum of the best three of four dice.
 
 
@@ -3381,11 +3388,11 @@ First, I'll compute the \py{Cdf} of the best three of four distribution:
 cdf_4d6 = pmf_4d6.make_cdf()
 \end{code}
 
-Recall that \py{Cdf(x)} is the sum of probabilities for values less than or equal to \py{x}.
+Recall that \py{Cdf(x)} is the sum of probabilities for quantities less than or equal to \py{x}.
 Equivalently, it is the probability that a random value chosen from the distribution is less than or equal to \py{x}.
 
 Now suppose I draw 6 values from this distribution.
-The probability that all 6 of them are less than or equal to \py{x} is \py{Cdf(X)} raised to the 6th power, which we can compute like this:
+The probability that all 6 of them are less than or equal to \py{x} is \py{Cdf(x)} raised to the 6th power, which we can compute like this:
 
 \begin{code}
 cdf_4d6**6
@@ -3405,7 +3412,8 @@ And compute the equivalent \py{Pmf} like this:
 pmf_max6 = cdf_max6.make_pmf()
 \end{code}
 
-Figure~\ref{fig06-03} shows the result.
+Figure~\ref{fig06-03} shows the result.  
+Most characters have at least one attribute greater than 12; almost 10\% of them have an 18.
 
 \begin{figure}
 % chap06soln.ipynb
@@ -3441,13 +3449,16 @@ See if you can figure it out before you go on.
 
 \section{Minimum of Six}
 
-To compute the distribution of the minimum, we'll need the {\bf complementary} CDF, which we can compute like this:
+In the previous section we computed the distribution of a character's best attribute.
+Now let's compute the distribution of the worst.
+
+To compute the distribution of the minimum, we'll use the {\bf complementary CDF}, which we can compute like this:
 
 \begin{code}
 prob_gt = 1 - cdf_4d6
 \end{code}
 
-As the variable name suggests, the complementary CDF is the probability that a value from the distribution exceeds \py{x}.
+As the variable name suggests, the complementary CDF is the probability that a value from the distribution is greater than \py{x}.
 If we draw 6 values from the distribution, the probability that all 6 exceed \py{x} is:
 
 \begin{code}
@@ -3461,7 +3472,8 @@ And that means we can compute the CDF of the minimum like this:
 prob_le6 = 1 - prob_gt6
 \end{code}
 
-And convert it to a \py{Cdf} object:
+The result is a Pandas Series that represents the CDF of the minimum of six attributes.  
+We can put those values in a \py{Cdf} object like this:
 
 \begin{code}
 cdf_min6 = Cdf(prob_le6)
@@ -3481,6 +3493,9 @@ And the \py{Cdf} of the minimum like this:
 \begin{code}
 cdf_4d6.min_dist(6)
 \end{code}
+
+In the exercises at the end of the chapter, you'll use distributions of the minimum and maximum to do Bayesian inference.
+But first we'll see what happens when we mix distributions.
 
 
 \section{Mixtures}
@@ -3506,7 +3521,7 @@ To compute the distribution of the mixture, we can compute the average of the tw
 total = Pmf.add(d4, d6, fill_value=0) / 2
 \end{code}
 
-We have to use \py{Pmf.add} with \py{fill_value=0} because the two distributions don't have the same set of values.
+We have to use \py{Pmf.add} with \py{fill_value=0} because the two distributions don't have the same set of quantities.
 If they did, we could use the \py{+} operator.
 
 Now suppose I have a 4-sided die and {\it two} 6-sided dice.
@@ -3576,6 +3591,7 @@ total = df.sum(axis=1)
 
 The argument \py{axis=1} means we want to sum across the rows.
 The result is a Pandas Series.
+
 Putting it all together, here's a function that makes a weighted mixture of distributions.
 
 \begin{code}
@@ -3597,7 +3613,6 @@ mix = make_mixture(pmf_dice, dice)
 \end{code}
 
 Figure~\ref{fig06-04} shows the result, which is a mixture of uniform distributions.
-In the next chapter, we'll use mixtures of distributions to make predictions.
 
 \begin{figure}
 % chap06soln.ipynb
@@ -3605,8 +3620,6 @@ In the next chapter, we'll use mixtures of distributions to make predictions.
 \caption{Mixture of uniform distributions from three kinds of dice.}
 \label{fig06-04}
 \end{figure}
-
-
 
 
 
@@ -3620,6 +3633,10 @@ primary difference between them is performance: some operations are
 faster and easier with a Pmf; others are faster with a Cdf.
 \index{Pmf} \index{Cdf}
 
+
+In this chapter we used `Cdf` objects to compute distributions of maxima and minima; these distributions are useful for inference if we are given a maximum or minimum as data.
+
+We also computed mixtures of distributions, which we will use in the next chapter to make predictions.
 
 
 \section{Exercises}
@@ -3651,18 +3668,13 @@ Compare the distribution of the values in the standard array to the distribution
 
 \end{exercise}
 
-\newcommand{\Poincare}{Poincar\'{e}}
 
 \begin{exercise}
-Henri \Poincare~was a French mathematician who taught at the Sorbonne around 1900. The following anecdote about him is probably fabricated, but it makes an interesting probability problem.
+Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
+I choose one of the dice at random, roll it, and report that the outcome is a 1.
+If I roll the same die again, what is the probability that I get another 1?
 
-Supposedly \Poincare~suspected that his local bakery was selling loaves of bread that were lighter than the advertised weight of 1 kg, so every day for a year he bought a loaf of bread, brought it home and weighed it. At the end of the year, he plotted the distribution of his measurements and showed that it fit a normal distribution with mean 950 g and standard deviation 50 g. He brought this evidence to the bread police, who gave the baker a warning.
-
-For the next year, \Poincare~continued the practice of weighing his bread every day. At the end of the year, he found that the average weight was 1000 g, just as it should be, but again he complained to the bread police, and this time they fined the baker.
-
-Why? Because the shape of the distribution was asymmetric. Unlike the normal distribution, it was skewed to the right, which is consistent with the hypothesis that the baker was still making 950 g loaves, but deliberately giving \Poincare~the heavier ones.
-
-To see whether this anecdote is plausible, let's suppose that when the baker sees \Poincare~coming, he hefts \py{n} loaves of bread and gives \Poincare~the heaviest one.  How many loaves would the baker have to heft to make the average of the maximum 1000 g?
+Hint: Compute the posterior distribution as we have done before and pass it as one of the arguments to \py{make_mixture}.
 \end{exercise}
 
 
@@ -3679,13 +3691,41 @@ I choose a box at random, choose a die, and roll it 3 times.  If I get 2, 4, and
 \end{exercise}
 
 
-\begin{exercise}
-Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
-I choose one of the dice at random, roll it, and report that the outcome is a 1.
-If I roll the same die again, what is the probability that I get another 1?
+\newcommand{\Poincare}{Poincar\'{e}}
 
-Hint: Compute the posterior distribution as we have done before and pass it as one of the arguments to \py{make_mixture}.
+\begin{exercise}
+Henri \Poincare~was a French mathematician who taught at the Sorbonne around 1900. The following anecdote about him is probably fabricated, but it makes an interesting probability problem.
+
+Supposedly \Poincare~suspected that his local bakery was selling loaves of bread that were lighter than the advertised weight of 1 kg, so every day for a year he bought a loaf of bread, brought it home and weighed it. At the end of the year, he plotted the distribution of his measurements and showed that it fit a normal distribution with mean 950 g and standard deviation 50 g. He brought this evidence to the bread police, who gave the baker a warning.
+
+For the next year, \Poincare~continued the practice of weighing his bread every day. At the end of the year, he found that the average weight was 1000 g, just as it should be, but again he complained to the bread police, and this time they fined the baker.
+
+Why? Because the shape of the distribution was asymmetric. Unlike the normal distribution, it was skewed to the right, which is consistent with the hypothesis that the baker was still making 950 g loaves, but deliberately giving \Poincare~the heavier ones.
+
+To see whether this anecdote is plausible, let's suppose that when the baker sees \Poincare~coming, he hefts \py{n} loaves of bread and gives \Poincare~the heaviest one.  How many loaves would the baker have to heft to make the average of the maximum 1000 g?
 \end{exercise}
+
+
+\begin{exercise} 
+Two doctors fresh out of medical school are arguing about whose hospital delivers more babies.  The first doctor say, ``I've been at Hospital A for two weeks, and already we've had a day when we delivered 20 babies.''
+
+The second doctor says, ``I've only been at Hospital B for one week, but already there's been a 19-baby day.''
+
+Which hospital do you think delivers more babies on average?  You can assume that the number of babies born in a day is well modeled by a Poisson distribution with parameter $\lambda$ (see \url{https://en.wikipedia.org/wiki/Poisson_distribution}).
+
+\end{exercise}
+
+
+\begin{exercise}
+This question is related to a method I developed for estimating the minimum time for a packet of data to travel through a path in the internet.
+
+Suppose I drive the same route three times and the fastest of the three attempts takes 8 minutes.
+
+There are two traffic lights on the route. As I approach each light, there is a 40\% chance that it is green; in that case, it causes no delay. And there is a 60\% change it is red; in that case it causes a delay that is uniformly distributed from 0 to 60 seconds.
+
+What is the posterior distribution of the time it would take to drive the route with no delays?
+\end{exercise}
+
 
 
 \chapter{Poisson Processes}
@@ -3802,7 +3842,7 @@ def make_poisson_pmf($\lam$, high):
 
 The first parameter is the goal-scoring rate.  
 The second is the upper bound of the distribution.
-In theory the Poisson distribution goes to infinity, but we can cut if off when we get to values with negligible probability.
+In theory the Poisson distribution goes to infinity, but we can cut if off when we get to quantities with negligible probability.
 
 As usual, the \py{qs} are the quantities in the distribution and the \py{ps} are their probabilities.
 SciPy provides \py{poisson}, which has a function called \py{pmf} that evaluates the PMF of the Poisson distribution.
@@ -5965,7 +6005,7 @@ What accuracy can you achieve?
 \end{exercise} 
 
 
-\chapter{Bayesian inference}
+\chapter{Inference}
 
 Whenever people compare the Bayesian inference with conventional
 approaches, one of the questions that comes up most often is something
@@ -6524,7 +6564,8 @@ of the chapter will give you a chance to apply them.
 
 \section{Exercises}
 
-\begin{exercise} Looking again at the posterior joint distribution of
+\begin{exercise} 
+Looking again at the posterior joint distribution of
 \py{mu} and \py{sigma}, it
 seems like the standard deviation of the treated group might be lower;
 if so, that would suggest that the treatment is more effective for
@@ -6542,6 +6583,24 @@ Compute the distribution of the difference in
 \py{sigma} between the two groups. What is the mean
 of this difference? What is the 90\% credible interval?
 
+\end{exercise}
+
+
+\begin{exercise}
+An ``effect size'' is a statistic intended to quantify the magnitude of a phenomenon (see \url{http://en.wikipedia.org/wiki/Effect_size}).
+If the phenomenon is a difference in means between two groups, a common way to quantify it is Cohen's effect size, denoted $d$.
+
+If the parameters for Group 1 are $(\mu_1, \sigma_1)$, and the
+parameters for Group 2 are $(\mu_2, \sigma_2)$, Cohen's
+effect size is
+%
+\[ d = \frac{\mu_1 - \mu_2}{(\sigma_1 + \sigma_2)/2} \]
+%
+Use the joint posterior distributions for the two groups to compute the posterior distribution for Cohen's effect size.
+Then compute the mean and 90\% credible interval. 
+
+Hint: if enumerating all pairs from the two distributions takes too
+long, consider random sampling.
 \end{exercise}
 
 
@@ -6567,6 +6626,7 @@ also known as the complementary CDF, or
 \py{1 - cdf(x)}.
 
 \end{exercise}
+
 
 \begin{exercise} 
 I have a soft spot for crank science, so this
@@ -7425,1360 +7485,6 @@ You can download a solution to this exercise from
 \end{exercise}
 
 
-\chapter{Two Dimensions}
-\label{paintball}
-
-\section{Paintball}
-
-Paintball is a sport in which competing teams try to shoot each other
-with guns that fire paint-filled pellets that break on impact, leaving
-a colorful mark on the target.  It is usually played in an
-arena decorated with barriers and other objects that can be
-used as cover.
-\index{Paintball problem}
-
-Suppose you are playing paintball in an indoor arena 30 feet
-wide and 50 feet long.  You are standing near one of the 30 foot
-walls, and you suspect that one of your opponents has taken cover
-nearby.  Along the wall, you see several paint spatters, all the same
-color, that you think your opponent fired recently.
-
-The spatters are at 15, 16, 18, and 21 feet, measured from the
-lower-left corner of the room.  Based on these data, where do you
-think your opponent is hiding?
-
-Figure~\ref{fig.paintball} shows a diagram of the arena.  Using the
-lower-left corner of the room as the origin, I denote the unknown
-location of the shooter with coordinates $\alpha$ and $\beta$, or {\tt
-  alpha} and \py{beta}.  The location of a spatter is labeled
-\py{x}.  The angle the opponent shoots at is $\theta$ or \py{theta}.
-
-The Paintball problem is a modified version
-of the Lighthouse problem, a common example of Bayesian analysis.  My
-notation follows the presentation of the problem in D.S.~Sivia's, {\it Data
-  Analysis: a Bayesian Tutorial, Second Edition} (Oxford, 2006).
-\index{Sivia, D.S.}
-
-You can download the code in this chapter from
-\url{http://thinkbayes.com/paintball.py}.  For more information see
-Section~\ref{download}.
-
-
-\section{The suite}
-
-\begin{figure}
-% paintball.py
-\centerline{\includegraphics[height=2.5in]{figs/paintball.pdf}}
-\caption{Diagram of the layout for the paintball problem.}
-\label{fig.paintball}
-\end{figure}
-
-To get started, we need a Suite that represents a set of hypotheses
-about the location of the opponent.  Each hypothesis is a
-pair of coordinates: \py{(alpha, beta)}.
-
-Here is the definition of the Paintball suite:
-
-\begin{code}
-class Paintball(thinkbayes.Suite, thinkbayes.Joint):
-
-    def __init__(self, alphas, betas, locations):
-        self.locations = locations
-        pairs = [(alpha, beta) 
-                 for alpha in alphas 
-                 for beta in betas]
-        thinkbayes.Suite.__init__(self, pairs)
-\end{code}
-
-\py{Paintball} inherits from \py{Suite}, which we have seen before,
-and \py{Joint}, which I will explain soon.
-\index{Joint pmf}
-
-\py{alphas} is the list of possible values for \py{alpha}; {\tt
-  betas} is the list of values for \py{beta}.  \py{pairs} is a list
-of all \py{(alpha, beta)} pairs.
-
-\py{locations} is a list of possible locations along
-the wall; it is stored for use in \py{Likelihood}.
-
-\begin{figure}
-% paintball.py
-\centerline{\includegraphics[height=2.5in]{figs/paintball2.pdf}}
-\caption{Posterior CDFs for \py{alpha} and \py{beta}, given the data.}
-\label{fig.paintball2}
-\end{figure}
-
-The room is 30 feet wide and 50 feet long, so here's the code that
-creates the suite:
-
-\begin{code}
-    alphas = range(0, 31)
-    betas = range(1, 51)
-    locations = range(0, 31)
-
-    suite = Paintball(alphas, betas, locations)
-\end{code}
-
-This prior distribution assumes that all locations in the room are
-equally likely.  Given a map of the room, we might choose a more
-detailed prior, but we'll start simple.
-
-
-\section{Trigonometry}
-
-Now we need a likelihood function, which means we have to figure
-out the likelihood of hitting any spot along the wall, given
-the location of the opponent.
-\index{likelihood}
-
-As a simple model, imagine that the opponent is like a rotating
-turret, equally likely to shoot in any direction.
-In that case, he is most likely to hit
-the wall at location \py{alpha}, and less likely to hit the wall far
-away from \py{alpha}.
-\index{trigonometry}
-
-With a little trigonometry, we can compute the probability of hitting
-any spot along the wall.  Imagine that the shooter fires a shot at
-angle $\theta$; the pellet would hit the wall at location $x$, where
-%
-\[ x - \alpha = \beta \tan \theta \]
-%
-Solving this equation for $\theta$ yields
-%
-\[ \theta = tan^{-1} \left( \frac{x - \alpha}{\beta} \right) \]
-%
-So given a location on the wall, we can find $\theta$.
-
-Taking the derivative of the first equation with respect to
-$\theta$ yields
-%
-\[ \frac{dx}{d\theta} = \frac{\beta}{\cos^2 \theta} \]
-%
-This derivative is what I'll call the ``strafing speed'',
-which is the speed of the target location along the wall as $\theta$
-increases.  The probability of hitting a given point on the wall is
-inversely related to strafing speed.
-\index{strafing speed}
-
-If we know the coordinates of the shooter and a location 
-along the wall, we can compute strafing speed:
-
-\begin{code}
-def StrafingSpeed(alpha, beta, x):
-    theta = math.atan2(x - alpha, beta)
-    speed = beta / math.cos(theta)**2
-    return speed
-\end{code}
-
-\py{alpha} and \py{beta} are the coordinates of the shooter;
-\py{x} is the location of a spatter.  The result is
-the derivative of \py{x} with respect to \py{theta}.
-
-\begin{figure}
-% paintball.py
-\centerline{\includegraphics[height=2.5in]{figs/paintball1.pdf}}
-\caption{PMF of location given \py{alpha=10}, for several values of
-  \py{beta}.}
-\label{fig.paintball1}
-\end{figure}
-
-Now we can compute a Pmf that represents the probability of hitting
-any location on the wall.  \py{MakeLocationPmf} takes \py{alpha} and
-\py{beta}, the coordinates of the shooter, and \py{locations}, a
-list of possible values of \py{x}.
-
-\begin{code}
-def MakeLocationPmf(alpha, beta, locations):
-    pmf = thinkbayes.Pmf()
-    for x in locations:
-        prob = 1.0 / StrafingSpeed(alpha, beta, x)
-        pmf.Set(x, prob)
-    pmf.Normalize()
-    return pmf
-\end{code}
-
-\py{MakeLocationPmf} computes the probability of hitting
-each location, which is inversely related to
-strafing speed.  The result is a Pmf of locations and their
-probabilities.
-
-Figure~\ref{fig.paintball1} shows the Pmf of location with \py{alpha
-  = 10} and a range of values for \py{beta}.  For all values of beta
-the most likely spatter location is \py{x = 10}; as \py{beta}
-increases, so does the spread of the Pmf.
-
-
-
-\section{Likelihood}
-
-Now all we need is a likelihood function.
-We can use \py{MakeLocationPmf} to compute the likelihood
-of any value of \py{x}, given the coordinates of the opponent.
-\index{likelihood}
-
-\begin{code}
-    def Likelihood(self, data, hypo):
-        alpha, beta = hypo
-        x = data
-        pmf = MakeLocationPmf(alpha, beta, self.locations)
-        like = pmf.Prob(x)
-        return like
-\end{code}
-
-Again, \py{alpha} and \py{beta} are the hypothetical coordinates of
-the shooter, and \py{x} is the location of an observed spatter.
-
-\py{pmf} contains the probability of each location, given the
-coordinates of the shooter.  From this Pmf, we select the probability
-of the observed location.
-
-And we're done.  To update the suite, we can use \py{UpdateSet},
-which is inherited from \py{Suite}.
-
-\begin{code}
-suite.UpdateSet([15, 16, 18, 21])
-\end{code}
-
-The result is a distribution that maps each \py{(alpha, beta)} pair
-to a posterior probability.
-
-
-\section{Joint distributions}
-
-When each value in a distribution is a tuple of variables, it is
-called a {\bf joint distribution} because it represents the
-distributions of the variables together, that is ``jointly''.
-A joint distribution contains the distributions of the variables,
-as well as information about the relationships among them.
-\index{joint distribution}
-
-Given a joint distribution, we can compute the distributions
-of each variable independently, which are called the {\bf marginal
-distributions}.
-\index{marginal distribution}
-\index{Joint}
-
-\py{thinkbayes.Joint} provides a method that computes marginal
-distributions:
-
-\begin{code}
-# class Joint:
-
-    def Marginal(self, i):
-        pmf = Pmf()
-        for vs, prob in self.Items():
-            pmf.Incr(vs[i], prob)
-        return pmf
-\end{code}
-
-\py{i} is the index of the variable we want; in this example
-\py{i=0} indicates the distribution of \py{alpha}, and
-\py{i=1} indicates the distribution of \py{beta}.
-
-Here's the code that extracts the marginal distributions:
-
-\begin{code}
-    marginal_alpha = suite.Marginal(0)
-    marginal_beta = suite.Marginal(1)
-\end{code}
-
-Figure~\ref{fig.paintball2} shows the results (converted to CDFs).
-The median value for \py{alpha} is 18, near the center of mass of
-the observed spatters.  For \py{beta}, the most likely values are
-close to the wall, but beyond 10 feet the distribution is almost
-uniform, which indicates that the data do not distinguish strongly
-between these possible locations.
-
-Given the posterior marginals, we can compute credible intervals
-for each coordinate independently:
-\index{credible interval}
-
-\begin{code}
-    print 'alpha CI', marginal_alpha.CredibleInterval(50)
-    print 'beta CI', marginal_beta.CredibleInterval(50)
-\end{code}
-
-The 50\% credible intervals are \py{(14, 21)} for \py{alpha} and
-\py{(5, 31)} for \py{beta}.  So the data provide evidence that the
-shooter is in the near side of the room.  But it is not strong
-evidence.  The 90\% credible intervals cover most of the room!
-\index{evidence}
-
-
-\section{Conditional distributions}
-\label{conditional}
-
-\begin{figure}
-% paintball.py
-\centerline{\includegraphics[height=2.5in]{figs/paintball3.pdf}}
-\caption{Posterior distributions for \py{alpha} conditioned on several values
-of \py{beta}.}
-\label{fig.paintball3}
-\end{figure}
-
-The marginal distributions contain information about the variables
-independently, but they do not capture the dependence between
-variables, if any.
-\index{independence}
-\index{dependence}
-
-One way to visualize dependence is by computing {\bf conditional
-distributions}.  \py{thinkbayes.Joint} provides a method that
-does that:
-\index{conditional distribution}
-\index{Joint}
-
-\begin{code}
-    def Conditional(self, i, j, val):
-        pmf = Pmf()
-        for vs, prob in self.Items():
-            if vs[j] != val: continue
-            pmf.Incr(vs[i], prob)
-
-        pmf.Normalize()
-        return pmf
-\end{code}
-
-Again, \py{i} is the index of the variable we want; \py{j}
-is the index of the conditioning variable, and \py{val} is the
-conditional value.
-
-The result is the distribution of the $i$th variable under the
-condition that the $j$th variable is \py{val}.
-
-For example, the following code computes the conditional distributions
-of \py{alpha} for a range of values of \py{beta}:
-
-\begin{code}
-    betas = [10, 20, 40]
-
-    for beta in betas:
-        cond = suite.Conditional(0, 1, beta)
-\end{code}
-
-Figure~\ref{fig.paintball3} shows the results, which we could
-fully describe as ``posterior conditional marginal distributions.''
-Whew!
-
-If the variables were independent, the conditional distributions would
-all be the same.  Since they are all different, we can tell the
-variables are dependent.  For example, if we know (somehow) that {\tt
-  beta = 10}, the conditional distribution of \py{alpha} is fairly
-narrow.  For larger values of \py{beta}, the distribution of
-\py{alpha} is wider.
-\index{dependence}
-\index{independence}
-
-
-\section{Credible intervals}
-
-\begin{figure}
-% paintball.py
-\centerline{\includegraphics[height=2.5in]{figs/paintball5.pdf}}
-\caption{Credible intervals for the coordinates of the opponent.}
-\label{fig.paintball5}
-\end{figure}
-
-Another way to visualize the posterior joint distribution is to
-compute credible intervals.  When we looked at credible intervals
-in Section~\ref{credible},
-I skipped over a subtle point: for a given distribution, there
-are many intervals with the same level of credibility.  For example,
-if you want a 50\% credible interval, you could choose any set of
-values whose probability adds up to 50\%.
-
-When the values are one-dimensional, it is most common to choose
-the {\bf central credible interval}; for example, the central 50\%
-credible interval contains all values between the 25th and 75th
-percentiles.
-\index{central credible interval}
-
-In multiple dimensions it is less obvious what the right credible
-interval should be.  The best choice might depend on context, but
-one common choice is the maximum likelihood credible interval, which
-contains the most likely values that add up to 50\% (or some other
-percentage).
-\index{maximum likelihood}
-
-\py{thinkbayes.Joint} provides a method that computes maximum
-likelihood credible intervals. 
-\index{Joint}
-
-\begin{code}
-# class Joint:
-
-    def MaxLikeInterval(self, percentage=90):
-        interval = []
-        total = 0
-
-        t = [(prob, val) for val, prob in self.Items()]
-        t.sort(reverse=True)
-
-        for prob, val in t:
-            interval.append(val)
-            total += prob
-            if total >= percentage/100.0:
-                break
-
-        return interval
-\end{code}
-
-The first step is to make a list of the values in the suite,
-sorted in descending order by probability.  Next we traverse the
-list, adding each value to the interval, until the total
-probability exceeds \py{percentage}.  The result is a list
-of values from the suite.  Notice that this set of values
-is not necessarily contiguous.
-
-To visualize the intervals, I wrote a function that ``colors''
-each value according to how many intervals it appears in:
-
-\begin{code}
-def MakeCrediblePlot(suite):
-    d = dict((pair, 0) for pair in suite.Values())
-
-    percentages = [75, 50, 25]
-    for p in percentages:
-        interval = suite.MaxLikeInterval(p)
-        for pair in interval:
-            d[pair] += 1
-
-    return d
-\end{code}
-
-\py{d} is a dictionary that maps from each value in the suite
-to the number of intervals it appears in.  The loop computes intervals
-for several percentages and modifies \py{d}.
-
-Figure~\ref{fig.paintball5} shows the result.  The 25\% credible
-interval is the darkest region near the bottom wall.  For higher
-percentages, the credible interval is bigger, of course, and skewed
-toward the right side of the room.
-
-
-\section{Discussion}
-
-This chapter shows that the Bayesian framework from the previous
-chapters can be extended to handle a two-dimensional parameter space.
-The only difference is that each hypothesis is represented by
-a tuple of parameters.
-
-I also presented \py{Joint}, which is a parent class that provides
-methods that apply to joint distributions:
-\py{Marginal}, \py{Conditional}, and \py{MakeLikeInterval}.
-In object-oriented terms,
-\py{Joint} is a mixin (see \url{http://en.wikipedia.org/wiki/Mixin}).
-\index{Joint}
-
-There is a lot of new vocabulary in this chapter, so let's review:
-
-\begin{description}
-
-\item[Joint distribution:] A distribution that represents all possible
-  values in a multidimensional space and their probabilities.  The
-  example in this chapter is a two-dimensional space made up of the
-  coordinates \py{alpha} and \py{beta}.  The joint distribution
-  represents the probability of each (\py{alpha}, \py{beta}) pair.
-
-\item[Marginal distribution:] The distribution of one parameter in a
-  joint distribution, treating the other parameters as unknown.  For
-  example, Figure~\ref{fig.paintball2} shows the distributions of {\tt
-    alpha} and \py{beta} independently.
-
-\item[Conditional distribution:] The distribution of one parameter in
-  a joint distribution, conditioned on one or more of the other
-  parameters.  Figure~\ref{fig.paintball3} shows several distributions for
-  \py{alpha}, conditioned on different values of \py{beta}.
-
-\end{description}
-
-Given the joint distribution, you can compute marginal and conditional
-distributions.  With enough conditional distributions, you could
-re-create the joint distribution, at least approximately.  But given
-the marginal distributions you cannot re-create the joint distribution
-because you have lost information about the dependence between
-variables.
-\index{joint distribution}
-\index{conditional distribution}
-\index{marginal distribution}
-
-If there are $n$ possible values for each of two parameters, most
-operations on the joint distribution take time proportional to $n^2$.
-If there are $d$ parameters, run time is proportional to $n^d$,
-which quickly becomes impractical as the number of dimensions increases.
-
-If you can process a million hypotheses in a reasonable amount of time,
-you could handle two dimensions with 1000 values for each parameter,
-or three dimensions with 100 values each, or six dimensions with 10
-values each.
-
-If you need more dimensions, or more values per dimension, there are
-optimizations you can try.  I present an example
-in Chapter~\ref{species}.
-
-You can download the code in this chapter from
-\url{http://thinkbayes.com/paintball.py}.
-  For more information
-see Section~\ref{download}.
-
-\section{Exercises}
-
-\begin{exercise}
-In our simple model, the opponent is equally likely to shoot in any
-direction.  As an exercise, let's consider improvements to this model.
-
-The analysis in this chapter suggests that a shooter is most likely to
-hit the closest wall.  But in reality, if the opponent is close to a
-wall, he is unlikely to shoot at the wall because he is unlikely to
-see a target between himself and the wall.
-
-Design an improved model that takes this behavior
-into account.  Try to find a model that is more realistic, but not
-too complicated.
-\end{exercise}
-
-
-
-
-
-\chapter{Approximate Bayesian Computation}
-
-\section{The Variability Hypothesis}
-
-I have a soft spot for crank science.  Recently I visited Norumbega
-Tower, which is an enduring monument to the crackpot theories of Eben
-Norton Horsford, inventor of double-acting baking powder and fake
-history.  But that's not what this chapter is about.
-\index{crank science}
-\index{Horsford, Eben Norton}
-
-This chapter is about the Variability Hypothesis, which
-\index{Variability Hypothesis}
-\index{Meckel, Johann}
-
-\begin{quote}
-"originated in the early nineteenth century with Johann Meckel, who
-  argued that males have a greater range of ability than females,
-  especially in intelligence. In other words, he believed that most
-  geniuses and most mentally retarded people are men. Because he
-  considered males to be the 'superior animal,' Meckel concluded that
-  females' lack of variation was a sign of inferiority."
-
-From \url{http://en.wikipedia.org/wiki/Variability_hypothesis}.
-\end{quote}
-
-I particularly like that last part, because I suspect that if it turns
-out that women are actually more variable, Meckel would take that as a
-sign of inferiority, too.  Anyway, you will not be surprised to hear
-that the evidence for the Variability Hypothesis is weak.
-\index{evidence}
-
-Nevertheless, it came up in my class recently when we looked at data
-from the CDC's Behavioral Risk Factor Surveillance System (BRFSS),
-specifically the self-reported heights of adult American men and women.
-The dataset includes responses from 154407 men and 254722 women.
-Here's what we found:
-\index{Centers for Disease Control}
-\index{CDC}
-\index{BRFSS}
-\index{Behavioral Risk Factor Surveillance System}
-
-\begin{itemize}
-
-\item The average height for men is 178 cm; the average height for
-  women is 163 cm.  So men are taller, on average.  No surprise there.
-
-\item For men the standard deviation is 7.7 cm; for women it is 7.3
-  cm.  So in absolute terms, men's heights are more variable.
-
-\item But to compare variability between groups, it is more meaningful
-  to use the coefficient of variation (CV), which is the standard
-  deviation divided by the mean.  It is a dimensionless measure of
-  variability relative to scale.  For men CV is 0.0433; for women it
-  is 0.0444.
-\index{coefficient of variation}
-
-\end{itemize}
-
-That's very close, so we could conclude that this dataset provides
-weak evidence against the Variability Hypothesis.  But we can use
-Bayesian methods to make that conclusion more precise.  And answering
-this question gives me a chance to demonstrate some techniques
-for working with large datasets.
-\index{height}
-
-I will proceed in a few steps:
-
-\begin{enumerate}
-
-\item We'll start with the simplest implementation, but it only works
-  for datasets smaller than 1000 values.
-
-\item By computing probabilities under a log transform, we can scale
-  up to the full size of the dataset, but the computation gets slow.
-
-\item Finally, we speed things up substantially with Approximate
-  Bayesian Computation, also known as ABC.
-
-\end{enumerate}
-
-You can download the code in this chapter from
-\url{http://thinkbayes.com/variability.py}.
-  For more information
-see Section~\ref{download}.
-
-\section{Mean and standard deviation}
-
-In Chapter~\ref{paintball} we estimated two parameters simultaneously
-using a joint distribution.  In this chapter we use the same
-method to estimate the parameters of a Gaussian distribution:
-the mean, \py{mu}, and the standard deviation, \py{sigma}.
-\index{Gaussian distribution}
-
-For this problem, I define a Suite called \py{Height} that
-represents a map from each \py{mu, sigma} pair to its probability:
-
-\begin{code}
-class Height(thinkbayes.Suite, thinkbayes.Joint):
-
-    def __init__(self, mus, sigmas):
-        pairs = [(mu, sigma) 
-                 for mu in mus
-                 for sigma in sigmas]
-
-        thinkbayes.Suite.__init__(self, pairs)
-\end{code}
-
-\py{mus} is a sequence of possible values for \py{mu}; \py{sigmas}
-is a sequence of values for \py{sigma}.  The prior distribution
-is uniform over all \py{mu, sigma} pairs.
-\index{Joint}
-\index{joint distribution}
-
-The likelihood function is easy.  Given hypothetical values
-of \py{mu} and \py{sigma}, we compute the likelihood
-of a particular value, \py{x}.  That's what \py{EvalGaussianPdf}
-does, so all we have to do is use it:
-\index{likelihood}
-
-\begin{code}
-# class Height
-
-    def Likelihood(self, data, hypo):
-        x = data
-        mu, sigma = hypo
-        like = thinkbayes.EvalGaussianPdf(x, mu, sigma)
-        return like
-\end{code}
-
-If you have studied statistics from a mathematical perspective,
-you know that when you evaluate a PDF, you get a probability
-density.  In order to get a probability, you have to integrate
-probability densities over some range.
-\index{density}
-
-But for our purposes, we don't need a probability; we just
-need something proportional to the probability we want.
-A probability density does that job nicely.
-
-The hardest part of this problem turns
-out to be choosing appropriate ranges for \py{mus} and
-\py{sigmas}.  If the range is too small, we omit some
-possibilities with non-negligible probability and get the
-wrong answer.  If the range is too big, we get the right answer,
-but waste computational power.
-
-So this is an opportunity to use classical estimation to
-make Bayesian techniques more efficient.  Specifically, we can use
-classical estimators to find a likely location for \py{mu} and {\tt
-  sigma}, and use the standard errors of those estimates to choose a
-likely spread.
-\index{classical estimation}
-
-If the true parameters of the distribution are $\mu$ and $\sigma$, and
-we take a sample of $n$ values, an estimator of $\mu$ is the sample
-mean, \py{m}.
-
-And an estimator of $\sigma$ is the sample standard
-variance, \py{s}.
-
-The standard error of the estimated $\mu$ is $s / \sqrt{n}$
-and the standard error of the estimated $\sigma$ is
-$s / \sqrt{2 (n-1)}$.
-
-Here's the code to compute all that:
-
-\begin{code}
-def FindPriorRanges(xs, num_points, num_stderrs=3.0):
-
-    # compute m and s
-    n = len(xs)
-    m = numpy.mean(xs)
-    s = numpy.std(xs)
-
-    # compute ranges for m and s
-    stderr_m = s / math.sqrt(n)
-    mus = MakeRange(m, stderr_m, num_stderrs)
-
-    stderr_s = s / math.sqrt(2 * (n-1))
-    sigmas = MakeRange(s, stderr_s, num_stderrs)
-
-    return mus, sigmas
-\end{code}
-
-\py{xs} is the dataset.  \verb"num_points" is the desired number of
-values in the range.  \verb"num_stderrs" is the width of the range on
-each side of the estimate, in number of standard errors.
-
-The return
-value is a pair of sequences, \py{mus} and \py{sigmas}.
-
-Here's \py{MakeRange}:
-\index{numpy}
-
-\begin{code}
-def MakeRange(estimate, stderr, num_stderrs):
-    spread = stderr * num_stderrs
-    array = numpy.linspace(estimate-spread,
-                           estimate+spread,
-                           num_points)
-    return array
-\end{code}
-
-\py{numpy.linspace} makes an array of equally spaced elements between
-\py{estimate-spread} and \py{estimate+spread}, including both.
-\index{linspace}
-
-
-\section{Update}
-
-Finally here's the code to make and update the suite:
-
-\begin{code}
-    mus, sigmas = FindPriorRanges(xs, num_points)
-    suite = Height(mus, sigmas)
-    suite.UpdateSet(xs)
-    print suite.MaximumLikelihood()    
-\end{code}
-
-This process might seem bogus, because we use the data to choose the
-range of the prior distribution, and then use the data again to do the
-update.  In general, using the same data twice is, in fact, bogus.
-\index{bogus}
-\index{maximum likelihood}
-
-But in this case it is ok.  Really.  We use the data to choose the
-range for the prior, but only to avoid computing a lot of
-probabilities that would have been very small anyway.  With
-\verb"num_stderrs=4", the range is big enough to cover all values with
-non-negligible likelihood.  After that, making it bigger has no effect
-on the results.
-
-In effect, the prior is uniform over all values 
-of \py{mu} and \py{sigma}, but for computational efficiency
-we ignore all the values that don't matter.
-
-\section{The posterior distribution of CV}
-
-Once we have the posterior joint distribution of \py{mu} and {\tt
-  sigma}, we can compute the distribution of CV for men and women, and
-then the probability that one exceeds the other.
-
-To compute the distribution of CV, we enumerate pairs of
-\py{mu} and \py{sigma}:
-
-\begin{code}
-def CoefVariation(suite):
-    pmf = thinkbayes.Pmf()
-    for (mu, sigma), p in suite.Items():
-        pmf.Incr(sigma/mu, p)
-    return pmf
-\end{code}
-
-Then we use \verb"thinkbayes.PmfProbGreater" to compute the
-probability that men are more variable.
-
-The analysis itself is simple, but there are two more issues we
-have to deal with:
-
-\begin{enumerate}
-
-\item As the size of the dataset increases, we run into a series of
-  computational problems due to the limitations of floating-point
-  arithmetic.
-
-\item The dataset contains a number of extreme values that are almost
-  certainly errors.  We will need to make the estimation process
-  robust in the presence of these outliers.
-
-\end{enumerate}
-
-The following sections explain these problems and their solutions.
-
-
-\section{Underflow}
-\label{underflow}
-
-If we select the first 100 values from the BRFSS dataset and run the
-analysis I just described, it runs without errors and we get posterior
-distributions that look reasonable.
-
-If we select the first 1000 values and run the program again, we get
-an error in \verb"Pmf.Normalize":
-
-\begin{code}
-ValueError: total probability is zero.
-\end{code}
-
-The problem is that we are using probability densities to compute
-likelihoods, and densities from continuous distributions tend to be
-small.  And if you take 1000 small values and multiply
-them together, the result is very small.  In this case it is so small
-it can't be represented by a floating-point number, so it gets rounded
-down to zero, which is called {\bf underflow}.  And if all
-probabilities in the distribution are 0, it's not a distribution any
-more.
-\index{underflow}
-
-A possible solution is to renormalize the Pmf after each update,
-or after each batch of 100.  That would work, but it would be slow.
-
-A better alternative is to compute likelihoods under a log
-transform.  That way, instead of multiplying small values, we can add
-up log likelihoods.  \py{Pmf} provides methods \py{Log}, {\tt
-  LogUpdateSet} and \py{Exp} to make this process easy.
-\index{logarithm}
-\index{log transform}
-
-\py{Log} computes the log of the probabilities in a Pmf:
-
-\begin{code}
-# class Pmf
-
-    def Log(self):
-        m = self.MaxLike()
-        for x, p in self.d.iteritems():
-            if p:
-                self.Set(x, math.log(p/m))
-            else:
-                self.Remove(x)
-\end{code}
-
-Before applying the log transform \py{Log} uses \py{MaxLike} to find
-\py{m}, the highest probability in the Pmf.  It divide all
-probabilities by \py{m}, so the highest probability gets normalized
-to 1, which yields a log of 0.  The other log probabilities are all
-negative.  If there are any values in the Pmf with probability 0, they
-are removed.
-
-While the Pmf is under a log transform, we can't use \py{Update},
-\py{UpdateSet}, or \py{Normalize}.  The result would be nonsensical;
-if you try, Pmf raises an exception.
-Instead, we have to use \py{LogUpdate}
-and \py{LogUpdateSet}.  
-\index{exception}
-
-Here's the implementation of \py{LogUpdateSet}:
-
-\begin{code}
-# class Suite
-
-    def LogUpdateSet(self, dataset):
-        for data in dataset:
-            self.LogUpdate(data)
-\end{code}
-
-\py{LogUpdateSet} loops through the data and calls \py{LogUpdate}:
-
-\begin{code}
-# class Suite
-
-    def LogUpdate(self, data):
-        for hypo in self.Values():
-            like = self.LogLikelihood(data, hypo)
-            self.Incr(hypo, like)
-\end{code}
-
-\py{LogUpdate} is just like \py{Update} except that it calls
-\py{LogLikelihood} instead of \py{Likelihood}, and \py{Incr}
-instead of \py{Mult}.
-
-Using log-likelihoods avoids the problem with underflow, but while
-the Pmf is under the log transform, there's not much we can do with
-it.  We have to use \py{Exp} to invert the transform:
-
-\begin{code}
-# class Pmf
-
-    def Exp(self):
-        m = self.MaxLike()
-        for x, p in self.d.iteritems():
-            self.Set(x, math.exp(p-m))
-\end{code}
-
-If the log-likelihoods are large negative numbers, the resulting
-likelihoods might underflow.  So \py{Exp} finds the maximum
-log-likelihood, \py{m}, and shifts all the likelihoods up by \py{m}.
-The resulting distribution has a maximum likelihood of 1.  This
-process inverts the log transform with minimal loss of precision.
-\index{maximum likelihood}
-
-
-\section{Log-likelihood}
-
-Now all we need is \py{LogLikelihood}.
-
-\begin{code}
-# class Height
-
-    def LogLikelihood(self, data, hypo):
-        x = data
-        mu, sigma = hypo
-        loglike = scipy.stats.norm.logpdf(x, mu, sigma)
-        return loglike
-\end{code}
-
-\py{norm.logpdf} computes the log-likelihood of the
-Gaussian PDF.
-\index{scipy}
-\index{log-likelihood}
-
-
-Here's what the whole update process looks like:
-
-\begin{code}
-    suite.Log()
-    suite.LogUpdateSet(xs)
-    suite.Exp()
-    suite.Normalize()
-\end{code}
-
-To review, \py{Log} puts the suite under a log transform.
-\py{LogUpdateSet} calls \py{LogUpdate}, which calls
-\py{LogLikelihood}.  \py{LogUpdate} uses \py{Pmf.Incr},
-because adding a log-likelihood is the same as multiplying
-by a likelihood.
-
-After the update, the log-likelihoods are large negative
-numbers, so \py{Exp} shifts them up before inverting the
-transform, which is how we avoid underflow.
-
-Once the suite is transformed back, the probabilities
-are ``linear'' again, which means ``not logarithmic'',
-so we can use \py{Normalize} again.
-
-Using this algorithm, we can process the entire dataset without
-underflow, but it is still slow.  On my computer it might
-take an hour.  We can do better.
-
-
-\section{A little optimization}
-
-This section uses math and computational optimization
-to speed things up by a factor of 100.  But the following section
-presents an algorithm that is even faster.  So if you want to
-get right to the good stuff, feel free to skip this section.
-\index{optimization}
-
-\py{Suite.LogUpdateSet} calls \py{LogUpdate} once for each data
-point.  We can speed it up by computing the log-likelihood of the entire
-dataset at once.
-
-We'll start with the Gaussian PDF:
-%
-\[ \frac{1}{\sigma \sqrt{2 \pi}} \exp \left[ -\frac{1}{2} \left( \frac{x-\mu}{\sigma} \right)^2 \right] \]
-%
-and compute the log (dropping the constant term):
-%
-\[ -\log \sigma -\frac{1}{2} \left( \frac{x-\mu}{\sigma} \right)^2 \]
-%
-Given a sequence of values, $x_i$, the total log-likelihood is
-%
-\[ \sum_i -\log \sigma - \frac{1}{2} \left( \frac{x_i-\mu}{\sigma} \right)^2 \]
-%
-Pulling out the terms that don't depend on $i$, we get
-%
-\[ -n \log \sigma - \frac{1}{2 \sigma^2} \sum_i (x_i - \mu)^2 \]
-%
-which we can translate into Python:
-
-\begin{code}
-# class Height
-
-    def LogUpdateSetFast(self, data):
-        xs = tuple(data)
-        n = len(xs)
-
-        for hypo in self.Values():
-            mu, sigma = hypo
-            total = Summation(xs, mu)
-            loglike = -n * math.log(sigma) - total / 2 / sigma**2
-            self.Incr(hypo, loglike)
-\end{code}
-
-By itself, this would be a small improvement, but it
-creates an opportunity for a bigger one.  Notice that the
-summation only depends on \py{mu}, not \py{sigma}, so we only
-have to compute it once for each value of \py{mu}.
-\index{optimization}
-
-To avoid recomputing, I factor out a function that computes the
-summation, and {\bf memoize} it so it stores previously computed
-results in a dictionary (see
-\url{http://en.wikipedia.org/wiki/Memoization}): \index{memoization}
-
-\begin{code}
-def Summation(xs, mu, cache={}):
-    try:
-        return cache[xs, mu]
-    except KeyError:
-        ds = [(x-mu)**2 for x in xs]
-        total = sum(ds)
-        cache[xs, mu] = total
-        return total
-\end{code}
-
-\py{cache} stores previously computed sums.  The \py{try} statement
-returns a result from the cache if possible; otherwise it computes
-the summation, then caches and returns the result.
-\index{cache}
-
-The only catch is that we can't use a list as a key in the cache, because
-it is not a hashable type.  That's why \py{LogUpdateSetFast} converts
-the dataset to a tuple.
-
-This optimization speeds up the computation by about a
-factor of 100, processing the entire dataset (154~407 men and 254~722
-women) in less than a minute on my not-very-fast computer.
-
-
-\section{ABC}
-
-But maybe you don't have that kind of time.  In that case, Approximate
-Bayesian Computation (ABC) might be the way to go.  The motivation
-behind ABC is that the likelihood of any particular dataset is:
-\index{ABC}
-\index{Approximate Bayesian Computation}
-
-\begin{enumerate}
-
-\item Very small, especially for large datasets, which is why we had
-to use the log transform,
-
-\item Expensive to compute, which is why we had to do so much
-optimization, and
-
-\item Not really what we want anyway.
-
-\end{enumerate}
-
-We don't really care about the likelihood of seeing the exact dataset
-we saw.  Especially for continuous variables, we care about the
-likelihood of seeing any dataset like the one we saw.
-
-For example, in the Euro problem, we don't care about the order of
-the coin flips, only the total number of heads and tails.  And in
-the locomotive problem, we don't care about which particular trains were
-seen, only the number of trains and the maximum of the serial numbers.
-\index{locomotive problem}
-\index{Euro problem}
-
-Similarly, in the BRFSS sample, we don't really want to know the
-probability of seeing one particular set of values (especially since
-there are hundreds of thousands of them).  It is more
-relevant to ask, ``If we sample 100,000 people from a population
-with hypothetical values of $\mu$ and $\sigma$, what would be
-the chance of collecting a sample with the observed mean and
-variance?''
-\index{BRFSS}
-
-For samples from a Gaussian distribution, we can answer this question
-efficiently because we can find the distribution of the sample
-statistics analytically.  In fact, we already did it when we computed
-the range of the prior.
-\index{Gaussian distribution}
-
-If you draw $n$ values from a Gaussian distribution with parameters
-$\mu$ and $\sigma$, and compute the sample mean, $m$, the
-distribution of $m$ is Gaussian
-with parameters $\mu$ and $\sigma / \sqrt{n}$.
-
-Similarly, the distribution of the sample standard deviation, $s$, is
-Gaussian with parameters $\sigma$ and $\sigma / \sqrt{2 (n-1)}$.
-
-\index{sample statistics}
-We can use these sample distributions to compute the likelihood of the
-sample statistics, $m$ and $s$, given hypothetical values
-for $\mu$ and $\sigma$.  Here's a new version of \verb"LogUpdateSet"
-that does it:
-
-\begin{code}
-    def LogUpdateSetABC(self, data):
-        xs = data
-        n = len(xs)
-
-        # compute sample statistics
-        m = numpy.mean(xs)
-        s = numpy.std(xs)
-
-        for hypo in sorted(self.Values()):
-            mu, sigma = hypo
-
-            # compute log likelihood of m, given hypo
-            stderr_m = sigma / math.sqrt(n)
-            loglike = EvalGaussianLogPdf(m, mu, stderr_m)
-
-            #compute log likelihood of s, given hypo
-            stderr_s = sigma / math.sqrt(2 * (n-1))
-            loglike += EvalGaussianLogPdf(s, sigma, stderr_s)
-
-            self.Incr(hypo, loglike)
-\end{code}
-
-On my computer this function processes the entire dataset in about a
-second, and the result agrees with the exact result with about 5
-digits of precision.
-
-
-\section{Robust estimation}
-
-\begin{figure}
-% variability.py
-\centerline{\includegraphics[height=2.5in]{figs/variability_posterior_male.pdf}}
-\caption{Contour plot of the posterior joint distribution of
-mean and standard deviation of height for men in the U.S.}
-\label{fig.variability1}
-\end{figure}
-
-\begin{figure}
-% variability.py
-\centerline{\includegraphics[height=2.5in]{figs/variability_posterior_female.pdf}}
-\caption{Contour plot of the posterior joint distribution of
-mean and standard deviation of height for women in the U.S.}
-\label{fig.variability2}
-\end{figure}
-
-We are almost ready to look at results, but we have one more
-problem to deal with.  There are a number of outliers in this
-dataset that are almost certainly errors.  For example, there
-are three adults with reported height of 61 cm, which would
-place them among the shortest living adults in the world.
-At the other end, there are four women with reported height
-229 cm, just short of the tallest women in the world.
-
-It is not impossible that these values are correct, but it is
-unlikely, which makes it hard to know how to deal with them.
-And we have to get
-it right, because these extreme values have a disproportionate
-effect on the estimated variability.
-
-Because ABC is based on summary statistics, rather than the entire
-dataset, we can make it more robust by choosing summary statistics
-that are robust in the presence of outliers.  For example, rather
-than use the sample mean and standard deviation, we could use the median
-and inter-quartile range
-(IQR), which is the difference between the 25th and 75th percentiles.
-\index{summary statistic}
-\index{robust estimation}
-\index{inter-quartile range}
-\index{IQR}
-
-More generally, we could compute an inter-percentile range (IPR) that
-spans any given fraction of the distribution, \py{p}:
-
-\begin{code}
-def MedianIPR(xs, p):
-    cdf = thinkbayes.MakeCdfFromList(xs)
-    median = cdf.Percentile(50)
-
-    alpha = (1-p) / 2
-    ipr = cdf.Value(1-alpha) - cdf.Value(alpha)
-    return median, ipr
-\end{code}
-
-\py{xs} is a sequence of values.  \py{p} is the desired range;
-for example, \py{p=0.5} yields the inter-quartile range.
-
-\py{MedianIPR} works by computing the CDF of \py{xs},
-then extracting the median and the difference between two
-percentiles.
-
-We can convert from \py{ipr} to an estimate of \py{sigma} using the
-Gaussian CDF to compute the fraction of the distribution covered by a
-given number of standard deviations.  For example, it is a well-known
-rule of thumb that 68\% of a Gaussian distribution falls within one
-standard deviation of the mean, which leaves 16\% in each tail.  If we
-compute the range between the 16th and 84th percentiles, we expect the
-result to be \py{2 * sigma}.  So we can estimate \py{sigma} by
-computing the 68\% IPR and dividing by 2.
-\index{Gaussian distribution}
-
-More generally we could use any number of \py{sigmas}.
-\py{MedianS} performs the more general version of this
-computation:
-
-\begin{code}
-def MedianS(xs, num_sigmas):
-    half_p = thinkbayes.StandardGaussianCdf(num_sigmas) - 0.5
-
-    median, ipr = MedianIPR(xs, half_p * 2)
-    s = ipr / 2 / num_sigmas
-
-    return median, s
-\end{code}
-
-Again, \py{xs} is the sequence of values; \verb"num_sigmas" is the
-number of standard deviations the results should be based on.  The
-result is \py{median}, which estimates $\mu$, and \py{s}, which 
-estimates $\sigma$.
-
-Finally, in \py{LogUpdateSetABC} we can replace the sample mean and
-standard deviation with \py{median} and \py{s}.  And that pretty
-much does it.
-
-It might seem odd that we are using observed percentiles to
-estimate $\mu$ and $\sigma$, but it is an example of the
-flexibility of the Bayesian approach.  In effect we are asking,
-``Given hypothetical values for $\mu$ and $\sigma$, and
-a sampling process that has some chance of introducing errors,
-what is the likelihood of generating a given set of sample
-statistics?''
-
-We are free to choose any sample statistics we like, up to a point:
-$\mu$ and $\sigma$ determine the location and spread of
-a distribution, so we need to choose statistics that capture those
-characteristics.  For example, if we chose the 49th and 51st percentiles,
-we would get very little information about spread, so it
-would leave the estimate of $\sigma$ relatively unconstrained
-by the data.  All values of \py{sigma} would have nearly the
-same likelihood of producing the observed values, so the posterior
-distribution of \py{sigma} would look a lot like the
-prior.
-
-
-\section{Who is more variable?}
-
-\begin{figure}
-% variability.py
-\centerline{\includegraphics[height=2.5in]{figs/variability_cv.pdf}}
-\caption{Posterior distributions of CV for men and women, based on
-robust estimators.}
-\label{fig.variability3}
-\end{figure}
-
-Finally we are ready to answer the question we started with: is the
-coefficient of variation greater for men than for women?
-
-Using ABC based on the median and IPR with \verb"num_sigmas=1", I
-computed posterior joint distributions for \py{mu} and {\tt
-  sigma}.  Figures~\ref{fig.variability1} and ~\ref{fig.variability2}
-show the results as a contour plot with \py{mu} on the x-axis, {\tt
-  sigma} on the y-axis, and probability on the z-axis.
-
-For each joint distribution, I computed the posterior distribution of
-CV.  Figure~\ref{fig.variability3} shows these distributions for men
-and women.  The mean for men is 0.0410; for women it is 0.0429.
-Since there is no overlap between the distributions, we conclude with
-near certainty that
-women are more variable in height than men.
-
-So is that the end of the Variability Hypothesis?  Sadly, no.  It turns
-out that this
-result depends on the choice of the
-inter-percentile range.  With \verb"num_sigmas=1", we conclude that
-women are more variable, but with \verb"num_sigmas=2" we conclude
-with equal confidence that men are more variable.
-
-The reason for the difference is that there
-are more men of short stature, and their distance from the mean is
-greater.
-
-So our evaluation of the Variability Hypothesis depends on the
-interpretation of ``variability.''  With \verb"num_sigmas=1" we
-focus on people near the mean.  As we increase
-\verb"num_sigmas", we give more weight to the extremes.  
-
-To decide which
-emphasis is appropriate, we would need a more precise statement
-of the hypothesis.  As it is, the Variability Hypothesis may be
-too vague to evaluate.
-
-Nevertheless, it helped
-me demonstrate several new ideas and, I hope you agree,
-it makes an interesting example.
-
-
-\section{Discussion}
-
-There are two ways you might think of ABC.  One interpretation
-is that it is, as the name suggests, an approximation that is
-faster to compute than the exact value.
-
-But remember that Bayesian analysis is always
-based on modeling decisions, which implies that there is no
-``exact'' solution.  For any interesting
-physical system there are many possible models, and each model
-yields different results.  To interpret the results, we have to
-evaluate the models.
-\index{modeling}
-
-So another interpretation of ABC is that it represents an alternative
-model of the likelihood.  When we compute \p{D|H}, we are asking
-``What is the likelihood of the data under a given hypothesis?''
-\index{likelihood}
-
-For large datasets, the likelihood of the data is very small, which
-is a hint that we might not be asking the right question.  What
-we really want to know is the likelihood of any outcome
-like the data, where the definition of ``like'' is yet another
-modeling decision.
-
-The underlying idea of ABC is that two datasets are alike if they yield
-the same summary statistics.  But in some cases, like the example in
-this chapter, it is not obvious which summary statistics to choose.
-\index{summary statistic}
-
-You can download the code in this chapter from
-\url{http://thinkbayes.com/variability.py}.
-  For more information
-see Section~\ref{download}.
-
-\section{Exercises}
-
-\begin{exercise}
-
-An ``effect size'' is a statistic intended to measure the difference
-between two groups (see
-\url{http://en.wikipedia.org/wiki/Effect_size}).
-
-For example, we could use data from the BRFSS to estimate the
-difference in height between men and women.  By sampling values
-from the posterior distributions of $\mu$ and
-$\sigma$, we could generate the posterior distribution of this
-difference.
-
-But it might be better to use a dimensionless measure of effect
-size, rather than a difference measured in cm.  One option is
-to use divide through by the standard deviation (similar to what
-we did with the coefficient of variation).
-
-If the parameters for Group 1 are $(\mu_1, \sigma_1)$, and the
-parameters for Group 2 are $(\mu_2, \sigma_2)$, the dimensionless
-effect size is
-%
-\[ \frac{\mu_1 - \mu_2}{(\sigma_1 + \sigma_2)/2} \]
-%
-Write a function that takes joint distributions of
-\py{mu} and \py{sigma} for two groups and returns
-the posterior distribution of effect size.
-
-Hint: if enumerating all pairs from the two distributions takes too
-long, consider random sampling.
-
-\end{exercise}
-
-
 
 \chapter{Hypothesis Testing}
 \label{hypotest}
@@ -9190,6 +7896,10 @@ of the beta distribution.
 
 \section{Exercises}
 
+%TODO: Revisit the Poincare problem; how much evidence would
+% Poincare have at the end of the year to distinguish between
+% N(1000, sigma) and Max_4 N(950, sigma2)?
+
 \begin{exercise}
 Some people believe in the existence of extra-sensory
 perception (ESP); for example, the ability of some people to guess
@@ -9246,10 +7956,14 @@ Miracles,'' at \url{http://en.wikipedia.org/wiki/Of_Miracles}.
 
 \end{exercise}
 
-\
+
 
 \chapter{Evidence}
 \label{evidence}
+
+%TODO: Make this chapter about dynamic testing; check if it is
+% optimal to chose questions where the respondent has a 50/50
+% chance.
 
 \section{Interpreting SAT scores}
 
