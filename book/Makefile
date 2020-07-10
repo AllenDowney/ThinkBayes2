@@ -1,3 +1,5 @@
+F=thinkbayes2
+
 PDFFLAGS = -dCompatibilityLevel=1.4 -dPDFSETTINGS=/prepress \
            -dCompressPages=true -dUseFlateCompression=true  \
            -dEmbedAllFonts=true -dSubsetFonts=true -dMaxSubsetPct=100
@@ -10,8 +12,36 @@ all:	book.tex
 	mv book.pdf thinkbayes2.pdf
 	evince thinkbayes2.pdf
 
+plastex:
+	# Before running plastex, we need the current directory in PYTHONPATH
+	# export PYTHONPATH=$PYTHONPATH:.
+	cp book.tex $(F).tex
+	python2 preprocess.py $(F).tex > $(F).plastex
+	plastex --renderer=DocBook --theme=book --image-resolution=300 --filename=$(F).xml $(F).plastex
+	cd $(F); python2 ../postprocess.py $(F).xml > temp; mv temp $(F).xml
+
+xxe:
+	xmlcopyeditor ~/thinkbayes2/book/book/book.xml &
+
+lint:
+	xmllint -noout book/book.xml
+
+OREILLY = atlas
+
+oreilly:
+	rsync -a book/ $(OREILLY)
+	rsync -a figs/* $(OREILLY)/figs/
+	cd $(OREILLY); git add .
+	cd $(OREILLY); git commit -m "Automated check in."
+	cd $(OREILLY); git push
+
+clean:
+	rm -f *~ *.aux *.log *.dvi *.idx *.ilg *.ind *.toc
 HEVEABUILDLOG=build.log
 
+# if a bug (in ocaml?) causes "make hevea" to fail; use "make -i hevea" instead
+
+.PHONY: hevea
 hevea:
 	sed 's/\(figs\/[^.]*\).\(pdf\|png\)/\1.eps/' book.tex > thinkbayes2.tex
 	rm -rf html
@@ -36,28 +66,3 @@ distrib:
 	rsync -a dist/* $(DEST)
 	chmod -R o+r $(DEST)/*
 	cd $(DEST)/..; sh back
-
-plastex:
-	# Before running plastex, we need the current directory in PYTHONPATH
-	# export PYTHONPATH=$PYTHONPATH:.
-	rm -rf /home/downey/thinkbayes2/trunk/book/.svn
-	plastex --renderer=DocBook --theme=book --image-resolution=300 --filename=book.xml book.tex
-	rm -rf /home/downey/thinkbayes2/trunk/book/.svn
-
-xxe:
-	xmlcopyeditor ~/thinkbayes2/book/book/book.xml &
-
-lint:
-	xmllint -noout book/book.xml
-
-OREILLY = atlas
-
-oreilly:
-	rsync -a book/ $(OREILLY)
-	rsync -a figs/* $(OREILLY)/figs/
-	cd $(OREILLY); git add .
-	cd $(OREILLY); git commit -m "Automated check in."
-	cd $(OREILLY); git push
-
-clean:
-	rm -f *~ *.aux *.log *.dvi *.idx *.ilg *.ind *.toc

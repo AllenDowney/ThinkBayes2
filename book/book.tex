@@ -1,55 +1,31 @@
 % LaTeX source for ``Think Bayes: Bayesian Statistics Made Simple''
-% Copyright 2012  Allen B. Downey.
+% Second edition
+% Copyright 2020  Allen B. Downey.
 
-% License: Creative Commons 
+% License: Creative Commons
 % Attribution-NonCommercial-ShareAlike 4.0 International
 % http://creativecommons.org/licenses/by-nc-sa/4.0/
 %
 
 \documentclass[12pt]{book}
-\usepackage[width=5.5in,height=8.5in,
-  hmarginratio=3:2,vmarginratio=1:1]{geometry}
 
-% for some of these packages, you might have to install
-% texlive-latex-extra (in Ubuntu)
+\title{Think Bayes}
+\author{Allen B. Downey}
 
-%\usepackage[T1]{fontenc}
-%\usepackage{textcomp}
-%\usepackage{mathpazo}
-%\usepackage{pslatex}
+\newcommand{\thetitle}{Think Bayes}
+\newcommand{\thesubtitle}{Bayesian Statistics Made Simple}
+\newcommand{\theauthor}{Allen B. Downey}
+\newcommand{\theversion}{Version 2.1.0}
 
-\usepackage{url}
-\usepackage[bookmarks]{hyperref}
-\usepackage{fancyhdr}
+%%%% Both LATEX and PLASTEX
+
 \usepackage{booktabs}
+
 \usepackage{graphicx}
-\usepackage{subfig}
+\usepackage{setspace}
+
 \usepackage{amsmath}
 \usepackage{amsthm}
-%\usepackage{amssymb}
-\usepackage{exercise}                        % texlive-latex-extra
-\usepackage{makeidx}
-\usepackage{setspace}
-\usepackage{hevea}
-\usepackage{upquote}
-\usepackage{xcolor}
-\usepackage{textcomp}
-\usepackage{listings}
-%\usepackage[utf8]{inputenc}
-
-
-
-% TODO: see if we can get a texttt version of Greek letters
-% sudo apt-get install texlive-lang-greek
-%\usepackage[greek,english]{babel}
-
-\input{latexonly}
-
-
-
-% include this so we can compile without hyperref
-% https://tex.stackexchange.com/questions/44088/when-do-i-need-to-invoke-phantomsection
-\providecommand\phantomsection{}
 
 % format end of chapter excercises
 \newtheoremstyle{exercise}
@@ -64,109 +40,114 @@
 \theoremstyle{exercise}
 \newtheorem{exercise}{Exercise}[chapter]
 
-
-\title{Think Bayes}
-\author{Allen B. Downey}
-
-\newcommand{\thetitle}{Think Bayes}
-\newcommand{\thesubtitle}{Bayesian Statistics Made Simple}
-\newcommand{\theversion}{2.0.0}
-
-% these styles get translated in CSS for the HTML version
-\newstyle{a:link}{color:black;}
-\newstyle{p+p}{margin-top:1em;margin-bottom:1em}
-\newstyle{img}{border:0px}
-
-% change the arrows in the HTML version
-\setlinkstext
-  {\imgsrc[alt="Previous"]{back.png}}
-  {\imgsrc[alt="Up"]{up.png}}
-  {\imgsrc[alt="Next"]{next.png}}
-
-\makeindex
-
 \newif\ifplastex
 \plastexfalse
 
-\begin{document}
-
-\frontmatter
-
-
-\newcommand{\PMF}{\mathrm{PMF}}
-\newcommand{\PDF}{\mathrm{PDF}}
-\newcommand{\CDF}{\mathrm{CDF}}
-\newcommand{\ICDF}{\mathrm{ICDF}}
-
+%%%% PLASTEX ONLY
 \ifplastex
-    \usepackage{localdef}
-    \maketitle
 
+\makeindex
+
+\usepackage{localdef}
+
+\usepackage{url}
+\renewcommand{\href}[2]{\url{#1}}
+
+\makeatletter
 \newcount\anchorcnt
 \newcommand*{\Anchor}[1]{%
   \@bsphack%
     \Hy@GlobalStepCount\anchorcnt%
-    \edef\@currentHref{anchor.\the\anchorcnt}% 
-    \Hy@raisedlink{\hyper@anchorstart{\@currentHref}\hyper@anchorend}% 
-    \M@gettitle{}\label{#1}% 
+    \edef\@currentHref{anchor.\the\anchorcnt}%
+    \Hy@raisedlink{\hyper@anchorstart{\@currentHref}\hyper@anchorend}%
+    \M@gettitle{}\label{#1}%
     \@esphack%
 }
+\makeatother
+
+% code listing environments:
+% we don't need these for plastex because they get replaced
+% by preprocess.py
+%\newenvironment{code}{\begin{verbatim}}{\end{verbatim}}
+%\newenvironment{stdout}{\begin{verbatim}}{\end{verbatim}}
+
+% inline syntax formatting
+%\newcommand{\py}{\verb}%}
+%\newcommand{\py}{\texttt}%}
+\newcommand{\py}[1]{{\tt #1}}%{
+\newcommand{\textcolor}[1]{\relax}
+
+%%%% LATEX/HTML ONLY
+\else
+
+%BEGIN LATEX
+\usepackage{comment}
+\excludecomment{htmlonly}
+\includecomment{latexonly}
+%END LATEX
+
+\input{latexonly.tex}
+
+\fi
+
+%%%% END OF PREAMBLE
+\begin{document}
+
+\frontmatter
+
+%%%% PLASTEX ONLY
+\ifplastex
+
+\maketitle
+
+%%%% LATEX/HTML ONLY
 \else
 
 \begin{latexonly}
 
-\renewcommand{\topfraction}{0.9}
-\renewcommand{\blankpage}{\thispagestyle{empty} \quad \newpage}
-
-% TITLE PAGES FOR LATEX VERSION
-
-%-half title--------------------------------------------------
+%--half title-------------------------------------------------
 \thispagestyle{empty}
 
 \begin{flushright}
 \vspace*{2.0in}
 
 \begin{spacing}{3}
-{\huge \thetitle}\\
+{\huge \thetitle} \\
 {\Large \thesubtitle}
 \end{spacing}
 
 \vspace{0.25in}
 
-Version \theversion
+\theversion
 
 \vfill
-
 \end{flushright}
 
 %--verso------------------------------------------------------
+\newpage
+\thispagestyle{empty}
 
-\blankpage
-\blankpage
+\quad
 
-%--title page--------------------------------------------------
-\pagebreak
+%--title page-------------------------------------------------
+\newpage
 \thispagestyle{empty}
 
 \begin{flushright}
 \vspace*{2.0in}
 
 \begin{spacing}{3}
-{\huge \thetitle}\\
+{\huge \thetitle} \\
 {\Large \thesubtitle}
 \end{spacing}
 
 \vspace{0.25in}
 
-Version \theversion
+\theversion
 
 \vspace{1in}
 
-
-{\Large
-Allen B. Downey\\
-}
-
+{\Large \theauthor}
 
 \vspace{0.5in}
 
@@ -175,60 +156,54 @@ Allen B. Downey\\
 {\small Needham, Massachusetts}
 
 \vfill
-
 \end{flushright}
 
-
 %--copyright--------------------------------------------------
-\pagebreak
+\newpage
 \thispagestyle{empty}
 
-Copyright \copyright ~2012 Allen B. Downey.
-
+Copyright \copyright ~2020 \theauthor.
 
 \vspace{0.2in}
 
 \begin{flushleft}
-Green Tea Press       \\
+Green Tea Press \\
 9 Washburn Ave \\
-Needham MA 02492
+Needham, MA 02492
 \end{flushleft}
 
-Permission is granted to copy, distribute, and/or modify this document
-under the terms of the Creative Commons
-Attribution-NonCommercial-ShareAlike 4.0 International License, which
-is available at
-\url{http://creativecommons.org/licenses/by-nc-sa/4.0/}.
+Permission is granted to copy, distribute, and/or modify this work under the terms of the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License, which is available at \url{https://creativecommons.org/licenses/by-nc-sa/4.0/}.
 
 
 The \LaTeX\ source for this book is available from
 \url{http://greenteapress.com/thinkbayes2}.
 
-\vspace{0.2in}
+%--table of contents------------------------------------------
+
+\cleardoublepage
+\setcounter{tocdepth}{1}
+\tableofcontents
 
 \end{latexonly}
 
-
-% HTMLONLY
+%--HTML title page--------------------------------------------
 
 \begin{htmlonly}
 
-% TITLE PAGE FOR HTML VERSION
+\vspace{1em}
 
 {\Large \thetitle: \thesubtitle}
 
-{\large Allen B. Downey}
+{\large \theauthor}
 
-Version \theversion
+\theversion
 
-\vspace{0.25in}
+\vspace{1em}
 
-Copyright 2012 Allen B. Downey
-
-\vspace{0.25in}
+Copyright \copyright ~2020 \theauthor.
 
 Permission is granted to copy, distribute, and/or modify this document
-under the terms of the Creative Commons 
+under the terms of the Creative Commons
 Attribution-NonCommercial-ShareAlike 4.0 International
 Unported License, which is available at
 \url{http://creativecommons.org/licenses/by-nc-sa/4.0/}.
@@ -237,8 +212,11 @@ Unported License, which is available at
 
 \end{htmlonly}
 
+%-------------------------------------------------------------
+
+%%%% END OF THE PART WE SKIP FOR PLASTEX
 \fi
-% END OF THE PART WE SKIP FOR PLASTEX
+
 
 \chapter{Preface}
 \label{preface}
@@ -365,9 +343,9 @@ There are several ways you can work with the code in this book:
 To run the notebooks on Colab, you can follow the links at the end of each chapter, or you can start from \url{}, which has links to all of the notebooks.
 
 If you already have Python and Jupyter, you can download the code from
-my Git repository, at \url{https://github.com/AllenDowney/ThinkBayes}.  Git is a version control system that allows you to keep track of the files that make up a project.  
+my Git repository, at \url{https://github.com/AllenDowney/ThinkBayes}.  Git is a version control system that allows you to keep track of the files that make up a project.
 A collection of files under Git's control is
-called a ``repository''.  
+called a ``repository''.
 GitHub is a hosting service that provides storage for Git repositories and a convenient web interface.
 
 \index{repository}
@@ -535,7 +513,7 @@ purposes).
 
 \section*{Contributor List}
 
-If you have a suggestion or correction, please send email to 
+If you have a suggestion or correction, please send email to
 {\it downey@allendowney.com}.  If I make a change based on your
 feedback, I will add you to the contributor list
 (unless you ask to be omitted).
@@ -612,19 +590,24 @@ Alvaro Sanchez.
 
 \normalsize
 
-\clearemptydoublepage
+\newpage
 
 % TABLE OF CONTENTS
 \begin{latexonly}
 
 \tableofcontents
 
-\clearemptydoublepage
+\newpage
 
 \end{latexonly}
 
 % START THE BOOK
 \mainmatter
+
+\newcommand{\PMF}{\mathrm{PMF}}
+\newcommand{\PDF}{\mathrm{PDF}}
+\newcommand{\CDF}{\mathrm{CDF}}
+\newcommand{\ICDF}{\mathrm{ICDF}}
 
 \newcommand{\p}[1]{\ensuremath{\mathrm{p}(#1)}}
 \newcommand{\odds}[1]{\ensuremath{\mathrm{o}(#1)}}
@@ -655,11 +638,11 @@ that the fact is false.
 
 Intermediate values represent degrees of certainty.  The value 0.5,
 often written as 50\%, means that a predicted outcome is
-as likely to happen as not.  
+as likely to happen as not.
 For example, the probability that a tossed coin lands ``heads'' is close to 50\%.
 \index{coin toss}
 
-A conditional probability is a probability based on some relevant information.  For example, suppose I toss two coins.  
+A conditional probability is a probability based on some relevant information.  For example, suppose I toss two coins.
 The probability that both coins land heads is 25\%.
 
 But suppose I toss two coins and, without showing you the result, tell you that at least one of the coins in heads.
@@ -729,16 +712,16 @@ is 0.5, the chance of rain on two consecutive days is not
 We'll get to Bayes's theorem soon, but I want to motivate it with an
 example called the cookie problem.\footnote{Based on an example from
   \url{http://en.wikipedia.org/wiki/Bayes'_theorem} that is no longer
-  there.}  
-  
+  there.}
+
 \begin{quote}
-Suppose there are two bowls of cookies.  
+Suppose there are two bowls of cookies.
 Bowl 1 contains 30 vanilla cookies and 10 chocolate cookies.
 Bowl 2 contains 20 of each.
 
 Now suppose you choose one of the bowls at random and, without
-looking, select a cookie at random.  
-The cookie is vanilla.  
+looking, select a cookie at random.
+The cookie is vanilla.
 What is the probability that it came from Bowl 1?
 \end{quote}
 
@@ -764,7 +747,7 @@ We'll start with the probability of a conjunction:
 \[ \p{A \AND B} = \p{A}~\p{B|A} \]
 %
 Since we have not said anything about what $A$ and $B$ mean, they
-are interchangeable.  
+are interchangeable.
 Interchanging them yields
 %
 \[ \p{B \AND A} = \p{B}~\p{A|B} \]
@@ -779,7 +762,7 @@ That's all we need.  Pulling those pieces together, we get
 %
 Which means there are two ways to compute the conjunction.
 If you have $\p{A}$, you multiply by the conditional
-probability $\p{B|A}$.  
+probability $\p{B|A}$.
 Or you can do it the other way around; if you
 know \p{B}, you multiply by $\p{A|B}$.
 
@@ -815,7 +798,7 @@ chance of choosing any cookie.  Between the two bowls there are
 
 \end{itemize}
 
-Putting it together, we have 
+Putting it together, we have
 %
 \[ \p{B_1|V} = \frac{(1/2)~(3/4)}{5/8} \]
 %
@@ -862,7 +845,7 @@ the data, called the prior probability, or just {\bf prior}.
 
 \item \p{H|D} is what we want to compute, the probability of
 the hypothesis after we see the data, called the {\bf posterior}.
- 
+
 \item \p{D|H} is the probability of the data under the hypothesis,
 called the {\bf likelihood}.
 
@@ -991,9 +974,9 @@ As this example demonstrates, the table method works with more than two hypothes
 \index{Monty Hall problem}
 
 Monty Hall was the original host of the game show {\em Let's Make a
-Deal}.  
+Deal}.
 The Monty Hall problem is based on one of the regular
-games on the show.  
+games on the show.
 If you are a contestant, here's how the game works:
 
 \begin{itemize}
@@ -1003,7 +986,7 @@ He tells you that there is a prize behind each door.
 
 \item One prize is valuable (traditionally a car), the other two are less valuable (traditionally goats).
 
-\item The object of the game is to guess which door has the car.  
+\item The object of the game is to guess which door has the car.
 If you guess right, you get to keep the car.
 
 \end{itemize}
@@ -1028,8 +1011,8 @@ To answer this question, we have to make some assumptions about the behavior of 
 
 \end{enumerate}
 
-Under these assumptions, you are better off switching.  
-If you stick, you win $1/3$ of the time.  
+Under these assumptions, you are better off switching.
+If you stick, you win $1/3$ of the time.
 If you switch, you win $2/3$ of the time.
 
 If you have not encountered this problem before, you might find the answer surprising.
@@ -1118,7 +1101,7 @@ Hint: Start with four equally likely hypotheses.
 
 \begin{exercise}
 
-There are many variations of the Monty Hall problem (see \url{https://en.wikipedia.org/wiki/Monty_Hall_problem}).  
+There are many variations of the Monty Hall problem (see \url{https://en.wikipedia.org/wiki/Monty_Hall_problem}).
 
 For example, suppose that Monty always chooses Door 2 if he can and
 only chooses Door 3 if he has to (because the car is behind Door 2).
@@ -1207,7 +1190,7 @@ for x in [1,2,3,4,5,6]:
     die[x] = 1
 \end{code}
 
-\py{Pmf} creates an empty \py{Pmf} with no values.  
+\py{Pmf} creates an empty \py{Pmf} with no values.
 The \py{for} loop adds the values $1$ through $6$, each with ``probability'' $1$.
 
 In this \py{Pmf}, the probabilities don't add up to 1, so they are not really probabilities.
@@ -1268,8 +1251,8 @@ In this section I'll use a \py{Pmf} to solve the cookie problem from Section~\re
 Here's the statement of the problem again:
 
 \begin{quote}
-Suppose there are two bowls of cookies.  
-Bowl 1 contains 30 vanilla cookies and 10 chocolate cookies.  
+Suppose there are two bowls of cookies.
+Bowl 1 contains 30 vanilla cookies and 10 chocolate cookies.
 Bowl 2 contains 20 of each.
 
 Now suppose you choose one of the bowls at random and, without
@@ -1319,7 +1302,7 @@ And the answer is 0.6.
 This distribution, which contains the posterior probability for each hypothesis, is called (wait now) the {\bf posterior distribution}.
 \index{posterior distribution}
 
-One benefit of using \py{Pmf} objects is that it is easy to do successive updates with more data.  
+One benefit of using \py{Pmf} objects is that it is easy to do successive updates with more data.
 For example, suppose you put the first cookie back (so the contents of the bowls don't change) and draw again from the same bowl.
 If the second cookie is also vanilla, we can do a second update like this:
 
@@ -1562,7 +1545,7 @@ I use it as an index into \py{likelihood} to set the corresponding probabilities
 Finally, I multiply \py{pmf} by the likelihoods and normalize.
 
 Here's how we can use this function to compute the updates in the previous section:
- 
+
 \begin{code}
 pmf = prior.copy()
 update_dice(pmf, 1)
@@ -1617,8 +1600,8 @@ I choose a die, roll it, and get a 7.  What is the probability that I chose an 8
 
 
 \begin{exercise}
-Suppose I have two sock drawers.  
-One contains equal numbers of black and white socks.  
+Suppose I have two sock drawers.
+One contains equal numbers of black and white socks.
 The other contains equal numbers of red, green, and blue socks.
 Suppose I choose a drawer and random, choose two socks at random, and I tell you that I got a matching pair.
 What is the probability that the socks are white?
@@ -1675,7 +1658,7 @@ First we'll use the binomial distribution to see where that 7\% came from; then 
 Suppose we have a coin that we know is fair; if we spin it once, the possible outcomes are heads and tails with equal probability.
 I'll denote these outcomes \py{H} and \py{T}.
 
-If you spin it twice, there are four outcomes with equal probability: \py{HH}, \py{HT}, \py{TH}, and \py{TT}. 
+If you spin it twice, there are four outcomes with equal probability: \py{HH}, \py{HT}, \py{TH}, and \py{TT}.
 
 If we add up the total number of heads, there are three possible outcomes: 0, 1, or 2.  The probability of 0 and 2 is 25\%, and the probability of 1 is 50\%.
 
@@ -1724,7 +1707,7 @@ The probability of getting 140 heads, as in the Euro problem is lower, around 0.
 
 In the article MacKay quotes, the statistician says, ``If the coin were unbiased the chance of getting a result as extreme as that would be less than 7\%''.
 
-We can use the binomial distribution to check his math.  The following function takes a PMF and computes the total probability of values greater than or equal to \py{threshold}. 
+We can use the binomial distribution to check his math.  The following function takes a PMF and computes the total probability of values greater than or equal to \py{threshold}.
 
 \begin{code}
 def ge_dist(pmf, threshold):
@@ -1746,7 +1729,7 @@ pmf_k.ge_dist(140)
 \end{code}
 
 Either way, the probability is about 3.3\% that we get 140 heads or more.
-But that's less than 7%.  
+But that's less than 7%.
 
 The reason is that the statistician includes all values ``as extreme as'' 140, which includes values less than or equal to 110, because 140 exceeds the expected value by 15 and 110 falls short by 15.
 
@@ -1840,7 +1823,7 @@ Now, it's easy to get this distribution mixed up with the previous one, but reme
 
 \item Figure~\ref{fig03-01} shows the distribution of \py{k}, which is the number of heads we get with \py{n=250} and \py{p=0.5}.
 
-\item Figure ~\ref{fig03-02} shows the posterior distribution of \py{x} which is the proportion of heads for the coin we observed. 
+\item Figure ~\ref{fig03-02} shows the posterior distribution of \py{x} which is the proportion of heads for the coin we observed.
 
 \end{itemize}
 
@@ -1853,7 +1836,7 @@ In fact, the most likely value for \py{x} is 56\% which is the proportion of hea
 \section{Triangle Prior}
 \label{triangle}
 
-So far we've been using a uniform prior, but that might not be a reasonable choice based on what we know about coins.  
+So far we've been using a uniform prior, but that might not be a reasonable choice based on what we know about coins.
 I can believe that if a coin is lopsided, \py{x} might deviate substantially from 50\%, but it seems unlikely that the Belgian Euro coin is so imbalanced that \py{x} is 10\% or 90\%.
 
 It might be more reasonable to choose a prior that gives
@@ -1878,7 +1861,7 @@ triangle.normalize()
 Then we use \py{a} and \py{hypos} to make a \py{Pmf}.
 
 Figure~\ref{fig03-03} shows the result, along with the uniform distribution.
- 
+
 \begin{figure}
 % chap03soln.ipynb
 \centerline{\includegraphics[width=4in]{figs/fig03-03.pdf}}
@@ -1886,8 +1869,8 @@ Figure~\ref{fig03-03} shows the result, along with the uniform distribution.
 \label{fig03-03}
 \end{figure}
 
-Now we can update both priors with the same data: 
- 
+Now we can update both priors with the same data:
+
 \begin{code}
 update_euro(uniform, dataset)
 update_euro(triangle, dataset)
@@ -2089,7 +2072,7 @@ Hint: If the probability of hitting each target is $x$, the probability of hitti
 \index{Mosteller, Frederick}
 \index{German tank problem}
 
-I found the train problem 
+I found the train problem
 in Frederick Mosteller's, {\it Fifty Challenging Problems in
   Probability with Solutions} (\url{https://store.doverpublications.com/0486653552.html}):
 
@@ -2124,7 +2107,7 @@ on a uniform prior.}
 \end{figure}
 
 We don't have much basis to choose a prior, so we'll start with
-something simple and then consider alternatives.  
+something simple and then consider alternatives.
 Let's assume that $N$ is equally likely to be any value from 1 to 1000.
 
 \begin{code}
@@ -2164,7 +2147,7 @@ update_train(posterior, data)
 \end{code}
 
 Figure~\ref{fig04-01} shows the results.
- 
+
 \begin{figure}
 % chap04soln.ipynb
 \centerline{\includegraphics[width=4in]{figs/fig04-01.pdf}}
@@ -2174,12 +2157,12 @@ Figure~\ref{fig04-01} shows the results.
 
 Not surprisingly, all values of $N$ below 60 have been eliminated.
 
-The most likely value, if you had to guess, is 60.  
+The most likely value, if you had to guess, is 60.
 That might not seem like a very good guess; after all, what are the chances that you just happened to see the train with the highest number?
 Nevertheless, if you want to maximize the chance of getting
 the answer exactly right, you should guess 60.
 
-But maybe that's not the right goal.  
+But maybe that's not the right goal.
 An alternative is to compute the mean of the posterior distribution.
 Given a set of possible quantities, $q_i$, and their probabilities, $p_i$, the mean of the distribution is:
 %
@@ -2197,7 +2180,7 @@ Or we can use the method provided by \py{Pmf}:
 posterior.mean()
 \end{code}
 
-The mean of the posterior is 333, so that might be a good guess if you want to minimize error.  
+The mean of the posterior is 333, so that might be a good guess if you want to minimize error.
 If you played this guessing game over and over, using the mean of the posterior as your estimate would minimize the mean squared error over the long run (see \url{http://en.wikipedia.org/wiki/Minimum_mean_square_error}).
 
 \index{mean squared error}
@@ -2209,7 +2192,7 @@ The prior I chose in the previous section is uniform from 1 to 1000, but I offer
 
 \index{prior distribution}
 
-We might wonder whether the posterior distribution is sensitive to the prior.  
+We might wonder whether the posterior distribution is sensitive to the prior.
 With so little data---only one observation---it is:
 
 \begin{itemize}
@@ -2222,7 +2205,7 @@ With so little data---only one observation---it is:
 
 \end{itemize}
 
-So that's bad.  
+So that's bad.
 When the posterior is sensitive to the prior, there are two ways to proceed:
 
 \begin{itemize}
@@ -2234,9 +2217,9 @@ When the posterior is sensitive to the prior, there are two ways to proceed:
 \end{itemize}
 
 With more data, posterior distributions based on different
-priors tend to converge.  
+priors tend to converge.
 For example, suppose that in addition
-to train 60 we also see trains 30 and 90.  
+to train 60 we also see trains 30 and 90.
 We can update the distribution like this:
 
 \begin{code}
@@ -2271,7 +2254,7 @@ compared to a uniform prior.}
 \end{figure}
 
 If more data are not available, another option is to improve the
-priors by gathering more background information.  
+priors by gathering more background information.
 It is probably not reasonable to assume that a train-operating company with 1000 locomotives is just as likely as a company with only 1.
 
 With some effort, we could probably find a list of companies that
@@ -2279,10 +2262,10 @@ operate locomotives in the area of observation.
 Or we could interview an expert in rail shipping to gather information about the typical size of companies.
 
 But even without getting into the specifics of railroad economics, we
-can make some educated guesses.  
+can make some educated guesses.
 In most fields, there are many small
 companies, fewer medium-sized companies, and only one or two very
-large companies.  
+large companies.
 In fact, the distribution of company sizes tends to
 follow a power law, as Robert Axtell reports in {\it Science} (see
 \url{https://sci-hub.tw/10.1126/science.1062081}).
@@ -2564,10 +2547,10 @@ This article from the Pew Research Center provides some relevant data: \url{http
 \begin{exercise}
 The Doomsday argument is ``a probabilistic argument that claims to predict the number of future members of the human species given an estimate of the total number of humans born so far.''  See \url{https://en.wikipedia.org/wiki/Doomsday_argument}.
 
-Suppose there are only two kinds of civilizations that can happen in the universe. The ``short-lived'' kind go exinct after only 200 billion individuals are born. The ``long-lived'' kind survive until 2,000 billion individuals are born. And suppose that the two kinds of civilization are equally likely.  Which kind of civilization do you think we live in? 
+Suppose there are only two kinds of civilizations that can happen in the universe. The ``short-lived'' kind go exinct after only 200 billion individuals are born. The ``long-lived'' kind survive until 2,000 billion individuals are born. And suppose that the two kinds of civilization are equally likely.  Which kind of civilization do you think we live in?
 
 The Doomsday argument says we can use the total number of humans born so far as evidence.
-According to the Population Reference Bureau, the total number of people who have ever lived is about 108 billion. 
+According to the Population Reference Bureau, the total number of people who have ever lived is about 108 billion.
 
 Since you were born quite recently, let's assume that you are, in fact, human being number 108 billion.
 If $N$ is the total number who will ever live and we consider you to be a randomly-chosen person, it is equally likely that you could have been person 1, or $N$, or any number in between.
@@ -2601,7 +2584,7 @@ Given this data and dubious prior, what is the probability that our civilization
 %# Solution
 %
 %# Suppose Company A has N trains and all other companies have M.
-%# The chance that we would observe one of Company A's trains is 
+%# The chance that we would observe one of Company A's trains is
 %# $N/(N+M)$.
 %
 %# Given that we observe one of Company A's trains, the chance that we
@@ -2611,13 +2594,13 @@ Given this data and dubious prior, what is the probability that our civilization
 %# probability of observing any given train.
 %
 %# If N<<M, this converges to a constant, which means that all values
-%# of $N$ have the same likelihood, so we learn nothing about how many 
+%# of $N$ have the same likelihood, so we learn nothing about how many
 %# trains Company A has.
 %
-%# If N>>M, this converges to $1/N$, which is what we saw in the 
+%# If N>>M, this converges to $1/N$, which is what we saw in the
 %# previous solution.
 %
-%# More generally, if M is unknown, we would need a prior distribution 
+%# More generally, if M is unknown, we would need a prior distribution
 %# for M, then we can do a two-dimensional update, and then extract the posterior
 %# distribution for N.
 %
@@ -2641,7 +2624,7 @@ And then we'll use those distributions as part of a Bayesian update.
 As an exercise, you'll have a chance to solve the Congress problem:
 
 \begin{quote}
-There are 538 members of the United States Congress.  
+There are 538 members of the United States Congress.
 Suppose we audit their investment portfolios and find that 312 of them outperform the market.
 Let's assume that an honest member of Congress has only a 50\% chance of outperforming the market, but a dishonest member who trades on inside information has a 90\% chance.  How many members of Congress are honest?
 \end{quote}
@@ -2649,13 +2632,13 @@ Let's assume that an honest member of Congress has only a 50\% chance of outperf
 
 \section{Odds}
 
-One way to represent a degree of certainty is a probability in the form of a number between 0 and 1, but that's not the only way.  
+One way to represent a degree of certainty is a probability in the form of a number between 0 and 1, but that's not the only way.
 If you have ever bet on a football game or a horse race, you might have encountered another representation of certainty, called {\bf odds}.
 
 \index{odds}
 
 You might have heard expressions like ``the odds are
-three to one,'' but you might not know what that means.  
+three to one,'' but you might not know what that means.
 The {\bf odds in favor} of an event are the ratio of the probability
 it will occur to the probability that it will not.
 
@@ -2717,7 +2700,7 @@ form}:
 %
 \[ \p{H|D} = \frac{\p{H}~\p{D|H}}{\p{D}} \]
 %
-If we have two hypotheses, $A$ and $B$, 
+If we have two hypotheses, $A$ and $B$,
 we can write the ratio of posterior probabilities like this:
 %
 \[ \frac{\p{A|D}}{\p{B|D}} = \frac{\p{A}~\p{D|A}}
@@ -2743,20 +2726,20 @@ Putting it all together, we have:
 %
 \[ \odds{A|D} = \odds{A}~\frac{\p{D|A}}{\p{D|B}} \]
 %
-This is Bayes's Rule, which says that the posterior odds are the prior odds times the likelihood ratio.  
+This is Bayes's Rule, which says that the posterior odds are the prior odds times the likelihood ratio.
 
-This form of Bayes's Theorem is convenient for computing a Bayesian update on paper or in your head.  
+This form of Bayes's Theorem is convenient for computing a Bayesian update on paper or in your head.
 For example, let's go back to the cookie problem:
 \index{cookie problem}
 
 \begin{quote}
-Suppose there are two bowls of cookies.  
+Suppose there are two bowls of cookies.
 Bowl 1 contains 30 vanilla cookies and 10 chocolate cookies.
 Bowl 2 contains 20 of each.
 
 Now suppose you choose one of the bowls at random and, without
-looking, select a cookie at random.  
-The cookie is vanilla.  
+looking, select a cookie at random.
+The cookie is vanilla.
 What is the probability that it came from Bowl 1?
 \end{quote}
 
@@ -2793,7 +2776,7 @@ hypothesis is more likely in light of the data than it was before.
 \index{evidence}
 
 In the cookie problem, the prior odds are $1$, or probability 50\%.
-The posterior odds are $3/2$, or probability 60\%.  
+The posterior odds are $3/2$, or probability 60\%.
 So the vanilla cookie is evidence in favor of Bowl 1.
 
 Bayes's Rule provides a way to make this intuition more precise.  Again
@@ -2812,7 +2795,7 @@ factor}.
 \index{Bayes factor}
 
 If the Bayes factor is greater than 1, that means that the
-data were more likely under $A$ than under $B$.  
+data were more likely under $A$ than under $B$.
 And that means that the odds are greater, in light of the data, than they were before.
 
 If the Bayes factor is less than 1, that means the data were
@@ -2976,7 +2959,7 @@ As an aside, this example demonstrates the Central Limit Theorem, which says tha
 
 In 2015 I read a paper that tested whether people diagnosed with gluten sensitivity (but not celiac disease) were not able to distinguish gluten flour from non-gluten flour in a blind challenge (\url{https://onlinelibrary.wiley.com/doi/full/10.1111/apt.13372}).
 
-Out of 35 subjects, 12 correctly identified the gluten flour based on resumption of symptoms while they were eating it.  Another 17 wrongly identified the gluten-free flour based on their symptoms, and 6 were unable to distinguish.  
+Out of 35 subjects, 12 correctly identified the gluten flour based on resumption of symptoms while they were eating it.  Another 17 wrongly identified the gluten-free flour based on their symptoms, and 6 were unable to distinguish.
 
 The authors conclude, ``Double-blind gluten challenge induces symptom recurrence in just one-third of patients.''
 
@@ -2988,7 +2971,7 @@ I'll assume:
 
 \begin{itemize}
 
-\item People who are sensitive to gluten have a 95\% chance of correctly identifying gluten flour under the challenge conditions, and 
+\item People who are sensitive to gluten have a 95\% chance of correctly identifying gluten flour under the challenge conditions, and
 
 \item People who are not sensitive have a 40\% chance of identifying the gluten flour by chance (and a 60\% chance of either choosing the other flour or failing to distinguish).
 
@@ -3058,7 +3041,7 @@ for n_sensitive in range(1, n):
 
     dist_sensitive = make_binomial(n_sensitive, 0.95)
     dist_insensitive = make_binomial(n_insensitive, 0.4)
-    dist_total = Pmf.add_dist(dist_sensitive, dist_insensitive)    
+    dist_total = Pmf.add_dist(dist_sensitive, dist_insensitive)
     table[n_sensitive] = dist_total
 \end{code}
 
@@ -3166,7 +3149,7 @@ Use Bayes's Rule to solve this problem.  As a prior you can assume that it rains
 \begin{exercise}
 According to the CDC, people who smoke are about 25 times more likely to develop lung cancer than nonsmokers (see \url{https://www.cdc.gov/tobacco/data_statistics/fact_sheets/health_effects/effects_cig_smoking/}).
 
-Also according to the CDC, about 14\% of adults in the U.S. are smokers (see \url{https://www.cdc.gov/tobacco/data_statistics/fact_sheets/adult_data/cig_smoking/index.htm}). 
+Also according to the CDC, about 14\% of adults in the U.S. are smokers (see \url{https://www.cdc.gov/tobacco/data_statistics/fact_sheets/adult_data/cig_smoking/index.htm}).
 
 If you learn that someone has lung cancer, what is the probability they are a smoker?
 \end{exercise}
@@ -3178,7 +3161,7 @@ A goblin is defeated if the total damage you inflict is greater than or equal to
 
 Suppose you are fighting a goblin and you have already inflicted 3 points of damage. What is your probability of defeating the goblin with your next successful attack?
 
-Hint: You can use \py{Pmf.add_dist} to add a constant amount, like 3, to a \py{Pmf}. 
+Hint: You can use \py{Pmf.add_dist} to add a constant amount, like 3, to a \py{Pmf}.
 \end{exercise}
 
 
@@ -3192,14 +3175,14 @@ Hint: \py{Pmf} provides a function called \py{mul_dist} that takes two \py{Pmf} 
 
 
 \begin{exercise}
-{\it Betrayal at House on the Hill} is a strategy game in which characters with different attributes explore a haunted house.  Depending on their attributes, the characters roll different numbers of dice.  For example, if attempting a task that depends on knowledge, Professor Longfellow rolls 5 dice, Madame Zostra rolls 4, and Ox Bellows rolls 3.  Each die yields 0, 1, or 2 with equal probability.  
+{\it Betrayal at House on the Hill} is a strategy game in which characters with different attributes explore a haunted house.  Depending on their attributes, the characters roll different numbers of dice.  For example, if attempting a task that depends on knowledge, Professor Longfellow rolls 5 dice, Madame Zostra rolls 4, and Ox Bellows rolls 3.  Each die yields 0, 1, or 2 with equal probability.
 
 If a randomly chosen character attempts a task three times and rolls a total of 3 on the first attempt, 4 on the second, and 5 on the third, which character do you think it was?
 \end{exercise}
 
 
 \begin{exercise}
-There are 538 members of the United States Congress.  
+There are 538 members of the United States Congress.
 Suppose we audit their investment portfolios and find that 312 of them outperform the market.
 Let's assume that an honest member of Congress has only a 50\% chance of outperforming the market, but a dishonest member who trades on inside information has a 90\% chance.  How many members of Congress are honest?
 \end{exercise}
@@ -3412,7 +3395,7 @@ And compute the equivalent \py{Pmf} like this:
 pmf_max6 = cdf_max6.make_pmf()
 \end{code}
 
-Figure~\ref{fig06-03} shows the result.  
+Figure~\ref{fig06-03} shows the result.
 Most characters have at least one attribute greater than 12; almost 10\% of them have an 18.
 
 \begin{figure}
@@ -3472,7 +3455,7 @@ And that means we can compute the CDF of the minimum like this:
 prob_le6 = 1 - prob_gt6
 \end{code}
 
-The result is a Pandas Series that represents the CDF of the minimum of six attributes.  
+The result is a Pandas Series that represents the CDF of the minimum of six attributes.
 We can put those values in a \py{Cdf} object like this:
 
 \begin{code}
@@ -3706,7 +3689,7 @@ To see whether this anecdote is plausible, let's suppose that when the baker see
 \end{exercise}
 
 
-\begin{exercise} 
+\begin{exercise}
 Two doctors fresh out of medical school are arguing about whose hospital delivers more babies.  The first doctor say, ``I've been at Hospital A for two weeks, and already we've had a day when we delivered 20 babies.''
 
 The second doctor says, ``I've only been at Hospital B for one week, but already there's been a 19-baby day.''
@@ -3748,7 +3731,7 @@ In the 2018 FIFA World Cup final, France defeated Croatia 4 goals to 2.  Based o
 
 To answer these questions, we have to make some modeling decisions.
 
-First, I'll assume that for any team against any other team there is some unknown goal-scoring rate, measured in goals per game, which I'll denote 
+First, I'll assume that for any team against any other team there is some unknown goal-scoring rate, measured in goals per game, which I'll denote
 $\lam$.
 
 Second, I'll assume that a goal is equally likely during any minute of a game.  So, in a 90 minute game, the probability of scoring during any minute is $\lam / 90$.
@@ -3768,7 +3751,7 @@ distribution for $\lam$.
 
 \item Use the score from the game to estimate $\lam$ for each team.
 
-\item Use the posterior distributions of $\lam$ to compute 
+\item Use the posterior distributions of $\lam$ to compute
 distribution of goals for each team and the probability that each team wins
 the next game.
 
@@ -3778,15 +3761,15 @@ the next game.
 
 In mathematical statistics, a {\bf process} is a stochastic model of a
 physical system (``stochastic'' means that the model has some kind of
-randomness in it).  
+randomness in it).
 
 For example, a {\bf Bernoulli process} is a model of a
 sequence of events, called trials, in which each trial has two
-possible outcomes, usually called success and failure.  
+possible outcomes, usually called success and failure.
 So a Bernoulli process
 is a natural model for a series of coin flips, or a series of shots on
-goal.  
-\index{process} 
+goal.
+\index{process}
 \index{Bernoulli process}
 
 A {\bf Poisson process} is the continuous version of a Bernoulli process,
@@ -3840,7 +3823,7 @@ def make_poisson_pmf($\lam$, high):
     return pmf
 \end{code}
 
-The first parameter is the goal-scoring rate.  
+The first parameter is the goal-scoring rate.
 The second is the upper bound of the distribution.
 In theory the Poisson distribution goes to infinity, but we can cut if off when we get to quantities with negligible probability.
 
@@ -3869,17 +3852,17 @@ Values above 7 are negligible.
 If we know the goal scoring rate, we can predict the number of goals.
 Now let's turn it around: given a number of goals, what can we say about the goal-scoring rate?
 
-To answer that, we need to think about the prior distribution of $\lam$. 
+To answer that, we need to think about the prior distribution of $\lam$.
 And for that, I am going to use a Gamma distribution.
 
 
 \section{The Gamma Distribution}
 
-If you have ever seen a soccer game, you have some information about $\lam$.  
-In most games, teams score a few goals each.  
+If you have ever seen a soccer game, you have some information about $\lam$.
+In most games, teams score a few goals each.
 In rare cases, a team might score more than 5 goals, but they almost never score more than 10.
 
-Using data from previous World Cups 
+Using data from previous World Cups
 I estimate that each team scores about 1.4 goals per game, on average (see \url{https://www.statista.com/statistics/269031/goals-scored-per-game-at-the-fifa-world-cup-since-1930/}).  So I'll set the mean of $\lam$ to be 1.4.
 
 For a good team against a bad one, we expect $\lam$ to be higher; for a bad team against a good one, we expect it to be lower.
@@ -3932,7 +3915,7 @@ Figure~\ref{fig07-02} shows what it looks like.
 
 This distribution represents our prior knowledge about goal scoring: $\lam$ is usually less than 2, occasionally as high as 6, and seldom higher than that.  And the mean is about 1.4.
 
-As usual, reasonable people could disagree about the details of the prior, but this is good enough to get started.  
+As usual, reasonable people could disagree about the details of the prior, but this is good enough to get started.
 Let's do an update.
 
 
@@ -3959,7 +3942,7 @@ def update_poisson(pmf, data):
     likelihood = poisson.pmf(k, $\lam$s)
     pmf *= likelihood
     pmf.normalize()
-\end{code}  
+\end{code}
 
 The first parameter is the prior; the second is the number of goals.
 We can use this function to compute posterior distributions for France and Croatia:
@@ -3992,7 +3975,7 @@ These results are typical of a Bayesian update: the location of the posterior di
 
 Now that we have a posterior distribution for each team, we can answer the first question: How confident should we be that France is the better team?
 
-In the model, ``better'' means having a higher goal-scoring rate against the opponent.  
+In the model, ``better'' means having a higher goal-scoring rate against the opponent.
 We can use the posterior distributions to compute the probability that a random value drawn from France's distribution exceeds a value drawn from Croatia's.
 
 One way to do that is to enumerate all pairs of values from the two distributions, adding up the total probability that one value exceeds the other, as in this function:
@@ -4080,15 +4063,15 @@ This is a bit lower than their probability of superiority, which is 75\%. And th
 As an exercise at the end of this chapter, you'll have a chance to work on  this variation on the World Cup Problem:
 
 \begin{quote}
-In the 2014 FIFA World Cup, Germany played Brazil in a semifinal match. Germany scored after 11 minutes and again at the 23 minute mark. 
-At that point in the match, how many goals would you expect Germany to score after 90 minutes? 
+In the 2014 FIFA World Cup, Germany played Brazil in a semifinal match. Germany scored after 11 minutes and again at the 23 minute mark.
+At that point in the match, how many goals would you expect Germany to score after 90 minutes?
 What was the probability that they would score 5 more goals (as, in fact, they did)?
 \end{quote}
 
 In this version, notice that the data is not the number of goals in a fixed period of time but the time between goals.
 
-To compute the likelihood of data like this, we can use the theory of Poisson processes again.  
-In our model of a soccer game, we assume that each team has a goal-scoring rate, $\lam$, in goals per game.  
+To compute the likelihood of data like this, we can use the theory of Poisson processes again.
+In our model of a soccer game, we assume that each team has a goal-scoring rate, $\lam$, in goals per game.
 And we assume that $\lam$ is constant, so the chance of scoring a goal in the same at any moment of the game.
 
 Under these assumptions, the time between goals follows an exponential distribution (see \url{https://en.wikipedia.org/wiki/Exponential_distribution}).
@@ -4096,7 +4079,7 @@ If the goal-scoring rate is $\lam$, the probability of seeing an interval betwee
 
 $f(t; \lam) = \lam \exp(-\lam t)$
 
-Because $t$ is a continuous quantity, the value of this expression is not a probability; it is a probability density.  
+Because $t$ is a continuous quantity, the value of this expression is not a probability; it is a probability density.
 However, it is proportional to the probability of the data, so we can use it as a likelihood in a Bayesian update.
 
 The following function computes this PDF:
@@ -4145,8 +4128,8 @@ The notebook provides space where you can work on the following problems.
 Finish off the exercise from Section~\ref{exponential}:
 
 \begin{quote}
-In the 2014 FIFA World Cup, Germany played Brazil in a semifinal match. Germany scored after 11 minutes and again at the 23 minute mark. 
-At that point in the match, how many goals would you expect Germany to score after 90 minutes? 
+In the 2014 FIFA World Cup, Germany played Brazil in a semifinal match. Germany scored after 11 minutes and again at the 23 minute mark.
+At that point in the match, how many goals would you expect Germany to score after 90 minutes?
 What was the probability that they would score 5 more goals (as, in fact, they did)?
 \end{quote}
 
@@ -4327,8 +4310,8 @@ book, {\it Probablistic Programming and Bayesian Methods for Hackers}
 \section{The prior}
 
 To choose a prior distribution of prices, we can take advantage
-of data from previous episodes.  
-Fortunately, fans of the show keep detailed records (see \url{https://web.archive.org/web/20121107204942/http://www.tpirsummaries.8m.com/}).  
+of data from previous episodes.
+Fortunately, fans of the show keep detailed records (see \url{https://web.archive.org/web/20121107204942/http://www.tpirsummaries.8m.com/}).
 
 For this example, I downloaded files containing the price of each showcase from the 2011 and 2012 seasons and the bids offered by the contestants.
 
@@ -4368,7 +4351,7 @@ prior1 = make_kde(qs, df['Showcase 1'])
 \label{fig08-01}
 \end{figure}
 
-Figure~\ref{fig08-01} shows the estimated distribution.  
+Figure~\ref{fig08-01} shows the estimated distribution.
 The most common price is around
 \$28,000, but there might be a second mode near \$50,000.
 
@@ -4417,7 +4400,7 @@ contestant's estimate would be \py{guess}?''
 
 Or if we define \py{error = price - guess}, we can ask, ``What is the likelihood that the contestant's estimate is off by \py{error}?''
 
-To answer this question, I'll use the historical data again. 
+To answer this question, I'll use the historical data again.
 For each showcase in the dataset, let's look at the difference between the contestant's bid and the actual price:
 
 \begin{code}
@@ -4440,9 +4423,9 @@ kde_diff2 = make_kde(qs, sample_diff2)
 \label{fig08-02}
 \end{figure}
 
-Figure~\ref{fig08-02} shows the results.  
+Figure~\ref{fig08-02} shows the results.
 
-It looks like the bids are too low more often than too high, which makes sense.  
+It looks like the bids are too low more often than too high, which makes sense.
 Remember that under the rules of the game, you lose if you overbid, so contestants probably underbid to some degree deliberately.
 
 We can use the observed distribution of differences to model the contestant's distribution of errors.
@@ -4471,9 +4454,9 @@ Among other things, this object can compute the PDF of a normal distribution, wh
 \index{normal distribution}
 
 This model is not perfect because contestants' bids are sometimes strategic; for example, if Player 2 thinks that Player 1
-has overbid, Player 2 might make a very low bid.  
-In that case \py{diff} does not reflect \py{error}.  
-If this happens a lot, the observed variance in \py{diff} might overestimate the variance in \py{error}.  
+has overbid, Player 2 might make a very low bid.
+In that case \py{diff} does not reflect \py{error}.
+If this happens a lot, the observed variance in \py{diff} might overestimate the variance in \py{error}.
 Nevertheless, I think it is a reasonable modeling decision.
 
 As an alternative, someone preparing to appear on the show could
@@ -4512,7 +4495,7 @@ posterior1.normalize()
 \end{code}
 
 Figure~\ref{fig08-03} shows this posterior distribution along with the prior.
-Because your estimate is in the lower end of the range, the posterior distribution has shifted to the left.  
+Because your estimate is in the lower end of the range, the posterior distribution has shifted to the left.
 
 \begin{figure}
 % chap08soln.ipynb
@@ -4526,7 +4509,7 @@ Based on the prior mean, before you saw the prizes you expected to see a showcas
 After making an estimate of \$23,000, you updated the prior distribution.
 Based on the combination of the prior and your estimate, you now expect the actual price to be about \$26,000.
 
-On one level, this result makes sense.  
+On one level, this result makes sense.
 The posterior mean is near the midpoint of your estimate and the prior mean.
 
 On another level, you might find this result strange because it
@@ -4539,7 +4522,7 @@ guesses about the prizes you see.
 
 We are treating the historical data as the prior and updating it
 based on your guesses, but we could equivalently use your guess
-as a prior and update it based on historical data.  
+as a prior and update it based on historical data.
 
 If you think of it that way, maybe it is less surprising that the
 most likely value in the posterior is not your original guess.
@@ -4554,8 +4537,8 @@ Now that we have a posterior distribution, let's think about strategy.
 
 \section{Probability of Winning}
 
-First, from the point of view of Player 1, let's compute the probability that Player 2 overbids.  
-To keep it simple, I'll use only the performance of past players, ignoring the estimated price of the showcase. 
+First, from the point of view of Player 1, let's compute the probability that Player 2 overbids.
+To keep it simple, I'll use only the performance of past players, ignoring the estimated price of the showcase.
 
 The following function takes a sequence of past bids and returns the fraction that overbid.
 
@@ -4585,10 +4568,10 @@ def compute_prob_win(diff, sample_diff):
     # if you overbid you lose
     if diff > 0:
         return 0
-    
+
     # if the opponent overbids, you win
     p1 = prob_overbid(sample_diff)
-    
+
     # or of their bid is worse than yours, you win
     p2 = prob_worse_than(diff, sample_diff)
     return p1 + p2
@@ -4653,7 +4636,7 @@ It loops through the hypothetical prices in the posterior distribution and for e
 
 \item Computes the probability that the player wins, given that difference.
 
-\item Adds up the weighted sum of the probabilities, where the weights are the probabilities in the posterior distribution. 
+\item Adds up the weighted sum of the probabilities, where the weights are the probabilities in the posterior distribution.
 
 \end{enumerate}
 
@@ -4665,7 +4648,7 @@ Now we can loop through a range of possible bids and compute the probability of 
 
 \begin{code}
 bids = posterior1.index
-probs = [total_prob_win(bid, posterior1, sample_diff2) 
+probs = [total_prob_win(bid, posterior1, sample_diff2)
          for bid in bids]
 \end{code}
 
@@ -4712,8 +4695,8 @@ def compute_gain(bid, price, sample_diff):
 For simplicity, I assume that both showcases have the same value.
 Since the probability of winning both showcases is small, the the effect of this simplification should be small.
 
-As an example, if the actual price is \$35000 
-and you bid \$30000, 
+As an example, if the actual price is \$35000
+and you bid \$30000,
 you will win about \$23,600 worth of prizes on average.
 
 In reality we don't know the actual price, but we have a posterior distribution that represents what we know about it.
@@ -4729,11 +4712,11 @@ def expected_gain(bid, posterior, sample_diff):
 
 The first argument is your bid; the second is the posterior distribution that represents your belief about the price of the showcase; and \py{sample_diff} is a sample of differences for your opponent.
 
-For the posterior we computed earlier, based on an estimate of \$23,000, 
+For the posterior we computed earlier, based on an estimate of \$23,000,
 the expected gain for a bid of \$21,000
 is about \$16,900.
 
-But can we do better? 
+But can we do better?
 To find out, we can loop through a range of bids and find the one that maximizes expected gain.
 
 \begin{code}
@@ -4801,7 +4784,7 @@ Following the instructions in the notebook, replicate the analysis in this chapt
 
 \begin{exercise}
 
-This exercise is inspired by a true story.  In 2001 I created Green Tea Press to publish my books, starting with {\tt Think Python}.  
+This exercise is inspired by a true story.  In 2001 I created Green Tea Press to publish my books, starting with {\tt Think Python}.
 I ordered 100 copies from a short-run printer and made the book available for through a distributor.  After the first week, the distributor reported that 12 copies were sold.  Based that report, I thought I would run out of copies in about 8 weeks, so I got ready to order more.  My printer offered me a discount if I ordered more than 1000 copies, so I went a little crazy and ordered 2000 copies.  A few days later, my mother called to tell me that her copies of the book had arrived.  Surprised, I asked how many ``copies''.  She said ten.
 
 It turned out I had sold only two copies to non-relatives.  And it took a lot longer than I expected to sell 2000 copies.
@@ -4818,7 +4801,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 
 \begin{itemize}
 
-\item Suppose the cost of printing the book is \$5 per copy, 
+\item Suppose the cost of printing the book is \$5 per copy,
 
 \item But if you order 100 or more, it's \$4.50 per copy.
 
@@ -4831,12 +4814,12 @@ Then generate a posterior predictive distribution for the number of copies you e
 
 For example, suppose you get orders for 10 books per week, every week.
 
-If you order 60 books, 
+If you order 60 books,
 \begin{itemize}
 
-\item The total cost is \$300.  
+\item The total cost is \$300.
 
-\item You sell all 80 books, so you make \$600.  
+\item You sell all 80 books, so you make \$600.
 
 \item But the book is out of stock for two weeks, so you lose \$100 in future sales.
 \end{itemize}
@@ -4869,7 +4852,7 @@ In the notebook for this chapter, I provide some code to get you started.
 
 The Elo rating system is a way to quantify the skill of players for games like chess (see \url{https://en.wikipedia.org/wiki/Elo_rating_system}).
 
-It is based on a model of the relationship between the ratings of players and the outcome of a game.  
+It is based on a model of the relationship between the ratings of players and the outcome of a game.
 Specifically, if $R_A$ is the rating of player \py{A} and $R_B$ is the rating of player \py{B}, the probability that \py{A} beats \py{B} is given by the logistic function (see \url{https://en.wikipedia.org/wiki/Logistic_function}):
 
 $\p{\mathrm{A~beats~B}} = 1 / (1 + 10^{(R_B-R_A)/400})$
@@ -4883,7 +4866,7 @@ In this chapter I will solve a simpler version of this question; then you will h
 
 This chapter introduces {\tt joint distributions}, which represent the distributions of two or more variables and the relationships among them.
 
-We'll extend the Bayesian update process we've seen in previous chapter and apply it to a joint distribution.  
+We'll extend the Bayesian update process we've seen in previous chapter and apply it to a joint distribution.
 
 But first I will introduce a tool we will use to construct joint distributions and compute likelihoods: outer operations.
 
@@ -4917,7 +4900,7 @@ Here's the result:
 
 \input{tables/table09-02}
 
-The values from \py{t1} appear along the rows; the values from \py{t2} appear along the columns.  
+The values from \py{t1} appear along the rows; the values from \py{t2} appear along the columns.
 
 Each element in the array is the product of an element from \py{t1} and an element from \py{t2}.
 
@@ -4958,7 +4941,7 @@ To answer this question:
 
 \item I'll construct a joint distribution of height for A and B (and I'll explain what that is);
 
-\item Then I'll update the prior with the information that A is taller, and 
+\item Then I'll update the prior with the information that A is taller, and
 
 \item From the posterior joint distribution I'll extract the posterior distribution of height for A.
 
@@ -4993,7 +4976,7 @@ This distribution represents what we believe about the heights of \py{A} and \py
 
 \section{Joint distribution}
 
-The next step is to construct a distribution that represents the probability of every pair of heights, which is called a joint distribution.  
+The next step is to construct a distribution that represents the probability of every pair of heights, which is called a joint distribution.
 The elements of the joint distribution are
 
 $\p{A_y~\mathrm{and}~B_x}$
@@ -5122,7 +5105,7 @@ Figure~\ref{fig09-03} shows the result.
 \label{fig09-03}
 \end{figure}
 
-For all hypotheses where \py{A} is not taller than \py{B}, the posterior probability is 0. 
+For all hypotheses where \py{A} is not taller than \py{B}, the posterior probability is 0.
 
 
 \section{The marginals}
@@ -5197,7 +5180,7 @@ As you might expect, the posterior distribution for \py{A} is shifted to the rig
 
 Based on the observation that \py{A} is taller than \py{B}, we are inclined to believe that \py{A} is a little taller than average, and \py{B} is a little shorter.
 
-Notice that the posterior distributions are a little narrower than the prior.  
+Notice that the posterior distributions are a little narrower than the prior.
 The standard deviations of the posterior distributions are a little smaller, which means we are a little more certain about the heights of \py{A} and \py{B} after we compare them.
 
 
@@ -5244,8 +5227,8 @@ Putting it all together, we have
 
 $\p{A_y~\mathrm{and}~B_x} = \p{B_x}~\p{A_y}$
 
-But remember, that's only true if $A$ and $B$ are independent.  
-In the posterior distribution, they are not.  
+But remember, that's only true if $A$ and $B$ are independent.
+In the posterior distribution, they are not.
 We know that \py{A} is taller than \py{B}, so if we know how tall \py{B} is, that gives us information about \py{A}.
 
 The conditional distribution we just computed demonstrates this dependence.
@@ -5278,7 +5261,7 @@ Based on the results of the previous example, compute the posterior conditional 
 Suppose we have established that \py{A} is taller than \py{B}, but we don't know how tall \py{B} is.
 Now we choose a random woman, \py{C}, and find that she is shorter than \py{A} by at least 15 cm.  Compute posterior distributions for the heights of \py{A} and \py{C}.
 
-The average height for women in the U.S. is 163 cm; the standard deviation is 7.3 cm. 
+The average height for women in the U.S. is 163 cm; the standard deviation is 7.3 cm.
 \end{exercise}
 
 
@@ -5304,9 +5287,9 @@ To answer this question:
 
 \item Use them to construct a joint distribution, assuming that the prior distributions are independent.
 
-\item Use the logistic function above to compute the likelihood of the outcome under each joint hypothesis.  
+\item Use the logistic function above to compute the likelihood of the outcome under each joint hypothesis.
 
-\item Use the joint prior and likelihood to compute the joint posterior. 
+\item Use the joint prior and likelihood to compute the joint posterior.
 
 \item Extract and plot the marginal posteriors for \py{A} and \py{B}.
 
@@ -5625,7 +5608,7 @@ def scatterplot(df, var1, var2):
     for species, group in grouped:
         plt.plot(group[var2], group[var1], 'o',
                  alpha=0.4, label=species)
-    
+
     decorate(ylabel=var1, xlabel=var2)
 \end{code}
 
@@ -5987,10 +5970,10 @@ Make a naive Bayesian classifier that uses all four measurements in the
 dataset: culmen length and depth, flipper length, and body mass. Is it
 more accurate than the model with two features?
 
-\end{exercise} 
+\end{exercise}
 
 
-\begin{exercise} 
+\begin{exercise}
 
 One of the reasons the penguin dataset was collected
 was to quantify sexual dimorphism in different penguin species, that is,
@@ -6002,7 +5985,7 @@ more accurately.
 As an exercise, pick a species and use a Bayesian classifier (naive or
 not) to classify the penguins by sex. Which features are most useful?
 What accuracy can you achieve?
-\end{exercise} 
+\end{exercise}
 
 
 \chapter{Inference}
@@ -6080,7 +6063,7 @@ Figure~\ref{fig11-01} shows the cumulative distributions of the scores for the t
 
 \begin{stdout}
 Group      n     mean    std
------      --    ----    ---    
+-----      --    ----    ---
 Control    23    41.5    17.1
 Treated    21    51.5    11.0
 \end{stdout}
@@ -6139,8 +6122,8 @@ scores from the control group on the third axis.
 \begin{code}
 data = responses['Control']
 
-sigmas, mus, data_mesh = np.meshgrid(prior.columns, 
-                                     prior.index, 
+sigmas, mus, data_mesh = np.meshgrid(prior.columns,
+                                     prior.index,
                                      data)
 \end{code}
 
@@ -6155,7 +6138,7 @@ densities = norm.pdf(data_mesh, sigmas, mus)
 \end{code}
 
 The result is a 3-D array. To compute likelihoods, I'll compute the
-product of these densities along the third axis, that is, 
+product of these densities along the third axis, that is,
 \py{axis=2}:
 
 \begin{code}
@@ -6430,8 +6413,8 @@ two groups.
 \begin{code}
 summary = {}
 for name, response in responses.items():
-    summary[name] = (len(response), 
-                     response.mean(), 
+    summary[name] = (len(response),
+                     response.mean(),
                      response.std())
 \end{code}
 
@@ -6490,13 +6473,13 @@ standard deviation.
 def update_norm_summary(prior, data):
     n, m, s = data
     sigmas, mus = np.meshgrid(prior.columns, prior.index)
-    
+
     like1 = norm.pdf(m, mus, sigmas/np.sqrt(n))
     like2 = chi2.pdf(n * s**2 / sigmas**2, n-1)
-    
+
     posterior = prior * like1 * like2
     normalize(posterior)
-    
+
     return posterior
 \end{code}
 
@@ -6512,7 +6495,7 @@ posterior_treated2 = update_norm_summary(prior, data)
 
 You can see the results in the notebook for this chapter.
 Visually, these posterior joint distributions are similar to the ones we
-computed using the entire datasets, not just the summary statistics. 
+computed using the entire datasets, not just the summary statistics.
 But they are not exactly the same, as we'll see by comparing the marginal
 distributions.
 
@@ -6540,7 +6523,7 @@ If we compute the posterior distribution of the difference in means,
 the mean difference is nearly the same, but the credible interval is a bit wider.
 
 That's because the update we did is based on the implicit assumption
-that the distribution of the data is actually normal, but it's not.  
+that the distribution of the data is actually normal, but it's not.
 As a result, when we replace the dataset with the summary statistics, we lose some information about the true distribution of the data. With less
 information, we are less certain about the parameters.
 
@@ -6564,7 +6547,7 @@ of the chapter will give you a chance to apply them.
 
 \section{Exercises}
 
-\begin{exercise} 
+\begin{exercise}
 Looking again at the posterior joint distribution of
 \py{mu} and \py{sigma}, it
 seems like the standard deviation of the treated group might be lower;
@@ -6597,14 +6580,14 @@ effect size is
 \[ d = \frac{\mu_1 - \mu_2}{(\sigma_1 + \sigma_2)/2} \]
 %
 Use the joint posterior distributions for the two groups to compute the posterior distribution for Cohen's effect size.
-Then compute the mean and 90\% credible interval. 
+Then compute the mean and 90\% credible interval.
 
 Hint: if enumerating all pairs from the two distributions takes too
 long, consider random sampling.
 \end{exercise}
 
 
-\begin{exercise} 
+\begin{exercise}
 This exercise is inspired by
 (\url{https://www.reddit.com/r/statistics/comments/hcvl2j/q_reverse_empirical_distribution_rule_question/}) a
 question that appeared on Reddit.
@@ -6628,7 +6611,7 @@ also known as the complementary CDF, or
 \end{exercise}
 
 
-\begin{exercise} 
+\begin{exercise}
 I have a soft spot for crank science, so this
 exercise is about the
 \url{http://en.wikipedia.org/wiki/Variability_hypothesis}{Variability
@@ -6779,7 +6762,7 @@ or 10 minutes with equal probability.  In that case
 the average time between
 trains is 7.5 minutes.
 
-But a passenger is more likely to arrive during a 10 minute gap 
+But a passenger is more likely to arrive during a 10 minute gap
 than a 5 minute gap; in fact, twice as likely.  If we surveyed
 arriving passengers, we would find that 2/3 of them arrived during
 a 10 minute gap, and only 1/3 during a 5 minute gap.  So the
@@ -6806,7 +6789,7 @@ def BiasPmf(pmf):
 
     for x, p in pmf.Items():
         new_pmf.Mult(x, x)
-        
+
     new_pmf.Normalize()
     return new_pmf
 \end{code}
@@ -6843,7 +6826,7 @@ Given the distribution of \py{zb}, we can compute the distribution of
 Suppose, as in the previous example, that \py{zb} is either 5 minutes
 with probability 1/3, or 10 minutes with probability 2/3.
 
-If we arrive at a random time during a 5 minute gap, 
+If we arrive at a random time during a 5 minute gap,
 \py{y} is uniform from 0 to 5 minutes.  If we arrive during a 10
 minute gap, \py{y} is uniform from 0 to 10.  So the overall
 distribution is a mixture of uniform distributions weighted
@@ -6892,7 +6875,7 @@ def MakeRange(low, high, skip=10):
 \end{code}
 
 \py{MakeRange} defines a set of possible values for wait time
-(expressed in seconds).  By default it divides the range into 
+(expressed in seconds).  By default it divides the range into
 10 second intervals.
 
 To encapsulate the process of computing these distributions, I
@@ -7397,10 +7380,10 @@ def ProbLongWait(num_passengers, minutes):
 \end{code}
 
 Given the number of passengers on the platform,
-\py{ProbLongWait} 
+\py{ProbLongWait}
 makes an \py{ElapsedTimeEstimator},
-extracts the distribution of wait time, and 
-computes 
+extracts the distribution of wait time, and
+computes
 the probability that wait time
 exceeds \py{minutes}.
 
@@ -7584,7 +7567,7 @@ is exactly 50\%.
 To make a legitimate comparison, we have to define $B$ without looking
 at the data.  So let's try a different definition.  If you inspect
 a Belgian Euro coin, you might notice that the ``heads'' side is more
-prominent than the ``tails'' side.  You might expect the shape to 
+prominent than the ``tails'' side.  You might expect the shape to
 have some effect on
 $x$, but be unsure whether it makes heads more or less
 likely.  So you might say ``I think the coin is biased so that
@@ -7658,7 +7641,7 @@ And here's \py{Normalize}:
 \begin{code}
     def Normalize(self):
         total = self.Total()
-        
+
         factor = 1.0 / total
         for x in self.d:
             self.d[x] *= factor
@@ -7817,8 +7800,8 @@ approximation, and for a uniform prior there is a perfect match.  The
 beta distribution with \py{alpha=1} and \py{beta=1} is uniform from
 0 to 1.
 
-Let's see how we can take advantage of all this.  
-\py{thinkbayes.py} provides 
+Let's see how we can take advantage of all this.
+\py{thinkbayes.py} provides
 a class that represents a beta distribution:
 \index{Beta object}
 
@@ -7851,7 +7834,7 @@ So we have yet another way to solve the Euro problem:
     print beta.Mean()
 \end{code}
 
-\py{Beta} provides \py{Mean}, which 
+\py{Beta} provides \py{Mean}, which
 computes a simple function of \py{alpha}
 and \py{beta}:
 
@@ -7861,7 +7844,7 @@ and \py{beta}:
 \end{code}
 
 For the Euro problem the posterior mean is 56\%, which is the
-same result we got using Pmfs.  
+same result we got using Pmfs.
 
 \py{Beta} also provides \py{EvalPdf}, which evaluates
 the probability density
@@ -7882,7 +7865,7 @@ of the beta distribution.
 %  thinkbayes.EvalBinomialPmf}
 
 %\begin{code}
-%def EvalBinomialPmf(x, yes, no): 
+%def EvalBinomialPmf(x, yes, no):
 %    return x**yes * (1-x)**no
 %\end{code}
 
@@ -7981,7 +7964,7 @@ want to know whether that difference is evidence that Alice is better
 prepared than Bob, and what the strength of that evidence is.
 \index{evidence}
 
-Now in reality, both scores are very good, and both 
+Now in reality, both scores are very good, and both
 candidates are probably well prepared for college math.  So
 the real Dean of Admission would probably suggest that we choose
 the candidate who best demonstrates the other skills and
@@ -8241,7 +8224,7 @@ are equally difficult---is good enough.  If it's large,
 we need a better model.
 \index{modeling error}
 
-In the next few sections, I develop a better model and 
+In the next few sections, I develop a better model and
 discover (spoiler alert!) that the modeling error is small.  So if
 you are satisfied with the simple model, you can skip to the next
 chapter.  If you want to see how the more realistic model works,
@@ -8249,7 +8232,7 @@ read on...
 
 \begin{itemize}
 
-\item Assume that each test-taker has some 
+\item Assume that each test-taker has some
   degree of \py{efficacy}, which measures their
   ability to answer SAT questions.
 \index{efficacy}
@@ -8592,7 +8575,7 @@ hypotheses---is a common Bayesian approach to problems like this.
 \chapter{Simulation}
 
 In this chapter I describe my solution to a problem posed
-by a patient with a kidney tumor.  I think the problem is 
+by a patient with a kidney tumor.  I think the problem is
 important and relevant to patients with these tumors
 and doctors treating them.
 
@@ -8686,7 +8669,7 @@ Assuming 3-dimensional geometry, the doubling time for a linear
 measure is three times longer.
 
 \begin{code}
-    # time between discharge and diagnosis, in days 
+    # time between discharge and diagnosis, in days
     interval = 3291.0
 
     # doubling time in linear measure is doubling time in volume * 3
@@ -8785,7 +8768,7 @@ The simulation starts with a small tumor and runs these steps:
 For the initial size I chose 0.3 cm, because carcinomas smaller than
 that are less likely to be invasive and less likely to have the blood
 supply needed for rapid growth (see
-\url{http://en.wikipedia.org/wiki/Carcinoma_in_situ}).  
+\url{http://en.wikipedia.org/wiki/Carcinoma_in_situ}).
 \index{carcinoma}
 
 I chose an interval of 245 days (about 8 months) because that is the
@@ -8813,7 +8796,7 @@ In Section~\ref{serial} I review these assumptions and
 consider more detailed models.  But first let's look at some
 examples.
 
-Figure~\ref{fig.kidney4} shows 
+Figure~\ref{fig.kidney4} shows
 the size of simulated tumors as a function of
 age.  The dashed line at 10 cm shows the range of ages for tumors at
 that size: the fastest-growing tumor gets there in 8 years; the
@@ -8846,7 +8829,7 @@ def MakeSequence(rdt_seq, v0=0.01, interval=0.67, vmax=Volume(20.0)):
     return seq
 \end{code}
 
-\verb"rdt_seq" is an iterator that yields 
+\verb"rdt_seq" is an iterator that yields
 random values from the CDF of growth rate.
 \py{v0} is the initial volume in mL.  \py{interval} is the time step
 in years.  \py{vmax} is the final volume corresponding to a linear
@@ -8871,7 +8854,7 @@ def ExtendSequence(age, seq, rdt, interval):
     final = initial * 2**doublings
     new_seq = seq + (final,)
     cache.Add(age, new_seq, rdt)
-    
+
     return final, new_seq
 \end{code}
 
@@ -8899,7 +8882,7 @@ of each interval, as explained in the next section.
 \label{fig.kidney8}
 \end{figure}
 
-Here's how the cache works.  
+Here's how the cache works.
 
 \begin{code}
 class Cache(object):
@@ -9009,14 +8992,14 @@ compute percentiles as a function of size.
     percentiles = [95, 75, 50, 25, 5]
 
     for bucket in cache.GetBuckets():
-        cdf = ConditionalCdf(bucket)      
+        cdf = ConditionalCdf(bucket)
         ps = [cdf.Percentile(p) for p in percentiles]
 \end{code}
 
 Figure~\ref{fig.kidney7} shows these percentiles for each
 size bucket.  The data points are computed from the estimated
 joint distribution.  In the model, size and time are discrete,
-which contributes numerical errors, so I also show a least 
+which contributes numerical errors, so I also show a least
 squares fit for each sequence of percentiles.
 \index{least squares fit}
 
@@ -9059,7 +9042,7 @@ likely sources of error:
   found no statistically significant relationship between
   size and growth rate.  So if there is a relationship, it is
   likely to be weak, at least in this size range.
-  
+
 \item In the simulations, growth rate during each interval is
   independent of previous growth rates.  In reality it is plausible
   that tumors that have grown quickly in the past are more likely
@@ -9102,7 +9085,7 @@ def CorrelatedGenerator(cdf, rho):
     x = random.gauss(0, 1)
     yield Transform(x)
 
-    sigma = math.sqrt(1 - rho**2);    
+    sigma = math.sqrt(1 - rho**2);
     while True:
         x = random.gauss(x * rho, sigma)
         yield Transform(x)
@@ -9441,14 +9424,14 @@ Each \py{hypo} is a Detector, so we can invoke
 the hypothesis.
 
 After we update the Emitter, we have to update each of the
-Detectors, too.  
+Detectors, too.
 
 \begin{code}
 # class Emitter
 
     def Update(self, data):
         thinkbayes.Suite.Update(self, data)
-        
+
         for detector in self.Values():
             detector.Update()
 \end{code}
@@ -9465,7 +9448,7 @@ we didn't really need it, because the total probability
 computed by \py{SuiteLikelihood} is exactly the normalizing
 constant computed and returned by \py{Update}.
 \index{normalizing constant}
- 
+
 So instead of updating the Emitter and then updating the
 Detectors, we can do both steps at the same time, using
 the result from \py{Detector.Update} as the likelihood
@@ -9511,7 +9494,7 @@ of $r$ by looping through the Detectors and their probabilities:
 The result is the Pmf of $r$.
 
 To get the posterior distribution of $n$, we have to compute
-the mixture of the Detectors.  We can use 
+the mixture of the Detectors.  We can use
 \py{thinkbayes.MakeMixture}, which takes a meta-Pmf that maps
 from each distribution to its probability.  And that's exactly
 what the Emitter is:
@@ -9948,7 +9931,7 @@ add up to 1 (see
 \index{random sample}
 
 A less obvious, but faster, way is to select values from \py{n} gamma
-distributions, then normalize by dividing through by the total. 
+distributions, then normalize by dividing through by the total.
 Here's the code:
 \index{numpy}
 \index{gamma distribution}
@@ -9986,7 +9969,7 @@ of each \py{n}.
 Figure~\ref{fig.species2} shows the result.  The most likely value is 4.
 Values from 3 to 7 are reasonably likely; after that the probabilities
 drop off quickly.  The probability that there are 29 species is
-low enough to be negligible; if we chose a higher bound, 
+low enough to be negligible; if we chose a higher bound,
 we would get nearly the same result.
 
 Remember that this result is based on a uniform prior for \py{n}.  If
@@ -10053,14 +10036,14 @@ button data.
 
 All of the bottom-level Dirichlet distributions are updated
 with the same data, so the first \py{m} parameters are the same for
-all of them.  
+all of them.
 We can eliminate them and merge the parameters into
 the top-level suite.  \py{Species2} implements this optimization:
 \index{numpy}
 
 \begin{code}
 class Species2(object):
-    
+
     def __init__(self, ns):
         self.ns = ns
         self.probs = numpy.ones(len(ns), dtype=numpy.double)
@@ -10181,9 +10164,9 @@ small (see ~\ref{underflow}).
 
 Finally, before we return the likelihood, we have to apply a correction
 factor, which is the number of ways we could have observed these \py{m}
-species, if the total number of species is \py{n}.  
+species, if the total number of species is \py{n}.
 \py{BinomialCoefficient} computes ``n choose m'', which is written
-$\binom{n}{m}$. 
+$\binom{n}{m}$.
 \index{binomial coefficient}
 
 As often happens, the optimized version is less readable and more
@@ -10232,7 +10215,7 @@ class Species4(Species):
 
         for i in range(m):
             one = numpy.zeros(i+1)
-            one[i] = data[i]            
+            one[i] = data[i]
             Species.Update(self, one)
 \end{code}
 
@@ -10292,7 +10275,7 @@ Performing the updates one species at a time solves one problem, but
 it creates another.  Each update takes time proportional to $k m$,
 where $k$ is the number of hypotheses and $m$ is the number of observed
 species.  So if we do $m$ updates, the total run time is
-proportional to $k m^2$. 
+proportional to $k m^2$.
 
 But we can speed things up using the same trick we used in
 Section~\ref{collapsing}: we'll get rid of the Dirichlet objects and
@@ -10301,7 +10284,7 @@ here's yet another version of \py{Species}:
 
 \begin{code}
 class Species5(Species2):
-    
+
     def Update(self, data):
         m = len(data)
         for i in range(m):
@@ -10389,7 +10372,7 @@ whose sample of 400 reads yielded 61 species with the following
 counts:
 
 \begin{code}
-92, 53, 47, 38, 15, 14, 12, 10, 8, 7, 7, 5, 5, 
+92, 53, 47, 38, 15, 14, 12, 10, 8, 7, 7, 5, 5,
 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2,
 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
@@ -10910,7 +10893,7 @@ them useful; let me know how it goes!
 %Bayesian regression (hybrid version with resampling?)
 %\url{http://www.reddit.com/r/statistics/comments/1647yj/which_regression_technique/}
 
-%Change point detection: 
+%Change point detection:
 
 %Deconvolution: Estimating round trip times
 
