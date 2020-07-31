@@ -100,6 +100,20 @@ def outer_product(s1, s2):
     a = np.multiply.outer(s1.to_numpy(), s2.to_numpy())
     return pd.DataFrame(a, index=s1.index, columns=s2.index)
 
+def make_joint(s1, s2):
+    """Compute the outer product of two Series.
+    
+    First Series goes across the columns;
+    second goes down the rows.
+    
+    s1: Series
+    s2: Series
+    
+    return: DataFrame
+    """
+    X, Y = np.meshgrid(s1, s2)
+    return pd.DataFrame(X*Y, columns=s1.index, index=s2.index)
+
 def normalize(joint):
     """Normalize a joint distribution.
     
@@ -120,3 +134,18 @@ def marginal(joint, axis):
     returns: Pmf
     """
     return Pmf(joint.sum(axis=axis))
+
+
+from scipy.stats import binom
+
+def make_binomial(n, p):
+    """Make a binomial distribution.
+    
+    n: number of trials
+    p: probability of success
+    
+    returns: Pmf representing the distribution of k
+    """
+    ks = np.arange(n+1)
+    ps = binom.pmf(ks, n, p)
+    return Pmf(ps, ks)
