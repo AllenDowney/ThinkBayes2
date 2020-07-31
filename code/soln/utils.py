@@ -6,21 +6,30 @@ from empiricaldist import Pmf
 
 
 def write_table(table, label, **options):
-    """
+    """Write a table in LaTex format.
+    
+    table: DataFrame
+    label: string
+    options: passed to DataFrame.to_latex
     """
     filename = f'tables/{label}.tex'
     fp = open(filename, 'w')
     s = table.to_latex(**options)
     fp.write(s)
     fp.close()
-
+    
+    
 def write_pmf(pmf, label):
-    """
+    """Write a Pmf object as a table.
+    
+    pmf: Pmf
+    label: string
     """
     df = pd.DataFrame()
     df['qs'] = pmf.index
     df['ps'] = pmf.values
     write_table(df, label, index=False)
+
     
 def underride(d, **options):
     """Add key-value pairs to d only if key is not in d.
@@ -86,6 +95,7 @@ def make_mixture(pmf, pmf_seq):
     total = df.sum(axis=1)
     return Pmf(total)
 
+
 def outer_product(s1, s2):
     """Compute the outer product of two Series.
     
@@ -99,6 +109,7 @@ def outer_product(s1, s2):
     """
     a = np.multiply.outer(s1.to_numpy(), s2.to_numpy())
     return pd.DataFrame(a, index=s1.index, columns=s2.index)
+
 
 def make_joint(s1, s2):
     """Compute the outer product of two Series.
@@ -114,6 +125,7 @@ def make_joint(s1, s2):
     X, Y = np.meshgrid(s1, s2)
     return pd.DataFrame(X*Y, columns=s1.index, index=s2.index)
 
+
 def normalize(joint):
     """Normalize a joint distribution.
     
@@ -122,6 +134,7 @@ def normalize(joint):
     prob_data = joint.to_numpy().sum()
     joint /= prob_data
     
+
 def marginal(joint, axis):
     """Compute a marginal distribution.
     
