@@ -111,6 +111,25 @@ def outer_product(s1, s2):
     return pd.DataFrame(a, index=s1.index, columns=s2.index)
 
 
+def make_uniform(start, stop, num=51, name=None, **options):
+    """Make a Pmf that represents a uniform distribution.
+    
+    start: lower bound
+    stop: upper bound
+    num: number of points
+    name: string name for the quantities
+    options: passed to Pmf
+    
+    returns: Pmf
+    """
+    qs = np.linspace(start, stop, num)
+    pmf = Pmf(1.0, qs, **options)
+    pmf.normalize()
+    if name:
+        pmf.index.name = name
+    return pmf
+
+
 def make_joint(s1, s2):
     """Compute the outer product of two Series.
     
@@ -126,6 +145,19 @@ def make_joint(s1, s2):
     return pd.DataFrame(X*Y, columns=s1.index, index=s2.index)
 
 
+def make_mesh(joint):
+    """Make a mesh grid from the quantities in a joint distribution.
+    
+    joint: DataFrame representing a joint distribution
+    
+    returns: a mesh grid (X, Y) where X contains the column names and
+                                      Y contains the row labels
+    """
+    x = joint.columns
+    y = joint.index
+    return np.meshgrid(x, y)
+
+
 def normalize(joint):
     """Normalize a joint distribution.
     
@@ -133,13 +165,14 @@ def normalize(joint):
     """
     prob_data = joint.to_numpy().sum()
     joint /= prob_data
+    return prob_data
     
 
 def marginal(joint, axis):
     """Compute a marginal distribution.
     
-    axis=1 returns the marginal distribution of the first variable
-    axis=0 returns the marginal distribution of the second variable
+    axis=0 returns the marginal distribution of the first variable
+    axis=1 returns the marginal distribution of the second variable
     
     joint: DataFrame representing a joint distribution
     axis: int axis to sum along
@@ -147,6 +180,28 @@ def marginal(joint, axis):
     returns: Pmf
     """
     return Pmf(joint.sum(axis=axis))
+
+
+def pmf_marginal(joint_pmf, level):
+    """Compute a marginal distribution.
+    
+    joint_pmf: Pmf representing a joint distribution
+    level: int, level to sum along
+    
+    returns: Pmf
+    """
+    return Pmf(joint_pmf.sum(level=level))
+
+
+def plot_contour(joint, **options):
+    """Plot a joint distribution.
+    
+    joint: DataFrame representing a joint PMF
+    """
+    cs = plt.contour(joint.columns, joint.index, joint, **options)
+    decorate(xlabel=joint.columns.name, 
+             ylabel=joint.index.name)
+    return cs
 
 
 from scipy.stats import binom
@@ -162,3 +217,31 @@ def make_binomial(n, p):
     ks = np.arange(n+1)
     ps = binom.pmf(ks, n, p)
     return Pmf(ps, ks)
+
+
+from statsmodels.nonparametric.smoothers_lowess import lowess
+
+def make_lowess(series):
+    """Use LOWESS to compute a smooth line.
+
+    series: pd.Series
+
+    returns: pd.Series
+    """
+    endog = series.values
+    exog = series.index.values
+
+    smooth = lowess(endog, exog)
+    index, data = np.transpose(smooth)
+
+    return pd.Series(data, index=index)
+
+def plot_series_lowess(series, color):
+    """Plots a series of data points and a smooth line.
+
+    series: pd.Series
+    color: string or tuple
+    """
+    series.plot(lw=0, marker='o', color=color, alpha=0.5)
+    smooth = make_lowess(series)
+    smooth.plot(label='_', color=color)
