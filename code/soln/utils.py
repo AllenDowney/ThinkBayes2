@@ -5,6 +5,21 @@ import matplotlib.pyplot as plt
 from empiricaldist import Pmf
 
 
+def values(series):
+    """Make a series of values and the number of times they appear.
+    
+    Returns a DataFrame because they get rendered better in Jupyter.
+    
+    series: Pandas Series
+    
+    returns: Pandas DataFrame
+    """
+    series = series.value_counts(dropna=False).sort_index()
+    series.index.name = 'values'
+    series.name = 'counts'
+    return pd.DataFrame(series)
+
+
 def write_table(table, label, **options):
     """Write a table in LaTex format.
     
