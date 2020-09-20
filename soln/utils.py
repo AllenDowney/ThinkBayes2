@@ -260,3 +260,35 @@ def plot_series_lowess(series, color):
     series.plot(lw=0, marker='o', color=color, alpha=0.5)
     smooth = make_lowess(series)
     smooth.plot(label='_', color=color)
+
+from seaborn import JointGrid
+
+def joint_plot(joint, **options):
+    """Show joint and marginal distributions.
+    
+    joint: DataFrame that represents a joint distribution
+    options: passed to JointGrid
+    """
+    # get the names of the parameters
+    x = joint.columns.name
+    x = 'x' if x is None else x
+
+    y = joint.index.name
+    y = 'y' if y is None else y
+
+    # make a JointGrid with minimal data
+    data = pd.DataFrame({x:[0], y:[0]})
+    g = JointGrid(x, y, data, **options)
+
+    # replace the contour plot
+    g.ax_joint.contour(joint.columns, 
+                       joint.index, 
+                       joint, 
+                       cmap='viridis')
+    
+    # replace the marginals
+    marginal_x = marginal(joint, 0)
+    g.ax_marg_x.plot(marginal_x.qs, marginal_x.ps)
+    
+    marginal_y = marginal(joint, 1)
+    g.ax_marg_y.plot(marginal_y.ps, marginal_y.qs)
