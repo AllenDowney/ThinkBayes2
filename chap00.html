@@ -1,0 +1,916 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Probability &#8212; Think Bayes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Bayes’s Theorem" href="chap01.html" />
+    <link rel="prev" title="ThinkBayes2" href="README.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">Think Bayes</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="current nav sidenav_l1">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Probability
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap01.html">
+   Bayes’s Theorem
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/chap00.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/AllenDowney/ThinkBayes2"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#introduction">
+   Introduction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#linda-the-banker">
+   Linda the Banker
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   Probability
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#fraction-of-bankers">
+   Fraction of bankers
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-probability-function">
+   The probability function
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#political-views-and-parties">
+   Political views and parties
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#conjunction">
+   Conjunction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#conditional-probability">
+   Conditional probability
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#conditional-probability-is-not-commutative">
+   Conditional probability is not commutative
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#condition-and-conjunction">
+   Condition and conjunction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#laws-of-probability">
+   Laws of probability
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#theorem-1">
+   Theorem 1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#theorem-2">
+   Theorem 2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#theorem-3">
+   Theorem 3
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="probability">
+<h1>Probability<a class="headerlink" href="#probability" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The foundation of Bayesian statistics is Bayes’s Theorem, and the foundation of Bayes’s Theorem is conditional probability.</p>
+<p>In this chapter, we’ll start with conditional probability, derive Bayes’s Theorem, and demonstrate it using a real dataset.  In the next chapter, we’ll use Bayes’s Theorem to solve problems related to conditional probability.  In the chapters that follow, we’ll make the transition from Bayes’s Theorem to Bayesian statistics, and I’ll explain the difference.</p>
+</div>
+<div class="section" id="linda-the-banker">
+<h2>Linda the Banker<a class="headerlink" href="#linda-the-banker" title="Permalink to this headline">¶</a></h2>
+<p>To introduce conditional probability, I’ll use an example from a <a class="reference external" href="https://en.wikipedia.org/wiki/Conjunction_fallacy">famous experiment by Tversky and Kahneman</a>, who posed the following question:</p>
+<blockquote>
+<div><p>Linda is 31 years old, single, outspoken, and very bright. She majored in philosophy. As a student, she was deeply concerned with issues of discrimination and social justice, and also participated in anti-nuclear demonstrations.  Which is more probable?</p>
+</div></blockquote>
+<ol class="simple">
+<li><p>Linda is a bank teller.</p></li>
+<li><p>Linda is a bank teller and is active in the feminist movement.</p></li>
+</ol>
+<p>Many people choose the second answer, presumably because it seems more consistent with the description.  It seems uncharacteristic if Linda is <em>just</em> a bank teller; it seems more likely if she is also a feminist.</p>
+<p>But the second answer cannot be “more probable”, as the question asks.  Suppose we find 1000 people who fit Linda’s description and 10 of them work as bank tellers.  How many of them are also feminists?  At most, all 10 of them are; in that case, the two options are <em>equally</em> probable.  If fewer than 10 are, the second option is <em>less</em> probable.  But there is no way the second option can be <em>more</em> probable.</p>
+<p>If you were inclined to choose the second option, you are in good company.  The biologist <a class="reference external" href="https://sci-hub.tw/https://doi.org/10.1080/09332480.1989.10554932">Stephen J. Gould wrote</a> :</p>
+<blockquote>
+<div><p>I am particularly fond of this example because I know that the [second] statement is least probable, yet a little <a class="reference external" href="https://en.wikipedia.org/wiki/Homunculus_argument">homunculus</a> in my head continues to jump up and down, shouting at me, “but she can’t just be a bank teller; read the description.”</p>
+</div></blockquote>
+<p>If the little person in your head is still unhappy, maybe this chapter will help.</p>
+</div>
+<div class="section" id="id1">
+<h2>Probability<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Ideally I would start by defining probability, but that <a class="reference external" href="https://en.wikipedia.org/wiki/Probability_interpretations">turns out to be surprisingly difficult</a>.  To avoid a philosophical black hole, I’ll start with a simple definition for now and refine it later: A <strong>probability</strong> is a fraction of a finite set.</p>
+<p>For example, if we survey 1000 people, and 20 of them are bank tellers, the fraction that work as bank tellers is 0.02 or 2%.  If we choose a person from this population at random, the probability that they are a bank teller is 2%.
+By “at random” I mean that every person in the dataset has the same chance of being chosen.</p>
+<p>With this definition and an appropriate dataset, we can compute probabilities by counting.</p>
+<p>To demonstrate, I’ll use data from the <a class="reference external" href="http://gss.norc.org/">General Social Survey</a> (GSS).</p>
+<p>We can use Pandas to read the data and store it in a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">gss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;gss_bayes.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">gss</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> has one row for each person surveyed and one column for each variable I selected.</p>
+<p>The columns are</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">caseid</span></code>: Respondent id (which is the index of the table).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">year</span></code>: Year when the respondent was surveyed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">age</span></code>: Respondent’s age when surveyed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sex</span></code>: Male or female.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">polviews</span></code>: Political views on a range from liberal to conservative.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">partyid</span></code>: Political party affiliation, Democrat, Independent, or Republican.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">indus10</span></code>: <a class="reference external" href="https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2007">Code</a> for the industry the respondent works in.</p></li>
+</ul>
+<p>Let’s look at these variables in more detail, starting with <code class="docutils literal notranslate"><span class="pre">indus10</span></code>.</p>
+</div>
+<div class="section" id="fraction-of-bankers">
+<h2>Fraction of bankers<a class="headerlink" href="#fraction-of-bankers" title="Permalink to this headline">¶</a></h2>
+<p>The code for “Banking and related activities” is 6870, so we can select bankers like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">banker</span> <span class="o">=</span> <span class="p">(</span><span class="n">gss</span><span class="p">[</span><span class="s1">&#39;indus10&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6870</span><span class="p">)</span>
+<span class="n">banker</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code> that contains the Boolean values <code class="docutils literal notranslate"><span class="pre">True</span></code> and <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>If we use the <code class="docutils literal notranslate"><span class="pre">sum</span></code> function on this <code class="docutils literal notranslate"><span class="pre">Series</span></code>, it treats <code class="docutils literal notranslate"><span class="pre">True</span></code> as 1 and <code class="docutils literal notranslate"><span class="pre">False</span></code> as 0, so the total is the number of bankers.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">banker</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>In this dataset, there are 728 bankers.</p>
+<p>To compute the <em>fraction</em> of bankers, we can use the <code class="docutils literal notranslate"><span class="pre">mean</span></code> function, which computes the fraction of <code class="docutils literal notranslate"><span class="pre">True</span></code> values in the <code class="docutils literal notranslate"><span class="pre">Series</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">banker</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>About 1.5% of the respondents work in banking, so if we choose a random person from the dataset, the probability they are a banker is about 1.5%.</p>
+</div>
+<div class="section" id="the-probability-function">
+<h2>The probability function<a class="headerlink" href="#the-probability-function" title="Permalink to this headline">¶</a></h2>
+<p>I’ll put the code from the previous section in a function that takes a Boolean series and returns a probability:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prob</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes the probability of a proposition, A.</span>
+<span class="sd">    </span>
+<span class="sd">    A: Boolean series</span>
+<span class="sd">    </span>
+<span class="sd">    returns: probability</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="k">return</span> <span class="n">A</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>So we can compute the fraction of bankers like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">banker</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s look at another variable in this dataset.
+The values of the column <code class="docutils literal notranslate"><span class="pre">sex</span></code> are encoded like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>    <span class="n">Male</span>
+<span class="mi">2</span>    <span class="n">Female</span>
+</pre></div>
+</div>
+<p>So we can make a Boolean series that is <code class="docutils literal notranslate"><span class="pre">True</span></code> for female respondents and <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">female</span> <span class="o">=</span> <span class="p">(</span><span class="n">gss</span><span class="p">[</span><span class="s1">&#39;sex&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And use it to compute the fraction of respondents who are women.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">female</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The fraction of women in this dataset is higher than in the adult U.S. population because <a class="reference external" href="https://gss.norc.org/faq">the GSS does not include people living in institutions</a> like prisons and military housing, and those populations are more likely to be male.</p>
+</div>
+<div class="section" id="political-views-and-parties">
+<h2>Political views and parties<a class="headerlink" href="#political-views-and-parties" title="Permalink to this headline">¶</a></h2>
+<p>The other variables we’ll consider are <code class="docutils literal notranslate"><span class="pre">polviews</span></code>, which describes the political views of the respondents, and <code class="docutils literal notranslate"><span class="pre">partyid</span></code>, which describes their affiliation with a political party.</p>
+<p>The values of <code class="docutils literal notranslate"><span class="pre">polviews</span></code> are on a seven-point scale:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>	<span class="n">Extremely</span> <span class="n">liberal</span>
+<span class="mi">2</span>	<span class="n">Liberal</span>
+<span class="mi">3</span>	<span class="n">Slightly</span> <span class="n">liberal</span>
+<span class="mi">4</span>	<span class="n">Moderate</span>
+<span class="mi">5</span>	<span class="n">Slightly</span> <span class="n">conservative</span>
+<span class="mi">6</span>	<span class="n">Conservative</span>
+<span class="mi">7</span>	<span class="n">Extremely</span> <span class="n">conservative</span>
+</pre></div>
+</div>
+<p>I’ll define <code class="docutils literal notranslate"><span class="pre">liberal</span></code> to be <code class="docutils literal notranslate"><span class="pre">True</span></code> for anyone whose response is “Extremely liberal”, “Liberal”, or “Slightly liberal”.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">liberal</span> <span class="o">=</span> <span class="p">(</span><span class="n">gss</span><span class="p">[</span><span class="s1">&#39;polviews&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s the fraction of respondents who are liberal by this definition.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">liberal</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>If we choose a random person in this dataset, the probability they are liberal is about 27%.</p>
+<p>The values of <code class="docutils literal notranslate"><span class="pre">partyid</span></code> are encoded like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span>	<span class="n">Strong</span> <span class="n">democrat</span>
+<span class="mi">1</span>	<span class="n">Not</span> <span class="n">strong</span> <span class="n">democrat</span>
+<span class="mi">2</span>	<span class="n">Independent</span><span class="p">,</span> <span class="n">near</span> <span class="n">democrat</span>
+<span class="mi">3</span>	<span class="n">Independent</span>
+<span class="mi">4</span>	<span class="n">Independent</span><span class="p">,</span> <span class="n">near</span> <span class="n">republican</span>
+<span class="mi">5</span>	<span class="n">Not</span> <span class="n">strong</span> <span class="n">republican</span>
+<span class="mi">6</span>	<span class="n">Strong</span> <span class="n">republican</span>
+<span class="mi">7</span>	<span class="n">Other</span> <span class="n">party</span>
+</pre></div>
+</div>
+<p>I’ll define <code class="docutils literal notranslate"><span class="pre">democrat</span></code> to include respondents who chose “Strong democrat” or “Not strong democrat”:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">democrat</span> <span class="o">=</span> <span class="p">(</span><span class="n">gss</span><span class="p">[</span><span class="s1">&#39;partyid&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s the fraction of respondents who are Democrats, by this definition.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">democrat</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="conjunction">
+<h2>Conjunction<a class="headerlink" href="#conjunction" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have a definition of probability and a function that computes it, let’s move on to conjunction.</p>
+<p>“Conjunction” is another name for the logical <code class="docutils literal notranslate"><span class="pre">and</span></code> operation.  If you have two <a class="reference external" href="https://en.wikipedia.org/wiki/Proposition">propositions</a>, <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>, the conjunction <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">and</span> <span class="pre">B</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if both <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> are <code class="docutils literal notranslate"><span class="pre">True</span></code>, and <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+<p>If we have two Boolean series, we can use the <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> operator to compute their conjunction.
+For example, we have already computed the probability that a respondent is a banker.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">banker</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And the probability that they are a Democrat:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">democrat</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we can compute the probability that a respondent is a banker <em>and</em> a Democrat:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">banker</span> <span class="o">&amp;</span> <span class="n">democrat</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>As we should expect, <code class="docutils literal notranslate"><span class="pre">prob(banker</span> <span class="pre">&amp;</span> <span class="pre">democrat)</span></code> is less than <code class="docutils literal notranslate"><span class="pre">prob(banker)</span></code>, because not all bankers are Democrats.</p>
+<p>We expect conjunction to be commutative; that is, <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">&amp;</span> <span class="pre">B</span></code> should be the same as <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">&amp;</span> <span class="pre">A</span></code>.  To check, we can also compute <code class="docutils literal notranslate"><span class="pre">prob(democrat</span> <span class="pre">&amp;</span> <span class="pre">banker)</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">democrat</span> <span class="o">&amp;</span> <span class="n">banker</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>As expected, they are the same.</p>
+</div>
+<div class="section" id="conditional-probability">
+<h2>Conditional probability<a class="headerlink" href="#conditional-probability" title="Permalink to this headline">¶</a></h2>
+<p>Conditional probability is a probability that depends on a condition, but that might not be the most helpful definition.  Here are some examples:</p>
+<ul class="simple">
+<li><p>What is the probability that a respondent is a Democrat, given that they are liberal?</p></li>
+<li><p>What is the probability that a respondent is female, given that they are a banker?</p></li>
+<li><p>What is the probability that a respondent is liberal, given that they are female?</p></li>
+</ul>
+<p>Let’s start with the first one, which we can interpret like this: “Of all the respondents who are liberal, what fraction are Democrats?”</p>
+<p>We can compute this probability in two steps:</p>
+<ol class="simple">
+<li><p>Select all respondents who are liberal.</p></li>
+<li><p>Compute the fraction of the selected respondents who are Democrats.</p></li>
+</ol>
+<p>To select liberal respondents, we can use the bracket operator, <code class="docutils literal notranslate"><span class="pre">[]</span></code>, like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">selected</span> <span class="o">=</span> <span class="n">democrat</span><span class="p">[</span><span class="n">liberal</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">selected</span></code> contains the value of <code class="docutils literal notranslate"><span class="pre">democrat</span></code> for liberal respondents, so <code class="docutils literal notranslate"><span class="pre">prob(selected)</span></code> is the fraction of liberals who are Democrats:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>A little more than half of liberals are Democrats.  If that result is lower than you expected, keep in mind:</p>
+<ol class="simple">
+<li><p>We used a somewhat strict definition of “Democrat”, excluding Independents who “lean” democratic.</p></li>
+<li><p>The dataset includes respondents as far back as 1974; in the early part of this interval, there was less alignment between political views and party affiliation, compared to the present.</p></li>
+</ol>
+<p>Let’s try the second example, “What is the probability that a respondent is female, given that they are a banker?”</p>
+<p>We can interpret that to mean, “Of all respondents who are bankers, what fraction are female?”</p>
+<p>Again, we’ll use the bracket operator to select only the bankers and <code class="docutils literal notranslate"><span class="pre">prob</span></code> to compute the fraction that are female.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">selected</span> <span class="o">=</span> <span class="n">female</span><span class="p">[</span><span class="n">banker</span><span class="p">]</span>
+<span class="n">prob</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>About 77% of the bankers in this dataset are female.</p>
+<p>Let’s wrap this computation in a function.
+I’ll define <code class="docutils literal notranslate"><span class="pre">conditional</span></code> to take two Boolean series, <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">given</span></code>, and compute the conditional probability of <code class="docutils literal notranslate"><span class="pre">A</span></code> conditioned on <code class="docutils literal notranslate"><span class="pre">given</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">conditional</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">given</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Conditional probability of A conditioned on `given`.</span>
+<span class="sd">    </span>
+<span class="sd">    A: Boolean series</span>
+<span class="sd">    given: Boolean series</span>
+<span class="sd">    </span>
+<span class="sd">    returns: probability</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">prob</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">given</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">conditional</span></code> to compute the probability that a respondent is liberal given that they are female.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conditional</span><span class="p">(</span><span class="n">liberal</span><span class="p">,</span> <span class="n">given</span><span class="o">=</span><span class="n">female</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>About 28% of female respondents are liberal.</p>
+<p>I included the keyword, <code class="docutils literal notranslate"><span class="pre">given</span></code>, along with the parameter, <code class="docutils literal notranslate"><span class="pre">female</span></code>, to make this expression more readable.</p>
+</div>
+<div class="section" id="conditional-probability-is-not-commutative">
+<h2>Conditional probability is not commutative<a class="headerlink" href="#conditional-probability-is-not-commutative" title="Permalink to this headline">¶</a></h2>
+<p>We have seen that conjunction is commutative; that is, <code class="docutils literal notranslate"><span class="pre">prob(A</span> <span class="pre">&amp;</span> <span class="pre">B)</span></code> is always equal to <code class="docutils literal notranslate"><span class="pre">prob(B</span> <span class="pre">&amp;</span> <span class="pre">A)</span></code>.</p>
+<p>But conditional probability is NOT commutative; that is, <code class="docutils literal notranslate"><span class="pre">conditional(A,</span> <span class="pre">B)</span></code> is not the same as <code class="docutils literal notranslate"><span class="pre">conditional(B,</span> <span class="pre">A)</span></code>.</p>
+<p>That should be clear if we look at an example.  Previously, we computed the probability a respondent is female, given that they are banker.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conditional</span><span class="p">(</span><span class="n">female</span><span class="p">,</span> <span class="n">given</span><span class="o">=</span><span class="n">banker</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result shows that the majority of bankers are female.  That is not the same as the probability that a respondent is a banker, given that they are female:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conditional</span><span class="p">(</span><span class="n">banker</span><span class="p">,</span> <span class="n">given</span><span class="o">=</span><span class="n">female</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Only about 2% of female respondents are bankers.</p>
+<p>I hope this example makes it clear that conditional probability is not commutative, and maybe it was already clear to you.  Nevertheless, it is a common error to confuse <code class="docutils literal notranslate"><span class="pre">conditional(A,</span> <span class="pre">B)</span></code> and <code class="docutils literal notranslate"><span class="pre">conditional(B,</span> <span class="pre">A)</span></code>.  We’ll see some examples later.</p>
+</div>
+<div class="section" id="condition-and-conjunction">
+<h2>Condition and conjunction<a class="headerlink" href="#condition-and-conjunction" title="Permalink to this headline">¶</a></h2>
+<p>We can combine conditional probability and conjunction.  For example, here’s the probability a respondent is female, given that they are a liberal Democrat.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conditional</span><span class="p">(</span><span class="n">female</span><span class="p">,</span> <span class="n">given</span><span class="o">=</span><span class="n">liberal</span> <span class="o">&amp;</span> <span class="n">democrat</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>About 57% of liberal Democrats are female.</p>
+<p>And here’s the probability they are a liberal female, given that they are a banker:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conditional</span><span class="p">(</span><span class="n">liberal</span> <span class="o">&amp;</span> <span class="n">female</span><span class="p">,</span> <span class="n">given</span><span class="o">=</span><span class="n">banker</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>About 17% of bankers are liberal women.</p>
+</div>
+<div class="section" id="laws-of-probability">
+<h2>Laws of probability<a class="headerlink" href="#laws-of-probability" title="Permalink to this headline">¶</a></h2>
+<p>In the next few sections, we’ll derive three relationships between conjunction and conditional probability:</p>
+<ul class="simple">
+<li><p>Theorem 1: Using a conjunction to compute a conditional probability.</p></li>
+<li><p>Theorem 2: Using a conditional probability to compute a conjunction.</p></li>
+<li><p>Theorem 3: Using <code class="docutils literal notranslate"><span class="pre">conditional(A,</span> <span class="pre">B)</span></code> to compute <code class="docutils literal notranslate"><span class="pre">conditional(B,</span> <span class="pre">A)</span></code>.</p></li>
+</ul>
+<p>Theorem 3 is also known as Bayes’s Theorem.</p>
+<p>I’ll write these theorems using mathematical notation for probability:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(P(A)\)</span> is the probability of proposition <span class="math notranslate nohighlight">\(A\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(P(A~\mathrm{and}~B)\)</span> is the probability of the conjunction of <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span>, that is, the probability that both are true.</p></li>
+<li><p><span class="math notranslate nohighlight">\(P(A | B)\)</span> is the conditional probability of <span class="math notranslate nohighlight">\(A\)</span> given that <span class="math notranslate nohighlight">\(B\)</span> is true.  The vertical line between <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> is pronounced “given”.</p></li>
+</ul>
+<p>With that, we are ready for Theorem 1.</p>
+</div>
+<div class="section" id="theorem-1">
+<h2>Theorem 1<a class="headerlink" href="#theorem-1" title="Permalink to this headline">¶</a></h2>
+<p>What fraction of bankers are female?  We have already seen one way to compute the answer:</p>
+<ol class="simple">
+<li><p>Use the bracket operator to select the bankers, then</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">mean</span></code> to compute the fraction of bankers who are female.</p></li>
+</ol>
+<p>We can write these steps like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">female</span><span class="p">[</span><span class="n">banker</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Or we can use the <code class="docutils literal notranslate"><span class="pre">conditional</span></code> function, which does the same thing:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conditional</span><span class="p">(</span><span class="n">female</span><span class="p">,</span> <span class="n">given</span><span class="o">=</span><span class="n">banker</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>But there is another way to compute this conditional probability, by computing the ratio of two probabilities:</p>
+<ol class="simple">
+<li><p>The fraction of respondents who are female bankers, and</p></li>
+<li><p>The fraction of respondents who are bankers.</p></li>
+</ol>
+<p>That is, of all the bankers, what fraction are female bankers?
+Here’s how we compute this ratio.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">female</span> <span class="o">&amp;</span> <span class="n">banker</span><span class="p">)</span> <span class="o">/</span> <span class="n">prob</span><span class="p">(</span><span class="n">banker</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is the same.  This example demonstrates a general rule that relates conditional probability and conjunction.  Here’s what it looks like in math notation:</p>
+<p><span class="math notranslate nohighlight">\(P(A|B) = \frac{P(A~\mathrm{and}~B)}{P(B)}\)</span></p>
+<p>And that’s Theorem 1.</p>
+<p>In this example:</p>
+<p><code class="docutils literal notranslate"><span class="pre">conditional(female,</span> <span class="pre">banker)</span> <span class="pre">=</span> <span class="pre">prob(female</span> <span class="pre">&amp;</span> <span class="pre">banker)</span> <span class="pre">/</span> <span class="pre">prob(banker)</span></code></p>
+</div>
+<div class="section" id="theorem-2">
+<h2>Theorem 2<a class="headerlink" href="#theorem-2" title="Permalink to this headline">¶</a></h2>
+<p>If we start with Theorem 1 and multiply both sides by <span class="math notranslate nohighlight">\(P(B)\)</span>, we get Theorem 2.</p>
+<p><span class="math notranslate nohighlight">\(P(A~\mathrm{and}~B) = P(B) ~ P(A|B)\)</span></p>
+<p>This formula suggests a second way to compute a conjunction: instead of using the <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> operator, we can compute the product of two probabilities.</p>
+<p>Let’s see if it works for <code class="docutils literal notranslate"><span class="pre">liberal</span></code> and <code class="docutils literal notranslate"><span class="pre">democrat</span></code>.  Here’s the result using <code class="docutils literal notranslate"><span class="pre">&amp;</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">liberal</span> <span class="o">&amp;</span> <span class="n">democrat</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s the result using Theorem 2:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">democrat</span><span class="p">)</span> <span class="o">*</span> <span class="n">conditional</span><span class="p">(</span><span class="n">liberal</span><span class="p">,</span> <span class="n">democrat</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>They are the same.</p>
+</div>
+<div class="section" id="theorem-3">
+<h2>Theorem 3<a class="headerlink" href="#theorem-3" title="Permalink to this headline">¶</a></h2>
+<p>We have established that conjunction is commutative.  In math notation, that means:</p>
+<p><span class="math notranslate nohighlight">\(P(A~\mathrm{and}~B) = P(B~\mathrm{and}~A)\)</span></p>
+<p>If we apply Theorem 2 to both sides, we have</p>
+<p><span class="math notranslate nohighlight">\(P(B) P(A|B) = P(A) P(B|A)\)</span></p>
+<p>Here’s one way to interpret that: if you want to check <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span>, you can do it in either order:</p>
+<ol class="simple">
+<li><p>You can check <span class="math notranslate nohighlight">\(B\)</span> first, then <span class="math notranslate nohighlight">\(A\)</span> conditioned on <span class="math notranslate nohighlight">\(B\)</span>, or</p></li>
+<li><p>You can check <span class="math notranslate nohighlight">\(A\)</span> first, then <span class="math notranslate nohighlight">\(B\)</span> conditioned on <span class="math notranslate nohighlight">\(A\)</span>.</p></li>
+</ol>
+<p>If we divide through by <span class="math notranslate nohighlight">\(P(B)\)</span>, we get Theorem 3:</p>
+<p><span class="math notranslate nohighlight">\(P(A|B) = \frac{P(A) P(B|A)}{P(B)}\)</span></p>
+<p>And that, my friends, is Bayes’s Theorem.</p>
+<p>To see how it works, let’s compute the fraction of bankers who are liberal, first using <code class="docutils literal notranslate"><span class="pre">conditional</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conditional</span><span class="p">(</span><span class="n">liberal</span><span class="p">,</span> <span class="n">banker</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now using Bayes’s Theorem:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="n">liberal</span><span class="p">)</span> <span class="o">*</span> <span class="n">conditional</span><span class="p">(</span><span class="n">banker</span><span class="p">,</span> <span class="n">liberal</span><span class="p">)</span> <span class="o">/</span> <span class="n">prob</span><span class="p">(</span><span class="n">banker</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>They are the same.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Here’s what we have so far:</p>
+<p><strong>Theorem 1</strong> gives us a way to compute a conditional probability using a conjunction:</p>
+<p><span class="math notranslate nohighlight">\(P(A|B) = \frac{P(A~\mathrm{and}~B)}{P(B)}\)</span></p>
+<p><strong>Theorem 2</strong> gives us a way to compute a conjunction using a conditional probability:</p>
+<p><span class="math notranslate nohighlight">\(P(A~\mathrm{and}~B) = P(B) P(A|B)\)</span></p>
+<p><strong>Theorem 3</strong>, also known as Bayes’s Theorem, gives us a way to get from <span class="math notranslate nohighlight">\(P(A|B)\)</span> to <span class="math notranslate nohighlight">\(P(B|A)\)</span>, or the other way around:</p>
+<p><span class="math notranslate nohighlight">\(P(A|B) = \frac{P(A) P(B|A)}{P(B)}\)</span></p>
+<p>At this point you might ask, “So what?”  If we have all of the data, we can compute any probability we want, any conjunction, or any conditional probability, just by counting.  We don’t have to use these formulas.</p>
+<p>And you are right, <em>if</em> we have all of the data.  But often we don’t, and in that case, these formulas can be pretty useful – especially Bayes’s Theorem.</p>
+<p>In the next chapter, we’ll see how.</p>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p><strong>Exercise:</strong> Let’s use the tools in this chapter to solve a variation of the Linda problem.</p>
+<blockquote>
+<div><p>Linda is 31 years old, single, outspoken, and very bright. She majored in philosophy. As a student, she was deeply concerned with issues of discrimination and social justice, and also participated in anti-nuclear demonstrations.  Which is more probable?</p>
+</div></blockquote>
+<ol class="simple">
+<li><p>Linda is a banker.</p></li>
+<li><p>Linda is a banker and considers herself a liberal Democrat.</p></li>
+</ol>
+<p>To answer this question, compute</p>
+<ul class="simple">
+<li><p>The probability that Linda is a female banker,</p></li>
+<li><p>The probability that Linda is a liberal female banker, and</p></li>
+<li><p>The probability that Linda is a liberal female banker and a Democrat.</p></li>
+</ul>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution goes here</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution goes here</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution goes here</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Exercise:</strong> Use <code class="docutils literal notranslate"><span class="pre">conditional</span></code> to compute the following probabilities:</p>
+<ul class="simple">
+<li><p>What is the probability that a respondent is liberal, given that they are a Democrat?</p></li>
+<li><p>What is the probability that a respondent is a Democrat, given that they are liberal?</p></li>
+</ul>
+<p>Think carefully about the order of the arguments you pass to <code class="docutils literal notranslate"><span class="pre">conditional</span></code>.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution goes here</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution goes here</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Exercise:</strong> There’s a <a class="reference external" href="https://quoteinvestigator.com/2014/02/24/heart-head/">famous quote</a> about young people, old people, liberals, and conservatives that goes something like:</p>
+<blockquote>
+<div><p>If you are not a liberal at 25, you have no heart. If you are not a conservative at 35, you have no brain.</p>
+</div></blockquote>
+<p>Whether you agree with this proposition or not, it suggests some probabilities we can compute as an exercise.
+Rather than use the specific ages 25 and 35, let’s define <code class="docutils literal notranslate"><span class="pre">young</span></code> and <code class="docutils literal notranslate"><span class="pre">old</span></code> as under 30 or over 65:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">young</span> <span class="o">=</span> <span class="p">(</span><span class="n">gss</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">prob</span><span class="p">(</span><span class="n">young</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">old</span> <span class="o">=</span> <span class="p">(</span><span class="n">gss</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">)</span>
+<span class="n">prob</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For these thresholds, I chose round numbers near the 20th and 80th percentiles.  Depending on your age, you may or may not agree with these definitions of “young” and “old”.</p>
+<p>I’ll define <code class="docutils literal notranslate"><span class="pre">conservative</span></code> as someone whose political views are “Conservative”, “Slightly Conservative”, or “Extremely Conservative”.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conservative</span> <span class="o">=</span> <span class="p">(</span><span class="n">gss</span><span class="p">[</span><span class="s1">&#39;polviews&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">prob</span><span class="p">(</span><span class="n">conservative</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">prob</span></code> and <code class="docutils literal notranslate"><span class="pre">conditional</span></code> to compute the following probabilities.</p>
+<ul class="simple">
+<li><p>What is the probability that a randomly chosen respondent is a young liberal?</p></li>
+<li><p>What is the probability that a young person is liberal?</p></li>
+<li><p>What fraction of respondents are old conservatives?</p></li>
+<li><p>What fraction of conservatives are old?</p></li>
+</ul>
+<p>For each statement, think about whether it is expressing a conjunction, a conditional probability, or both.</p>
+<p>For the conditional probabilities, be careful about the order of the arguments.
+If your answer to the last question is greater than 30%, you have it backwards!</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution goes here</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution goes here</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution goes here</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution goes here</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="README.html" title="previous page">ThinkBayes2</a>
+    <a class='right-next' id="next-link" href="chap01.html" title="next page">Bayes’s Theorem</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Allen B. Downey<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>
