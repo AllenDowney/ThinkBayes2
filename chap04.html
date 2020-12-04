@@ -1,0 +1,1358 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Estimating counts &#8212; Think Bayes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">Think Bayes</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap00.html">
+   Probability
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap01.html">
+   Bayes’s Theorem
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap02.html">
+   Distributions
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/chap04.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/AllenDowney/ThinkBayes2"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-train-problem">
+   The train problem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sensitivity-to-the-prior">
+   Sensitivity to the prior
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#power-law-prior">
+   Power law prior
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#credible-intervals">
+   Credible intervals
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-german-tank-problem">
+   The German tank problem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#informative-priors">
+   Informative priors
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="estimating-counts">
+<h1>Estimating counts<a class="headerlink" href="#estimating-counts" title="Permalink to this headline">¶</a></h1>
+<p>In the previous chapter we solved problems that involve estimating proportions.
+In the Euro problem, we estimated the probability that a coin lands heads up, and in the exercises, you estimated a batting average, the fraction of people who cheat on their taxes, and the chance of shooting down an invading alien.</p>
+<p>Clearly, some of these problems are more realistic than others, and some are more useful than others.</p>
+<p>In this chapter, we’ll work on problems related to counting, or estimating the size of a population.
+Again, some of the examples will seem silly, but some of them, like the German Tank problem, have real applications, sometimes in life and death situations.</p>
+<div class="section" id="the-train-problem">
+<h2>The train problem<a class="headerlink" href="#the-train-problem" title="Permalink to this headline">¶</a></h2>
+<p>I found the train problem
+in Frederick Mosteller’s, <a class="reference external" href="https://store.doverpublications.com/0486653552.html"><em>Fifty Challenging Problems in
+Probability with Solutions</em></a>:</p>
+<blockquote>
+<div><p>“A railroad numbers its locomotives in order <span class="math notranslate nohighlight">\(1..N\)</span>.  One day you see a locomotive with the number 60.  Estimate how many locomotives the railroad has.”</p>
+</div></blockquote>
+<p>Based on this observation, we know the railroad has 60 or more
+locomotives.  But how many more?  To apply Bayesian reasoning, we
+can break this problem into two steps:</p>
+<ul class="simple">
+<li><p>What did we know about <span class="math notranslate nohighlight">\(N\)</span> before we saw the data?</p></li>
+<li><p>For any given value of <span class="math notranslate nohighlight">\(N\)</span>, what is the likelihood of seeing the data (a locomotive with number 60)?</p></li>
+</ul>
+<p>The answer to the first question is the prior.  The answer to the
+second is the likelihood.</p>
+<p>We don’t have much basis to choose a prior, so we’ll start with
+something simple and then consider alternatives.<br />
+Let’s assume that <span class="math notranslate nohighlight">\(N\)</span> is equally likely to be any value from 1 to 1000.</p>
+<p>Here’s the prior distribution:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+
+<span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1001</span><span class="p">)</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s figure out the likelihood of the data.
+In a hypothetical fleet of <span class="math notranslate nohighlight">\(N\)</span> locomotives, what is the probability that we would see number 60?
+If we assume that we are equally likely to see any locomotive, the chance of seeing any particular one is <span class="math notranslate nohighlight">\(1/N\)</span>.</p>
+<p>Here’s the function that does the update:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_train</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update a pmf based on new data.</span>
+<span class="sd">    </span>
+<span class="sd">    pmf: Pmf of possible numbers of trains</span>
+<span class="sd">    data: integer train #</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">hypos</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">qs</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">hypos</span>
+    <span class="n">impossible</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">hypos</span><span class="p">)</span>
+    <span class="n">likelihood</span><span class="p">[</span><span class="n">impossible</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">pmf</span> <span class="o">*=</span> <span class="n">likelihood</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This function might look familiar; it is the same as the update function for the dice problem in the previous chapter.
+In terms of likelihood, the train problem is the same as the dice problem.</p>
+<p>Here’s the update:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">update_train</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what the posterior looks like:</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
+
+<span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior after train 60&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of trains&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Train Problem&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap04_12_0.png" src="_images/chap04_12_0.png" />
+</div>
+</div>
+<p>Not surprisingly, all values of <span class="math notranslate nohighlight">\(N\)</span> below 60 have been eliminated.</p>
+<p>The most likely value, if you had to guess, is 60.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span><span class="o">.</span><span class="n">max_prob</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>60
+</pre></div>
+</div>
+</div>
+</div>
+<p>That might not seem like a very good guess; after all, what are the chances that you just happened to see the train with the highest number?
+Nevertheless, if you want to maximize the chance of getting
+the answer exactly right, you should guess 60.</p>
+<p>But maybe that’s not the right goal.
+An alternative is to compute the mean of the posterior distribution.
+Given a set of possible quantities, <span class="math notranslate nohighlight">\(q_i\)</span>, and their probabilities, <span class="math notranslate nohighlight">\(p_i\)</span>, the mean of the distribution is:</p>
+<p><span class="math notranslate nohighlight">\(\mathrm{mean} = \sum_i p_i q_i\)</span></p>
+<p>Which we can compute like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">posterior</span><span class="o">.</span><span class="n">ps</span> <span class="o">*</span> <span class="n">posterior</span><span class="o">.</span><span class="n">qs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>333.41989326370776
+</pre></div>
+</div>
+</div>
+</div>
+<p>Or we can use the method provided by <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>333.41989326370776
+</pre></div>
+</div>
+</div>
+</div>
+<p>The mean of the posterior is 333, so that might be a good guess if you want to minimize error.<br />
+If you played this guessing game over and over, using the mean of the posterior as your estimate would minimize the <a class="reference external" href="http://en.wikipedia.org/wiki/Minimum_mean_square_error">mean squared error</a> over the long run.</p>
+</div>
+<div class="section" id="sensitivity-to-the-prior">
+<h2>Sensitivity to the prior<a class="headerlink" href="#sensitivity-to-the-prior" title="Permalink to this headline">¶</a></h2>
+<p>The prior I used in the previous section is uniform from 1 to 1000, but I offered no justification for choosing a uniform distribution or that particular upper bound.</p>
+<p>We might wonder whether the posterior distribution is sensitive to the prior.
+With so little data—only one observation—it is.</p>
+<p>Here’s what happens as we vary the upper bound:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Posterior mean&#39;</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Upper bound&#39;</span>
+
+<span class="k">for</span> <span class="n">high</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">]:</span>
+    <span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+    <span class="n">update_train</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">high</span><span class="p">]</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Posterior mean</th>
+    </tr>
+    <tr>
+      <th>Upper bound</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>500</th>
+      <td>207.079228</td>
+    </tr>
+    <tr>
+      <th>1000</th>
+      <td>333.419893</td>
+    </tr>
+    <tr>
+      <th>2000</th>
+      <td>552.179017</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>As we vary the upper bound, the posterior mean changes substantially.
+So that’s bad.</p>
+<p>When the posterior is sensitive to the prior, there are two ways to proceed:</p>
+<ul class="simple">
+<li><p>Get more data.</p></li>
+<li><p>Get more background information and choose a better prior.</p></li>
+</ul>
+<p>With more data, posterior distributions based on different priors tend to converge.<br />
+For example, suppose that in addition to train 60 we also see trains 30 and 90.</p>
+<p>Here’s how the posterior means depend on the upper bound of the prior, when we observe three trains:</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Posterior mean&#39;</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Upper bound&#39;</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">90</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">high</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">]:</span>
+    <span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+        <span class="n">update_train</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">high</span><span class="p">]</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Posterior mean</th>
+    </tr>
+    <tr>
+      <th>Upper bound</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>500</th>
+      <td>151.849588</td>
+    </tr>
+    <tr>
+      <th>1000</th>
+      <td>164.305586</td>
+    </tr>
+    <tr>
+      <th>2000</th>
+      <td>171.338181</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The differences are smaller, but apparently three trains are not enough for the posteriors to converge.</p>
+</div>
+<div class="section" id="power-law-prior">
+<h2>Power law prior<a class="headerlink" href="#power-law-prior" title="Permalink to this headline">¶</a></h2>
+<p>If more data are not available, another option is to improve the
+priors by gathering more background information.<br />
+It is probably not reasonable to assume that a train-operating company with 1000 locomotives is just as likely as a company with only 1.</p>
+<p>With some effort, we could probably find a list of companies that
+operate locomotives in the area of observation.
+Or we could interview an expert in rail shipping to gather information about the typical size of companies.</p>
+<p>But even without getting into the specifics of railroad economics, we
+can make some educated guesses.<br />
+In most fields, there are many small companies, fewer medium-sized companies, and only one or two very large companies.</p>
+<p>In fact, the distribution of company sizes tends to follow a power law, as Robert Axtell reports in <em>Science</em> (<a class="reference external" href="http://www.sciencemag.org/content/293/5536/1818.full.pdf">official site</a>, <a class="reference external" href="https://sci-hub.tw/10.1126/science.1062081">available here</a>)
+).</p>
+<p>This law suggests that if there are 1000 companies with fewer than
+10 locomotives, there might be 100 companies with 100 locomotives,
+10 companies with 1000, and possibly one company with 10,000 locomotives.</p>
+<p>Mathematically, a power law means that the number of companies with a given size is inversely proportional to size, or</p>
+<p>$ \mathrm{PMF}(N) \sim \left( \frac{1}{N} \right)^{\alpha} $</p>
+<p>where <span class="math notranslate nohighlight">\(\mathrm{PMF}(N)\)</span> is the probability mass function of <span class="math notranslate nohighlight">\(N\)</span> and <span class="math notranslate nohighlight">\(\alpha\)</span> is a parameter that is often near 1.</p>
+<p>We can construct a power law prior like this:</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">hypos</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span>
+<span class="n">power</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">hypos</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;power law&#39;</span><span class="p">)</span>
+<span class="n">power</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>8.178368103610282
+</pre></div>
+</div>
+</div>
+</div>
+<p>For comparison, here’s the uniform prior again.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1001</span><span class="p">)</span>
+<span class="n">uniform</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">)</span>
+<span class="n">uniform</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>1000
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what a power law prior looks like, compared to the uniform prior</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">uniform</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">power</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of trains&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Train Problem&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap04_30_0.png" src="_images/chap04_30_0.png" />
+</div>
+</div>
+<p>Here’s the update for both priors.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">60</span><span class="p">]</span>
+
+<span class="n">update_train</span><span class="p">(</span><span class="n">uniform</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+<span class="n">update_train</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here are the posterior distributions.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">uniform</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">power</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of trains&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Train Problem&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap04_34_0.png" src="_images/chap04_34_0.png" />
+</div>
+</div>
+<p>The power law gives less prior probability to high values, which yields lower posterior means, and less sensitivity to the upper bound.</p>
+<p>Here’s how the posterior means depend on the upper bound when we use a power law prior and observe three trains:</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Posterior mean&#39;</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Upper bound&#39;</span>
+
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">90</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">high</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">]:</span>
+    <span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">hypos</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="n">power</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+        <span class="n">update_train</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">high</span><span class="p">]</span> <span class="o">=</span> <span class="n">power</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Posterior mean</th>
+    </tr>
+    <tr>
+      <th>Upper bound</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>500</th>
+      <td>130.708470</td>
+    </tr>
+    <tr>
+      <th>1000</th>
+      <td>133.275231</td>
+    </tr>
+    <tr>
+      <th>2000</th>
+      <td>133.997463</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Now the differences are much smaller.  In fact,
+with an arbitrarily large upper bound, the mean converges on 134.</p>
+<p>So the power law prior is more realistic, because it is based on
+general information about the size of companies, and it behaves better in practice.</p>
+</div>
+<div class="section" id="credible-intervals">
+<h2>Credible intervals<a class="headerlink" href="#credible-intervals" title="Permalink to this headline">¶</a></h2>
+<p>So far we have seen two ways to summarize a posterior distribution: the value with the highest posterior probability (the MAP) and the posterior mean.
+These are both <strong>point estimates</strong>, that is, single values that estimate the quantity we are interested in.</p>
+<p>Another way to summarize posterior distribution is with percentiles.
+If you have taken a standardized test, you might be familiar with percentiles.
+For example, if your score is the 90th percentile, that means you did as well as or better than 90% of the people who took the test.</p>
+<p>If we are given a value, <code class="docutils literal notranslate"><span class="pre">x</span></code>, we can compute its <strong>percentile rank</strong> by finding all values less than or equal to <code class="docutils literal notranslate"><span class="pre">x</span></code> and adding up their probabilities.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> provides a method that does this computation.
+So, for example, we can compute the probability that the company has less than or equal to 100 trains:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">power</span><span class="o">.</span><span class="n">prob_le</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.2937469222495771
+</pre></div>
+</div>
+</div>
+</div>
+<p>With a power law prior and a dataset of three trains, the result is about 29%.
+So 100 trains is the 29th percentile.</p>
+<p>Going the other way, suppose we want to compute a particular percentile; for example, the median of a distribution is the 50th percentile.
+We can compute it by adding up probabilities until the total exceeds 0.5.
+Here’s a function that does it:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">quantile</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">prob</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute a quantile.</span>
+<span class="sd">    </span>
+<span class="sd">    pmf: Pmf representing a normalized distribution</span>
+<span class="sd">    prob: float probability</span>
+<span class="sd">    </span>
+<span class="sd">    returns: quantity from the distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pmf</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">p</span>
+        <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;=</span> <span class="n">prob</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">q</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The loop uses <code class="docutils literal notranslate"><span class="pre">items</span></code>, which iterates the quantities and probabilities in the distribution.
+Inside the loop we add up the probabilities of the quantities in order.
+When the total equals or exceeds <code class="docutils literal notranslate"><span class="pre">prob</span></code>, we return the corresponding quantity.</p>
+<p>This function is called <code class="docutils literal notranslate"><span class="pre">quantile</span></code> because it computes a quantile rather than a percentile.
+The difference is the way we specify <code class="docutils literal notranslate"><span class="pre">prob</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">prob</span></code> is a percentage between 0 and 100, we call the corresponding quantity a percentile.
+If <code class="docutils literal notranslate"><span class="pre">prob</span></code> is a probability between 0 and 1, we call the corresponding quantity a <strong>quantile</strong>.</p>
+<p>Here’s how we can use this function to compute the 50th percentile of the posterior distribution:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">quantile</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>113
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result, 113 trains, is the median of the posterior distribution.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> provides a method called <code class="docutils literal notranslate"><span class="pre">quantile</span></code> that does the same thing.
+We can call it like this to compute the 5th and 9th percentiles:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">power</span><span class="o">.</span><span class="n">quantile</span><span class="p">([</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 91., 243.])
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is the interval from 91 to 243 trains, which implies:</p>
+<ul class="simple">
+<li><p>The probability is 5% that the number of trains is less than or equal to 91.</p></li>
+<li><p>The probability is 5% that the number of trains is greater than 243.</p></li>
+</ul>
+<p>Therefore the probability is 90% that the number of trains falls between 91 and 243 (excluding 91 and including 243).
+For this reason, this interval is called a 90% <strong>credible interval</strong>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> also provides <code class="docutils literal notranslate"><span class="pre">credible_interval</span></code>, which computes an interval that contains the given probability.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">power</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 91., 243.])
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="the-german-tank-problem">
+<h2>The German tank problem<a class="headerlink" href="#the-german-tank-problem" title="Permalink to this headline">¶</a></h2>
+<p>During World War II, the Economic Warfare Division of the American
+Embassy in London used statistical analysis to estimate German
+production of tanks and other equipment.</p>
+<p>The Western Allies had captured log books, inventories, and repair
+records that included chassis and engine serial numbers for individual
+tanks.</p>
+<p>Analysis of these records indicated that serial numbers were allocated
+by manufacturer and tank type in blocks of 100 numbers, that numbers
+in each block were used sequentially, and that not all numbers in each
+block were used.  So the problem of estimating German tank production
+could be reduced, within each block of 100 numbers, to a form of the
+train problem.</p>
+<p>Based on this insight, American and British analysts produced
+estimates substantially lower than estimates from other forms
+of intelligence.  And after the war, records indicated that they were
+substantially more accurate.</p>
+<p>They performed similar analyses for tires, trucks, rockets, and other
+equipment, yielding accurate and actionable economic intelligence.</p>
+<p>The German tank problem is historically interesting; it is also a nice
+example of real-world application of statistical estimation.</p>
+<p>For more on this problem, see <a class="reference external" href="https://en.wikipedia.org/wiki/German_tank_problem">this Wikipedia page</a> and Ruggles and Brodie, “An Empirical Approach to Economic Intelligence in World War II”, <em>Journal of the American Statistical Association</em>, March 1947, <a class="reference external" href="https://www.cia.gov/library/readingroom/docs/CIA-RDP79R01001A001300010013-3.pdf">available here</a>)</p>
+</div>
+<div class="section" id="informative-priors">
+<h2>Informative priors<a class="headerlink" href="#informative-priors" title="Permalink to this headline">¶</a></h2>
+<p>Among Bayesians, there are two approaches to choosing prior
+distributions.  Some recommend choosing the prior that best represents
+background information about the problem; in that case the prior
+is said to be <strong>informative</strong>.  The problem with using an informative
+prior is that people might use different background information (or
+interpret it differently).  So informative priors might seem arbitrary.</p>
+<p>The alternative is a so-called <strong>uninformative prior</strong>, which is
+intended to be as unrestricted as possible, in order to let the data
+speak for themselves.  In some cases you can identify a unique prior
+that has some desirable property, like representing minimal prior
+information about the estimated quantity.</p>
+<p>Uninformative priors are appealing because they seem more
+objective.  But I am generally in favor of using informative priors.
+Why?  First, Bayesian analysis is always based on
+modeling decisions.  Choosing the prior is one of those decisions, but
+it is not the only one, and it might not even be the most subjective.
+So even if an uninformative prior is more objective, the entire analysis is still subjective.</p>
+<p>Also, for most practical problems, you are likely to be in one of two
+regimes: either you have a lot of data or not very much.  If you have
+a lot of data, the choice of the prior doesn’t matter very much;
+informative and uninformative priors yield almost the same results.</p>
+<p>But if, as in the train problem, you don’t have much data,
+using relevant background information (like the power law distribution) makes a big difference.</p>
+<p>And if, as in the German tank problem, you have to make life and death
+decisions based on your results, you should probably use all of the
+information at your disposal, rather than maintaining the illusion of
+objectivity by pretending to know less than you do.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>This chapter introduces the train problem, which turns out to have the same likelihood function as the dice problem, and which can be applied to the German Tank problem.</p>
+<p>In all of these examples, the goal is to estimate a count, or the size of a population.</p>
+<p>In the next chapter, I’ll introduce “odds” as an alternative to probabilities, and Bayes’s Rule as another form of Bayes’s Theorem.
+We’ll compute distributions of sums and products, and use them to estimate the number of Members of Congress who are corrupt, among other problems.</p>
+<p>But first, you might want to work on these exercises.</p>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p><strong>Exercise:</strong> Suppose you are giving a talk in a large lecture hall and the fire marshal interrupts because they think the audience exceeds 1200 people, which is the safe capacity of the room.</p>
+<p>You think there are fewer then 1200 people, and you offer to prove it.
+It would take too long to count, so you try an experiment:</p>
+<ul class="simple">
+<li><p>You ask how many people were born on May 11 and two people raise their hands.</p></li>
+<li><p>You ask how many were born on May 23 and 1 person raises their hand.</p></li>
+<li><p>Finally, you ask how many were born on August 1, and no one raises their hand.</p></li>
+</ul>
+<p>How many people are in the audience?  What is the probability that there are more than 1200 people.</p>
+<p>Hint: Remember the binomial distribution.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># I&#39;ll use a uniform prior from 1 to 2000</span>
+<span class="c1"># (we&#39;ll see that the probability is small that there are</span>
+<span class="c1"># more than 2000 people in the room)</span>
+
+<span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+<span class="n">prior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>200
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># We can use the binomial distribution to compute the probability</span>
+<span class="c1"># of the data for each hypothetical audience size</span>
+
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
+
+<span class="n">likelihood1</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">hypos</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">365</span><span class="p">)</span>
+<span class="n">likelihood2</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">365</span><span class="p">)</span>
+<span class="n">likelihood3</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">hypos</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">365</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the update</span>
+
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood1</span> <span class="o">*</span> <span class="n">likelihood2</span> <span class="o">*</span> <span class="n">likelihood3</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.006758799800451805
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here&#39;s the posterior distribution</span>
+
+<span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of people in the audience&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap04_57_0.png" src="_images/chap04_57_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># If we have to guess the audience size,</span>
+<span class="c1"># we might use the posterior mean</span>
+
+<span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>486.2255161687084
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And we can use prob_gt to compute the probability</span>
+<span class="c1"># of exceeding the capacity of the room.</span>
+
+<span class="c1"># It&#39;s about 1%, which may or may not satisfy the fire marshal</span>
+
+<span class="n">posterior</span><span class="o">.</span><span class="n">prob_gt</span><span class="p">(</span><span class="mi">1200</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.011543092507699223
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Exercise:</strong> I often see <a class="reference external" href="https://en.wikipedia.org/wiki/Eastern_cottontail">rabbits</a> in the garden behind my house, but it’s not easy to tell them apart, so I don’t really know how many there are.</p>
+<p>Suppose I deploy a motion-sensing <a class="reference external" href="https://en.wikipedia.org/wiki/Camera_trap">camera trap</a> that takes a picture of the first rabbit it sees each day.  After three days, I compare the pictures and conclude that two of them are the same rabbit and the other is different.</p>
+<p>How many rabbits visit my garden?</p>
+<p>To answer this question, we have to think about the prior distribution and the likelihood of the data:</p>
+<ul class="simple">
+<li><p>I have sometimes seen four rabbits at the same time, so I know there are at least that many.  I would be surprised if there were more than 10.  So, at least as a starting place, I think a uniform prior from 4 to 10 is reasonable.</p></li>
+<li><p>To keep things simple, let’s assume that all rabbits who visit my garden are equally likely to be caught by the camera trap in a given day.  Let’s also assume it is guaranteed that the camera trap gets a picture every day.</p></li>
+</ul>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># The probability that the second rabbit is the same as the first is 1/N</span>
+<span class="c1"># The probability that the third rabbit is different is (N-1)/N</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="n">hypos</span>
+<span class="n">likelihood</span> <span class="o">=</span> <span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">N</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+
+<span class="n">posterior</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of rabbits&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;The Rabbit Problem&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap04_63_0.png" src="_images/chap04_63_0.png" />
+</div>
+</div>
+<p><strong>Exercise:</strong> Suppose that in the criminal justice system, all prison sentences are either 1, 2, or 3 years, with an equal number of each.  One day, you visit a prison and choose a prisoner at random.  What is the probability that they are serving a 3-year sentence?  What is the average remaining sentence of the prisoners you observe?</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the prior distribution of sentences</span>
+
+<span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+<span class="n">prior</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.333333</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># If you visit a prison at a random point in time,</span>
+<span class="c1"># the probability of observing any given prisoner</span>
+<span class="c1"># is proportional to the duration of their sentence.</span>
+
+<span class="n">likelihood</span> <span class="o">=</span> <span class="n">hypos</span>
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.166667</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.500000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># The mean of the posterior is the average sentence.</span>
+<span class="c1"># We can divide by 2 to get the average remaining sentence.</span>
+
+<span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>1.1666666666666665
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Exercise:</strong> If I chose a random adult in the U.S., what is the probability that they have a sibling?  To be precise, what is the probability that their mother has had at least one other child.</p>
+<p><a class="reference external" href="https://www.pewsocialtrends.org/2015/05/07/family-size-among-mothers/">This article from the Pew Research Center</a> provides some relevant data.  From it, I extracted the following distribution of family size for mothers in the U.S. who were 40-44 years old in 2014:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">qs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">14</span><span class="p">]</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">prior</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;1 child&#39;</span><span class="p">,</span> <span class="s1">&#39;2 children&#39;</span><span class="p">,</span> <span class="s1">&#39;3 children&#39;</span><span class="p">,</span> <span class="s1">&#39;4+ children&#39;</span><span class="p">])</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of family size&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap04_69_0.png" src="_images/chap04_69_0.png" />
+</div>
+</div>
+<p>For simplicity, let’s assume that all families in the 4+ category have exactly 4 children.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># When you choose a person a random, you are more likely to get someone</span>
+<span class="c1"># from a bigger family; in fact, the chance of choosing someone from</span>
+<span class="c1"># any given family is proportional to the number of children</span>
+
+<span class="n">likelihood</span> <span class="o">=</span> <span class="n">qs</span>
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.094828</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.353448</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.310345</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.241379</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># The probability that they have a sibling is the probability</span>
+<span class="c1"># that they do not come from a family of 1 </span>
+
+<span class="mi">1</span> <span class="o">-</span> <span class="n">posterior</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.9051724137931034
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Or we could use prob_gt again</span>
+
+<span class="n">posterior</span><span class="o">.</span><span class="n">prob_gt</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.9051724137931034
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Exercise:</strong> The <a class="reference external" href="https://en.wikipedia.org/wiki/Doomsday_argument">Doomsday argument</a> is “a probabilistic argument that claims to predict the number of future members of the human species given an estimate of the total number of humans born so far.”</p>
+<p>Suppose there are only two kinds of intelligent civilizations that can happen in the universe.  The “short-lived” kind go exinct after only 200 billion individuals are born.  The “long-lived” kind survive until 2,000 billion individuals are born.
+And suppose that the two kinds of civilization are equally likely.
+Which kind of civilization do you think we live in?</p>
+<p>The Doomsday argument says we can use the total number of humans born so far as data.
+According to the <a class="reference external" href="https://www.prb.org/howmanypeoplehaveeverlivedonearth/">Population Reference Bureau</a>, the total number of people who have ever lived is about 108 billion.</p>
+<p>Since you were born quite recently, let’s assume that you are, in fact, human being number 108 billion.
+If <span class="math notranslate nohighlight">\(N\)</span> is the total number who will ever live and we consider you to be a randomly-chosen person, it is equally likely that you could have been person 1, or <span class="math notranslate nohighlight">\(N\)</span>, or any number in between.
+So what is the probability that you would be number 108 billion?</p>
+<p>Given this data and dubious prior, what is the probability that our civilization will be short-lived?</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">hypos</span> <span class="o">=</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">2000</span><span class="p">]</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">likelihood</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">prior</span><span class="o">.</span><span class="n">qs</span>
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>200</th>
+      <td>0.909091</td>
+    </tr>
+    <tr>
+      <th>2000</th>
+      <td>0.090909</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># According to this analysis, the probability is about 91% that our </span>
+<span class="c1"># civilization will be short-lived.  </span>
+<span class="c1"># But this conclusion is based on a dubious prior.</span>
+
+<span class="c1"># And with so little data, the posterior depends strongly on the prior.  </span>
+<span class="c1"># To see that, run this analysis again with a different prior, </span>
+<span class="c1"># and see what the results look like.</span>
+
+<span class="c1"># What do you think of the Doomsday argument?</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Allen B. Downey<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>

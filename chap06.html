@@ -1,0 +1,2292 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Minimum, maximum, and mixture &#8212; Think Bayes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">Think Bayes</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap00.html">
+   Probability
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap01.html">
+   Bayes’s Theorem
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap02.html">
+   Distributions
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/chap06.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/AllenDowney/ThinkBayes2"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cumulative-distribution-functions">
+   Cumulative Distribution Functions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#best-three-of-four">
+   Best Three of Four
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#maximum">
+   Maximum
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#minimum">
+   Minimum
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mixture">
+   Mixture
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="minimum-maximum-and-mixture">
+<h1>Minimum, maximum, and mixture<a class="headerlink" href="#minimum-maximum-and-mixture" title="Permalink to this headline">¶</a></h1>
+<p>Think Bayes, Second Edition</p>
+<p>Copyright 2020 Allen B. Downey</p>
+<p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># If we&#39;re running on Colab, install empiricaldist
+# https://pypi.org/project/empiricaldist/
+
+import sys
+IN_COLAB = &#39;google.colab&#39; in sys.modules
+
+if IN_COLAB:
+    !pip install empiricaldist
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Get utils.py
+
+import os
+
+if not os.path.exists(&#39;utils.py&#39;):
+    !wget https://github.com/AllenDowney/ThinkBayes2/raw/master/soln/utils.py
+</pre></div>
+</div>
+</div>
+</div>
+<p>In the previous chapter we computed distributions of sums, differences, products, and quotients.</p>
+<p>In this chapter, we’ll compute distributions of minimums and maximums, and use them to solve both forward and inverse problems.</p>
+<p>Then we’ll look at distributions that are mixtures of other distributions, which will turn out to be particularly useful for making predictions.</p>
+<p>But we’ll start with a powerful tool for working with distributions, the cumulative distribution function.</p>
+<div class="section" id="cumulative-distribution-functions">
+<h2>Cumulative Distribution Functions<a class="headerlink" href="#cumulative-distribution-functions" title="Permalink to this headline">¶</a></h2>
+<p>So far we have been using probability mass functions to represent distributions.
+A useful alternative is the <strong>cumulative distribution function</strong>, or CDF.</p>
+<p>As an example, I’ll use the posterior distribution from the Euro problem, which we computed in Chapter 3.</p>
+<p>Here’s the uniform prior we started with.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+
+<span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">250</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s the update.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
+
+<span class="k">def</span> <span class="nf">update_binomial</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update the PMF using the binomial distribution.</span>
+<span class="sd">    </span>
+<span class="sd">    pmf: Pmf representing the prior</span>
+<span class="sd">    data: tuple of integers k and n</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="n">xs</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">qs</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+    <span class="n">pmf</span> <span class="o">*=</span> <span class="n">likelihood</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">update_binomial</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The CDF is the cumulative sum of the PMF, so we can compute it like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cumulative</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like, along with the PMF.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
+
+<span class="k">def</span> <span class="nf">decorate_euro</span><span class="p">(</span><span class="n">title</span><span class="p">):</span>
+    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Proportion of heads (x)&#39;</span><span class="p">,</span>
+             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Probability&#39;</span><span class="p">,</span>
+             <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cumulative</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
+<span class="n">pmf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+<span class="n">decorate_euro</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution for the Euro problem&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_14_0.png" src="_images/chap06_14_0.png" />
+</div>
+</div>
+<p>The range of the CDF is always from 0 to 1, in contrast with the PMF, where the maximum can be any probability.</p>
+<p>The result from <code class="docutils literal notranslate"><span class="pre">cumsum</span></code> is a Pandas Series, so we can use the bracket operator to select an element:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cumulative</span><span class="p">[</span><span class="mf">0.61</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.9638303193984253
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is about 0.96, which means that the total probability of all quantities less than or equal to 0.61 is 96%.</p>
+<p>To go the other way — to look up a probability and get the corresponding quantile — we can use interpolation:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+
+<span class="n">ps</span> <span class="o">=</span> <span class="n">cumulative</span><span class="o">.</span><span class="n">values</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">cumulative</span><span class="o">.</span><span class="n">index</span>
+
+<span class="n">interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">interp</span><span class="p">(</span><span class="mf">0.96</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array(0.60890171)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is about 0.61, so that confirms that the 96th percentile of this distribution is 0.61.</p>
+<p><code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code> provides a class called <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> that represents a cumulative distribution function.
+Given a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, you can compute a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">make_cdf</span></code> uses <code class="docutils literal notranslate"><span class="pre">np.cumsum</span></code> to compute the cumulative sum of the probabilities.</p>
+<p>You can use brackets to select an element from a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf</span><span class="p">[</span><span class="mf">0.61</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.9638303193984253
+</pre></div>
+</div>
+</div>
+</div>
+<p>But if you look up a quantity that’s not in the distribution, you get a <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">cdf</span><span class="p">[</span><span class="mf">0.615</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;KeyError&#39;&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>To avoid this problem, you can call a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> as a function, using parentheses.
+If the argument does not appear in the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code>, it interpolates between quantities.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf</span><span class="p">(</span><span class="mf">0.615</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array(0.96383032)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Going the other way, you can use <code class="docutils literal notranslate"><span class="pre">quantile</span></code> to look up a cumulative probability and get the corresponding quantity:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.9638303</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array(0.61)
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Cdf</span></code> also provides <code class="docutils literal notranslate"><span class="pre">credible_interval</span></code>, which computes a credible interval that contains the given probability:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([0.51, 0.61])
+</pre></div>
+</div>
+</div>
+</div>
+<p>CDFs and PMFs are equivalent in the sense that they contain the
+same information about the distribution, and you can always convert
+from one to the other.
+Given a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code>, you can get the equivalent <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf</span> <span class="o">=</span> <span class="n">cdf</span><span class="o">.</span><span class="n">make_pmf</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">make_pmf</span></code> uses <code class="docutils literal notranslate"><span class="pre">np.diff</span></code> to compute differences between consecutive cumulative probabilities.</p>
+<p>One reason <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> objects are useful is that they compute quantiles efficiently.
+Another is that they make it easy to compute the distribution of a maximum or minimum, as we’ll see in the next section.</p>
+</div>
+<div class="section" id="best-three-of-four">
+<h2>Best Three of Four<a class="headerlink" href="#best-three-of-four" title="Permalink to this headline">¶</a></h2>
+<p>In <em>Dungeons &amp; Dragons</em>, each character has six attributes: strength, intelligence, wisdom, dexterity, constitution, and charisma.</p>
+<p>To generate a new character, players roll four 6-sided dice for each attribute and add up the best three.
+For example, if I roll for strength and get 1, 2, 3, 4 on the dice, my character’s strength would be the sum of 2, 3, and 4, which is 9.</p>
+<p>As an exercise, let’s figure out the distribution of these attributes.
+Then, for each character, we’ll figure out the distribution of their best attribute.</p>
+<p>I’ll import two functions from the previous chapter: <code class="docutils literal notranslate"><span class="pre">make_die</span></code>, which makes a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the outcome of rolling a die, and <code class="docutils literal notranslate"><span class="pre">add_dist_seq</span></code>, which takes a sequence of <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects and computes the distribution of their sum.</p>
+<p>Here’s a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents a six-sided die and a sequence with three references to it.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_die</span>
+
+<span class="n">die</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">die</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s the distribution of the sum of three dice.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">add_dist_seq</span>
+
+<span class="n">pmf_3d6</span> <span class="o">=</span> <span class="n">add_dist_seq</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like:</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate_dice</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Outcome&#39;</span><span class="p">,</span>
+             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+             <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_3d6</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Distribution of attributes&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_41_0.png" src="_images/chap06_41_0.png" />
+</div>
+</div>
+<p>If we roll four dice and add up the best three, computing the distribution of the sum is a bit more complicated.
+I’ll estimate the distribution by simulating 10,000 rolls.</p>
+<p>First I’ll create an array of random values from 1 to 6, with 10,000 rows and 4 columns:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>To find the best three outcomes in each row, I’ll sort along <code class="docutils literal notranslate"><span class="pre">axis=1</span></code>, which means across the columns.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, I’ll select the last three columns and add them up.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now <code class="docutils literal notranslate"><span class="pre">t</span></code> is an array with a single column and 10,000 rows.
+We can compute the PMF of the values in <code class="docutils literal notranslate"><span class="pre">t</span></code> like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_4d6</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following figure shows the distribution of the sum of three dice, <code class="docutils literal notranslate"><span class="pre">pmf_3d6</span></code>, and the distribution of the best three out of four, <code class="docutils literal notranslate"><span class="pre">pmf_4d6</span></code>.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_3d6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;sum of 3 dice&#39;</span><span class="p">)</span>
+<span class="n">pmf_4d6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;best 3 of 4&#39;</span><span class="p">)</span>
+
+<span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Distribution of attributes&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_51_0.png" src="_images/chap06_51_0.png" />
+</div>
+</div>
+<p>As you might expect, choosing the best three out of four tends to yield higher values.</p>
+<p>Next we’ll find the distribution for the maximum of six attributes, each the sum of the best three of four dice.</p>
+</div>
+<div class="section" id="maximum">
+<h2>Maximum<a class="headerlink" href="#maximum" title="Permalink to this headline">¶</a></h2>
+<p>To compute the distribution of a maximum or minimum, we can make good use of the cumulative distribution function.
+First, I’ll compute the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> of the best three of four distribution:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_4d6</span> <span class="o">=</span> <span class="n">pmf_4d6</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Recall that <code class="docutils literal notranslate"><span class="pre">Cdf(x)</span></code> is the sum of probabilities for quantities less than or equal to <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+Equivalently, it is the probability that a random value chosen from the distribution is less than or equal to <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<p>Now suppose I draw 6 values from this distribution.
+The probability that all 6 of them are less than or equal to <code class="docutils literal notranslate"><span class="pre">x</span></code> is <code class="docutils literal notranslate"><span class="pre">Cdf(x)</span></code> raised to the 6th power, which we can compute like this:</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_4d6</span><span class="o">**</span><span class="mi">6</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>3     5.314410e-19
+4     3.010936e-15
+5     1.870415e-12
+6     3.309287e-10
+7     3.652035e-08
+8     1.287377e-06
+9     2.982333e-05
+10    4.148874e-04
+11    3.333473e-03
+12    1.894143e-02
+13    7.555823e-02
+14    2.209034e-01
+15    4.460327e-01
+16    6.996142e-01
+17    9.133083e-01
+18    1.000000e+00
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p>If all 6 values are less than or equal to <code class="docutils literal notranslate"><span class="pre">x</span></code>, that means that their maximum is less than or equal to <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+So the result is the CDF of their maximum.
+We can convert it to a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> object, like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
+
+<span class="n">cdf_max6</span> <span class="o">=</span> <span class="n">Cdf</span><span class="p">(</span><span class="n">cdf_4d6</span><span class="o">**</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And compute the equivalent <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_max6</span> <span class="o">=</span> <span class="n">cdf_max6</span><span class="o">.</span><span class="n">make_pmf</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following figure shows the result.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_max6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;max of 6 attributes&#39;</span><span class="p">)</span>
+
+<span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Distribution of attributes&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_62_0.png" src="_images/chap06_62_0.png" />
+</div>
+</div>
+<p>Most characters have at least one attribute greater than 12; almost 10% of them have an 18.</p>
+<p>The following figure shows the CDFs for the three distributions we have computed.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">cdf_3d6</span> <span class="o">=</span> <span class="n">pmf_3d6</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span>
+<span class="n">cdf_3d6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;best 3 of 4 dice&#39;</span><span class="p">)</span>
+
+<span class="n">cdf_4d6</span> <span class="o">=</span> <span class="n">pmf_4d6</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span>
+<span class="n">cdf_4d6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;sum of 3 dice&#39;</span><span class="p">)</span>
+
+<span class="n">cdf_max6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;max of 6 attributes&#39;</span><span class="p">)</span>
+
+<span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Distribution of attributes&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;CDF&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_64_0.png" src="_images/chap06_64_0.png" />
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> and <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> provide <code class="docutils literal notranslate"><span class="pre">max_dist</span></code>, which does the same computation.
+We can compute the <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> of the maximum like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_max_dist6</span> <span class="o">=</span> <span class="n">pmf_4d6</span><span class="o">.</span><span class="n">max_dist</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> of the maximum like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_max_dist6</span> <span class="o">=</span> <span class="n">cdf_4d6</span><span class="o">.</span><span class="n">max_dist</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can confirm that the differences are small.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">pmf_max_dist6</span><span class="p">,</span> <span class="n">pmf_max6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">cdf_max_dist6</span><span class="p">,</span> <span class="n">cdf_max6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>In the next section we’ll find the distribution of the minimum.
+The process is similar, but a little more complicated.
+See if you can figure it out before you go on.</p>
+</div>
+<div class="section" id="minimum">
+<h2>Minimum<a class="headerlink" href="#minimum" title="Permalink to this headline">¶</a></h2>
+<p>In the previous section we computed the distribution of a character’s best attribute.
+Now let’s compute the distribution of the worst.</p>
+<p>To compute the distribution of the minimum, we’ll use the <strong>complementary CDF</strong>, which we can compute like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob_gt</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">cdf_4d6</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>As the variable name suggests, the complementary CDF is the probability that a value from the distribution is greater than <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+If we draw 6 values from the distribution, the probability that all 6 exceed <code class="docutils literal notranslate"><span class="pre">x</span></code> is:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob_gt6</span> <span class="o">=</span> <span class="n">prob_gt</span><span class="o">**</span><span class="mi">6</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>If all 6 exceed <code class="docutils literal notranslate"><span class="pre">x</span></code>, that means their minimum exceeds <code class="docutils literal notranslate"><span class="pre">x</span></code>, so <code class="docutils literal notranslate"><span class="pre">prob_gt6</span></code> is the complementary CDF of the minimum.
+And that means we can compute the CDF of the minimum like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob_le6</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">prob_gt6</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code> that represents the CDF of the minimum of six attributes.  We can put those values in a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> object like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_min6</span> <span class="o">=</span> <span class="n">Cdf</span><span class="p">(</span><span class="n">prob_le6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like, along with the distribution of the maximum.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_min6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;minimum of 6&#39;</span><span class="p">)</span>
+<span class="n">cdf_max6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;maximum of 6&#39;</span><span class="p">)</span>
+<span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Minimum and maximum of six attributes&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>Text(27.125, 0.5, &#39;CDF&#39;)
+</pre></div>
+</div>
+<img alt="_images/chap06_82_1.png" src="_images/chap06_82_1.png" />
+</div>
+</div>
+<p>From the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> we can make the corresponding <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_min6</span> <span class="o">=</span> <span class="n">cdf_min6</span><span class="o">.</span><span class="n">make_pmf</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> and <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> provide <code class="docutils literal notranslate"><span class="pre">min_dist</span></code>, which does the same computation.
+We can compute the <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> of the minimum like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_min_dist6</span> <span class="o">=</span> <span class="n">pmf_4d6</span><span class="o">.</span><span class="n">min_dist</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> of the minimum like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_min_dist6</span> <span class="o">=</span> <span class="n">cdf_4d6</span><span class="o">.</span><span class="n">min_dist</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can confirm that the differences are small.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">pmf_min_dist6</span><span class="p">,</span> <span class="n">pmf_min6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">cdf_min_dist6</span><span class="p">,</span> <span class="n">cdf_min6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>In the exercises at the end of this notebook, you’ll use distributions of the minimum and maximum to do Bayesian inference.
+But first we’ll see what happens when we mix distributions.</p>
+</div>
+<div class="section" id="mixture">
+<h2>Mixture<a class="headerlink" href="#mixture" title="Permalink to this headline">¶</a></h2>
+<p>In this section I’ll show how we can compute a distribution which is a mixture of other distributions.
+We’ll use Numpy and Pandas to do the calculation.
+You might find the details interesting, but if you don’t, you can skim this section and just take it for granted that we can compute mixtures of distribution.</p>
+<p>To demonstrate the process, I’ll use another example inspired by <em>Dungeons &amp; Dragons</em>.
+Suppose I have a 4-sided die and a 6-sided die.
+I choose one of them at random and roll it.
+What is the distribution of the outcome?</p>
+<p>If you know which die it is, the answer is easy.
+A die with <code class="docutils literal notranslate"><span class="pre">n</span></code> sides yields a uniform distribution from 1 to <code class="docutils literal notranslate"><span class="pre">n</span></code>, including both.
+We can compute <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects to represent the dice, like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">d4</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">d6</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>To compute the distribution of the mixture, we can compute the average of the two distributions by adding them and dividing the result by 2:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">total</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d4</span><span class="p">,</span> <span class="n">d6</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">total</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>1    0.208333
+2    0.208333
+3    0.208333
+4    0.208333
+5    0.083333
+6    0.083333
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p>Notice that we use <code class="docutils literal notranslate"><span class="pre">Pmf.add</span></code>, which adds the probabilities in the two distributions, and contrasted with <code class="docutils literal notranslate"><span class="pre">Pmf.add_dist</span></code>, which computes the distribution of the sum of the distributions.</p>
+<p>In this example, we have to use <code class="docutils literal notranslate"><span class="pre">fill_value=0</span></code> because the two distributions don’t have the same set of quantities.</p>
+<p>The result from <code class="docutils literal notranslate"><span class="pre">Pmf.add</span></code> is a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code>, but we can convert it to a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mix</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what the mixture of these distributions looks like.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mix</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">decorate_dice</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_100_0.png" src="_images/chap06_100_0.png" />
+</div>
+</div>
+<p>Now suppose I have a 4-sided die and <em>two</em> 6-sided dice.
+Again, I choose one of them at random and roll it.
+What is the distribution of the outcome?</p>
+<p>We can solve this problem by computing a weighted average of the distributions, like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">total</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d4</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">d6</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span>
+<span class="n">mix</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mix</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="n">mix</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">decorate_dice</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_104_0.png" src="_images/chap06_104_0.png" />
+</div>
+</div>
+<p>Finally, suppose we have a box with the following mix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>  <span class="mi">4</span><span class="o">-</span><span class="n">sided</span> <span class="n">die</span>
+<span class="mi">2</span>  <span class="mi">6</span><span class="o">-</span><span class="n">sided</span> <span class="n">dice</span>
+<span class="mi">3</span>  <span class="mi">8</span><span class="o">-</span><span class="n">sided</span> <span class="n">dice</span>
+</pre></div>
+</div>
+<p>If I draw a die from this mix at random, we can use a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> to represent the hypothetical number of sides on the die:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hypos</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">pmf_dice</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+<span class="n">pmf_dice</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="n">pmf_dice</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>4</th>
+      <td>0.166667</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.500000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>And I’ll make a sequence of <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects to represent the dice:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_die</span><span class="p">(</span><span class="n">sides</span><span class="p">)</span> <span class="k">for</span> <span class="n">sides</span> <span class="ow">in</span> <span class="n">hypos</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we have to multiply each distribution in <code class="docutils literal notranslate"><span class="pre">dice</span></code> by the corresponding probabilities in <code class="docutils literal notranslate"><span class="pre">pmf_dice</span></code>.
+To express this computation concisely, it is convenient to put the distributions into a Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.250000</td>
+      <td>0.250000</td>
+      <td>0.250000</td>
+      <td>0.250000</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.166667</td>
+      <td>0.166667</td>
+      <td>0.166667</td>
+      <td>0.166667</td>
+      <td>0.166667</td>
+      <td>0.166667</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.125000</td>
+      <td>0.125000</td>
+      <td>0.125000</td>
+      <td>0.125000</td>
+      <td>0.125000</td>
+      <td>0.125000</td>
+      <td>0.125</td>
+      <td>0.125</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The result is a DataFrame with one row for each distribution and one column for each possible outcome.
+Not all rows are the same length, so Pandas fills the extra spaces with the special value <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, which stands for ``not a number’’.
+We can use <code class="docutils literal notranslate"><span class="pre">fillna</span></code> to replace the <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values with 0.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.250000</td>
+      <td>0.250000</td>
+      <td>0.250000</td>
+      <td>0.250000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.166667</td>
+      <td>0.166667</td>
+      <td>0.166667</td>
+      <td>0.166667</td>
+      <td>0.166667</td>
+      <td>0.166667</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.125000</td>
+      <td>0.125000</td>
+      <td>0.125000</td>
+      <td>0.125000</td>
+      <td>0.125000</td>
+      <td>0.125000</td>
+      <td>0.125</td>
+      <td>0.125</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Before we multiply by the probabilities in <code class="docutils literal notranslate"><span class="pre">pmf_dice</span></code>, we have to transpose the matrix so the distributions run down the columns rather than across the rows:</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.25</td>
+      <td>0.166667</td>
+      <td>0.125</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.25</td>
+      <td>0.166667</td>
+      <td>0.125</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.25</td>
+      <td>0.166667</td>
+      <td>0.125</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.25</td>
+      <td>0.166667</td>
+      <td>0.125</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.00</td>
+      <td>0.166667</td>
+      <td>0.125</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.00</td>
+      <td>0.166667</td>
+      <td>0.125</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>0.125</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>0.125</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Now we can multiply by the probabilities:</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">*=</span> <span class="n">pmf_dice</span><span class="o">.</span><span class="n">ps</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.041667</td>
+      <td>0.055556</td>
+      <td>0.0625</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.041667</td>
+      <td>0.055556</td>
+      <td>0.0625</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.041667</td>
+      <td>0.055556</td>
+      <td>0.0625</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.041667</td>
+      <td>0.055556</td>
+      <td>0.0625</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.000000</td>
+      <td>0.055556</td>
+      <td>0.0625</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.000000</td>
+      <td>0.055556</td>
+      <td>0.0625</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0625</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0625</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>And add up the weighted distributions:</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>1    0.159722
+2    0.159722
+3    0.159722
+4    0.159722
+5    0.118056
+6    0.118056
+7    0.062500
+8    0.062500
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p>The argument <code class="docutils literal notranslate"><span class="pre">axis=1</span></code> means we want to sum across the rows.
+The result is a Pandas Series.</p>
+<p>Putting it all together, here’s a function that makes a weighted mixture of distributions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_mixture</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a mixture of distributions.</span>
+<span class="sd">    </span>
+<span class="sd">    pmf: mapping from each hypothesis to its probability</span>
+<span class="sd">    pmf_seq: sequence of Pmfs, each representing </span>
+<span class="sd">             a conditional distribution for one hypothesis</span>
+<span class="sd">             </span>
+<span class="sd">    returns: Pmf representing the mixture</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pmf_seq</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+    <span class="n">df</span> <span class="o">*=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">ps</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The first parameter is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that maps from each hypothesis to a probability.
+The second parameter is a sequence of <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects, one for each hypothesis.
+We can call it like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mix</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">pmf_dice</span><span class="p">,</span> <span class="n">dice</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s what it looks like.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mix</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;mixture&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Mixture of Uniform Distributions&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_124_0.png" src="_images/chap06_124_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>We have seen two representations of distributions: <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> and <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> objects.
+These representations are equivalent in the sense that they contain
+the same information, so you can convert from one to the other.  The
+primary difference between them is performance: some operations are
+faster and easier with a Pmf; others are faster with a Cdf.</p>
+<p>In this chapter we used <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> objects to compute distributions of maximums and minimums; these distributions are useful for inference if we are given a maximum or minimum as data.</p>
+<p>We also computed mixtures of distributions, which we will use in the next chapter to make predictions.</p>
+<p>But first you might want to work on these exercises.</p>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p><strong>Exercise:</strong> When you generate a D&amp;D character, instead of rolling dice, you can use the “standard array” of attributes, which is 15, 14, 13, 12, 10, and 8.</p>
+<p>Do you think you are better off using the standard array or (literally) rolling the dice?</p>
+<p>Compare the distribution of the values in the standard array to the distribution we computed for the best three out of four:</p>
+<ul class="simple">
+<li><p>Which distribution has higher mean?  Use the <code class="docutils literal notranslate"><span class="pre">mean</span></code> method.</p></li>
+<li><p>Which distribution has higher standard deviation?  Use the <code class="docutils literal notranslate"><span class="pre">std</span></code> method.</p></li>
+<li><p>The lowest value in the standard array is 8.  For each attribute, what is the probability of getting a value less than 8?  If you roll the dice six times, what’s the probability that at least one of your attributes is less than 8?</p></li>
+<li><p>The highest value in the standard array is 15.  For each attribute, what is the probability of getting a value greater than 15?  If you roll the dice six times, what’s the probability that at least one of your attributes is greater than 15?</p></li>
+</ul>
+<p>To get you started, here’s a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> that represents the distribution of attributes in the standard array:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">standard</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">cdf_standard</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">standard</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can compare it to the distribution of attributes you get by rolling four dice at adding up the best three.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_4d6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;max of 6 attributes&#39;</span><span class="p">)</span>
+<span class="n">cdf_standard</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;standard set&#39;</span><span class="p">)</span>
+
+<span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Distribution of attributes&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;CDF&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_131_0.png" src="_images/chap06_131_0.png" />
+</div>
+</div>
+<p>I plotted <code class="docutils literal notranslate"><span class="pre">cdf_standard</span></code> as a step function to show more clearly that it contains only a few quantities.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here are the means</span>
+<span class="n">cdf_4d6</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">cdf_standard</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(12.214999999999998, 12.0)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And the standard deviation</span>
+<span class="n">cdf_4d6</span><span class="o">.</span><span class="n">std</span><span class="p">(),</span> <span class="n">cdf_standard</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(2.8295891927981343, 2.3804761428476167)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the probability that a single attribute is less than 8</span>
+<span class="n">cdf_4d6</span><span class="o">.</span><span class="n">lt_dist</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.0567
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And the probability that a single attribute is greater than 15</span>
+<span class="n">cdf_4d6</span><span class="o">.</span><span class="n">gt_dist</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.1258999999999999
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here are two ways to compute the probability that at</span>
+<span class="c1"># least one attribute is less than 8</span>
+<span class="n">cdf_min6</span><span class="o">.</span><span class="n">lt_dist</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">cdf_4d6</span><span class="o">.</span><span class="n">lt_dist</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="o">**</span><span class="mi">6</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(0.2994943142312464, 0.2994943142312464)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And two ways to compute the probability that at least</span>
+<span class="c1"># one attribute is greater than 15</span>
+<span class="n">cdf_max6</span><span class="o">.</span><span class="n">gt_dist</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">cdf_4d6</span><span class="o">.</span><span class="n">gt_dist</span><span class="p">(</span><span class="mi">15</span><span class="p">))</span><span class="o">**</span><span class="mi">6</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(0.5539672773014324, 0.5539672773014328)
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Exercise:</strong> Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
+I choose one of the dice at random, roll it, and report that the outcome is a 1.
+If I roll the same die again, what is the probability that I get another 1?</p>
+<p>Hint: Compute the posterior distribution as we have done before and pass it as one of the arguments to <code class="docutils literal notranslate"><span class="pre">make_mixture</span></code>.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s what we believe about the dice after seeing the data</span>
+
+<span class="n">hypos</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+<span class="n">likelihood</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">prior</span><span class="o">.</span><span class="n">qs</span>
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>6</th>
+      <td>0.444444</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>0.222222</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s a sequence that represents the three dice</span>
+
+<span class="n">d6</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">d8</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">d12</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+
+<span class="n">dice</span> <span class="o">=</span> <span class="n">d6</span><span class="p">,</span> <span class="n">d8</span><span class="p">,</span> <span class="n">d12</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here&#39;s a mixture of the three dice, weighting</span>
+<span class="c1"># each one with the probability from the posterior distribution</span>
+
+<span class="n">mix</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">dice</span><span class="p">)</span>
+<span class="n">mix</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_142_0.png" src="_images/chap06_142_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># From the mixture, we can pull out the probability of</span>
+<span class="c1"># rolling a 1.</span>
+
+<span class="n">mix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.13425925925925924
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Exercise:</strong>  Suppose I have two boxes of dice:</p>
+<ul class="simple">
+<li><p>One contains a 4-sided die and a 6-sided die.</p></li>
+<li><p>The other contains a 6-sided die and an 8-sided die.</p></li>
+</ul>
+<p>I choose a box at random, choose a die, and roll it 3 times.  If I get 2, 4, and 6, which box do you think I chose?</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># I&#39;ll make some objects to represent the dice.</span>
+
+<span class="n">d4</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">d6</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">d8</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s a mixture that represents the result of</span>
+<span class="c1"># rolling a die from the first box.</span>
+
+<span class="n">pmf1</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">mix1</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">pmf1</span><span class="p">,</span> <span class="p">[</span><span class="n">d4</span><span class="p">,</span> <span class="n">d6</span><span class="p">])</span>
+<span class="n">mix1</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_146_0.png" src="_images/chap06_146_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the distribution of outcomes from the second box.</span>
+
+<span class="n">pmf2</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="n">mix2</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">pmf2</span><span class="p">,</span> <span class="p">[</span><span class="n">d6</span><span class="p">,</span> <span class="n">d8</span><span class="p">])</span>
+<span class="n">mix2</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_147_0.png" src="_images/chap06_147_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here are the likelihoods of getting the data from the first box</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="n">mix1</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([0.20833333, 0.20833333, 0.08333333])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here are the likelihood from the second box</span>
+
+<span class="n">mix2</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([0.14583333, 0.14583333, 0.14583333])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># The overall likelihood of the data is the product</span>
+<span class="c1"># of the likelihoods we just computes</span>
+
+<span class="n">likelihood</span> <span class="o">=</span> <span class="p">[</span><span class="n">mix1</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span> <span class="n">mix2</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">()]</span>
+<span class="n">likelihood</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[0.0036168981481481473, 0.003101490162037036]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Finally, we can do the update in the usual way</span>
+
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Box 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Box 2&#39;</span><span class="p">])</span>
+<span class="n">posterior</span> <span class="o">=</span> <span class="p">(</span><span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span><span class="p">)</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Box 1</th>
+      <td>0.538358</td>
+    </tr>
+    <tr>
+      <th>Box 2</th>
+      <td>0.461642</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p><strong>Exercise:</strong> Henri Poincaré was a French mathematician who taught at the Sorbonne around 1900. The following anecdote about him is probably fiction, but it makes an interesting probability problem.</p>
+<p>Supposedly Poincaré suspected that his local bakery was selling loaves of bread that were lighter than the advertised weight of 1 kg, so every day for a year he bought a loaf of bread, brought it home and weighed it. At the end of the year, he plotted the distribution of his measurements and showed that it fit a normal distribution with mean 950 g and standard deviation 50 g. He brought this evidence to the bread police, who gave the baker a warning.</p>
+<p>For the next year, Poincaré continued the practice of weighing his bread every day. At the end of the year, he found that the average weight was 1000 g, just as it should be, but again he complained to the bread police, and this time they fined the baker.</p>
+<p>Why? Because the shape of the distribution was asymmetric. Unlike the normal distribution, it was skewed to the right, which is consistent with the hypothesis that the baker was still making 950 g loaves, but deliberately giving Poincaré the heavier ones.</p>
+<p>To see whether this anecdote is plausible, let’s suppose that when the baker sees Poincaré coming, he hefts <code class="docutils literal notranslate"><span class="pre">n</span></code> loaves of bread and gives Poincaré the heaviest one.  How many loaves would the baker have to heft to make the average of the maximum 1000 g?</p>
+<p>To get you started, I’ll generate a year’s worth of data from a normal distribution with the given parameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mean</span> <span class="o">=</span> <span class="mi">950</span>
+<span class="n">std</span> <span class="o">=</span> <span class="mi">50</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the mean of the maximum of `n` loaves,</span>
+<span class="c1"># for a range of values of `n`</span>
+
+<span class="n">cdf</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+    <span class="n">cdf_max</span> <span class="o">=</span> <span class="n">cdf</span><span class="o">.</span><span class="n">max_dist</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">cdf_max</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>2 978.4666876067706
+3 992.7589004318227
+4 1002.0372868686195
+5 1008.8226939493089
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># It looks like hefting 4 loaves is enough to get the mean over 1000,</span>
+<span class="c1"># so the story is not entirely implausible.</span>
+
+<span class="c1"># Here&#39;s what the distribution of the maximum looks like, compared</span>
+<span class="c1"># to the actual distribution of weights.</span>
+
+<span class="n">cdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;one loaf&#39;</span><span class="p">)</span>
+<span class="n">cdf</span><span class="o">.</span><span class="n">max_dist</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;maximum of four loaves&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Weight in grams&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_155_0.png" src="_images/chap06_155_0.png" />
+</div>
+</div>
+<p>Note: The following exercise uses a Poisson distribution, which we will see in Section xx.
+If you are not familiar with the Poisson distribution, you might want to skip this exercise and come back to it later.</p>
+<p><strong>Exercise:</strong>  Two doctors fresh out of medical school are arguing about whose hospital delivers more babies.  The first doctor says, “I’ve been at Hospital A for one week, and already we’ve had a day when we delivered 19 babies.”</p>
+<p>The second doctor says, “I’ve been at Hospital B for two weeks, and already there’s been a 20-baby day.”</p>
+<p>Which hospital do you think delivers more babies on average?  You can assume that the number of babies born in a day is well modeled by a <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a> with parameter <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+<p>For a hypothetical value of <span class="math notranslate nohighlight">\(\lambda\)</span>, you can compute the PMF of a Poisson distribution like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
+
+<span class="k">def</span> <span class="nf">make_poisson</span><span class="p">(</span><span class="n">lam</span><span class="p">):</span>
+    <span class="n">high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">lam</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">high</span><span class="p">))</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">pmf</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For example, if the actual value of <span class="math notranslate nohighlight">\(\lambda\)</span> is 8, the distribution of babies born in a single day looks like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf</span> <span class="o">=</span> <span class="n">make_poisson</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">pmf</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of babies&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of babies in a single day&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_159_0.png" src="_images/chap06_159_0.png" />
+</div>
+</div>
+<p>The mean of this distribution is the parameter, <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>7.999999996767771
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s what the distributions look like for the maximum number of babies after one week or two weeks.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_max1</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">max_dist</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">pmf_max1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;one week&#39;</span><span class="p">)</span>
+
+<span class="n">pmf_max2</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">max_dist</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">pmf_max2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;two weeks&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of babies&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of maximum babies in one day&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_163_0.png" src="_images/chap06_163_0.png" />
+</div>
+</div>
+<p>Now you finish it off from there.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s a prior distribution for the values of lamdba</span>
+
+<span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the likelihood of the data for each hypothetical</span>
+<span class="c1"># value of lambda, for the doctor who reported the maximum</span>
+<span class="c1"># number of babies in one week</span>
+
+<span class="n">days</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="mi">7</span>      <span class="c1"># one week</span>
+<span class="n">data</span> <span class="o">=</span> <span class="mi">19</span>         <span class="c1"># maximum of 19 babies</span>
+
+<span class="n">likelihood1</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_poisson</span><span class="p">(</span><span class="n">hypo</span><span class="p">)</span><span class="o">.</span><span class="n">max_dist</span><span class="p">(</span><span class="n">days</span><span class="p">)(</span><span class="n">data</span><span class="p">)</span>
+               <span class="k">for</span> <span class="n">hypo</span> <span class="ow">in</span> <span class="n">hypos</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here&#39;s the first posterior distribution</span>
+
+<span class="n">posterior1</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood1</span>
+<span class="n">posterior1</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>3.384498406074638
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the likelihood for the doctor who reported the</span>
+<span class="c1"># maximum number of babies in two weeks.</span>
+
+<span class="n">days</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">7</span>
+<span class="n">data</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="n">likelihood2</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_poisson</span><span class="p">(</span><span class="n">hypo</span><span class="p">)</span><span class="o">.</span><span class="n">max_dist</span><span class="p">(</span><span class="n">days</span><span class="p">)(</span><span class="n">data</span><span class="p">)</span>
+               <span class="k">for</span> <span class="n">hypo</span> <span class="ow">in</span> <span class="n">hypos</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here&#39;s the second posterior</span>
+
+<span class="n">posterior2</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood2</span>
+<span class="n">posterior2</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>3.245032091492791
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here&#39;s what the two posterior distributions look like</span>
+
+<span class="n">posterior1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Hospital A, one week&#39;</span><span class="p">)</span>
+<span class="n">posterior2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Hospital B, two weeks&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Average babies per day (lambda)&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution of the parameter lambda&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_170_0.png" src="_images/chap06_170_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># The posterior mean is a little higher for hospital B,</span>
+<span class="c1"># based on two weeks of data</span>
+
+<span class="n">posterior1</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior2</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(14.148195767332266, 13.692611551782287)
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Exercise:</strong>  This question is related to <a class="reference external" href="https://patents.google.com/patent/US8385227B1/en">a method I developed</a> for estimating the minimum time for a packet of data to travel through a path in the internet.
+It is a little more challenging than some of the previous problems.
+If you have a hard time with it, you might want to skip it for now.</p>
+<p>Suppose I drive the same route three times and the fastest of the three attempts takes 8 minutes.</p>
+<p>There are two traffic lights on the route.  As I approach each light, there is a 40% chance that it is green; in that case, it causes no delay.  And there is a 60% change it is red; in that case it causes a delay that is uniformly distributed from 0 to 60 seconds.</p>
+<p>What is the posterior distribution of the time it would take to drive the route with no delays?</p>
+<p>To get you started, here is the distribution of delays if the light is red.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">61</span><span class="p">)</span>
+<span class="n">pmf_delay</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">pmf_delay</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>60
+</pre></div>
+</div>
+</div>
+</div>
+<p>And the distribution of delays if the light is green: always 0.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_nodelay</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">pmf_nodelay</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Here is the mixture of delays due to red and green lights.</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">([</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
+<span class="n">pmf_total</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="p">[</span><span class="n">pmf_nodelay</span><span class="p">,</span> <span class="n">pmf_delay</span><span class="p">])</span>
+<span class="n">pmf_total</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.40</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>56</th>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <th>57</th>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <th>58</th>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <th>59</th>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <th>60</th>
+      <td>0.01</td>
+    </tr>
+  </tbody>
+</table>
+<p>61 rows × 1 columns</p>
+</div></div></div>
+</div>
+<p>Now I suggest the following steps:</p>
+<ol class="simple">
+<li><p>Compute the distribution for the sum of two delays.</p></li>
+<li><p>Compute the distribution for the lowest total delay after three attempts.</p></li>
+<li><p>Make a prior distribution with a range of possible values for the no-delay travel time.</p></li>
+<li><p>For each hypothesis, compute the likelihood of the observed minimum travel time, 8 minutes.</p></li>
+<li><p>Compute the posterior distribution for the no-delay travel time.</p></li>
+</ol>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">twice</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">add_dist</span><span class="p">(</span><span class="n">pmf_total</span><span class="p">,</span> <span class="n">pmf_total</span><span class="p">)</span>
+<span class="n">twice</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Delay time (s)&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Total delay&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_179_0.png" src="_images/chap06_179_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">twice_min3</span> <span class="o">=</span> <span class="n">twice</span><span class="o">.</span><span class="n">min_dist</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">twice_min3</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Delay time (s)&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Minimum of three total delays&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_180_0.png" src="_images/chap06_180_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">hypos</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">-</span> <span class="n">twice_min3</span><span class="o">.</span><span class="n">qs</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="mi">60</span>
+<span class="n">likelihood</span> <span class="o">=</span> <span class="p">[</span><span class="n">twice_min3</span><span class="o">.</span><span class="n">add_dist</span><span class="p">(</span><span class="n">hypo</span><span class="p">)(</span><span class="n">data</span><span class="p">)</span>
+              <span class="k">for</span> <span class="n">hypo</span> <span class="ow">in</span> <span class="n">hypos</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>1.0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Travel time (s)&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution of no-delay travel time&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap06_184_0.png" src="_images/chap06_184_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">/</span> <span class="mi">60</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>7.777945555443998
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Allen B. Downey<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>

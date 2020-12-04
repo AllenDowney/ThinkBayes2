@@ -1,0 +1,1327 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Poisson Processes &#8212; Think Bayes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">Think Bayes</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap00.html">
+   Probability
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap01.html">
+   Bayes’s Theorem
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap02.html">
+   Distributions
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/chap07.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/AllenDowney/ThinkBayes2"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-world-cup-problem">
+   The World Cup Problem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-poisson-distribution">
+   The Poisson distribution
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-prior">
+   The prior
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-update">
+   The update
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#probability-of-superiority">
+   Probability of superiority
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#predicting-the-rematch">
+   Predicting the rematch
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-exponential-distribution">
+   The Exponential Distribution
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="poisson-processes">
+<h1>Poisson Processes<a class="headerlink" href="#poisson-processes" title="Permalink to this headline">¶</a></h1>
+<p>This notebook introduces the <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_point_process">Poisson process</a>, which is a model used to describe events that occur at random intervals.
+In this context, “process” has a mathematical definition that is almost unrelated to its usual meaning, and (I think) not worth explaining here.</p>
+<p>As an example of a Poisson process, we’ll model goal-scoring in soccer, which is American English for the game everyone else calls “football”.
+We’ll use goals scored in a game to estimate the parameter of a Poisson process; then we’ll use the posterior distribution to make predictions.</p>
+<p>And we’ll solve The World Cup Problem.</p>
+<div class="section" id="the-world-cup-problem">
+<h2>The World Cup Problem<a class="headerlink" href="#the-world-cup-problem" title="Permalink to this headline">¶</a></h2>
+<p>In the 2018 FIFA World Cup final, France defeated Croatia 4 goals to 2.  Based on this outcome:</p>
+<ol class="simple">
+<li><p>How confident should we be that France is the better team?</p></li>
+<li><p>If the same teams played again, what is the chance France would win again?</p></li>
+</ol>
+<p>To answer these questions, we have to make some modeling decisions.</p>
+<ul class="simple">
+<li><p>First, I’ll assume that for any team against another team there is some unknown goal-scoring rate, measured in goals per game, which I’ll denote with the Greek letter <span class="math notranslate nohighlight">\(\lambda\)</span>, pronounced “lambda”, or the Python variable <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p></li>
+<li><p>Second, I’ll assume that a goal is equally likely during any minute of a game.  So, in a 90 minute game, the probability of scoring during any minute is <span class="math notranslate nohighlight">\(\lambda/90\)</span>.</p></li>
+<li><p>Third, I’ll assume that a team never scores twice during the same minute.</p></li>
+</ul>
+<p>Of course, none of these assumptions is completely true in the real world, but I think they are reasonable simplifications.
+As George Box said, “<a class="reference external" href="https://en.wikipedia.org/wiki/All_models_are_wrong">All models are wrong; some are useful.</a>”</p>
+<p>In this case, the model is useful because if these assumption are
+true, we expect the number of goals scored in a game to follow a Poisson distribution.</p>
+</div>
+<div class="section" id="the-poisson-distribution">
+<h2>The Poisson distribution<a class="headerlink" href="#the-poisson-distribution" title="Permalink to this headline">¶</a></h2>
+<p>If the number of goals scored in a game follows a <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a> with a goal-scoring rate, <span class="math notranslate nohighlight">\(\lambda\)</span>, the probability of scoring <span class="math notranslate nohighlight">\(k\)</span> goals is</p>
+<p><span class="math notranslate nohighlight">\(f(k; \lambda) = \lambda^k \exp(-\lambda) ~/~ k!\)</span></p>
+<p>SciPy provides a <code class="docutils literal notranslate"><span class="pre">poisson</span></code> object that represents a Poisson distribution.
+We can create one like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
+
+<span class="n">lam</span> <span class="o">=</span> <span class="mf">1.4</span>
+<span class="n">dist</span> <span class="o">=</span> <span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span>
+<span class="n">dist</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;scipy.stats._distn_infrastructure.rv_frozen at 0x7f4358b31550&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>And <code class="docutils literal notranslate"><span class="pre">poisson</span></code> provides <code class="docutils literal notranslate"><span class="pre">pmf</span></code>, which evaluates the probability mass function of the Poisson distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">k</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">dist</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.039471954028253146
+</pre></div>
+</div>
+</div>
+</div>
+<p>This result implies that if the average goal-scoring rate is 1.4 goals per game, the probability of scoring 4 goals in a game is about 4%.</p>
+<p>The following function uses <code class="docutils literal notranslate"><span class="pre">poisson</span></code> and <code class="docutils literal notranslate"><span class="pre">pmf</span></code> to evaluate the PMF of the Poisson distribution for values of <code class="docutils literal notranslate"><span class="pre">k</span></code> from 0 to a given upper limit, <code class="docutils literal notranslate"><span class="pre">high</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+
+<span class="k">def</span> <span class="nf">make_poisson_pmf</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a PMF of a Poisson distribution.</span>
+<span class="sd">    </span>
+<span class="sd">    lam: event rate</span>
+<span class="sd">    high: upper bound on number of events, `k`</span>
+<span class="sd">    </span>
+<span class="sd">    returns: Pmf of number of events</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">high</span><span class="p">)</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">pmf</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a normalized <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> object.
+For example, here’s the distribution of goals scored for <code class="docutils literal notranslate"><span class="pre">lam=1.4</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_goals</span> <span class="o">=</span> <span class="n">make_poisson_pmf</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mf">1.4</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following figure shows what it looks like.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
+
+<span class="k">def</span> <span class="nf">decorate_goals</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of goals&#39;</span><span class="p">,</span>
+        <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_goals</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Poisson distribution&#39;</span><span class="p">)</span>
+
+<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Distribution of goals scored&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_16_0.png" src="_images/chap07_16_0.png" />
+</div>
+</div>
+<p>The most likely outcomes are 0, 1, and 2; higher values are possible but increasingly unlikely.
+Values above 7 are negligible.
+This distribution shows that if we know the goal scoring rate, we can predict the number of goals.</p>
+<p>Now let’s turn it around: given a number of goals, what can we say about the goal-scoring rate?</p>
+<p>To answer that, we need to think about the prior distribution of <code class="docutils literal notranslate"><span class="pre">lam</span></code>, which represents the range of possible values and their probabilities before we see the score.</p>
+</div>
+<div class="section" id="the-prior">
+<h2>The prior<a class="headerlink" href="#the-prior" title="Permalink to this headline">¶</a></h2>
+<p>If you have ever seen a soccer game, you have some information about <code class="docutils literal notranslate"><span class="pre">lam</span></code>.  In most games, teams score a few goals each.  In rare cases, a team might score more than 5 goals, but they almost never score more than 10.</p>
+<p>Using <a class="reference external" href="https://www.statista.com/statistics/269031/goals-scored-per-game-at-the-fifa-world-cup-since-1930/">data from previous World Cups</a>, I estimate that each team scores about 1.4 goals per game, on average.  So I’ll set the mean of <code class="docutils literal notranslate"><span class="pre">lam</span></code> to be 1.4.</p>
+<p>For a good team against a bad one, we expect <code class="docutils literal notranslate"><span class="pre">lam</span></code> to be higher; for a bad team against a good one, we expect it to be lower.</p>
+<p>To model the distribution of goal-scoring rates, I’ll use a <a class="reference external" href="https://en.wikipedia.org/wiki/Gamma_distribution">gamma distribution</a>, which I chose because:</p>
+<ol class="simple">
+<li><p>The goal scoring rate is continuous and non-negative, and the gamma distribution is appropriate for this kind of quantity.</p></li>
+<li><p>The gamma distribution has only one parameter, <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, which is the mean.  So it’s easy to construct a gamma distribution with the mean we want.</p></li>
+<li><p>As we’ll see, the shape of the gamma distribution is a reasonable choice, given what we know about soccer.</p></li>
+</ol>
+<p>And there’s one more reason, which I will reveal in Chapter xxx.</p>
+<p>The gamma distribution is continuous, but we’ll approximate it with a discrete <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
+<p>SciPy provides <code class="docutils literal notranslate"><span class="pre">gamma</span></code>, which creates an object that represents a gamma distribution.</p>
+<p>And the <code class="docutils literal notranslate"><span class="pre">gamma</span></code> object provides provides <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, which evaluates the  <strong>probability density function</strong> (PDF) of the gamma distribution.</p>
+<p>Here’s how we use it.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gamma</span>
+
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.4</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">gamma</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The parameter, <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, is the mean of the distribution.
+The <code class="docutils literal notranslate"><span class="pre">qs</span></code> are possible values of <code class="docutils literal notranslate"><span class="pre">lam</span></code> from 0 to 10.
+The <code class="docutils literal notranslate"><span class="pre">ps</span></code> are <strong>probability densities</strong>, which we can think of as unnormalized probabilities.</p>
+<p>If we put the densities in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> and normalize them, like this:</p>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">prior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a discrete <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that approximates a gamma distribution.</p>
+<p>Here’s what it looks like.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate_rate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Goal scoring rate (lam)&#39;</span><span class="p">,</span>
+        <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">decorate_rate</span><span class="p">(</span><span class="s1">&#39;Prior distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_25_0.png" src="_images/chap07_25_0.png" />
+</div>
+</div>
+<p>This distribution represents our prior knowledge about goal scoring: <code class="docutils literal notranslate"><span class="pre">lam</span></code> is usually less than 2, occasionally as high as 6, and seldom higher than that.</p>
+<p>And we can confirm that the mean is about 1.4.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>1.4140818156118378
+</pre></div>
+</div>
+</div>
+</div>
+<p>As usual, reasonable people could disagree about the details of the prior, but this is good enough to get started.  Let’s do an update.</p>
+</div>
+<div class="section" id="the-update">
+<h2>The update<a class="headerlink" href="#the-update" title="Permalink to this headline">¶</a></h2>
+<p>Suppose you are given the goal-scoring rate, <span class="math notranslate nohighlight">\(\lambda\)</span>, and asked to compute the probability of scoring a number of goals, <span class="math notranslate nohighlight">\(k\)</span>.  That is precisely the question we answered by computing the Poisson distribution:</p>
+<p>$ f(k; \lambda) = \lambda^k \exp(-\lambda) ~/~ k! $</p>
+<p>For example, if <span class="math notranslate nohighlight">\(\lambda\)</span> is 1.4, the probability of scoring 4 goals in a game is:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lam</span> <span class="o">=</span> <span class="mf">1.4</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.039471954028253146
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now suppose we are have an array of possible values for <span class="math notranslate nohighlight">\(\lambda\)</span>, like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lams</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">qs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can compute the likelihood of the data for each hypothetical value of lam, like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">k</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">likelihood</span> <span class="o">=</span> <span class="n">poisson</span><span class="p">(</span><span class="n">lams</span><span class="p">)</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And that’s all we need to do the update.
+To get the posterior distribution, we multiply the prior by the likelihoods we just computed and normalize the result.</p>
+<p>The following function encapsulates these steps.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_poisson</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update the PMF with a Poisson likelihood</span>
+<span class="sd">    </span>
+<span class="sd">    pmf: Series that represents the prior</span>
+<span class="sd">    data: integer number of goals</span>
+<span class="sd">    </span>
+<span class="sd">    returns: posterior</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="n">lams</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">qs</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">poisson</span><span class="p">(</span><span class="n">lams</span><span class="p">)</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">pmf</span> <span class="o">*=</span> <span class="n">likelihood</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The first parameter is the prior; the second is the number of goals.</p>
+<p>In the example, France scored 4 goals, so I’ll make a copy of the prior and update it with the data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">france</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">update_poisson</span><span class="p">(</span><span class="n">france</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what the posterior distribution looks like, along with the prior.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">france</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;France posterior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">)</span>
+
+<span class="n">decorate_rate</span><span class="p">(</span><span class="s1">&#39;Posterior distribution for France&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_40_0.png" src="_images/chap07_40_0.png" />
+</div>
+</div>
+<p>The data, <code class="docutils literal notranslate"><span class="pre">k=4</span></code>, makes us think higher values of <code class="docutils literal notranslate"><span class="pre">lam</span></code> are more likely and lower values are less likely.  So the posterior distribution is shifted to the right.</p>
+<p>Let’s do the same for Croatia:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">croatia</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">update_poisson</span><span class="p">(</span><span class="n">croatia</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here are the results.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">croatia</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Croatia posterior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">)</span>
+
+<span class="n">decorate_rate</span><span class="p">(</span><span class="s1">&#39;Posterior distribution for Croatia&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_45_0.png" src="_images/chap07_45_0.png" />
+</div>
+</div>
+<p>Here are the posterior means for these distributions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">croatia</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">france</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(1.4140818156118378, 1.6999765866755225, 2.699772393342308)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The mean of the prior distribution is about 1.4.
+After Croatia scores 2 goals, their posterior mean is 1.7, which is near the midpoint of the prior and the data.
+Likewise after France scores 4 goals, their posterior mean is 2.7.</p>
+<p>These results are typical of a Bayesian update: the location of the posterior distribution is a compromise between the prior and the data.</p>
+</div>
+<div class="section" id="probability-of-superiority">
+<h2>Probability of superiority<a class="headerlink" href="#probability-of-superiority" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have a posterior distribution for each team, we can answer the first question: How confident should we be that France is the better team?</p>
+<p>In the model, “better” means having a higher goal-scoring rate against the opponent.  We can use the posterior distributions to compute the probability that a random value drawn from France’s distribution exceeds a value drawn from Croatia’s.</p>
+<p>One way to do that is to enumerate all pairs of values from the two distributions, adding up the total probability that one value exceeds the other.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prob_gt</span><span class="p">(</span><span class="n">pmf1</span><span class="p">,</span> <span class="n">pmf2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the probability of superiority.</span>
+<span class="sd">    </span>
+<span class="sd">    pmf1: Pmf object</span>
+<span class="sd">    pmf2: Pmf object</span>
+<span class="sd">    </span>
+<span class="sd">    returns: float probability</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">q1</span><span class="p">,</span> <span class="n">p1</span> <span class="ow">in</span> <span class="n">pmf1</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">q2</span><span class="p">,</span> <span class="n">p2</span> <span class="ow">in</span> <span class="n">pmf2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">q1</span> <span class="o">&gt;</span> <span class="n">q2</span><span class="p">:</span>
+                <span class="n">total</span> <span class="o">+=</span> <span class="n">p1</span> <span class="o">*</span> <span class="n">p2</span>
+    <span class="k">return</span> <span class="n">total</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This is similar to the method we use in Chapter xxx to compute the distribution of a sum.</p>
+<p>Here’s how we use it:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob_gt</span><span class="p">(</span><span class="n">france</span><span class="p">,</span> <span class="n">croatia</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.7499366290930155
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> provides a function that does the same thing.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Pmf</span><span class="o">.</span><span class="n">prob_gt</span><span class="p">(</span><span class="n">france</span><span class="p">,</span> <span class="n">croatia</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.7499366290930174
+</pre></div>
+</div>
+</div>
+</div>
+<p>The results are slightly different because <code class="docutils literal notranslate"><span class="pre">Pmf.prob_gt</span></code> uses array operators rather than <code class="docutils literal notranslate"><span class="pre">for</span></code> loops.</p>
+<p>Either way, the result is close to 75%.  So, on the basis of one game, we have moderate confidence that France is actually the better team.</p>
+<p>Of course, we should remember that this result is based on the assumption that the goal-scoring rate is constant.
+In reality, if a team is down by one goal, they might play more aggressively toward the end of the game, making them more likely to score, but also more likely to give up an additional goal.</p>
+<p>As always, the results are only as good as the model.</p>
+</div>
+<div class="section" id="predicting-the-rematch">
+<h2>Predicting the rematch<a class="headerlink" href="#predicting-the-rematch" title="Permalink to this headline">¶</a></h2>
+<p>Now we can take on the second question: If the same teams played again, what is the chance Croatia would win?</p>
+<p>To answer this question, we’ll generate the “posterior predictive distribution”, which is the number of goals we expect a team to score.</p>
+<p>If we knew the goal scoring rate, <code class="docutils literal notranslate"><span class="pre">lam</span></code>, the distribution of goals would be a Poisson distribution with parameter <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p>
+<p>Since we don’t know <code class="docutils literal notranslate"><span class="pre">lam</span></code>, the distribution of goals is a mixture of a Poisson distributions with different values of <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p>
+<p>First I’ll generate a sequence of <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects, one for each value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_poisson_pmf</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span> <span class="k">for</span> <span class="n">lam</span> <span class="ow">in</span> <span class="n">prior</span><span class="o">.</span><span class="n">qs</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following figure shows what these distributions look like for a few values of <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">]):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">lam</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">pmf_seq</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;lam = </span><span class="si">{</span><span class="n">lam</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">decorate_goals</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_59_0.png" src="_images/chap07_59_0.png" />
+</div>
+</div>
+<p>The predictive distribution is a mixture of these <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects, weighted with the posterior probabilities.</p>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">make_mixture</span></code> from Chapter xxx to compute this mixture.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_mixture</span>
+
+<span class="n">pred_france</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">france</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s the predictive distribution for the number of goals France would score in a rematch.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pred_france</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;France&#39;</span><span class="p">)</span>
+<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Predictive distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_63_0.png" src="_images/chap07_63_0.png" />
+</div>
+</div>
+<p>This distribution represents two sources of uncertainty: we don’t know the actual value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>, and even if we did, we would not know the number of goals in the next game.</p>
+<p>Here’s the predictive distribution for Croatia.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pred_croatia</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">croatia</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pred_croatia</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Croatia&#39;</span><span class="p">)</span>
+<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Predictive distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_66_0.png" src="_images/chap07_66_0.png" />
+</div>
+</div>
+<p>We can use these distributions to compute the probability that France wins, loses, or ties the rematch.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">win</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">prob_gt</span><span class="p">(</span><span class="n">pred_france</span><span class="p">,</span> <span class="n">pred_croatia</span><span class="p">)</span>
+<span class="n">win</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.5708850334650848
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lose</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">prob_lt</span><span class="p">(</span><span class="n">pred_france</span><span class="p">,</span> <span class="n">pred_croatia</span><span class="p">)</span>
+<span class="n">lose</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.26429986403909056
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tie</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">prob_eq</span><span class="p">(</span><span class="n">pred_france</span><span class="p">,</span> <span class="n">pred_croatia</span><span class="p">)</span>
+<span class="n">tie</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.16481510249582476
+</pre></div>
+</div>
+</div>
+</div>
+<p>Assuming that France wins half of the ties, their chance of winning the rematch is about 65%.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">win</span> <span class="o">+</span> <span class="n">tie</span><span class="o">/</span><span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.6532925847129971
+</pre></div>
+</div>
+</div>
+</div>
+<p>This is a bit lower than their probability of superiority, which is 75%. And that makes sense; even if they are better team, they might lose the game.</p>
+</div>
+<div class="section" id="the-exponential-distribution">
+<h2>The Exponential Distribution<a class="headerlink" href="#the-exponential-distribution" title="Permalink to this headline">¶</a></h2>
+<p>As an exercise at the end of this notebook, you’ll have a chance to work on  the following variation on the World Cup Problem:</p>
+<blockquote>
+<div><p>In the 2014 FIFA World Cup, Germany played Brazil in a semifinal match. Germany scored after 11 minutes and again at the 23 minute mark. At that point in the match, how many goals would you expect Germany to score after 90 minutes? What was the probability that they would score 5 more goals (as, in fact, they did)?</p>
+</div></blockquote>
+<p>In this version, notice that the data is not the number of goals in a fixed period of time, but the time between goals.</p>
+<p>To compute the likelihood of data like this, we can take advantage of the theory of Poisson processes again.  If each team has a constant goal-scoring rate, we expect the time between goals to follow an <a class="reference external" href="https://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a>.</p>
+<p>If the goal-scoring rate is <span class="math notranslate nohighlight">\(\lambda\)</span>, the probability of seeing an interval between goals of <span class="math notranslate nohighlight">\(t\)</span> is proportional to the PDF of the exponential distribution:</p>
+<p><span class="math notranslate nohighlight">\(f(t; \lambda) = \lambda~\exp(-\lambda t)\)</span></p>
+<p>Because <span class="math notranslate nohighlight">\(t\)</span> is a continuous quantity, the value of this expression is not a probability; it is a probability density.  However, it is proportional to the probability of the data, so we can use it as a likelihood in a Bayesian update.</p>
+<p>SciPy provides <code class="docutils literal notranslate"><span class="pre">expon</span></code>, which creates an object that represents an exponential distribution.
+However, it does not take <code class="docutils literal notranslate"><span class="pre">lam</span></code> as a parameter in the way you might expect, which makes it awkward to work with.
+Since the PDF of the exponential distribution is so easy to evaluate, I’ll use my own function.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">expo_pdf</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">lam</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the PDF of the exponential distribution.</span>
+<span class="sd">    </span>
+<span class="sd">    lam: time</span>
+<span class="sd">    λ: rate</span>
+<span class="sd">    </span>
+<span class="sd">    returns: probability density</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">lam</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lam</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>To see what the exponential distribution looks like, let’s assume again that <code class="docutils literal notranslate"><span class="pre">lam</span></code> is 1.4; we can compute the distribution of <span class="math notranslate nohighlight">\(t\)</span> like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lam</span> <span class="o">=</span> <span class="mf">1.4</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">expo_pdf</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">lam</span><span class="p">)</span>
+<span class="n">pmf_time</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">pmf_time</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>25.616650745459093
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s what it looks like:</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate_time</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time between goals (games)&#39;</span><span class="p">,</span>
+             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+             <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_time</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;exponential lam = 1.4&#39;</span><span class="p">)</span>
+
+<span class="n">decorate_time</span><span class="p">(</span><span class="s1">&#39;Distribution of time between goals&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_80_0.png" src="_images/chap07_80_0.png" />
+</div>
+</div>
+<p>It is counterintuitive, but true, that the most likely time to score a goal is immediately.  After that, the probability of each possible interval is a little lower.</p>
+<p>With a goal-scoring rate of 1.4, it is possible that a team will take more than one game to score a goal, but it is unlikely that they will take more than two games.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>This chapter introduces three new distributions, so it can be hard to keep them straight.
+Let’s review:</p>
+<ul class="simple">
+<li><p>If a system satisfies the assumptions of a Poisson model, the number of events in a period of time follows a Poisson distribution, which is a discrete distribution with integer quantities from 0 to infinity. In practice, we can usually ignore low-probability quantities above a finite limit.</p></li>
+<li><p>Also under the Poisson model, the interval between events follows an exponential distribution, which is a continuous distribution with quantities from 0 to infinity. Because it is continuous, it is described by a probability density function (PDF) rather than a probability mass function (PMF). But when we use an exponential distribution to compute the likelihood of the data, we can treat densities as unnormalized probabilities.</p></li>
+<li><p>The Poisson and exponential distributions are parameterized by an event rate, denoted <span class="math notranslate nohighlight">\(\lambda\)</span> or <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p></li>
+<li><p>For the prior distribution of <span class="math notranslate nohighlight">\(\lambda\)</span>, I used a gamma distribution, which is a continuous distribution with quantities from 0 to infinity, but I approximated it with a discrete, bounded PMF. The gamma distribution has one parameter, denoted <span class="math notranslate nohighlight">\(\alpha\)</span> or <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, which is also its mean.</p></li>
+</ul>
+<p>I chose the gamma distribution because the shape is consistent with our background knowledge about goal-scoring rates.
+There are other distributions we could have used; however, we will see in Chapter XX that the gamma distribution can be a particularly good choice.</p>
+<p>But we have a few things to do before we get there, starting with these exercises.</p>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p><strong>Exercise:</strong> Let’s finish off the exercise we started:</p>
+<blockquote>
+<div><p>In the 2014 FIFA World Cup, Germany played Brazil in a semifinal match. Germany scored after 11 minutes and again at the 23 minute mark. At that point in the match, how many goals would you expect Germany to score after 90 minutes? What was the probability that they would score 5 more goals (as, in fact, they did)?</p>
+</div></blockquote>
+<p>Here are the steps I recommend:</p>
+<ol class="simple">
+<li><p>Starting with the same gamma prior we used in the previous problem, compute the likelihood of scoring a goal after 11 minutes for each possible value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>.  Don’t forget to convert all times into games rather than minutes.</p></li>
+<li><p>Compute the posterior distribution of <code class="docutils literal notranslate"><span class="pre">lam</span></code> for Germany after the first goal.</p></li>
+<li><p>Compute the likelihood of scoring another goal after 12 more minutes and do another update.  Plot the prior, posterior after one goal, and posterior after two goals.</p></li>
+<li><p>Compute the posterior predictive distribution of goals Germany might score during the remaining time in the game, <code class="docutils literal notranslate"><span class="pre">90-23</span></code> minutes.  Note: you will have to think about how to generate predicted goals for a fraction of a game.</p></li>
+<li><p>Compute the probability of scoring 5 or more goals during the remaining time.</p></li>
+</ol>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s a function that updates the distribution of lam</span>
+<span class="c1"># with the given time between goals</span>
+
+<span class="k">def</span> <span class="nf">update_expo</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update based on an observed interval</span>
+<span class="sd">    </span>
+<span class="sd">    pmf: prior PMF</span>
+<span class="sd">    data: time between goals in minutes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">data</span> <span class="o">/</span> <span class="mi">90</span>
+    <span class="n">lams</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">qs</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">expo_pdf</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span>
+    <span class="n">pmf</span> <span class="o">*=</span> <span class="n">likelihood</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here are the updates for the first and second goals</span>
+
+<span class="n">germany</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">update_expo</span><span class="p">(</span><span class="n">germany</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+
+<span class="n">germany2</span> <span class="o">=</span> <span class="n">germany</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">update_expo</span><span class="p">(</span><span class="n">germany2</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here are the mean values of `lam` after each update</span>
+
+<span class="n">germany</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">germany2</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(2.1358882653086892, 2.703059034926364)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s what the posterior distributions look like</span>
+
+<span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior&#39;</span><span class="p">)</span>
+<span class="n">germany</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior after 1 goal&#39;</span><span class="p">)</span>
+<span class="n">germany2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C8&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior after 2 goals&#39;</span><span class="p">)</span>
+
+<span class="n">decorate_rate</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_88_0.png" src="_images/chap07_88_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the predictive distribution for each possible value of `lam`</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="mi">90</span><span class="o">-</span><span class="mi">23</span><span class="p">)</span> <span class="o">/</span> <span class="mi">90</span>
+
+<span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_poisson_pmf</span><span class="p">(</span><span class="n">lam</span><span class="o">*</span><span class="n">t</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span> 
+           <span class="k">for</span> <span class="n">lam</span> <span class="ow">in</span> <span class="n">germany</span><span class="o">.</span><span class="n">qs</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here&#39;s the mixture of predictive distributions,</span>
+<span class="c1"># weighted by the probabilities in the posterior distribution.</span>
+
+<span class="n">pmf_germany</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">germany</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s what the predictive distribution looks like</span>
+
+<span class="n">pmf_germany</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C8&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;germany&#39;</span><span class="p">)</span>
+<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Posterior predictive distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_91_0.png" src="_images/chap07_91_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the probability of scoring exactly 5 more goals</span>
+
+<span class="n">pmf_germany</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.03077879173047912
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And the probability of 5 or more</span>
+
+<span class="n">pmf_germany</span><span class="o">.</span><span class="n">prob_ge</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.05901147597181205
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Exercise:</strong> Returning to the first version of the World Cup Problem.  Suppose France and Croatia play a rematch.  What is the probability that France scores first?</p>
+<p>Hint: Compute the posterior predictive distribution for the time until the first goal by making a mixture of exponential distributions.  You can use the following function to make a PMF that approximates an exponential distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_expo_pmf</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a PMF of an exponential distribution.</span>
+<span class="sd">    </span>
+<span class="sd">    lam: event rate</span>
+<span class="sd">    high: upper bound on the interval `t`</span>
+<span class="sd">    </span>
+<span class="sd">    returns: Pmf of the interval between events</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">expo_pdf</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">lam</span><span class="p">)</span>
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">pmf</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here are the predictive distributions for the </span>
+<span class="c1"># time until the first goal</span>
+
+<span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_expo_pmf</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">lam</span> <span class="ow">in</span> <span class="n">prior</span><span class="o">.</span><span class="n">qs</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here are the mixtures based on the two posterior distributions</span>
+
+<span class="n">pred_france</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">france</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
+<span class="n">pred_croatia</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">croatia</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s what the posterior predictive distributions look like</span>
+
+<span class="n">pred_france</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">pred_croatia</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+<span class="n">decorate_time</span><span class="p">(</span><span class="s1">&#39;Posterior predictive distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_98_0.png" src="_images/chap07_98_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here&#39;s the probability France scores first</span>
+
+<span class="n">Pmf</span><span class="o">.</span><span class="n">prob_lt</span><span class="p">(</span><span class="n">pred_france</span><span class="p">,</span> <span class="n">pred_croatia</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.5904596116867543
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Exercise:</strong> In the 2010-11 National Hockey League (NHL) Finals, my beloved Boston
+Bruins played a best-of-seven championship series against the despised
+Vancouver Canucks.  Boston lost the first two games 0-1 and 2-3, then
+won the next two games 8-1 and 4-0.  At this point in the series, what
+is the probability that Boston will win the next game, and what is
+their probability of winning the championship?</p>
+<p>To choose a prior distribution, I got some statistics from
+http://www.nhl.com, specifically the average goals per game
+for each team in the 2010-11 season.  The distribution well modeled by a gamma distribution with mean 2.8.</p>
+<p>In what ways do you think the outcome of these games might violate the assumptions of the Poisson model?  How would these violations affect your predictions.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># When a team is winning or losing by an insurmountable margin,</span>
+<span class="c1"># they might remove their best players from the game, which</span>
+<span class="c1"># would affect their goal-scoring rate, violating the assumption</span>
+<span class="c1"># that the goal scoring rate is constant.</span>
+
+<span class="c1"># In this example, Boston won the third game 8-1, but scoring</span>
+<span class="c1"># eight goals in a game might not reflect their true long-term</span>
+<span class="c1"># goal-scoring rate.</span>
+
+<span class="c1"># As a result, the analysis below might overestimate the chance</span>
+<span class="c1"># that Boston wins.</span>
+
+<span class="c1"># As it turned out, they did not.</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gamma</span>
+
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">2.8</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">gamma</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+<span class="n">prior_hockey</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">prior_hockey</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>6.666325137469514
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">prior_hockey</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate_rate</span><span class="p">(</span><span class="s1">&#39;Prior distribution for hockey&#39;</span><span class="p">)</span>
+<span class="n">prior_hockey</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>2.7997400090376567
+</pre></div>
+</div>
+<img alt="_images/chap07_103_1.png" src="_images/chap07_103_1.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">bruins</span> <span class="o">=</span> <span class="n">prior_hockey</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>
+    <span class="n">update_poisson</span><span class="p">(</span><span class="n">bruins</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    
+<span class="n">bruins</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>3.3599999999999985
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">canucks</span> <span class="o">=</span> <span class="n">prior_hockey</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+    <span class="n">update_poisson</span><span class="p">(</span><span class="n">canucks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    
+<span class="n">canucks</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>1.5599999606443666
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">canucks</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Canucks&#39;</span><span class="p">)</span>
+<span class="n">bruins</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Bruins&#39;</span><span class="p">)</span>
+
+<span class="n">decorate_rate</span><span class="p">(</span><span class="s1">&#39;Posterior distributions&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_106_0.png" src="_images/chap07_106_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_poisson_pmf</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="k">for</span> <span class="n">lam</span> <span class="ow">in</span> <span class="n">bruins</span><span class="o">.</span><span class="n">qs</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">pred_bruins</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">bruins</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
+
+<span class="n">pred_bruins</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Bruins&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Predictive distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_108_0.png" src="_images/chap07_108_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">pred_canucks</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">canucks</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
+
+<span class="n">pred_canucks</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Canucks&#39;</span><span class="p">)</span>
+<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Predictive distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap07_109_0.png" src="_images/chap07_109_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">win</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">prob_gt</span><span class="p">(</span><span class="n">pred_bruins</span><span class="p">,</span> <span class="n">pred_canucks</span><span class="p">)</span>
+<span class="n">lose</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">prob_lt</span><span class="p">(</span><span class="n">pred_bruins</span><span class="p">,</span> <span class="n">pred_canucks</span><span class="p">)</span>
+<span class="n">tie</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">prob_eq</span><span class="p">(</span><span class="n">pred_bruins</span><span class="p">,</span> <span class="n">pred_canucks</span><span class="p">)</span>
+
+<span class="n">win</span><span class="p">,</span> <span class="n">lose</span><span class="p">,</span> <span class="n">tie</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(0.7038631514645926, 0.16111690750716465, 0.1350199410282429)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Assuming the Bruins win half of the ties,</span>
+<span class="c1"># their chance of winning the next game is...</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">win</span> <span class="o">+</span> <span class="n">lose</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">p</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.7844216052181748
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Their chance of winning the series is their</span>
+<span class="c1"># chance of winning k=2 or k=3 of the remaining</span>
+<span class="c1"># n=3 games.</span>
+
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.8806154668468822
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Allen B. Downey<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>

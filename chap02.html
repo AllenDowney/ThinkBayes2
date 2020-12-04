@@ -171,6 +171,11 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#probability-mass-functions">
+   Probability mass functions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#the-cookie-problem">
    The cookie problem
   </a>
@@ -222,18 +227,22 @@ But we’ll start with distributions.</p>
 <p>In statistics a <strong>distribution</strong> is a set of values and their
 corresponding probabilities.</p>
 <p>For example, if you toss a coin, there are two possible outcomes with
-approximately equal probabilities.</p>
-<p>If you roll a six-sided die, the set of possible values is the numbers 1
-to 6, and the probability associated with each value is 1/6.</p>
+approximately equal probability.</p>
+<p>If you roll a six-sided die, the set of possible values is the numbers 1 to 6, and the probability associated with each value is 1/6.</p>
 <p>To represent distributions, we’ll use a library called <code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code>.
 An “empirical” distribution is based on data, as opposed to a
 theoretical distribution.</p>
-<p>This library provides a class called <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, which represents a
-<strong>probability mass function</strong>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code> is available from the Python Package Index (PyPI). You
 can <a class="reference external" href="https://pypi.org/project/empiricaldist/">download it here</a> or
 install it with <code class="docutils literal notranslate"><span class="pre">pip</span></code>. For more details, see the Preface.</p>
-<p>To use <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> you can import it like this:</p>
+<p>We’ll use this library throughout the book.  I’ll introduce the basic features in this chapter and we’ll see additional features later.</p>
+</div>
+<div class="section" id="probability-mass-functions">
+<h2>Probability mass functions<a class="headerlink" href="#probability-mass-functions" title="Permalink to this headline">¶</a></h2>
+<p>If the values in a distribution are discrete, we can describe the distribution with a <strong>probability mass function</strong>, or PMF, which is a function that maps from a value to its probability.</p>
+<p><code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code> provides a class called <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents a
+probability mass function.
+To use <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> you can import it like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
@@ -287,159 +296,11 @@ coin toss.</p>
 </table>
 </div></div></div>
 </div>
-<p>The two outcomes have the same probability, <span class="math notranslate nohighlight">\(0.5\)</span>.</p>
-<p>This example makes a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the distribution of outcomes
-of a six-sided die:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">die</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]:</span>
-    <span class="n">die</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    
-<span class="n">die</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>probs</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>1</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> creates an empty <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with no values. The <code class="docutils literal notranslate"><span class="pre">for</span></code> loop adds the
-values <span class="math notranslate nohighlight">\(1\)</span> through <span class="math notranslate nohighlight">\(6\)</span>, each with “probability” <span class="math notranslate nohighlight">\(1\)</span>.</p>
-<p>In this <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, the probabilities don’t add up to 1, so they are not
-really probabilities. We can use <code class="docutils literal notranslate"><span class="pre">normalize</span></code> to make them add up to 1.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">die</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>6
-</pre></div>
-</div>
-</div>
-</div>
-<p>The return value from <code class="docutils literal notranslate"><span class="pre">normalize</span></code> is the sum of the probabilities before normalizing.</p>
-<p>Now we can see that the total is 1 (at least within floating-point error).</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">die</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>probs</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>0.166667</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0.166667</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0.166667</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0.166667</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>0.166667</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>0.166667</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">die</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.9999999999999999
-</pre></div>
-</div>
-</div>
-</div>
-<p>Another way make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> is to provide a sequence of values.</p>
-<p>In this example, every value appears once, so they all have the same probability.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> creates an empty <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with no values.
+Then we can add new values using the bracket operator.
+In this example, the two outcomes are represented with strings, and they have the same probability, <span class="math notranslate nohighlight">\(0.5\)</span>.</p>
+<p>You can also make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> from a sequence of values.</p>
+<p>The following example uses <code class="docutils literal notranslate"><span class="pre">Pmf.from_seq</span></code> to make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents a six-sided die.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">die</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
@@ -498,7 +359,8 @@ really probabilities. We can use <code class="docutils literal notranslate"><spa
 </table>
 </div></div></div>
 </div>
-<p>More generally, values can appear more than once, as in this example:</p>
+<p>In this example, all values in the sequence appear once, so they all have the same probability, <span class="math notranslate nohighlight">\(1/6\)</span>.</p>
+<p>More generally, values can appear more than once, as in the following example:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">letters</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="s1">&#39;Mississippi&#39;</span><span class="p">))</span>
@@ -549,10 +411,11 @@ really probabilities. We can use <code class="docutils literal notranslate"><spa
 </table>
 </div></div></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> class inherits from a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code>, so anything you can do
-with a <code class="docutils literal notranslate"><span class="pre">Series</span></code>, you can also do with a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
+<p>The letter <code class="docutils literal notranslate"><span class="pre">M</span></code> appears once out of 11 characters, so its probability is <span class="math notranslate nohighlight">\(1/11\)</span>.
+The letter <code class="docutils literal notranslate"><span class="pre">i</span></code> appears 4 times, so its probability is <span class="math notranslate nohighlight">\(4/11\)</span>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> class inherits from a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code>, so anything you can do with a <code class="docutils literal notranslate"><span class="pre">Series</span></code>, you can also do with a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
 <p>For example, you can use the bracket operator to look up a value and
-returns the corresponding probability.</p>
+get the corresponding probability.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">letters</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]</span>
@@ -573,12 +436,12 @@ distribution, you get a <code class="docutils literal notranslate"><span class="
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">letters</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span>
 <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;KeyError&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>KeyError
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;KeyError&#39;&gt;
 </pre></div>
 </div>
 </div>
@@ -623,8 +486,9 @@ But if the value is not in the distribution, the result is <span class="math not
 </div>
 </div>
 </div>
-<p>As these examples shows, the values in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> can be integers or strings. In general, they can be any type that can be stored in the index of a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code>.</p>
-<p>If you are familiar with Pandas, that will help you work with <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects. But I will explain what you need to know as we go along.</p>
+<p>The values in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> can be strings, numbers, or any other type that can be stored in the index of a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code>.</p>
+<p>If you are familiar with Pandas, that will help you work with <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects.
+But I will explain what you need to know as we go along.</p>
 </div>
 <div class="section" id="the-cookie-problem">
 <h2>The cookie problem<a class="headerlink" href="#the-cookie-problem" title="Permalink to this headline">¶</a></h2>
@@ -635,8 +499,8 @@ Here’s the statement of the problem again:</p>
 Bowl 1 contains 30 vanilla cookies and 10 chocolate cookies.
 Bowl 2 contains 20 of each.</p>
 <p>Now suppose you choose one of the bowls at random and, without
-looking, select a cookie at random. The cookie is vanilla. What is
-the probability that it came from Bowl 1?</p>
+looking, select a cookie at random.</p>
+<p>If the cookie is vanilla, what is the probability that it came from Bowl 1?</p>
 </div></blockquote>
 <p>Here’s a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the two hypotheses and their prior probabilities:</p>
 <div class="cell docutils container">
@@ -729,8 +593,8 @@ for Bowl 2 is <code class="docutils literal notranslate"><span class="pre">1/2</
 </table>
 </div></div></div>
 </div>
-<p>The result is the unnormalized posteriors.
-We can use <code class="docutils literal notranslate"><span class="pre">normalize</span></code> to compute the posterior probabilities:</p>
+<p>The result is the unnormalized posteriors; that is, they don’t add up to 1.
+To make them add up to 1, we can use <code class="docutils literal notranslate"><span class="pre">normalize</span></code>, which is a method provided by <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
@@ -847,12 +711,19 @@ If the second cookie is also vanilla, we can do a second update like this:</p>
 </div></div></div>
 </div>
 <p>Now the posterior probability for Bowl 1 is almost 70%.
-But suppose we do the same thing again and get a chocolate cookie.
-Here’s the update.</p>
+But suppose we do the same thing again and get a chocolate cookie.</p>
+<p>Here are the likelihoods for the new data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood_chocolate</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
-<span class="n">posterior</span> <span class="o">*=</span> <span class="n">likelihood_chocolate</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s the update.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">*=</span> <span class="n">likelihood_chocolate</span>
 <span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
 <span class="n">posterior</span>
 </pre></div>
@@ -900,7 +771,7 @@ After two vanilla cookies and one chocolate, the posterior probabilities are clo
 <h2>101 Bowls<a class="headerlink" href="#bowls" title="Permalink to this headline">¶</a></h2>
 <p>Next let’s solve a cookie problem with 101 bowls:</p>
 <ul class="simple">
-<li><p>Bowl 0 contains no vanilla cookies,</p></li>
+<li><p>Bowl 0 contains 0% vanilla cookies,</p></li>
 <li><p>Bowl 1 contains 1% vanilla cookies,</p></li>
 <li><p>Bowl 2 contains 2% vanilla cookies,</p></li>
 </ul>
@@ -911,7 +782,7 @@ After two vanilla cookies and one chocolate, the posterior probabilities are clo
 </ul>
 <p>As in the previous version, there are only two kinds of cookies, vanilla and chocolate.  So Bowl 0 is all chocolate cookies, Bowl 1 is 99% chocolate, and so on.</p>
 <p>Suppose we choose a bowl at random, choose a cookie at random, and it turns out to be vanilla.  What is the probability that the cookie came from Bowl <span class="math notranslate nohighlight">\(x\)</span>, for each value of <span class="math notranslate nohighlight">\(x\)</span>?</p>
-<p>To solve this problem, I’ll use <code class="docutils literal notranslate"><span class="pre">np.arange</span></code> to represent 101 hypotheses, numbered from 0 to 100.</p>
+<p>To solve this problem, I’ll use <code class="docutils literal notranslate"><span class="pre">np.arange</span></code> to make an array that represents 101 hypotheses, numbered from 0 to 100.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -921,7 +792,7 @@ After two vanilla cookies and one chocolate, the posterior probabilities are clo
 </div>
 </div>
 </div>
-<p>The result is a NumPy array, which we can use to make the prior distribution:</p>
+<p>We can use this array to make the prior distribution:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
@@ -948,7 +819,7 @@ The first parameter is the prior probability; the second parameter is a sequence
 </div>
 </div>
 <p>Now we can compute the posterior distribution in the usual way:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior1</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood_vanilla</span>
 <span class="n">posterior1</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
@@ -962,7 +833,7 @@ The first parameter is the prior probability; the second parameter is a sequence
 </div>
 </div>
 <p>The following figure shows the prior distribution and the posterior distribution after one vanilla cookie.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
 
@@ -974,7 +845,7 @@ The first parameter is the prior probability; the second parameter is a sequence
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
 <span class="n">posterior1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior&#39;</span><span class="p">)</span>
@@ -983,7 +854,7 @@ The first parameter is the prior probability; the second parameter is a sequence
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap02_56_0.png" src="_images/chap02_56_0.png" />
+<img alt="_images/chap02_52_0.png" src="_images/chap02_52_0.png" />
 </div>
 </div>
 <p>The posterior probability of Bowl 0 is 0 because it contains no vanilla cookies.
@@ -991,7 +862,7 @@ The posterior probability of Bowl 100 is the highest because it contain the most
 In between, the shape of the posterior distribution is a line because the the likelihoods are proportional to the bowl numbers.</p>
 <p>Now suppose we put the cookie back, draw again from the same bowl, and get another vanilla cookie.
 Here’s the update after the second cookie:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior2</span> <span class="o">=</span> <span class="n">posterior1</span> <span class="o">*</span> <span class="n">likelihood_vanilla</span>
 <span class="n">posterior2</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
@@ -1005,7 +876,7 @@ Here’s the update after the second cookie:</p>
 </div>
 </div>
 <p>And here’s what the posterior distribution looks like.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior&#39;</span><span class="p">)</span>
 <span class="n">decorate_bowls</span><span class="p">(</span><span class="s1">&#39;Posterior after two vanilla cookies&#39;</span><span class="p">)</span>
@@ -1013,12 +884,11 @@ Here’s the update after the second cookie:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap02_60_0.png" src="_images/chap02_60_0.png" />
+<img alt="_images/chap02_56_0.png" src="_images/chap02_56_0.png" />
 </div>
 </div>
-<p>Because the likelihood function is a line, the posterior after two cookies is a parabola.
-At this point the high-numbered bowls are the most likely because they contain the most vanilla cookies, and the low-numbered bowls have been all but eliminated.</p>
-<p>Now suppose we draw again and get a chocolate cookie.
+<p>After two vanilla cookies, the high-numbered bowls have the highest posterior probabilities because they contain the most vanilla cookies; the low-numbered bowls have the lowest probabilities.</p>
+<p>But suppose we draw again and get a chocolate cookie.
 Here’s the update:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1036,7 +906,7 @@ Here’s the update:</p>
 </div>
 </div>
 <p>And here’s the posterior distribution.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior3</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior&#39;</span><span class="p">)</span>
 <span class="n">decorate_bowls</span><span class="p">(</span><span class="s1">&#39;Posterior after 2 vanilla, 1 chocolate&#39;</span><span class="p">)</span>
@@ -1044,10 +914,10 @@ Here’s the update:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap02_64_0.png" src="_images/chap02_64_0.png" />
+<img alt="_images/chap02_60_0.png" src="_images/chap02_60_0.png" />
 </div>
 </div>
-<p>Now Bowl 100 has been eliminated because it contains no chocolare cookies.
+<p>Now Bowl 100 has been eliminated because it contains no chocolate cookies.
 But the high-numbered bowls are still more likely than the low-numbered bowls, because we have seen more vanilla cookies than chocolate.</p>
 <p>In fact, the peak of the posterior distribution is at Bowl 67, which corresponds to the fraction of vanilla cookies in the data we’ve observed, <span class="math notranslate nohighlight">\(2/3\)</span>.</p>
 <p>The quantity with the highest posterior probability is called the <strong>MAP</strong>, which stands for “maximum a posteori probability”, where “a posteori” is unnecessary Latin for “posterior”.</p>
@@ -1088,13 +958,13 @@ But first let’s use a <code class="docutils literal notranslate"><span class="
 <div class="section" id="the-dice-problem">
 <h2>The dice problem<a class="headerlink" href="#the-dice-problem" title="Permalink to this headline">¶</a></h2>
 <p>In the previous chapter we solved the dice problem using a Bayes table.
-Here’s the statement of the problem again:</p>
+Here’s the statement of the problem:</p>
 <blockquote>
 <div><p>Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
 I choose one of the dice at random, roll it, and report that the outcome is a 1.
 What is the probability that I chose the 6-sided die?</p>
 </div></blockquote>
-<p>Let’s solve it again using a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.
+<p>Let’s solve it using a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.
 I’ll use integers to represent the hypotheses:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1103,7 +973,7 @@ I’ll use integers to represent the hypotheses:</p>
 </div>
 </div>
 </div>
-<p>And I can make the prior distribution like this:</p>
+<p>We can make the prior distribution like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
@@ -1151,7 +1021,37 @@ I’ll use integers to represent the hypotheses:</p>
 </div></div></div>
 </div>
 <p>As in the previous example, the prior probability gets broadcast across the hypotheses.</p>
-<p>Now we can compute the likelihood of the data:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> object has two attributes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">qs</span></code> contains the quantities, that is, the values in the distribution;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ps</span></code> contains the corresponding probabilities.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">qs</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 6,  8, 12])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">ps</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([0.33333333, 0.33333333, 0.33333333])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we’re ready to do the update.
+Here’s the likelihood of the data for each hypothesis.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">12</span>
@@ -1159,7 +1059,7 @@ I’ll use integers to represent the hypotheses:</p>
 </div>
 </div>
 </div>
-<p>And use it to compute the posterior distribution.</p>
+<p>And here’s the update.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood1</span>
@@ -1219,7 +1119,7 @@ Here are the likelihoods:</p>
 </div>
 <p>The likelihood for the 6-sided die is <span class="math notranslate nohighlight">\(0\)</span> because it is not possible to get a 7 on a 6-sided die.
 The other two likelihoods are the same as in the previous update.</p>
-<p>Now we can do the update in the usual way:</p>
+<p>Here’s the update:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">*=</span> <span class="n">likelihood2</span>
@@ -1364,12 +1264,12 @@ The other two likelihoods are the same as in the previous update.</p>
 </div>
 <p>The first parameter is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the possible dice and their probabilities.
 The second parameter is the outcome of rolling a die.</p>
-<p>The first line selects <code class="docutils literal notranslate"><span class="pre">qs</span></code> from the <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, which is the index of the <code class="docutils literal notranslate"><span class="pre">Series</span></code>; in this example, it represents the hypotheses.</p>
-<p>Since the hypotheses are integers, we can use them to compute the likelihoods.
+<p>The first line selects quantities from the <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> which represent the hypotheses.
+Since the hypotheses are integers, we can use them to compute the likelihoods.
 In general, if there are <code class="docutils literal notranslate"><span class="pre">n</span></code> sides on the die, the probability of any possible outcome is <code class="docutils literal notranslate"><span class="pre">1/n</span></code>.</p>
 <p>However, we have to check for impossible outcomes!
 If the outcome exceeds the hypothetical number of sides on the die, the probability of that outcome is <span class="math notranslate nohighlight">\(0\)</span>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">impossible</span></code> is a Boolean Series that is <code class="docutils literal notranslate"><span class="pre">True</span></code> for each impossible die.
+<p><code class="docutils literal notranslate"><span class="pre">impossible</span></code> is a Boolean Series that is <code class="docutils literal notranslate"><span class="pre">True</span></code> for each impossible outcome.
 I use it as an index into <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> to set the corresponding probabilities to <span class="math notranslate nohighlight">\(0\)</span>.</p>
 <p>Finally, I multiply <code class="docutils literal notranslate"><span class="pre">pmf</span></code> by the likelihoods and normalize.</p>
 <p>Here’s how we can use this function to compute the updates in the previous section.
@@ -1473,11 +1373,15 @@ I start with a fresh copy of the prior distribution:</p>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>This chapter introduces the <code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code> module, which provides <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, which we use to represent a set of hypotheses and their probabilities.</p>
+<p><code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code> is based on Pandas; the <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> class inherits from the Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code> class and provides additional features specific to probability mass functions.
+We’ll use <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> and other classes from <code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code> throughout the book because they simplify the code and make it more readable.
+But it would be easy to do the same things directly with Pandas.</p>
 <p>We use a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> to solve the cookie problem and the dice problem, which we saw in the previous chapter.
-With a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> it is easy to perform sequential updates as we see multiple pieces of data.</p>
+With a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> it is easy to perform sequential updates with multiple pieces of data.</p>
 <p>We also solved a more general version of the cookie problem, with 101 bowls rather than two.
 Then we computed the MAP, which is the quantity with the highest posterior probability.</p>
-<p>In the next chapter …</p>
+<p>In the next chapter, I’ll introduce the Euro problem, and we will use the binomial distribution.
+And, at last, we will make the leap from using Bayes’s Theorem to doing Bayesian statistics.</p>
 <p>But first you might want to work on the exercises.</p>
 </div>
 <div class="section" id="exercises">
@@ -1485,6 +1389,7 @@ Then we computed the MAP, which is the quantity with the highest posterior proba
 <p><strong>Exercise:</strong> Suppose I have a box with a 6-sided die, an 8-sided die, and a 12-sided die.
 I choose one of the dice at random, roll it four times, and get 1, 3, 5, and 7.
 What is the probability that I chose the 8-sided die?</p>
+<p>You can use the <code class="docutils literal notranslate"><span class="pre">update_dice</span></code> function or do the update yourself.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1540,9 +1445,14 @@ What is the probability that I chose the 8-sided die?</p>
 But suppose the box contains 1 die that is 4-sided, 2 dice that are 6-sided, 3 dice that are 8-sided, 4 dice that are 12-sided, and 5 dice that are 20-sided.
 I choose a die, roll it, and get a 7.<br />
 What is the probability that I chose an 8-sided die?</p>
+<p>Hint: To make the prior distribution, call <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with two parameters.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Notice that I don&#39;t bother to normalize the prior.</span>
+<span class="c1"># The `Pmf` gets normalized during the update, so we</span>
+<span class="c1"># don&#39;t have to normalize it before.</span>
 
 <span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
 <span class="n">qs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">20</span><span class="p">]</span>
