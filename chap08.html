@@ -39,6 +39,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Comparisons" href="chap09.html" />
     <link rel="prev" title="Poisson Processes" href="chap07.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -114,6 +115,16 @@
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    Decision Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap09.html">
+   Comparisons
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap10.html">
+   Classification
   </a>
  </li>
 </ul>
@@ -241,6 +252,11 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#discussion">
+   Discussion
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#exercises">
    Exercises
   </a>
@@ -257,9 +273,6 @@
                 
   <div class="section" id="decision-analysis">
 <h1>Decision Analysis<a class="headerlink" href="#decision-analysis" title="Permalink to this headline">¶</a></h1>
-<p>Think Bayes, Second Edition</p>
-<p>Copyright 2020 Allen B. Downey</p>
-<p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Get utils.py and create directories
@@ -455,11 +468,13 @@ if not os.path.exists(&#39;showcases.2012.csv&#39;):
 </table>
 </div></div></div>
 </div>
+<p>The first two columns, <code class="docutils literal notranslate"><span class="pre">Showcase</span> <span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">Showcase</span> <span class="pre">2</span></code>, are the values of the showcases in dollars.</p>
+<p>The next to columns are the bids the contestants made, and the last two columns are the differences between the actual values and the bids.</p>
 </div>
 <div class="section" id="kernel-density-estimation">
 <h2>Kernel density estimation<a class="headerlink" href="#kernel-density-estimation" title="Permalink to this headline">¶</a></h2>
 <p>This dataset contains the prices for 313 previous showcases, which we can think of as a sample from the population of possible prices.</p>
-<p>We can use this sample to estimate the prior distribution of showcase prices.  One way to do that is kernel density estimation (KDE), which uses the sample to estimate a smooth distribution.</p>
+<p>We can use this sample to estimate the prior distribution of showcase prices.  One way to do that is kernel density estimation (KDE), which uses the sample to estimate a smooth distribution.  If you are not familiar with KDE, you can <a class="reference external" href="https://mathisonian.github.io/kde">read about it here</a>.</p>
 <p>SciPy provides <code class="docutils literal notranslate"><span class="pre">gaussian_kde</span></code>, which takes a sample and returns an object that represents the estimated distribution.</p>
 <p>The following function takes a sample, makes a KDE, evaluates it at a given sequence of quantities, and returns the result as a normalized PMF.</p>
 <div class="cell docutils container">
@@ -516,7 +531,7 @@ if not os.path.exists(&#39;showcases.2012.csv&#39;):
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_24_0.png" src="_images/chap08_24_0.png" />
+<img alt="_images/chap08_25_0.png" src="_images/chap08_25_0.png" />
 </div>
 </div>
 <p><strong>Exercise:</strong> Use this function to make a Pmf that represents the prior distribution for Showcase 2, and plot it.</p>
@@ -542,7 +557,7 @@ if not os.path.exists(&#39;showcases.2012.csv&#39;):
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_27_0.png" src="_images/chap08_27_0.png" />
+<img alt="_images/chap08_28_0.png" src="_images/chap08_28_0.png" />
 </div>
 </div>
 </div>
@@ -553,10 +568,13 @@ if not os.path.exists(&#39;showcases.2012.csv&#39;):
 <li><p>What data should we consider and how should we quantify it?</p></li>
 <li><p>Can we compute a likelihood function; that is, for each hypothetical price, can we compute the conditional likelihood of the data?</p></li>
 </ul>
-<p>To answer these questions, I will model each contestant as a price-guessing instrument with known error characteristics. In other words, when the contestant sees the prizes, they guess the price of each prize — ideally without taking into consideration the fact that the prize is part of a showcase — and add up the prices. Let’s call this total <code class="docutils literal notranslate"><span class="pre">guess</span></code>.</p>
-<p>Under this model, the question we have to answer is, “If the actual price is <code class="docutils literal notranslate"><span class="pre">price</span></code>, what is the likelihood that the contestant’s estimate would be <code class="docutils literal notranslate"><span class="pre">guess</span></code>?”</p>
+<p>To answer these questions, I will model each contestant as a price-guessing instrument with known error characteristics.
+In this model, when the contestant sees the prizes, they guess the price of each prize and add up the prices.
+Let’s call this total <code class="docutils literal notranslate"><span class="pre">guess</span></code>.</p>
+<p>Now the question we have to answer is, “If the actual price is <code class="docutils literal notranslate"><span class="pre">price</span></code>, what is the likelihood that the contestant’s estimate would be <code class="docutils literal notranslate"><span class="pre">guess</span></code>?”</p>
 <p>Equivalently, if we define <code class="docutils literal notranslate"><span class="pre">error</span> <span class="pre">=</span> <span class="pre">guess</span> <span class="pre">-</span> <span class="pre">price</span></code>, we can ask, “What is the likelihood that the contestant’s estimate is off by <code class="docutils literal notranslate"><span class="pre">error</span></code>?”</p>
-<p>To answer this question, I’ll use the historical data again. For each showcase in the dataset, let’s look at the difference between the contestant’s bid and the actual price:</p>
+<p>To answer this question, I’ll use the historical data again.
+For each showcase in the dataset, let’s look at the difference between the contestant’s bid and the actual price:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sample_diff1</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Bid 1&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Showcase 1&#39;</span><span class="p">]</span>
@@ -588,11 +606,13 @@ if not os.path.exists(&#39;showcases.2012.csv&#39;):
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_33_0.png" src="_images/chap08_33_0.png" />
+<img alt="_images/chap08_34_0.png" src="_images/chap08_34_0.png" />
 </div>
 </div>
 <p>It looks like the bids are too low more often than too high, which makes sense.  Remember that under the rules of the game, you lose if you overbid, so contestants probably underbid to some degree deliberately.</p>
-<p>Here is the mean and standard deviation of <code class="docutils literal notranslate"><span class="pre">Diff</span></code> for Player 1.</p>
+<p>For example, if they guess that the value of the showcase is \$40,000, they might bid \$36,000 to avoid going over.</p>
+<p>It looks like these distributions are well modeled by a normal distribution, so we can summarize them with their mean and standard deviation.</p>
+<p>For example, here is the mean and standard deviation of <code class="docutils literal notranslate"><span class="pre">Diff</span></code> for Player 1.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mean_diff1</span> <span class="o">=</span> <span class="n">sample_diff1</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -608,8 +628,8 @@ if not os.path.exists(&#39;showcases.2012.csv&#39;):
 </div>
 </div>
 </div>
-<p>We can use the observed distribution of differences to model the contestant’s distribution of errors.</p>
-<p>This step is a little tricky because we don’t actually know the contestant’s guesses; we only know what they bid.</p>
+<p>Now we can use these differences to model the contestant’s distribution of errors.
+This step is a little tricky because we don’t actually know the contestant’s guesses; we only know what they bid.</p>
 <p>So we have to make some assumptions:</p>
 <ul class="simple">
 <li><p>I’ll assume that contestants underbid because they are being strategic, and that on average their guesses are accurate.  In other words, the mean of their errors is 0.</p></li>
@@ -627,12 +647,28 @@ if not os.path.exists(&#39;showcases.2012.csv&#39;):
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;scipy.stats._distn_infrastructure.rv_frozen at 0x7fa2c9e11710&gt;
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;scipy.stats._distn_infrastructure.rv_frozen at 0x7fed874cef50&gt;
 </pre></div>
 </div>
 </div>
 </div>
-<p>In the next section, we’ll use this distribution to do the update.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">norm</span></code> object provides <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, which evaluated the probability density function of the normal distribution.</p>
+<p>For example, here is the probability density of <code class="docutils literal notranslate"><span class="pre">error=-100</span></code>, based on the distribution of errors for Player 1.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">error</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>
+<span class="n">error_dist1</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>5.781240564008691e-05
+</pre></div>
+</div>
+</div>
+</div>
+<p>By itself, this number doesn’t mean very much, because probability densities are not probabilities</p>
+<p>But they are proportional to probabilities, so we can use them as likelihoods in a Bayesian update, as we’ll see in the next section.</p>
 </div>
 <div class="section" id="update">
 <h2>Update<a class="headerlink" href="#update" title="Permalink to this headline">¶</a></h2>
@@ -656,7 +692,7 @@ The result is your error under each hypothesis.</p>
 </div>
 </div>
 </div>
-<p>And we can use that likelihood to update the prior.</p>
+<p>The result is an array of likelihoods, which we can use to update the prior.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior1</span> <span class="o">=</span> <span class="n">prior1</span> <span class="o">*</span> <span class="n">likelihood1</span>
@@ -681,7 +717,7 @@ The result is your error under each hypothesis.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_46_0.png" src="_images/chap08_46_0.png" />
+<img alt="_images/chap08_50_0.png" src="_images/chap08_50_0.png" />
 </div>
 </div>
 <p>Because your estimate is in the lower end of the range, the posterior distribution has shifted to the left.  We can compute the posterior mean to see by how much.</p>
@@ -752,7 +788,7 @@ The result is your error under each hypothesis.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>2.6978123219107028e-05
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>2.697812321910702e-05
 </pre></div>
 </div>
 </div>
@@ -769,7 +805,7 @@ The result is your error under each hypothesis.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_55_0.png" src="_images/chap08_55_0.png" />
+<img alt="_images/chap08_59_0.png" src="_images/chap08_59_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -781,7 +817,7 @@ The result is your error under each hypothesis.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(31047.623719122515, 34305.20161642469)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(31047.623719122505, 34305.20161642469)
 </pre></div>
 </div>
 </div>
@@ -920,7 +956,7 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_74_0.png" src="_images/chap08_74_0.png" />
+<img alt="_images/chap08_78_0.png" src="_images/chap08_78_0.png" />
 </div>
 </div>
 <p>If you underbid by $30,000, the chance of winning is about 30%, which is mostly the chance your opponent overbids.</p>
@@ -998,7 +1034,7 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_81_0.png" src="_images/chap08_81_0.png" />
+<img alt="_images/chap08_85_0.png" src="_images/chap08_85_0.png" />
 </div>
 </div>
 </div>
@@ -1044,7 +1080,7 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.48422109454398116
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.4842210945439812
 </pre></div>
 </div>
 </div>
@@ -1065,16 +1101,15 @@ What is the probability that Player 2 underbids by more?</p>
 <p>Here are the results.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob_win_series</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob_win_series</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Player 1&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Bid ($)&#39;</span><span class="p">,</span>
-         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Probability of winning&#39;</span><span class="p">,</span>
-         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Player 1&#39;</span><span class="p">)</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Probability of winning&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_89_0.png" src="_images/chap08_89_0.png" />
+<img alt="_images/chap08_93_0.png" src="_images/chap08_93_0.png" />
 </div>
 </div>
 <p>And here’s the bid that maximizes Player 1’s chance of winning.</p>
@@ -1124,16 +1159,15 @@ What is the probability that Player 2 underbids by more?</p>
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="n">prob_win_series</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+<span class="n">prob_win_series</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Player 2&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Bid ($)&#39;</span><span class="p">,</span>
-    <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Probability of winning&#39;</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Player 2&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Probability of winning&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_96_0.png" src="_images/chap08_96_0.png" />
+<img alt="_images/chap08_100_0.png" src="_images/chap08_100_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1159,7 +1193,7 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.5171370053364228
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.5171370053364229
 </pre></div>
 </div>
 </div>
@@ -1195,9 +1229,9 @@ The following function computes how much you will win, on average, given your bi
 </div>
 </div>
 </div>
-<p>For example, if the actual price is $35000</p>
-<p>and you bid $30000,</p>
-<p>you will win about $23,600 worth of prizes on average.</p>
+<p>For example, if the actual price is \$35000
+and you bid \$30000,
+you will win about \$23,600 worth of prizes on average, taking into account your probability of losing, winning one showcase, or winning both.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">compute_gain</span><span class="p">(</span><span class="mi">30000</span><span class="p">,</span> <span class="mi">35000</span><span class="p">,</span> <span class="n">sample_diff2</span><span class="p">)</span>
@@ -1270,7 +1304,7 @@ By averaging over the prices and probabilities in the posterior distribution, we
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_110_0.png" src="_images/chap08_110_0.png" />
+<img alt="_images/chap08_114_0.png" src="_images/chap08_114_0.png" />
 </div>
 </div>
 <p>Here is the optimal bid.</p>
@@ -1294,7 +1328,7 @@ By averaging over the prices and probabilities in the posterior distribution, we
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>17384.899584430794
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>17384.899584430797
 </pre></div>
 </div>
 </div>
@@ -1329,7 +1363,7 @@ By averaging over the prices and probabilities in the posterior distribution, we
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_118_0.png" src="_images/chap08_118_0.png" />
+<img alt="_images/chap08_122_0.png" src="_images/chap08_122_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1363,7 +1397,20 @@ By averaging over the prices and probabilities in the posterior distribution, we
 </div>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
-<p>When people discuss the pros and cons of Bayesian estimation as contrasted with classical methods sometimes called “frequentist”, they often claim that in many cases Bayesian methods and frequentist methods produce the same results.</p>
+<p>There’s a lot going on this this chapter, so let’s review the steps:</p>
+<ol class="simple">
+<li><p>First we used KDE and data from past shows to estimate prior distributions for the values of the showcases.</p></li>
+<li><p>Then we used bids from past shows to model the distribution of errors as a normal distribution.</p></li>
+<li><p>We did a Bayesian update using the distribution of errors to compute the likelihood of the data.</p></li>
+<li><p>We used the posterior distribution for the value of the showcase to compute the probability of winning for each possible bid, and identified the bid that maximizes the chance of winning.</p></li>
+<li><p>Finally, we used probability of winning to compute the expected gain for each possible bid, and identified the bid that maximizes expected gain.</p></li>
+</ol>
+<p>Incidentally, this example demonstrates the hazard of using the word “optimal” without specifying what you are optimizing.
+The bid that maximizes the chance of winning is not generally the same as the bid that maximizes expected gain.</p>
+</div>
+<div class="section" id="discussion">
+<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<p>When people discuss the pros and cons of Bayesian estimation, as contrasted with classical methods sometimes called “frequentist”, they often claim that in many cases Bayesian methods and frequentist methods produce the same results.</p>
 <p>In my opinion, this claim is mistaken because Bayesian and frequentist method produce different <em>kinds</em> of results:</p>
 <ul class="simple">
 <li><p>The result of frequentist methods is usually a single value that is considered to be the best estimate (by one of several criteria) or an interval that quantifies the precision of the estimate.</p></li>
@@ -1566,7 +1613,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_142_0.png" src="_images/chap08_142_0.png" />
+<img alt="_images/chap08_147_0.png" src="_images/chap08_147_0.png" />
 </div>
 </div>
 <p>Now, we <em>could</em> generate a predictive distribution for the number of books ordered in a given week, but in this example we have to deal with a complicated cost function.  In particular, <code class="docutils literal notranslate"><span class="pre">out_of_stock_cost</span></code> depends on the sequence of orders.</p>
@@ -1580,7 +1627,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>9.0525
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>9.15025
 </pre></div>
 </div>
 </div>
@@ -1595,11 +1642,11 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([[ 8,  7,  9, 12, 13,  3, 11, 10],
-       [19, 17, 15, 19, 16,  9, 12, 15],
-       [13,  8,  8, 11, 15,  9,  8,  7],
-       [19, 13, 20, 12, 13, 21, 26,  9],
-       [ 7, 13, 10,  8,  9, 12,  8, 12]])
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([[ 8, 13,  9, 14, 10,  9,  6,  8],
+       [ 7, 13,  9,  6, 15, 10, 19, 10],
+       [21, 11, 14, 16, 19, 21, 12, 21],
+       [ 8, 13, 11,  8, 14, 10,  8, 16],
+       [13, 17,  7, 12, 13, 14, 12, 15]])
 </pre></div>
 </div>
 </div>
@@ -1629,7 +1676,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>186.902
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>191.986
 </pre></div>
 </div>
 </div>
@@ -1641,7 +1688,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>187.762
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>192.28
 </pre></div>
 </div>
 </div>
@@ -1653,7 +1700,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>166.462
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>171.934
 </pre></div>
 </div>
 </div>
@@ -1679,7 +1726,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_155_0.png" src="_images/chap08_155_0.png" />
+<img alt="_images/chap08_160_0.png" src="_images/chap08_160_0.png" />
 </div>
 </div>
 <p>Here is the optimal order and the expected profit.</p>
@@ -1690,7 +1737,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(77, 190.636)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(75, 196.1)
 </pre></div>
 </div>
 </div>
@@ -1729,7 +1776,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_160_0.png" src="_images/chap08_160_0.png" />
+<img alt="_images/chap08_165_0.png" src="_images/chap08_165_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1806,7 +1853,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>9.965905193020772
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>9.94669288091595
 </pre></div>
 </div>
 </div>
@@ -1823,11 +1870,11 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([[17,  8,  9,  8, 10, 11, 15,  7],
-       [21, 18, 16, 14, 16, 20, 16, 12],
-       [ 9, 12,  8, 10,  8,  6, 16,  9],
-       [ 6,  8, 11, 14,  8, 13,  9,  5],
-       [13, 13, 11,  8, 11,  8, 12, 10]])
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([[13,  9, 11, 13, 10,  8,  9, 11],
+       [ 7, 12, 11,  9, 10,  9,  5,  7],
+       [12,  6, 15, 12, 10, 17, 15, 13],
+       [11,  8, 13,  9, 13,  9,  9,  9],
+       [ 6, 12,  8, 11, 15, 18, 22, 12]])
 </pre></div>
 </div>
 </div>
@@ -1860,7 +1907,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_168_0.png" src="_images/chap08_168_0.png" />
+<img alt="_images/chap08_173_0.png" src="_images/chap08_173_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1920,6 +1967,7 @@ Then generate a posterior predictive distribution for the number of copies you e
     <div class='prev-next-bottom'>
         
     <a class='left-prev' id="prev-link" href="chap07.html" title="previous page">Poisson Processes</a>
+    <a class='right-next' id="next-link" href="chap09.html" title="next page">Comparisons</a>
 
     </div>
     <footer class="footer mt-5 mt-md-0">

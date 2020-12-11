@@ -117,6 +117,16 @@
    Decision Analysis
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap09.html">
+   Comparisons
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap10.html">
+   Classification
+  </a>
+ </li>
 </ul>
 
 </nav>
@@ -255,22 +265,18 @@ I’ll explain what that means, and why it is useful for Bayesian statistics.</p
 But we’ll start with distributions.</p>
 <div class="section" id="id1">
 <h2>Distributions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<p>In statistics a <strong>distribution</strong> is a set of values and their
-corresponding probabilities.</p>
+<p>In statistics a <strong>distribution</strong> is a set of possible outcomes and their corresponding probabilities.</p>
 <p>For example, if you toss a coin, there are two possible outcomes with
 approximately equal probability.</p>
-<p>If you roll a six-sided die, the set of possible values is the numbers 1 to 6, and the probability associated with each value is 1/6.</p>
+<p>If you roll a six-sided die, the set of possible outcomes is the numbers 1 to 6, and the probability associated with each outcome is 1/6.</p>
 <p>To represent distributions, we’ll use a library called <code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code>.
 An “empirical” distribution is based on data, as opposed to a
 theoretical distribution.</p>
-<p><code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code> is available from the Python Package Index (PyPI). You
-can <a class="reference external" href="https://pypi.org/project/empiricaldist/">download it here</a> or
-install it with <code class="docutils literal notranslate"><span class="pre">pip</span></code>. For more details, see the Preface.</p>
 <p>We’ll use this library throughout the book.  I’ll introduce the basic features in this chapter and we’ll see additional features later.</p>
 </div>
 <div class="section" id="probability-mass-functions">
 <h2>Probability mass functions<a class="headerlink" href="#probability-mass-functions" title="Permalink to this headline">¶</a></h2>
-<p>If the values in a distribution are discrete, we can describe the distribution with a <strong>probability mass function</strong>, or PMF, which is a function that maps from a value to its probability.</p>
+<p>If the outcomes in a distribution are discrete, we can describe the distribution with a <strong>probability mass function</strong>, or PMF, which is a function that maps from each possible outcome to its probability.</p>
 <p><code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code> provides a class called <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents a
 probability mass function.
 To use <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> you can import it like this:</p>
@@ -281,6 +287,7 @@ To use <code class="docutils literal notranslate"><span class="pre">Pmf</span></
 </div>
 </div>
 </div>
+<p>If that doesn’t work, you might have to install <code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code>; see the Preface for details.</p>
 <p>The following example makes a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the outcome of a
 coin toss.</p>
 <div class="cell docutils container">
@@ -327,10 +334,10 @@ coin toss.</p>
 </table>
 </div></div></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> creates an empty <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with no values.
-Then we can add new values using the bracket operator.
+<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> creates an empty <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with no outcomes.
+Then we can add new outcomes using the bracket operator.
 In this example, the two outcomes are represented with strings, and they have the same probability, <span class="math notranslate nohighlight">\(0.5\)</span>.</p>
-<p>You can also make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> from a sequence of values.</p>
+<p>You can also make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> from a sequence of possible outcomes.</p>
 <p>The following example uses <code class="docutils literal notranslate"><span class="pre">Pmf.from_seq</span></code> to make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents a six-sided die.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -390,8 +397,8 @@ In this example, the two outcomes are represented with strings, and they have th
 </table>
 </div></div></div>
 </div>
-<p>In this example, all values in the sequence appear once, so they all have the same probability, <span class="math notranslate nohighlight">\(1/6\)</span>.</p>
-<p>More generally, values can appear more than once, as in the following example:</p>
+<p>In this example, all outcomes in the sequence appear once, so they all have the same probability, <span class="math notranslate nohighlight">\(1/6\)</span>.</p>
+<p>More generally, outcomes can appear more than once, as in the following example:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">letters</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="s1">&#39;Mississippi&#39;</span><span class="p">))</span>
@@ -444,8 +451,9 @@ In this example, the two outcomes are represented with strings, and they have th
 </div>
 <p>The letter <code class="docutils literal notranslate"><span class="pre">M</span></code> appears once out of 11 characters, so its probability is <span class="math notranslate nohighlight">\(1/11\)</span>.
 The letter <code class="docutils literal notranslate"><span class="pre">i</span></code> appears 4 times, so its probability is <span class="math notranslate nohighlight">\(4/11\)</span>.</p>
+<p>Since the letters in a string are not outcomes, I’ll use the more general term “quantities” for the letters in the <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> class inherits from a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code>, so anything you can do with a <code class="docutils literal notranslate"><span class="pre">Series</span></code>, you can also do with a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
-<p>For example, you can use the bracket operator to look up a value and
+<p>For example, you can use the bracket operator to look up a quantity and
 get the corresponding probability.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -460,8 +468,7 @@ get the corresponding probability.</p>
 </div>
 </div>
 <p>In the word “Mississippi”, about 36% of the letters are “s”.</p>
-<p>However, if you ask for the probability of a value that’s not in the
-distribution, you get a <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>.</p>
+<p>However, if you ask for the probability of a quantity that’s not in the distribution, you get a <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
@@ -477,7 +484,7 @@ distribution, you get a <code class="docutils literal notranslate"><span class="
 </div>
 </div>
 </div>
-<p>You can also call a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> as if it were a function, with a value in parentheses.</p>
+<p>You can also call a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> as if it were a function, with a letter in parentheses.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">letters</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
@@ -490,8 +497,8 @@ distribution, you get a <code class="docutils literal notranslate"><span class="
 </div>
 </div>
 </div>
-<p>If the value is in the distribution the results are the same.
-But if the value is not in the distribution, the result is <span class="math notranslate nohighlight">\(0\)</span>, not an error.</p>
+<p>If the quantity is in the distribution the results are the same.
+But if it is not in the distribution, the result is <span class="math notranslate nohighlight">\(0\)</span>, not an error.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">letters</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">)</span>
@@ -504,7 +511,7 @@ But if the value is not in the distribution, the result is <span class="math not
 </div>
 </div>
 </div>
-<p>With parentheses, you can also provide a sequence of values and get a sequence of probabilities.</p>
+<p>With parentheses, you can also provide a sequence of quantities and get a sequence of probabilities.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">die</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
@@ -517,7 +524,7 @@ But if the value is not in the distribution, the result is <span class="math not
 </div>
 </div>
 </div>
-<p>The values in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> can be strings, numbers, or any other type that can be stored in the index of a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code>.</p>
+<p>The quantities in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> can be strings, numbers, or any other type that can be stored in the index of a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code>.</p>
 <p>If you are familiar with Pandas, that will help you work with <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects.
 But I will explain what you need to know as we go along.</p>
 </div>
@@ -838,7 +845,7 @@ After two vanilla cookies and one chocolate, the posterior probabilities are clo
 </div>
 </div>
 <p>As this example shows, we can initialize a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with two parameters.
-The first parameter is the prior probability; the second parameter is a sequence of values.</p>
+The first parameter is the prior probability; the second parameter is a sequence of quantities.</p>
 <p>In this example, the probabilities are all the same, so we only have to provide one of them; it gets “broadcast” across the hypotheses.</p>
 <p>Since all hypotheses have the same prior probability, this distribution is <strong>uniform</strong>.</p>
 <p>The likelihood of the data is the fraction of vanilla cookies in each bowl, which we can calculate using <code class="docutils literal notranslate"><span class="pre">hypos</span></code>:</p>
@@ -1054,7 +1061,7 @@ I’ll use integers to represent the hypotheses:</p>
 <p>As in the previous example, the prior probability gets broadcast across the hypotheses.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> object has two attributes:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">qs</span></code> contains the quantities, that is, the values in the distribution;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">qs</span></code> contains the quantities in the distribution;</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ps</span></code> contains the corresponding probabilities.</p></li>
 </ul>
 <div class="cell docutils container">

@@ -117,6 +117,16 @@
    Decision Analysis
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap09.html">
+   Comparisons
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap10.html">
+   Classification
+  </a>
+ </li>
 </ul>
 
 </nav>
@@ -249,7 +259,7 @@
   <div class="section" id="estimating-proportions">
 <h1>Estimating proportions<a class="headerlink" href="#estimating-proportions" title="Permalink to this headline">¶</a></h1>
 <p>In the previous chapter we solved the 101 Bowls Problem, and I admitted that it is not really about guessing which bowl the cookies came from; it is about estimating proportions.</p>
-<p>In this chapter, we take another small step toward Bayesian statistics by solving the Euro problem.
+<p>In this chapter, we take another step toward Bayesian statistics by solving the Euro problem.
 We’ll start with the same prior distribution, and we’ll see that the update is the same, mathematically.
 But I will argue that it is a different problem, philosophically, and use it to introduce two defining elements of Bayesian statistics: choosing prior distributions, and using probability to represent the unknown.</p>
 <div class="section" id="the-euro-problem">
@@ -271,22 +281,39 @@ First we’ll use the binomial distribution to see where that 7% came from; then
 <h2>The binomial distribution<a class="headerlink" href="#the-binomial-distribution" title="Permalink to this headline">¶</a></h2>
 <p>Suppose I tell you that a coin is “fair”, that is, the probability of heads is 50%.  If you spin it twice, there are four outcomes: <code class="docutils literal notranslate"><span class="pre">HH</span></code>, <code class="docutils literal notranslate"><span class="pre">HT</span></code>, <code class="docutils literal notranslate"><span class="pre">TH</span></code>, and <code class="docutils literal notranslate"><span class="pre">TT</span></code>.  All four outcomes have the same probability, 25%.</p>
 <p>If we add up the total number of heads, there are three possible results: 0, 1, or 2.  The probabilities of 0 and 2 are 25%, and the probability of 1 is 50%.</p>
-<p>More generally, suppose the probability of heads is <code class="docutils literal notranslate"><span class="pre">p</span></code> and we spin the coin <code class="docutils literal notranslate"><span class="pre">n</span></code> times.  What is the probability that we get a total of <code class="docutils literal notranslate"><span class="pre">k</span></code> heads?</p>
-<p>The answer is given by the binomial distribution:</p>
-<p><span class="math notranslate nohighlight">\(P(k; n, p) = \binom{n}{k} p^k (1-p)^{n-k}\)</span></p>
-<p>where <span class="math notranslate nohighlight">\(\binom{n}{k}\)</span> is the <a class="reference external" href="https://en.wikipedia.org/wiki/Binomial_coefficient">binomial coefficient</a>, usually pronounced “n choose k”.</p>
-<p>We can compute the binomial distribution ourselves, but we can also use the SciPy function <code class="docutils literal notranslate"><span class="pre">binom.pmf</span></code>:</p>
+<p>More generally, suppose the probability of heads is <code class="docutils literal notranslate"><span class="pre">p</span></code> and we spin the coin <code class="docutils literal notranslate"><span class="pre">n</span></code> times.  The probability that we get a total of <code class="docutils literal notranslate"><span class="pre">k</span></code> heads is given by the <a class="reference external" href="https://en.wikipedia.org/wiki/Binomial_distribution">binomial distribution</a>:</p>
+<div class="math notranslate nohighlight">
+\[\binom{n}{k} p^k (1-p)^{n-k}\]</div>
+<p>for any value of <span class="math notranslate nohighlight">\(k\)</span> from <span class="math notranslate nohighlight">\(0\)</span> to <span class="math notranslate nohighlight">\(n\)</span>, including both.</p>
+<p>The term <span class="math notranslate nohighlight">\(\binom{n}{k}\)</span> is the <a class="reference external" href="https://en.wikipedia.org/wiki/Binomial_coefficient">binomial coefficient</a>, usually pronounced “n choose k”.</p>
+<p>We could evaluate this expression ourselves, but we can also use the SciPy function <code class="docutils literal notranslate"><span class="pre">binom.pmf</span></code>.
+For example, if we flip a coin <code class="docutils literal notranslate"><span class="pre">n=2</span></code> time and the probability of heads is <code class="docutils literal notranslate"><span class="pre">p=0.5</span></code>, here’s the probability of getting <code class="docutils literal notranslate"><span class="pre">k=1</span></code> heads:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">p</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.5
+</pre></div>
+</div>
+</div>
+</div>
+<p>Instead of providing a single value for <code class="docutils literal notranslate"><span class="pre">k</span></code>, we can also call <code class="docutils literal notranslate"><span class="pre">binom.pmf</span></code> with an array of values.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="n">ks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">a</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-<span class="n">a</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="n">ps</span>
 </pre></div>
 </div>
 </div>
@@ -296,14 +323,14 @@ First we’ll use the binomial distribution to see where that 7% came from; then
 </div>
 </div>
 </div>
-<p>The return value is a NumPy array.
-If we put it in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, the result is the distribution of <code class="docutils literal notranslate"><span class="pre">k</span></code> for the given values of <code class="docutils literal notranslate"><span class="pre">n</span></code> and <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
+<p>The result is a NumPy array with the probability of 0, 1, or 2 heads.</p>
+<p>If we put these probabilities in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, the result is the distribution of <code class="docutils literal notranslate"><span class="pre">k</span></code> for the given values of <code class="docutils literal notranslate"><span class="pre">n</span></code> and <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
 <p>Here’s what it looks like:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
 
-<span class="n">pmf_k</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">ks</span><span class="p">)</span>
+<span class="n">pmf_k</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">ks</span><span class="p">)</span>
 <span class="n">pmf_k</span>
 </pre></div>
 </div>
@@ -359,8 +386,8 @@ If we put it in a <code class="docutils literal notranslate"><span class="pre">P
 <span class="sd">    returns: Pmf representing the distribution</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">ks</span><span class="p">)</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">ks</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -386,10 +413,10 @@ If we put it in a <code class="docutils literal notranslate"><span class="pre">P
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_14_0.png" src="_images/chap03_14_0.png" />
+<img alt="_images/chap03_16_0.png" src="_images/chap03_16_0.png" />
 </div>
 </div>
-<p>The most likely value in this distribution is 125:</p>
+<p>The most likely quantity in this distribution is 125:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_k</span><span class="o">.</span><span class="n">max_prob</span><span class="p">()</span>
@@ -402,7 +429,7 @@ If we put it in a <code class="docutils literal notranslate"><span class="pre">P
 </div>
 </div>
 </div>
-<p>But even though it is the most likely value, the probability that we get exactly 125 heads is only about 5%.</p>
+<p>But even though it is the most likely quantity, the probability that we get exactly 125 heads is only about 5%.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_k</span><span class="p">[</span><span class="mi">125</span><span class="p">]</span>
@@ -429,18 +456,18 @@ If we put it in a <code class="docutils literal notranslate"><span class="pre">P
 </div>
 </div>
 <p>In the article MacKay quotes, the statistician says, “If the coin were unbiased the chance of getting a result as extreme as that would be less than 7%.”</p>
-<p>We can use the binomial distribution to check his math.  The following function takes a PMF and computes the total probability of values greater than or equal to <code class="docutils literal notranslate"><span class="pre">threshold</span></code>.</p>
+<p>We can use the binomial distribution to check his math.  The following function takes a PMF and computes the total probability of quantities greater than or equal to <code class="docutils literal notranslate"><span class="pre">threshold</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prob_ge</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Probability of values greater than a threshold.</span>
+    <span class="sd">&quot;&quot;&quot;Probability of quantities greater than a threshold.</span>
 <span class="sd">    </span>
 <span class="sd">    pmf: Series representing a PMF</span>
-<span class="sd">    threshold: value to compare to</span>
+<span class="sd">    threshold: quantity to compare to</span>
 <span class="sd">    </span>
 <span class="sd">    returns: probability</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ge</span> <span class="o">=</span> <span class="p">(</span><span class="n">pmf</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">)</span>
+    <span class="n">ge</span> <span class="o">=</span> <span class="p">(</span><span class="n">pmf</span><span class="o">.</span><span class="n">qs</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">)</span>
     <span class="n">total</span> <span class="o">=</span> <span class="n">pmf</span><span class="p">[</span><span class="n">ge</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">total</span>
 </pre></div>
@@ -473,7 +500,35 @@ If we put it in a <code class="docutils literal notranslate"><span class="pre">P
 </div>
 </div>
 </div>
-<p>The result is about 3.3%, which is less than the quoted 7%.  The reason for the difference is that the statistician includes all values “as extreme as” 140, which includes values less than or equal to 110, because 140 exceeds the expected value by 15 and 110 falls short by 15.</p>
+<p>The result is about 3.3%, which is less than the quoted 7%.  The reason for the difference is that the statistician includes all outcomes “as extreme as” 140, which includes outcomes less than or equal to 110.</p>
+<p>To see where that comes from, recall that the expected number of heads is 125.  If we get 140, we’ve exceeded that expectation by 15.
+And if we get 110, we have come up short by 15.</p>
+<p>7% is the sum of both of these “tails”, as shows in the following figure.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">fill_below</span><span class="p">(</span><span class="n">pmf</span><span class="p">):</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+<span class="n">qs</span> <span class="o">=</span> <span class="n">pmf_k</span><span class="o">.</span><span class="n">index</span>
+<span class="n">fill_below</span><span class="p">(</span><span class="n">pmf_k</span><span class="p">[</span><span class="n">qs</span><span class="o">&gt;=</span><span class="mi">140</span><span class="p">])</span>
+<span class="n">fill_below</span><span class="p">(</span><span class="n">pmf_k</span><span class="p">[</span><span class="n">qs</span><span class="o">&lt;=</span><span class="mi">110</span><span class="p">])</span>
+<span class="n">pmf_k</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;n=250, p=0.5&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of heads (k)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Binomial distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap03_30_0.png" src="_images/chap03_30_0.png" />
+</div>
+</div>
+<p>Here’s how we compute the total probability of the left tail.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_k</span><span class="o">.</span><span class="n">prob_le</span><span class="p">(</span><span class="mi">110</span><span class="p">)</span>
@@ -486,9 +541,9 @@ If we put it in a <code class="docutils literal notranslate"><span class="pre">P
 </div>
 </div>
 </div>
-<p>The probability of values less than or equal to 110 is also 3.3%,
-so the total probability of values “as extreme” as 140 is 6.6%.</p>
-<p>The point of this calculation is that these extreme values are unlikely if the coin is fair.</p>
+<p>The probability of outcomes less than or equal to 110 is also 3.3%,
+so the total probability of outcomes “as extreme” as 140 is 6.6%.</p>
+<p>The point of this calculation is that these extreme outcomes are unlikely if the coin is fair.</p>
 <p>That’s interesting, but it doesn’t answer MacKay’s question.  Let’s see if we can.</p>
 </div>
 <div class="section" id="bayesian-estimation">
@@ -583,7 +638,7 @@ That’s more efficient than normalizing it after each spin (although we’ll se
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_42_0.png" src="_images/chap03_42_0.png" />
+<img alt="_images/chap03_46_0.png" src="_images/chap03_46_0.png" />
 </div>
 </div>
 <p>This figure shows the posterior distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code>, which is the proportion of heads for the coin we observed.</p>
@@ -651,7 +706,7 @@ Then we use <code class="docutils literal notranslate"><span class="pre">a</span
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_50_0.png" src="_images/chap03_50_0.png" />
+<img alt="_images/chap03_54_0.png" src="_images/chap03_54_0.png" />
 </div>
 </div>
 <p>Now we can update both priors with the same data:</p>
@@ -673,7 +728,7 @@ Then we use <code class="docutils literal notranslate"><span class="pre">a</span
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_54_0.png" src="_images/chap03_54_0.png" />
+<img alt="_images/chap03_58_0.png" src="_images/chap03_58_0.png" />
 </div>
 </div>
 <p>The differences between the posterior distributions are barely visible, and so small they would hardly matter in practice.</p>
@@ -736,7 +791,7 @@ The following function takes a <code class="docutils literal notranslate"><span 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_61_0.png" src="_images/chap03_61_0.png" />
+<img alt="_images/chap03_65_0.png" src="_images/chap03_65_0.png" />
 </div>
 </div>
 <p>The result is the same as in the previous section except for a small floating-point round-off.</p>
@@ -849,11 +904,11 @@ I’m going to leave this question hanging a little longer; we’ll come back to
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_79_0.png" src="_images/chap03_79_0.png" />
+<img alt="_images/chap03_83_0.png" src="_images/chap03_83_0.png" />
 </div>
 </div>
 <p>This distribution indicates that most players have a batting average near 250, with only a few players below 175 or above 350.  I’m not sure how accurately this prior reflects the distribution of batting averages in Major League Baseball, but it is good enough for this exercise.</p>
-<p>Now update this distribution with the data and plot the posterior.  What is the most likely value in the posterior distribution?</p>
+<p>Now update this distribution with the data and plot the posterior.  What is the most likely quantity in the posterior distribution?</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -885,7 +940,7 @@ I’m going to leave this question hanging a little longer; we’ll come back to
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_82_0.png" src="_images/chap03_82_0.png" />
+<img alt="_images/chap03_86_0.png" src="_images/chap03_86_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -927,7 +982,7 @@ You can get a more accurate estimate if you ask them indirectly, like this: Ask 
 </ul>
 <p>If someone says YES, we don’t know whether they actually cheat on their taxes; they might have flipped yes.
 Knowing this, people might be more willing to answer honestly.</p>
-<p>Suppose you survey 100 people this way and get 80 YESes and 20 NOs.  Based on this data, what is the posterior distribution for the fraction of people who cheat on their taxes?  What is the most likely value in the posterior distribution?</p>
+<p>Suppose you survey 100 people this way and get 80 YESes and 20 NOs.  Based on this data, what is the posterior distribution for the fraction of people who cheat on their taxes?  What is the most likely quantity in the posterior distribution?</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -989,7 +1044,7 @@ Knowing this, people might be more willing to answer honestly.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_89_0.png" src="_images/chap03_89_0.png" />
+<img alt="_images/chap03_93_0.png" src="_images/chap03_93_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1062,7 +1117,7 @@ So you make a machine that spins the coin automatically and uses computer vision
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_94_0.png" src="_images/chap03_94_0.png" />
+<img alt="_images/chap03_98_0.png" src="_images/chap03_98_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1139,7 +1194,7 @@ So you make a machine that spins the coin automatically and uses computer vision
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_100_0.png" src="_images/chap03_100_0.png" />
+<img alt="_images/chap03_104_0.png" src="_images/chap03_104_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1170,7 +1225,7 @@ So you make a machine that spins the coin automatically and uses computer vision
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_102_0.png" src="_images/chap03_102_0.png" />
+<img alt="_images/chap03_106_0.png" src="_images/chap03_106_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">

@@ -117,6 +117,16 @@
    Decision Analysis
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap09.html">
+   Comparisons
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap10.html">
+   Classification
+  </a>
+ </li>
 </ul>
 
 </nav>
@@ -253,7 +263,7 @@
                 
   <div class="section" id="poisson-processes">
 <h1>Poisson Processes<a class="headerlink" href="#poisson-processes" title="Permalink to this headline">¶</a></h1>
-<p>This notebook introduces the <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_point_process">Poisson process</a>, which is a model used to describe events that occur at random intervals.
+<p>This chapter introduces the <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_point_process">Poisson process</a>, which is a model used to describe events that occur at random intervals.
 In this context, “process” has a mathematical definition that is almost unrelated to its usual meaning, and (I think) not worth explaining here.</p>
 <p>As an example of a Poisson process, we’ll model goal-scoring in soccer, which is American English for the game everyone else calls “football”.
 We’ll use goals scored in a game to estimate the parameter of a Poisson process; then we’ll use the posterior distribution to make predictions.</p>
@@ -267,7 +277,7 @@ We’ll use goals scored in a game to estimate the parameter of a Poisson proces
 </ol>
 <p>To answer these questions, we have to make some modeling decisions.</p>
 <ul class="simple">
-<li><p>First, I’ll assume that for any team against another team there is some unknown goal-scoring rate, measured in goals per game, which I’ll denote with the Greek letter <span class="math notranslate nohighlight">\(\lambda\)</span>, pronounced “lambda”, or the Python variable <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p></li>
+<li><p>First, I’ll assume that for any team against another team there is some unknown goal-scoring rate, measured in goals per game, which I’ll denote with the Greek letter <span class="math notranslate nohighlight">\(\lambda\)</span>, pronounced “lambda”, and the Python variable <code class="docutils literal notranslate"><span class="pre">lam</span></code> (we can’t use <code class="docutils literal notranslate"><span class="pre">lambda</span></code> because it’s a Python keyword).</p></li>
 <li><p>Second, I’ll assume that a goal is equally likely during any minute of a game.  So, in a 90 minute game, the probability of scoring during any minute is <span class="math notranslate nohighlight">\(\lambda/90\)</span>.</p></li>
 <li><p>Third, I’ll assume that a team never scores twice during the same minute.</p></li>
 </ul>
@@ -279,9 +289,11 @@ true, we expect the number of goals scored in a game to follow a Poisson distrib
 <div class="section" id="the-poisson-distribution">
 <h2>The Poisson distribution<a class="headerlink" href="#the-poisson-distribution" title="Permalink to this headline">¶</a></h2>
 <p>If the number of goals scored in a game follows a <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a> with a goal-scoring rate, <span class="math notranslate nohighlight">\(\lambda\)</span>, the probability of scoring <span class="math notranslate nohighlight">\(k\)</span> goals is</p>
-<p><span class="math notranslate nohighlight">\(f(k; \lambda) = \lambda^k \exp(-\lambda) ~/~ k!\)</span></p>
+<div class="math notranslate nohighlight">
+\[\lambda^k \exp(-\lambda) ~/~ k!\]</div>
+<p>for any non-negative value of <span class="math notranslate nohighlight">\(k\)</span>.</p>
 <p>SciPy provides a <code class="docutils literal notranslate"><span class="pre">poisson</span></code> object that represents a Poisson distribution.
-We can create one like this:</p>
+We can create one with <span class="math notranslate nohighlight">\(\lambda=1.4\)</span> like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
@@ -293,12 +305,12 @@ We can create one like this:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;scipy.stats._distn_infrastructure.rv_frozen at 0x7f4358b31550&gt;
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;scipy.stats._distn_infrastructure.rv_frozen at 0x7f74ec4d2790&gt;
 </pre></div>
 </div>
 </div>
 </div>
-<p>And <code class="docutils literal notranslate"><span class="pre">poisson</span></code> provides <code class="docutils literal notranslate"><span class="pre">pmf</span></code>, which evaluates the probability mass function of the Poisson distribution.</p>
+<p><code class="docutils literal notranslate"><span class="pre">poisson</span></code> provides <code class="docutils literal notranslate"><span class="pre">pmf</span></code>, which evaluates the probability mass function of the Poisson distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">k</span> <span class="o">=</span> <span class="mi">4</span>
@@ -313,7 +325,8 @@ We can create one like this:</p>
 </div>
 </div>
 <p>This result implies that if the average goal-scoring rate is 1.4 goals per game, the probability of scoring 4 goals in a game is about 4%.</p>
-<p>The following function uses <code class="docutils literal notranslate"><span class="pre">poisson</span></code> and <code class="docutils literal notranslate"><span class="pre">pmf</span></code> to evaluate the PMF of the Poisson distribution for values of <code class="docutils literal notranslate"><span class="pre">k</span></code> from 0 to a given upper limit, <code class="docutils literal notranslate"><span class="pre">high</span></code>.</p>
+<p>The following function makes a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> object that represents a Poission distribution.
+It takes the rate, <code class="docutils literal notranslate"><span class="pre">lam</span></code>, as a parameter and returns a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> object with values of <code class="docutils literal notranslate"><span class="pre">k</span></code> from 0 to a given upper limit, <code class="docutils literal notranslate"><span class="pre">high</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -336,8 +349,7 @@ We can create one like this:</p>
 </div>
 </div>
 </div>
-<p>The result is a normalized <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> object.
-For example, here’s the distribution of goals scored for <code class="docutils literal notranslate"><span class="pre">lam=1.4</span></code>.</p>
+<p>For example, here’s the distribution of goals scored for <code class="docutils literal notranslate"><span class="pre">lam=1.4</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_goals</span> <span class="o">=</span> <span class="n">make_poisson_pmf</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mf">1.4</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -360,7 +372,8 @@ For example, here’s the distribution of goals scored for <code class="docutils
 </div>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_goals</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Poisson distribution&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_goals</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> 
+              <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Poisson distribution with $\lambda=1.4$&#39;</span><span class="p">)</span>
 
 <span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Distribution of goals scored&#39;</span><span class="p">)</span>
 </pre></div>
@@ -388,7 +401,6 @@ This distribution shows that if we know the goal scoring rate, we can predict th
 <li><p>As we’ll see, the shape of the gamma distribution is a reasonable choice, given what we know about soccer.</p></li>
 </ol>
 <p>And there’s one more reason, which I will reveal in Chapter xxx.</p>
-<p>The gamma distribution is continuous, but we’ll approximate it with a discrete <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
 <p>SciPy provides <code class="docutils literal notranslate"><span class="pre">gamma</span></code>, which creates an object that represents a gamma distribution.</p>
 <p>And the <code class="docutils literal notranslate"><span class="pre">gamma</span></code> object provides provides <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, which evaluates the  <strong>probability density function</strong> (PDF) of the gamma distribution.</p>
 <p>Here’s how we use it.</p>
@@ -406,7 +418,7 @@ This distribution shows that if we know the goal scoring rate, we can predict th
 <p>The parameter, <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, is the mean of the distribution.
 The <code class="docutils literal notranslate"><span class="pre">qs</span></code> are possible values of <code class="docutils literal notranslate"><span class="pre">lam</span></code> from 0 to 10.
 The <code class="docutils literal notranslate"><span class="pre">ps</span></code> are <strong>probability densities</strong>, which we can think of as unnormalized probabilities.</p>
-<p>If we put the densities in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> and normalize them, like this:</p>
+<p>To normalize them, we can put them in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> and call <code class="docutils literal notranslate"><span class="pre">normalize</span></code>:</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
@@ -415,7 +427,7 @@ The <code class="docutils literal notranslate"><span class="pre">ps</span></code
 </div>
 </div>
 </div>
-<p>The result is a discrete <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that approximates a gamma distribution.</p>
+<p>The result is a discrete approximation of a gamma distribution.</p>
 <p>Here’s what it looks like.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
@@ -430,7 +442,7 @@ The <code class="docutils literal notranslate"><span class="pre">ps</span></code
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
-<span class="n">decorate_rate</span><span class="p">(</span><span class="s1">&#39;Prior distribution&#39;</span><span class="p">)</span>
+<span class="n">decorate_rate</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Prior distribution of $\lambda$&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -440,18 +452,6 @@ The <code class="docutils literal notranslate"><span class="pre">ps</span></code
 </div>
 <p>This distribution represents our prior knowledge about goal scoring: <code class="docutils literal notranslate"><span class="pre">lam</span></code> is usually less than 2, occasionally as high as 6, and seldom higher than that.</p>
 <p>And we can confirm that the mean is about 1.4.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>1.4140818156118378
-</pre></div>
-</div>
-</div>
-</div>
 <p>As usual, reasonable people could disagree about the details of the prior, but this is good enough to get started.  Let’s do an update.</p>
 </div>
 <div class="section" id="the-update">
@@ -659,7 +659,7 @@ In reality, if a team is down by one goal, they might play more aggressively tow
     <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">lam</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
     <span class="n">pmf</span> <span class="o">=</span> <span class="n">pmf_seq</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-    <span class="n">pmf</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;lam = </span><span class="si">{</span><span class="n">lam</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$\lambda$ = </span><span class="si">{</span><span class="n">lam</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">decorate_goals</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -683,7 +683,7 @@ In reality, if a team is down by one goal, they might play more aggressively tow
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pred_france</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;France&#39;</span><span class="p">)</span>
-<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Predictive distribution&#39;</span><span class="p">)</span>
+<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Posterior predictive distribution&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -703,7 +703,7 @@ In reality, if a team is down by one goal, they might play more aggressively tow
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pred_croatia</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Croatia&#39;</span><span class="p">)</span>
-<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Predictive distribution&#39;</span><span class="p">)</span>
+<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Posterior predictive distribution&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -764,7 +764,8 @@ In reality, if a team is down by one goal, they might play more aggressively tow
 </div>
 </div>
 </div>
-<p>This is a bit lower than their probability of superiority, which is 75%. And that makes sense; even if they are better team, they might lose the game.</p>
+<p>This is a bit lower than their probability of superiority, which is 75%. And that makes sense, because we are less certain about the outcome of a single game than we are about the goal-scoring rates.
+Even if France is the better team, they might lose the game.</p>
 </div>
 <div class="section" id="the-exponential-distribution">
 <h2>The Exponential Distribution<a class="headerlink" href="#the-exponential-distribution" title="Permalink to this headline">¶</a></h2>
@@ -775,7 +776,8 @@ In reality, if a team is down by one goal, they might play more aggressively tow
 <p>In this version, notice that the data is not the number of goals in a fixed period of time, but the time between goals.</p>
 <p>To compute the likelihood of data like this, we can take advantage of the theory of Poisson processes again.  If each team has a constant goal-scoring rate, we expect the time between goals to follow an <a class="reference external" href="https://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a>.</p>
 <p>If the goal-scoring rate is <span class="math notranslate nohighlight">\(\lambda\)</span>, the probability of seeing an interval between goals of <span class="math notranslate nohighlight">\(t\)</span> is proportional to the PDF of the exponential distribution:</p>
-<p><span class="math notranslate nohighlight">\(f(t; \lambda) = \lambda~\exp(-\lambda t)\)</span></p>
+<div class="math notranslate nohighlight">
+\[\lambda~\exp(-\lambda t)\]</div>
 <p>Because <span class="math notranslate nohighlight">\(t\)</span> is a continuous quantity, the value of this expression is not a probability; it is a probability density.  However, it is proportional to the probability of the data, so we can use it as a likelihood in a Bayesian update.</p>
 <p>SciPy provides <code class="docutils literal notranslate"><span class="pre">expon</span></code>, which creates an object that represents an exponential distribution.
 However, it does not take <code class="docutils literal notranslate"><span class="pre">lam</span></code> as a parameter in the way you might expect, which makes it awkward to work with.
@@ -825,7 +827,7 @@ Since the PDF of the exponential distribution is so easy to evaluate, I’ll use
 </div>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_time</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;exponential lam = 1.4&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_time</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;exponential with $\lambda$ = 1.4&#39;</span><span class="p">)</span>
 
 <span class="n">decorate_time</span><span class="p">(</span><span class="s1">&#39;Distribution of time between goals&#39;</span><span class="p">)</span>
 </pre></div>
@@ -835,7 +837,7 @@ Since the PDF of the exponential distribution is so easy to evaluate, I’ll use
 <img alt="_images/chap07_80_0.png" src="_images/chap07_80_0.png" />
 </div>
 </div>
-<p>It is counterintuitive, but true, that the most likely time to score a goal is immediately.  After that, the probability of each possible interval is a little lower.</p>
+<p>It is counterintuitive, but true if the distribution is exponential, that the most likely time to score a goal is immediately.  After that, the probability of each successive interval is a little lower.</p>
 <p>With a goal-scoring rate of 1.4, it is possible that a team will take more than one game to score a goal, but it is unlikely that they will take more than two games.</p>
 </div>
 <div class="section" id="summary">
@@ -929,7 +931,7 @@ There are other distributions we could have used; however, we will see in Chapte
 <span class="n">germany</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior after 1 goal&#39;</span><span class="p">)</span>
 <span class="n">germany2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C8&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior after 2 goals&#39;</span><span class="p">)</span>
 
-<span class="n">decorate_rate</span><span class="p">()</span>
+<span class="n">decorate_rate</span><span class="p">(</span><span class="s1">&#39;Prior and posterior distributions&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1061,8 +1063,8 @@ There are other distributions we could have used; however, we will see in Chapte
 
 <span class="c1"># Here&#39;s what the posterior predictive distributions look like</span>
 
-<span class="n">pred_france</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">pred_croatia</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">pred_france</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;France&#39;</span><span class="p">)</span>
+<span class="n">pred_croatia</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Croatia&#39;</span><span class="p">)</span>
 
 <span class="n">decorate_time</span><span class="p">(</span><span class="s1">&#39;Posterior predictive distribution&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1223,7 +1225,7 @@ for each team in the 2010-11 season.  The distribution well modeled by a gamma d
 <span class="n">pred_bruins</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">bruins</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
 
 <span class="n">pred_bruins</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Bruins&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
-<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Predictive distribution&#39;</span><span class="p">)</span>
+<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Posterior predictive distribution&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1238,7 +1240,7 @@ for each team in the 2010-11 season.  The distribution well modeled by a gamma d
 <span class="n">pred_canucks</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">canucks</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
 
 <span class="n">pred_canucks</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Canucks&#39;</span><span class="p">)</span>
-<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Predictive distribution&#39;</span><span class="p">)</span>
+<span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Posterior predictive distribution&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

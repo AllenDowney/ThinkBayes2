@@ -1,0 +1,1510 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Comparisons &#8212; Think Bayes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Classification" href="chap10.html" />
+    <link rel="prev" title="Decision Analysis" href="chap08.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">Think Bayes</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap00.html">
+   Probability
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap01.html">
+   Bayes’s Theorem
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap02.html">
+   Distributions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap03.html">
+   Estimating proportions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap04.html">
+   Estimating counts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap05.html">
+   Odds and Addends
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap06.html">
+   Minimum, maximum, and mixture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap07.html">
+   Poisson Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap08.html">
+   Decision Analysis
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Comparisons
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap10.html">
+   Classification
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/chap09.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/AllenDowney/ThinkBayes2"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#outer-operations">
+   Outer operations
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-tall-is-a">
+   How tall is A?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#joint-distribution">
+   Joint distribution
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#visualizing-the-joint-distribution">
+   Visualizing the joint distribution
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#likelihood">
+   Likelihood
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-update">
+   The update
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#marginal-distributions">
+   Marginal distributions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#conditional-posteriors">
+   Conditional posteriors
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dependence-and-independence">
+   Dependence and independence
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="comparisons">
+<h1>Comparisons<a class="headerlink" href="#comparisons" title="Permalink to this headline">¶</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Get utils.py
+
+import os
+
+if not os.path.exists(&#39;utils.py&#39;):
+    !wget https://github.com/AllenDowney/ThinkBayes2/raw/master/soln/utils.py
+</pre></div>
+</div>
+</div>
+</div>
+<p>This chapter introduces joint distributions, which are an essential tool for working with distributions of more than one variable.</p>
+<p>We’ll use them to solve a silly problem on our way to solving a real problem.<br />
+The silly problem is figuring out how tall two people are, given only that one is taller than the other.<br />
+The real problem is rating chess players (or participants in other kinds of competition) based on the outcome of a game.</p>
+<p>To construct joint distributions and compute likelihoods for these problems, we will use outer products and similar operations.  And that’s where we’ll start.</p>
+<div class="section" id="outer-operations">
+<h2>Outer operations<a class="headerlink" href="#outer-operations" title="Permalink to this headline">¶</a></h2>
+<p>Many useful operations can be expressed as the “outer product” of two sequences, or another kind of “outer” operation.
+Suppose you have sequences like <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The outer product of these sequences is an array that contains the product of every pair of values, one from each sequence.
+There are several ways to compute outer products, but the one I think is the most versatile is a “mesh grid”.</p>
+<p>NumPy provides a function called <code class="docutils literal notranslate"><span class="pre">meshgrid</span></code> that computes a mesh grid.  If we give it two sequences, it returns two arrays.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The first array contains copies of <code class="docutils literal notranslate"><span class="pre">x</span></code> arranged in rows, where the number of rows is the length of <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([[1, 3, 5],
+       [1, 3, 5]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>The second array contains copies of <code class="docutils literal notranslate"><span class="pre">y</span></code> arranged in columns, where the number of columns is the length of <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([[2, 2, 2],
+       [4, 4, 4]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Because the two arrays are the same size, we can use them as operands for arithmetic functions like multiplication.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">*</span> <span class="n">Y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([[ 2,  6, 10],
+       [ 4, 12, 20]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>This is result is the outer product of <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>.
+We can see that more clearly if we put it in a DataFrame:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">Y</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>3</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>6</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>12</td>
+      <td>20</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The values from <code class="docutils literal notranslate"><span class="pre">x</span></code> appear as column names; the values from <code class="docutils literal notranslate"><span class="pre">y</span></code> appear as row labels.</p>
+<p>Each element is the product of a value from <code class="docutils literal notranslate"><span class="pre">x</span></code> and a value from <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+<p>We can use mesh grids to compute other operations, like the outer sum, which is an array that contains the <em>sum</em> of elements from <code class="docutils literal notranslate"><span class="pre">x</span></code> and elements from <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">+</span> <span class="n">Y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([[3, 5, 7],
+       [5, 7, 9]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can also use comparison operators to compare elements from <code class="docutils literal notranslate"><span class="pre">x</span></code> with elements from <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">&gt;</span> <span class="n">Y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([[False,  True,  True],
+       [False, False,  True]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is an array of Boolean values.</p>
+<p>It might not be obvious yet why these operations are useful, but we’ll see examples soon.</p>
+<p>With that, we are ready to take on a new Bayesian problem.</p>
+</div>
+<div class="section" id="how-tall-is-a">
+<h2>How tall is A?<a class="headerlink" href="#how-tall-is-a" title="Permalink to this headline">¶</a></h2>
+<p>Suppose I choose two people from the population of adult males in the U.S.; I’ll call them A and B.  If we see that A taller than B, how tall is A?</p>
+<p>To answer this question:</p>
+<ol class="simple">
+<li><p>I’ll use background information about the height of men in the U.S. to form a prior distribution of height,</p></li>
+<li><p>I’ll construct a joint prior distribution of height for A and B (and I’ll explain what that is);</p></li>
+<li><p>Then I’ll update the prior with the information that A is taller, and</p></li>
+<li><p>From the joint posterior distribution I’ll extract the posterior distribution of height for A.</p></li>
+</ol>
+<p>In the U.S. the average height of male adults in 178 cm and the standard deviation is 7.7 cm.  The distribution is not exactly normal, because nothing in the real world is, but the normal distribution is a pretty good model of the actual distribution, so we can use it as a prior distribution for A and B.</p>
+<p>Here’s an array of equally-spaced values from 3 standard deviations below the mean to 3 standard deviations above (rounded to an integer).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mean</span> <span class="o">=</span> <span class="mi">178</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mean</span><span class="o">-</span><span class="mi">24</span><span class="p">,</span> <span class="n">mean</span><span class="o">+</span><span class="mi">24</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>SciPy provides a function called <code class="docutils literal notranslate"><span class="pre">norm</span></code> that represents a normal distribution with a given mean and standard deviation, and provides <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, which evaluates the probability density function (PDF) of the normal distribution:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+
+<span class="n">std</span> <span class="o">=</span> <span class="mf">7.7</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">)</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Probability densities are not probabilities, but if we put them in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> and normalize it, the result is a discrete approximation of the normal distribution.</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">prior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>1.9963309462450582
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
+
+<span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Height in cm&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Approximate distribution of height for men in U.S.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_31_0.png" src="_images/chap09_31_0.png" />
+</div>
+</div>
+<p>This distribution represents what we believe about the heights of <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> before we take into account the data that <code class="docutils literal notranslate"><span class="pre">A</span></code> is taller.</p>
+</div>
+<div class="section" id="joint-distribution">
+<h2>Joint distribution<a class="headerlink" href="#joint-distribution" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to construct a distribution that represents the probability of every pair of heights, which is called a joint distribution. The elements of the joint distribution are</p>
+<p><span class="math notranslate nohighlight">\(P(A_x~\mathrm{and}~B_y)\)</span></p>
+<p>which is the probability that <code class="docutils literal notranslate"><span class="pre">A</span></code> is <span class="math notranslate nohighlight">\(x\)</span> cm tall and <code class="docutils literal notranslate"><span class="pre">B</span></code> is <span class="math notranslate nohighlight">\(y\)</span> cm tall, for all values of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>.</p>
+<p>At this point all we know about <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> is that they are male residents of the U.S., so their heights are independent; that is, knowing the height of <code class="docutils literal notranslate"><span class="pre">A</span></code> provides no additional information about the height of <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
+<p>In that case, we can compute the joint probabilities like this:</p>
+<p><span class="math notranslate nohighlight">\(P(A_x~\mathrm{and}~B_y) = P(A_x)~P(B_y)\)</span></p>
+<p>Each joint probability is the product of one element from the distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code> and one element from the distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+<p>So if we have <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects that represent the distribution of height for <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>, we can compute the joint distribution by computing the outer product of the probabilities in each <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
+<p>The following function takes two <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects and returns a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that represents the joint distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_joint</span><span class="p">(</span><span class="n">pmf1</span><span class="p">,</span> <span class="n">pmf2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the outer product of two Pmfs.</span>
+<span class="sd">    </span>
+<span class="sd">    First Pmf goes across the columns;</span>
+<span class="sd">    second goes down the rows.</span>
+<span class="sd">    </span>
+<span class="sd">    pmf1, pmf2: Pmf objects</span>
+<span class="sd">    </span>
+<span class="sd">    return: DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">pmf1</span><span class="p">,</span> <span class="n">pmf2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">Y</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">pmf1</span><span class="o">.</span><span class="n">qs</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">pmf2</span><span class="o">.</span><span class="n">qs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The column names in the result are the quantities from <code class="docutils literal notranslate"><span class="pre">pmf1</span></code>; the row labels are the quantities from <code class="docutils literal notranslate"><span class="pre">pmf2</span></code>.</p>
+<p>In this example, the prior distributions for <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> are the same, so we can compute the joint prior distribution like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">joint</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">prior</span><span class="p">)</span>
+<span class="n">joint</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(96, 96)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with possible heights of <code class="docutils literal notranslate"><span class="pre">A</span></code> along the columns, heights of <code class="docutils literal notranslate"><span class="pre">B</span></code> along the rows, and the joint probabilities as elements.</p>
+<p>If the prior is normalized, the joint prior is also be normalized.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">joint</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>1.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>To add up all of the elements, we convert the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> to a NumPy array before calling <code class="docutils literal notranslate"><span class="pre">sum</span></code>.  Otherwise, <code class="docutils literal notranslate"><span class="pre">DataFrame.sum</span></code> would compute the sums of the columns and return a <code class="docutils literal notranslate"><span class="pre">Series</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">series</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">series</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(96,)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="visualizing-the-joint-distribution">
+<h2>Visualizing the joint distribution<a class="headerlink" href="#visualizing-the-joint-distribution" title="Permalink to this headline">¶</a></h2>
+<p>The following function uses <code class="docutils literal notranslate"><span class="pre">pcolormesh</span></code> to plot the joint distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">plot_joint</span><span class="p">(</span><span class="n">joint</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot a joint distribution.</span>
+<span class="sd">    </span>
+<span class="sd">    joint: DataFrame representing a joint PMF</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">joint</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">joint</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">joint</span><span class="p">,</span> 
+                   <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">,</span>
+                   <span class="n">shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+                   <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+    
+    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;A height in cm&#39;</span><span class="p">,</span>
+             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;B height in cm&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what the joint prior distribution looks like.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plot_joint</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Joint prior distribution of height for A and B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_44_0.png" src="_images/chap09_44_0.png" />
+</div>
+</div>
+<p>As you might expect, the probability is highest (darkest) near the mean and drops off farther from the mean.</p>
+<p>Another way to visualize the joint distribution is a contour plot.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_contour</span><span class="p">(</span><span class="n">joint</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot a joint distribution.</span>
+<span class="sd">    </span>
+<span class="sd">    joint: DataFrame representing a joint PMF</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">joint</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">joint</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">joint</span><span class="p">)</span>
+    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;A height in cm&#39;</span><span class="p">,</span>
+             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;B height in cm&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plot_contour</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Joint prior distribution of height for A and B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_47_0.png" src="_images/chap09_47_0.png" />
+</div>
+</div>
+<p>Each line represents a level of equal probability.</p>
+</div>
+<div class="section" id="likelihood">
+<h2>Likelihood<a class="headerlink" href="#likelihood" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have a joint prior distribution, we can update it with the data, which is that <code class="docutils literal notranslate"><span class="pre">A</span></code> is taller than <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
+<p>Each element in the joint distribution represents a hypothesis about the heights of <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
+<p>To compute the likelihood of every pair of quantities, we can extract the column names and row labels from the prior, like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">columns</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">index</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And use them to compute a mesh grid.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">X</span></code> contains copies of the quantities in <code class="docutils literal notranslate"><span class="pre">x</span></code>, which are possible heights for <code class="docutils literal notranslate"><span class="pre">A</span></code>.   <code class="docutils literal notranslate"><span class="pre">Y</span></code> contains copies of the quantities in <code class="docutils literal notranslate"><span class="pre">y</span></code>, which are possible heights for <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
+<p>If we compare <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">Y</span></code>, the result is a Boolean array:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A_taller</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span> <span class="o">&gt;</span> <span class="n">Y</span><span class="p">)</span>
+<span class="n">A_taller</span><span class="o">.</span><span class="n">dtype</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>dtype(&#39;bool&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<p>To compute likelihoods, I’ll use <code class="docutils literal notranslate"><span class="pre">np.where</span></code> to make an array with <code class="docutils literal notranslate"><span class="pre">1</span></code> where <code class="docutils literal notranslate"><span class="pre">A_taller</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> and 0 elsewhere.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">A_taller</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>To visualize this array of likelihoods, I’ll put in a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with the values of <code class="docutils literal notranslate"><span class="pre">x</span></code> as column names and the values of <code class="docutils literal notranslate"><span class="pre">y</span></code> as row labels.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plot_joint</span><span class="p">(</span><span class="n">likelihood</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Likelihood of A&gt;B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_60_0.png" src="_images/chap09_60_0.png" />
+</div>
+</div>
+<p>The likelihood of the data is 1 where <code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">&gt;</span> <span class="pre">Y</span></code> and 0 elsewhere.</p>
+</div>
+<div class="section" id="the-update">
+<h2>The update<a class="headerlink" href="#the-update" title="Permalink to this headline">¶</a></h2>
+<p>We have a prior, we have a likelihood, and we are ready for the update.  As usual, the unnormalized posterior is the product of the prior and the likelihood.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">joint</span> <span class="o">*</span> <span class="n">likelihood</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>I’ll use the following function to normalize the posterior:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">joint</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Normalize a joint distribution.</span>
+<span class="sd">    </span>
+<span class="sd">    joint: DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">prob_data</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">joint</span> <span class="o">/=</span> <span class="n">prob_data</span>
+    <span class="k">return</span> <span class="n">prob_data</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">normalize</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.49080747821526977
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s what it looks like.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plot_joint</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Joint posterior distribution of height for A and B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_68_0.png" src="_images/chap09_68_0.png" />
+</div>
+</div>
+<p>All pairs where <code class="docutils literal notranslate"><span class="pre">B</span></code> is taller than <code class="docutils literal notranslate"><span class="pre">A</span></code> have been eliminated.  The rest of the posterior looks the same as the prior, except that it has been renormalized.</p>
+</div>
+<div class="section" id="marginal-distributions">
+<h2>Marginal distributions<a class="headerlink" href="#marginal-distributions" title="Permalink to this headline">¶</a></h2>
+<p>The joint posterior distribution represents what we believe about the heights of <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> given the prior distributions and the information that <code class="docutils literal notranslate"><span class="pre">A</span></code> is taller.</p>
+<p>From this joint distribution, we can compute the posterior distributions for <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>.  To see how, let’s start with a simpler problem.</p>
+<p>Suppose we want to know the probability that <code class="docutils literal notranslate"><span class="pre">A</span></code> is 180 cm tall.  We can select the column from the joint distribution where <code class="docutils literal notranslate"><span class="pre">x=180</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">column</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">[</span><span class="mi">180</span><span class="p">]</span>
+<span class="n">column</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>154.0    0.000010
+154.5    0.000013
+155.0    0.000015
+155.5    0.000019
+156.0    0.000022
+Name: 180.0, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p>This column contains posterior probabilities for all cases where <code class="docutils literal notranslate"><span class="pre">x=180</span></code>; if we add them up, we get the total probability that <code class="docutils literal notranslate"><span class="pre">A</span></code> is 180 cm tall.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">column</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.03017221271570807
+</pre></div>
+</div>
+</div>
+</div>
+<p>It’s about 3%.</p>
+<p>Now, to get the posterior distribution of height for <code class="docutils literal notranslate"><span class="pre">A</span></code>, we can add up all of the columns, like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">column_sums</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">column_sums</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>154.0    0.000000e+00
+154.5    1.012260e-07
+155.0    2.736152e-07
+155.5    5.532519e-07
+156.0    9.915650e-07
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p>The argument <code class="docutils literal notranslate"><span class="pre">axis=0</span></code> means we want to add up the columns.</p>
+<p>The result is a <code class="docutils literal notranslate"><span class="pre">Series</span></code> that contains every possible height for <code class="docutils literal notranslate"><span class="pre">A</span></code> and its probability.  In other words, it is the distribution of heights for <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+<p>We can put it in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_A</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">column_sums</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>When we extract the distribution of a single variable from a joint distribution, the result is called a <strong>marginal distribution</strong>.
+The name comes from a common visualization that shows the joint distribution in the middle and the marginal distributions in the margins.</p>
+<p>Here’s what the marginal distribution for <code class="docutils literal notranslate"><span class="pre">A</span></code> looks like:</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_A</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior for A&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Height in cm&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution for A&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_79_0.png" src="_images/chap09_79_0.png" />
+</div>
+</div>
+<p>Similarly, we can get the posterior distribution of height for <code class="docutils literal notranslate"><span class="pre">B</span></code> by adding up the rows and putting the result in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">row_sums</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">marginal_B</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">row_sums</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_B</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior for B&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Height in cm&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution for B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_83_0.png" src="_images/chap09_83_0.png" />
+</div>
+</div>
+<p>Let’s put the code from this section in a function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">marginal</span><span class="p">(</span><span class="n">joint</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute a marginal distribution.</span>
+<span class="sd">    </span>
+<span class="sd">    axis=0 returns the marginal of the first variable (x-axis)</span>
+<span class="sd">    axis=1 returns the marginal of the second variable (y-axis)</span>
+<span class="sd">    </span>
+<span class="sd">    joint: DataFrame representing a joint distribution</span>
+<span class="sd">    axis: int axis to sum along</span>
+<span class="sd">    </span>
+<span class="sd">    returns: Pmf</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">joint</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">marginal</span></code> takes a joint distribution and an axis number, and returns a marginal distribution.
+So we can compute both marginals like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_A</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">marginal_B</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what they look like.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">marginal_A</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior for A&#39;</span><span class="p">)</span>
+<span class="n">marginal_B</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior for B&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Height in cm&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior and posterior distributions for A and B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_89_0.png" src="_images/chap09_89_0.png" />
+</div>
+</div>
+<p>As you might expect, the posterior distribution for <code class="docutils literal notranslate"><span class="pre">A</span></code> is shifted to the right and the posterior distribution for <code class="docutils literal notranslate"><span class="pre">B</span></code> is shifted to the left.</p>
+<p>We can summarize the results by computing the posterior means:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>177.99516026921506
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_A</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">marginal_B</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(182.3872812342168, 173.6028600023339)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Based on the observation that <code class="docutils literal notranslate"><span class="pre">A</span></code> is taller than <code class="docutils literal notranslate"><span class="pre">B</span></code>, we are inclined to believe that <code class="docutils literal notranslate"><span class="pre">A</span></code> is a little taller than average, and <code class="docutils literal notranslate"><span class="pre">B</span></code> is a little shorter.</p>
+<p>Notice that the posterior distributions are a little narrower than the prior.  We can quantify that by computing their standard deviations.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>7.624924796641578
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_A</span><span class="o">.</span><span class="n">std</span><span class="p">(),</span> <span class="n">marginal_B</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(6.270461177645469, 6.280513548175111)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The standard deviations of the posterior distributions are a little smaller, which means we are more certain about the heights of <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> after we compare them.</p>
+</div>
+<div class="section" id="conditional-posteriors">
+<h2>Conditional posteriors<a class="headerlink" href="#conditional-posteriors" title="Permalink to this headline">¶</a></h2>
+<p>Now suppose we measure <code class="docutils literal notranslate"><span class="pre">A</span></code> and find that he is 170 cm tall.  What does that tell us about <code class="docutils literal notranslate"><span class="pre">B</span></code>?</p>
+<p>In the joint distribution, each column corresponds a possible height for <code class="docutils literal notranslate"><span class="pre">A</span></code>.  We can select the column that corresponds to height 170 cm like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">column_170</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">[</span><span class="mi">170</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a <code class="docutils literal notranslate"><span class="pre">Series</span></code> that represents possible heights for <code class="docutils literal notranslate"><span class="pre">B</span></code> and their relative likelihoods.
+These likelihoods are not normalized, but we can normalize them like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cond_B</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">column_170</span><span class="p">)</span>
+<span class="n">cond_B</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.004358061205454471
+</pre></div>
+</div>
+</div>
+</div>
+<p>Making a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> copies the data by default, so we can normalize <code class="docutils literal notranslate"><span class="pre">cond_B</span></code> without affecting <code class="docutils literal notranslate"><span class="pre">column_170</span></code> or <code class="docutils literal notranslate"><span class="pre">posterior</span></code>.</p>
+<p>The result is the conditional distribution of height for <code class="docutils literal notranslate"><span class="pre">B</span></code> given that <code class="docutils literal notranslate"><span class="pre">A</span></code> is 170 cm tall.</p>
+<p>Here’s what it looks like:</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">marginal_B</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior for B&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+<span class="n">cond_B</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Conditional posterior for B&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Height in cm&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior, posterior and conditional distribution for B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_102_0.png" src="_images/chap09_102_0.png" />
+</div>
+</div>
+<p>The conditional posterior distribution is cut off at 180 cm, because we have established that <code class="docutils literal notranslate"><span class="pre">B</span></code> is shorter than <code class="docutils literal notranslate"><span class="pre">A</span></code>, and <code class="docutils literal notranslate"><span class="pre">A</span></code> is 180 cm.</p>
+</div>
+<div class="section" id="dependence-and-independence">
+<h2>Dependence and independence<a class="headerlink" href="#dependence-and-independence" title="Permalink to this headline">¶</a></h2>
+<p>When we constructed the joint prior distribution, I said that the heights of <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> were independent, which means that knowing one of them provides no information about the other.
+In other words, the conditional probability <span class="math notranslate nohighlight">\(P(A_x | B_y)\)</span> is the same as the unconditioned probability <span class="math notranslate nohighlight">\(P(A_x)\)</span>.</p>
+<p>But in the posterior distribution, <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> are not independent.
+If we know that <code class="docutils literal notranslate"><span class="pre">A</span></code> is taller than <code class="docutils literal notranslate"><span class="pre">B</span></code>, and we know how tall <code class="docutils literal notranslate"><span class="pre">A</span></code> is, that gives us information about <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
+<p>The conditional distribution we just computed demonstrates this dependence.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>In this notebook I started with the “outer” operations, like outer product, which we used to construct a joint distribution.</p>
+<p>In general, you cannot construct a joint distribution from two marginal distributions, but in the special case where the distributions are independent, you can.</p>
+<p>We extended the Bayesian update process we’ve seen in previous notebooks and applied it to a joint distribution.  Then from the posterior joint distribution we extracted marginal posterior distributions and conditional posterior distributions.</p>
+<p>As an exercise, you’ll have a chance to apply the same process to problem that’s a little more difficult and a lot more useful, updating a chess player’s rating based on the outcome of a game.</p>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p><strong>Exercise:</strong> Based on the results of the previous example, compute the posterior conditional distribution for <code class="docutils literal notranslate"><span class="pre">A</span></code> given that <code class="docutils literal notranslate"><span class="pre">B</span></code> is 180 cm.</p>
+<p>Hint: Use <code class="docutils literal notranslate"><span class="pre">loc</span></code> to select a row from a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Select a row from the posterior and normalize it</span>
+
+<span class="n">row_180</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">180</span><span class="p">]</span>
+<span class="n">cond_A</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">row_180</span><span class="p">)</span>
+<span class="n">cond_A</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.019669089649708035
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s what it looks like</span>
+
+<span class="n">cond_A</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior for A given B=180&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Height in cm&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Conditional distribution for A&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_109_0.png" src="_images/chap09_109_0.png" />
+</div>
+</div>
+<p><strong>Exercise:</strong> Suppose we have established that <code class="docutils literal notranslate"><span class="pre">A</span></code> is taller than <code class="docutils literal notranslate"><span class="pre">B</span></code>, but we don’t know how tall <code class="docutils literal notranslate"><span class="pre">B</span></code> is.
+Now we choose a random woman, <code class="docutils literal notranslate"><span class="pre">C</span></code>, and find that she is shorter than <code class="docutils literal notranslate"><span class="pre">A</span></code> by at least 15 cm.  Compute posterior distributions for the heights of <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">C</span></code>.</p>
+<p>The average height for women in the U.S. is 163 cm; the standard deviation is 7.3 cm.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s a priod distribution for the height of</span>
+<span class="c1"># a randomly chosen woman</span>
+
+<span class="n">mean</span> <span class="o">=</span> <span class="mi">163</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mean</span><span class="o">-</span><span class="mi">24</span><span class="p">,</span> <span class="n">mean</span><span class="o">+</span><span class="mi">24</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">std</span> <span class="o">=</span> <span class="mf">7.3</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">)</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+
+<span class="n">prior_C</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">prior_C</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>1.997970387889823
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the joint prior for A and C</span>
+
+<span class="n">joint_AC</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">marginal_A</span><span class="p">,</span> <span class="n">prior_C</span><span class="p">)</span>
+<span class="n">joint_AC</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(96, 96)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># To compute the likelihood of the data, we&#39;ll</span>
+<span class="c1"># use a meshgrid</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">joint_AC</span><span class="o">.</span><span class="n">columns</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">joint_AC</span><span class="o">.</span><span class="n">index</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="o">-</span><span class="n">Y</span><span class="o">&gt;=</span><span class="mi">15</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">likelihood_AC</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s what the likelihood looks like</span>
+
+<span class="n">plot_joint</span><span class="p">(</span><span class="n">likelihood_AC</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;C height in cm&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Likelihood of A-C&gt;=15&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_114_0.png" src="_images/chap09_114_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the update</span>
+
+<span class="n">posterior_AC</span> <span class="o">=</span> <span class="n">joint_AC</span> <span class="o">*</span> <span class="n">likelihood_AC</span>
+<span class="n">normalize</span><span class="p">(</span><span class="n">posterior_AC</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.6839061829242195
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And the joint posterior</span>
+
+<span class="n">plot_joint</span><span class="p">(</span><span class="n">posterior_AC</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;C height in cm&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Joint posterior distribution of height for A and C&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_116_0.png" src="_images/chap09_116_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here are the marginal posterior distributions</span>
+
+<span class="n">marginal_AC</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior_AC</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">marginal_C</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior_AC</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here&#39;s what they look like</span>
+
+<span class="n">prior_C</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior for C&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">marginal_C</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior for C&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
+<span class="n">marginal_AC</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior for A&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Height in cm&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior and posterior distributions for A and C&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_118_0.png" src="_images/chap09_118_0.png" />
+</div>
+</div>
+<p><strong>Exercise:</strong> <a class="reference external" href="https://en.wikipedia.org/wiki/Elo_rating_system">The Elo rating system</a> is a way to quantify the skill level of players for games like chess.</p>
+<p>It is based on a model of the relationship between the ratings of players and the outcome of a game.  Specifically, if <span class="math notranslate nohighlight">\(R_A\)</span> is the rating of player <code class="docutils literal notranslate"><span class="pre">A</span></code> and <span class="math notranslate nohighlight">\(R_B\)</span> is the rating of player <code class="docutils literal notranslate"><span class="pre">B</span></code>, the probability that <code class="docutils literal notranslate"><span class="pre">A</span></code> beats <code class="docutils literal notranslate"><span class="pre">B</span></code> is given by the <a class="reference external" href="https://en.wikipedia.org/wiki/Logistic_function">logistic function</a>:</p>
+<div class="math notranslate nohighlight">
+\[P(\mathrm{A~beats~B}) = 1 / (1 + 10^{(R_B-R_A)/400})\]</div>
+<p>The parameters 10 and 400 are arbitrary choices that determine the range of the ratings.  In chess, the range is from 100 to 2800.</p>
+<p>Notice that the probability of winning depends only on the difference in rankings.  As an example, if <span class="math notranslate nohighlight">\(R_A\)</span> exceeds <span class="math notranslate nohighlight">\(R_B\)</span> by 100 points, the probability that <code class="docutils literal notranslate"><span class="pre">A</span></code> wins is</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="o">/</span><span class="mi">400</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.6400649998028851
+</pre></div>
+</div>
+</div>
+</div>
+<p>Suppose <code class="docutils literal notranslate"><span class="pre">A</span></code> has a current rating of 1600, but we are not sure it is accurate.  We could describe their true rating with a normal distribution with mean 1600 and standard deviation 100, to indicate our uncertainty.</p>
+<p>And suppose <code class="docutils literal notranslate"><span class="pre">B</span></code> has a current rating of 1800, with the same level of uncertainty.</p>
+<p>Then <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> play and <code class="docutils literal notranslate"><span class="pre">A</span></code> wins.  How should we update their ratings?</p>
+<p>To answer this question:</p>
+<ol class="simple">
+<li><p>Construct prior distributions for <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p></li>
+<li><p>Use them to construct a joint distribution, assuming that the prior distributions are independent.</p></li>
+<li><p>Use the logistic function above to compute the likelihood of the outcome under each joint hypothesis.</p></li>
+<li><p>Use the joint prior and likelihood to compute the joint posterior.</p></li>
+<li><p>Extract and plot the marginal posteriors for <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p></li>
+<li><p>Compute the posterior means for <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>.  How much should their ratings change based on this outcome?</p></li>
+</ol>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here are the priors for A and B</span>
+
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1300</span><span class="p">,</span> <span class="mi">1900</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="mi">1600</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+<span class="n">prior_A_elo</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">prior_A_elo</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="mi">2100</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="mi">1800</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+<span class="n">prior_B_elo</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">prior_B_elo</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.09972780668486173
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s what the priors look like</span>
+
+<span class="n">prior_A_elo</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior for A&#39;</span><span class="p">)</span>
+<span class="n">prior_B_elo</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior for B&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Elo rating&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior distributions for A and B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_123_0.png" src="_images/chap09_123_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here is the joint prior distribution</span>
+
+<span class="n">joint_elo</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">prior_A_elo</span><span class="p">,</span> <span class="n">prior_B_elo</span><span class="p">)</span>
+<span class="n">joint_elo</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(60, 60)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here&#39;s what it looks like</span>
+
+<span class="n">plot_joint</span><span class="p">(</span><span class="n">joint_elo</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;A rating&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;B rating&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_125_0.png" src="_images/chap09_125_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s a meshgrid we can use to compute differences in rank</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">joint_elo</span><span class="o">.</span><span class="n">columns</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">joint_elo</span><span class="o">.</span><span class="n">index</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">diff</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="n">Y</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># And here are the likelihoods</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">diff</span><span class="o">/</span><span class="mi">400</span><span class="p">))</span>
+<span class="n">likelihood_elo</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+<span class="n">plot_joint</span><span class="p">(</span><span class="n">likelihood_elo</span><span class="p">)</span>   
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;A rating&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;B rating&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_127_0.png" src="_images/chap09_127_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s the update</span>
+
+<span class="n">posterior_elo</span> <span class="o">=</span> <span class="n">joint_elo</span> <span class="o">*</span> <span class="n">likelihood_elo</span>
+<span class="n">normalize</span><span class="p">(</span><span class="n">posterior_elo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.2660426288107942
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s what the joint posterior looks like</span>
+
+<span class="n">plot_joint</span><span class="p">(</span><span class="n">posterior_elo</span><span class="p">)</span>   
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;A rating&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;B rating&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_129_0.png" src="_images/chap09_129_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here are the marginal posterior distributions</span>
+
+<span class="n">marginal_A_elo</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior_elo</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">marginal_B_elo</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior_elo</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Here&#39;s what they look like</span>
+
+<span class="n">marginal_A_elo</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior for A&#39;</span><span class="p">)</span>
+<span class="n">marginal_B_elo</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior for B&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Elo rating&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distributions for A and B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap09_131_0.png" src="_images/chap09_131_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Posterior means</span>
+
+<span class="n">marginal_A_elo</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">marginal_B_elo</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(1636.648345528236, 1763.0203078793095)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># Posterior standard deviation</span>
+
+<span class="n">marginal_A_elo</span><span class="o">.</span><span class="n">std</span><span class="p">(),</span> <span class="n">marginal_B_elo</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>(95.34063582447712, 95.61569535990881)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="chap08.html" title="previous page">Decision Analysis</a>
+    <a class='right-next' id="next-link" href="chap10.html" title="next page">Classification</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Allen B. Downey<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>

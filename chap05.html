@@ -117,6 +117,16 @@
    Decision Analysis
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap09.html">
+   Comparisons
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap10.html">
+   Classification
+  </a>
+ </li>
 </ul>
 
 </nav>
@@ -253,16 +263,13 @@
                 
   <div class="section" id="odds-and-addends">
 <h1>Odds and Addends<a class="headerlink" href="#odds-and-addends" title="Permalink to this headline">¶</a></h1>
-<p>Think Bayes, Second Edition</p>
-<p>Copyright 2020 Allen B. Downey</p>
-<p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
 <p>This chapter presents a new way to represent a degree of certainty, called “odds”, and a new form of Bayes’s Theorem, called Bayes’s Rule.
 Bayes’s Rule is convenient if you want to do a Bayesian update on paper or in your head.
 It also sheds light on the important idea of “evidence” and how we can quantify the strength of evidence.</p>
 <p>The second part of the chapter is about “addends”, that is, quantities being added, and how we can compute their distributions.
 We’ll define functions that compute the distribution of sums, differences, products, and other operations.
 Then we’ll use those distributions as part of a Bayesian update.</p>
-<p>As an exercise, you’ll have a chance to solve the Congress problem:</p>
+<p>As an exercise, you’ll have a chance to solve the Congressional Corruption problem:</p>
 <blockquote>
 <div><p>There are 538 members of the United States Congress.<br />
 Suppose we audit their investment portfolios and find that 312 of them <a class="reference external" href="https://en.wikipedia.org/wiki/Efficient-market_hypothesis">outperform the market</a>.
@@ -276,23 +283,55 @@ If you have ever bet on a football game or a horse race, you have probably encou
 three to one”, but you might not know what that means.<br />
 The <strong>odds in favor</strong> of an event are the ratio of the probability
 it will occur to the probability that it will not.</p>
-<p>So if I think my team has a 75% chance of winning, I would
-say that the odds in their favor are three to one, because
-the chance of winning is three times the chance of losing.</p>
-<p>You can write odds in decimal form, but it is also common to
-write them as a ratio of integers.  So “three to one” is
-written <span class="math notranslate nohighlight">\(3:1\)</span>.</p>
-<p>When probabilities are low, it is more common to report the
-<strong>odds against</strong> rather than the odds in favor.  For
-example, if I think my horse has a 10% chance of winning,
-I would say that the odds against are <span class="math notranslate nohighlight">\(9:1\)</span>.</p>
-<p>Probabilities and odds are different representations of the
-same information.  Given a probability, you can compute the
-odds like this:</p>
+<p>The following function does this calculation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">odds</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For example, if my team has a 75% chance of winning, the odds in their favor are three to one, because the chance of winning is three times the chance of losing.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">odds</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>3.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>You can write odds in decimal form, but it is also common to
+write them as a ratio of integers.<br />
+So “three to one” is sometimes written <span class="math notranslate nohighlight">\(3:1\)</span>.</p>
+<p>When probabilities are low, it is more common to report the
+<strong>odds against</strong> rather than the odds in favor.<br />
+For example, if my horse has a 10% chance of winning, the odds in favor are <span class="math notranslate nohighlight">\(1:9\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">odds</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.11111111111111112
+</pre></div>
+</div>
+</div>
+</div>
+<p>But in that case it would be more common I to say that the odds against are <span class="math notranslate nohighlight">\(9:1\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">odds</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>9.000000000000002
 </pre></div>
 </div>
 </div>
@@ -306,7 +345,20 @@ odds like this:</p>
 </div>
 </div>
 </div>
-<p>If you represent odds with a numerator and denominator, you can convert to probability like this:</p>
+<p>For example, if the odds are <span class="math notranslate nohighlight">\(3/2\)</span>, the corresponding probability is <span class="math notranslate nohighlight">\(3/5\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob</span><span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.6
+</pre></div>
+</div>
+</div>
+</div>
+<p>Or if you represent odds with a numerator and denominator, you can convert to probability like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prob2</span><span class="p">(</span><span class="n">yes</span><span class="p">,</span> <span class="n">no</span><span class="p">):</span>
@@ -315,34 +367,21 @@ odds like this:</p>
 </div>
 </div>
 </div>
-<p>For example, if 20% of bettors think my horse will win, that corresponds to odds of 1:4, or 0.25.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="n">odds</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prob2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.25
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.6
 </pre></div>
 </div>
 </div>
 </div>
-<p>If the odds against my horse are 1:5, that corresponds to a probability of 1/6.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">o</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">5</span>
-<span class="n">prob</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>0.16666666666666669
-</pre></div>
-</div>
-</div>
-</div>
+<p>Probabilities and odds are different representations of the
+same information.<br />
+Given either one, you can compute the other.</p>
 </div>
 <div class="section" id="bayes-s-rule">
 <h2>Bayes’s Rule<a class="headerlink" href="#bayes-s-rule" title="Permalink to this headline">¶</a></h2>
@@ -449,11 +488,18 @@ greater, in light of the data, than they were before.</p>
 under <span class="math notranslate nohighlight">\(A\)</span> than under <span class="math notranslate nohighlight">\(B\)</span>, so the odds in favor of <span class="math notranslate nohighlight">\(A\)</span> go down.</p>
 <p>Finally, if the Bayes factor is exactly 1, the data are equally likely
 under either hypothesis, so the odds do not change.</p>
-<p>Let’s apply that to the problem at hand. If Oliver is one of the people who left blood at the crime scene, he accounts for the ‘O’ sample; in
-that case, the probability of the data is the probability that a random member of the population has type ‘AB’ blood, which is 1%.</p>
+<p>Let’s apply that to the problem at hand. If Oliver is one of the people who left blood at the crime scene, he accounts for the ‘O’ sample; in that case, the probability of the data is the probability that a random member of the population has type ‘AB’ blood, which is 1%.</p>
 <p>If Oliver did not leave blood at the scene, we have two samples to
-account for. If we choose two random people from the population, what is the chance of finding one with type ‘O’ and one with type ‘AB’? Well, there are two ways it might happen: the first person might have type ‘O’ and the second ‘AB’, or the other way around. So the total probability is <span class="math notranslate nohighlight">\(2 (0.6) (0.01) = 1.2%\)</span>.</p>
-<p>Now we can compute the likelihood ratio:</p>
+account for.
+If we choose two random people from the population, what is the chance of finding one with type ‘O’ and one with type ‘AB’?
+Well, there are two ways it might happen:</p>
+<ul class="simple">
+<li><p>The first person might have ‘O’ and the second ‘AB’,</p></li>
+<li><p>Or the first person might have ‘AB’ and the second ‘O’.</p></li>
+</ul>
+<p>The probability of either combination is <span class="math notranslate nohighlight">\((0.6) (0.01)\)</span>, which is 0.6%, so the total probability is twice that, or 1.2%.</p>
+<p>So the data are a little more likely if Oliver is <em>not</em> one of the people who left blood at the scene.</p>
+<p>We can use these probabilities to compute the likelihood ratio:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">like1</span> <span class="o">=</span> <span class="mf">0.01</span>
@@ -572,7 +618,7 @@ equally likely.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_36_0.png" src="_images/chap05_36_0.png" />
+<img alt="_images/chap05_42_0.png" src="_images/chap05_42_0.png" />
 </div>
 </div>
 <p>If we roll two dice and add them up, there are 11 possible outcomes, 2
@@ -649,7 +695,7 @@ You can call it as a method, like this:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_46_0.png" src="_images/chap05_46_0.png" />
+<img alt="_images/chap05_52_0.png" src="_images/chap05_52_0.png" />
 </div>
 </div>
 <p>If we have a sequence of <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects that represent dice, we can compute the distribution of the sum like this:</p>
@@ -670,11 +716,34 @@ You can call it as a method, like this:</p>
 </div>
 </div>
 </div>
-<p>So we can compute the sum of three dice like this:</p>
+<p>As an example, we can make a list of three dice like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">die</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
-<span class="n">thrice</span> <span class="o">=</span> <span class="n">add_dist_seq</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[0    0.333333
+ 1    0.333333
+ 2    0.333333
+ dtype: float64,
+ 0    0.333333
+ 1    0.333333
+ 2    0.333333
+ dtype: float64,
+ 0    0.333333
+ 1    0.333333
+ 2    0.333333
+ dtype: float64]
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can compute the distribution of their sum like this.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">thrice</span> <span class="o">=</span> <span class="n">add_dist_seq</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -710,7 +779,7 @@ and 18.</p></li>
  &lt;a list of 7 Text xticklabel objects&gt;)
 </pre></div>
 </div>
-<img alt="_images/chap05_52_1.png" src="_images/chap05_52_1.png" />
+<img alt="_images/chap05_60_1.png" src="_images/chap05_60_1.png" />
 </div>
 </div>
 <p>As an aside, this example demonstrates the Central Limit Theorem, which says that the distribution of a sum converges on a bell-shaped normal distribution, at least under some conditions.</p>
@@ -726,7 +795,8 @@ unable to distinguish.</p>
 <p>The authors conclude, “Double-blind gluten challenge induces symptom
 recurrence in just one-third of patients.”</p>
 <p>This conclusion seems odd to me, because if none of the patients were
-sensitive to gluten, we would expect some of them to identify the gluten flour by chance. So here’s the question: based on this data, how many of the subjects are sensitive to gluten?</p>
+sensitive to gluten, we would expect some of them to identify the gluten flour by chance.
+So here’s the question: based on this data, how many of the subjects are sensitive to gluten and how many are guessing?</p>
 <p>We can use Bayes’s Theorem to answer this question, but first we have to make some modeling decisions. I’ll assume:</p>
 <ul class="simple">
 <li><p>People who are sensitive to gluten have a 95% chance of correctly
@@ -756,7 +826,7 @@ means that 25 are not:</p>
 </div>
 <p>Each sensitive subject has a 95% chance of identifying the gluten flour,
 so the number of correct identifications follows a binomial distribution.</p>
-<p>I’ll use <code class="docutils literal notranslate"><span class="pre">make_binomial</span></code>, which we defined in Section xx to make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the binomial distribution.</p>
+<p>I’ll use <code class="docutils literal notranslate"><span class="pre">make_binomial</span></code>, which we defined in Section xx, to make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the binomial distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_binomial</span>
@@ -790,7 +860,7 @@ so the number of correct identifications follows a binomial distribution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_62_0.png" src="_images/chap05_62_0.png" />
+<img alt="_images/chap05_70_0.png" src="_images/chap05_70_0.png" />
 </div>
 </div>
 <p>We expect most of the sensitive subjects to identify the gluten flour correctly.
@@ -1182,7 +1252,7 @@ For each value, it computes the distribution of the total number of correct iden
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_70_0.png" src="_images/chap05_70_0.png" />
+<img alt="_images/chap05_78_0.png" src="_images/chap05_78_0.png" />
 </div>
 </div>
 <p>Now we can use this table to compute the likelihood of the data:</p>
@@ -1247,7 +1317,7 @@ And that’s exactly the likelihood we need to do a Bayesian update.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_80_0.png" src="_images/chap05_80_0.png" />
+<img alt="_images/chap05_88_0.png" src="_images/chap05_88_0.png" />
 </div>
 </div>
 <p>With 12 correct identifications, the most likely conclusion is that none of the subjects are sensitive to gluten.
@@ -1446,7 +1516,7 @@ A goblin is defeated if the total damage you inflict is greater than or equal to
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_102_0.png" src="_images/chap05_102_0.png" />
+<img alt="_images/chap05_110_0.png" src="_images/chap05_110_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1962,7 +2032,7 @@ Let’s assume that an honest member of Congress has only a 50% chance of out-pe
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_123_0.png" src="_images/chap05_123_0.png" />
+<img alt="_images/chap05_131_0.png" src="_images/chap05_131_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
