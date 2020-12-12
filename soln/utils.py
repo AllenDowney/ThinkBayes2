@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 from empiricaldist import Pmf
 
+from scipy.stats import gaussian_kde
+from scipy.stats import binom
 
 def values(series):
     """Make a series of values and the number of times they appear.
@@ -95,7 +97,29 @@ def savefig(root, **options):
         fname = f'figs/{root}.{format}'
         plt.savefig(fname, **options)
         
-        
+def make_die(sides):
+    """Pmf that represents a die with the given number of sides.
+    
+    sides: int
+    
+    returns: Pmf
+    """
+    outcomes = np.arange(1, sides+1)
+    die = Pmf(1/sides, outcomes)
+    return die
+
+def add_dist_seq(seq):
+    """Distribution of sum of quantities from PMFs.
+    
+    seq: sequence of Pmf objects
+    
+    returns: Pmf
+    """
+    total = seq[0]
+    for other in seq[1:]:
+        total = total.add_dist(other)
+    return total
+
 def make_mixture(pmf, pmf_seq):
     """Make a mixture of distributions.
     
@@ -219,8 +243,6 @@ def plot_contour(joint, **options):
     return cs
 
 
-from scipy.stats import binom
-
 def make_binomial(n, p):
     """Make a binomial distribution.
     
@@ -233,6 +255,52 @@ def make_binomial(n, p):
     ps = binom.pmf(ks, n, p)
     return Pmf(ps, ks)
 
+
+def pmf_from_dist(dist, low, high):
+    """Make a discrete approximation of a continuous distribution.
+    
+    dist: any SciPy distribution object
+    low: low end of range
+    high: high end of range
+    
+    returns: normalized Pmf
+    """
+    qs = np.linspace(low, high, 101)
+    ps = dist.pdf(qs)
+    pmf = Pmf(ps, qs)
+    pmf.normalize()
+    return pmf
+
+
+def kde_from_sample(sample, qs):
+    """Make a kernel density estimate from a sample
+    
+    sample: sequence of values
+    qs: quantities where we should evaluate the KDE
+    
+    returns: normalized Pmf
+    """
+    kde = gaussian_kde(sample)
+    ps = kde(qs)
+    pmf = Pmf(ps, qs)
+    pmf.normalize()
+    return pmf
+
+
+def kde_from_pmf(pmf, n=101):
+    """Make a kernel density estimate from a Pmf.
+    
+    pmf: Pmf object
+    n: number of points
+    
+    returns: Pmf object
+    """
+    kde = gaussian_kde(pmf.qs, weights=pmf.ps)
+    qs = np.linspace(pmf.qs.min(), pmf.qs.max(), n)
+    ps = kde.evaluate(qs)
+    pmf = Pmf(ps, qs)
+    pmf.normalize()
+    return pmf
 
 from statsmodels.nonparametric.smoothers_lowess import lowess
 
