@@ -1226,18 +1226,24 @@ So I’ll define two parameters, <code class="docutils literal notranslate"><spa
 </div>
 </div>
 </div>
-<p>With these probabilities, there is a 3% chance that both testers find a bug and a 68% chance that neither of them do.</p>
+<p>With these probabilities, there is a
+68% chance that neither tester finds the bug and a
+3% chance that both do.</p>
 <p>Pretending that these probabilities are known, we can compute the posterior distribution for <code class="docutils literal notranslate"><span class="pre">N</span></code>.
 Here’s the prior:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_N</span> <span class="o">=</span> <span class="n">discrete_uniform</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">350</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
-<span class="n">prior_N</span><span class="o">.</span><span class="n">shape</span>
+<span class="n">prior_N</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(318,)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>N
+32    0.003145
+33    0.003145
+34    0.003145
+dtype: float64
 </pre></div>
 </div>
 </div>
@@ -1257,7 +1263,7 @@ Here’s the prior:</p>
 <span class="n">observed</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-<span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="n">Ns</span><span class="p">:</span>
+<span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="n">prior_N</span><span class="o">.</span><span class="n">qs</span><span class="p">:</span>
     <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">observed</span>
     <span class="n">likelihood</span><span class="p">[</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">multinomial</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
@@ -1273,7 +1279,7 @@ Here’s the prior:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0005226733672754977
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.00034467437208120835
 </pre></div>
 </div>
 </div>
@@ -1283,7 +1289,7 @@ Here’s the prior:</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_N</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;n&#39;</span><span class="p">,</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of bugs (N)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior marginal distribution of n with known p1, p2&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1631,7 +1637,7 @@ The following is a version of <code class="docutils literal notranslate"><span c
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_N</span> <span class="o">=</span> <span class="n">pmf_marginal</span><span class="p">(</span><span class="n">posterior_pmf</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">posterior_N</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of bugs&#39;</span><span class="p">,</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of bugs (N)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior marginal distributions of N&#39;</span><span class="p">)</span>
 </pre></div>
