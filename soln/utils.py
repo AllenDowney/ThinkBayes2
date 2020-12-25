@@ -6,6 +6,9 @@ from empiricaldist import Pmf
 
 from scipy.stats import gaussian_kde
 from scipy.stats import binom
+from scipy.stats import gamma
+from scipy.stats import poisson
+
 
 def values(series):
     """Make a series of values and the number of times they appear.
@@ -96,6 +99,7 @@ def savefig(root, **options):
     for format in formats:
         fname = f'figs/{root}.{format}'
         plt.savefig(fname, **options)
+
         
 def make_die(sides):
     """Pmf that represents a die with the given number of sides.
@@ -108,6 +112,7 @@ def make_die(sides):
     die = Pmf(1/sides, outcomes)
     return die
 
+
 def add_dist_seq(seq):
     """Distribution of sum of quantities from PMFs.
     
@@ -119,6 +124,7 @@ def add_dist_seq(seq):
     for other in seq[1:]:
         total = total.add_dist(other)
     return total
+
 
 def make_mixture(pmf, pmf_seq):
     """Make a mixture of distributions.
@@ -135,6 +141,18 @@ def make_mixture(pmf, pmf_seq):
     total = df.sum(axis=1)
     return Pmf(total)
 
+
+def summarize(posterior, digits=3, prob=0.9):
+    """Print the mean and CI of a distribution.
+    
+    posterior: Pmf
+    digits: number of digits to round to
+    prob: probability in the CI
+    """
+    mean = np.round(posterior.mean(), 3)
+    ci = posterior.credible_interval(prob)
+    print (mean, ci)
+    
 
 def outer_product(s1, s2):
     """Compute the outer product of two Series.
@@ -260,16 +278,42 @@ def make_binomial(n, p):
     return Pmf(ps, ks)
 
 
-def pmf_from_dist(dist, low, high):
-    """Make a discrete approximation of a continuous distribution.
+def make_gamma_dist(alpha, beta):
+    """Makes a gamma object.
     
-    dist: any SciPy distribution object
-    low: low end of range
-    high: high end of range
+    alpha: shape parameter
+    beta: scale parameter
     
-    returns: normalized Pmf
+    returns: gamma object
     """
-    qs = np.linspace(low, high, 101)
+    dist = gamma(alpha, scale=1/beta)
+    dist.alpha = alpha
+    dist.beta = beta
+    return dist
+
+
+def make_poisson_pmf(lam, qs):
+    """Make a PMF of a Poisson distribution.
+    
+    lam: event rate
+    qs: sequence of values for `k`
+    
+    returns: Pmf
+    """
+    ps = poisson(lam).pmf(qs)
+    pmf = Pmf(ps, qs)
+    pmf.normalize()
+    return pmf
+
+
+def pmf_from_dist(dist, qs):
+    """Make a discrete approximation.
+    
+    dist: SciPy distribution object
+    qs: quantities
+    
+    returns: Pmf
+    """
     ps = dist.pdf(qs)
     pmf = Pmf(ps, qs)
     pmf.normalize()
