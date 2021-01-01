@@ -40,7 +40,6 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <script src="_static/togglebutton.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
@@ -141,27 +140,52 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap10.html">
-   Comparison
+   Testing
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap11.html">
-   Classification
+   Comparison
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap12.html">
-   Inference
+   Classification
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap13.html">
-   Survival Analysis
+   Inference
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap14.html">
+   Survival Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap15.html">
    Mark and Recapture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap16.html">
+   Logistic regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap17.html">
+   Regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap18.html">
+   Conjugate Priors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap19.html">
+   MCMC
   </a>
  </li>
 </ul>
@@ -265,11 +289,6 @@
         <nav id="bd-toc-nav">
             <ul class="nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#introduction">
-   Introduction
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#linda-the-banker">
    Linda the Banker
   </a>
@@ -357,22 +376,19 @@
                 
   <div class="section" id="probability">
 <h1>Probability<a class="headerlink" href="#probability" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The foundation of Bayesian statistics is Bayes’s Theorem, and the foundation of Bayes’s Theorem is conditional probability.</p>
 <p>In this chapter, we’ll start with conditional probability, derive Bayes’s Theorem, and demonstrate it using a real dataset.  In the next chapter, we’ll use Bayes’s Theorem to solve problems related to conditional probability.  In the chapters that follow, we’ll make the transition from Bayes’s Theorem to Bayesian statistics, and I’ll explain the difference.</p>
-</div>
 <div class="section" id="linda-the-banker">
 <h2>Linda the Banker<a class="headerlink" href="#linda-the-banker" title="Permalink to this headline">¶</a></h2>
 <p>To introduce conditional probability, I’ll use an example from a <a class="reference external" href="https://en.wikipedia.org/wiki/Conjunction_fallacy">famous experiment by Tversky and Kahneman</a>, who posed the following question:</p>
 <blockquote>
 <div><p>Linda is 31 years old, single, outspoken, and very bright. She majored in philosophy. As a student, she was deeply concerned with issues of discrimination and social justice, and also participated in anti-nuclear demonstrations.  Which is more probable?</p>
-</div></blockquote>
 <ol class="simple">
 <li><p>Linda is a bank teller.</p></li>
 <li><p>Linda is a bank teller and is active in the feminist movement.</p></li>
 </ol>
-<p>Many people choose the second answer, presumably because it seems more consistent with the description.  It seems uncharacteristic if Linda is <em>just</em> a bank teller; it seems more likely if she is also a feminist.</p>
+</div></blockquote>
+<p>Many people choose the second answer, presumably because it seems more consistent with the description.  It seems uncharacteristic if Linda is <em>just</em> a bank teller; it seems more consistent if she is also a feminist.</p>
 <p>But the second answer cannot be “more probable”, as the question asks.  Suppose we find 1000 people who fit Linda’s description and 10 of them work as bank tellers.  How many of them are also feminists?  At most, all 10 of them are; in that case, the two options are <em>equally</em> probable.  If fewer than 10 are, the second option is <em>less</em> probable.  But there is no way the second option can be <em>more</em> probable.</p>
 <p>If you were inclined to choose the second option, you are in good company.  The biologist <a class="reference external" href="https://sci-hub.tw/https://doi.org/10.1080/09332480.1989.10554932">Stephen J. Gould wrote</a> :</p>
 <blockquote>
@@ -382,12 +398,12 @@
 </div>
 <div class="section" id="id1">
 <h2>Probability<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<p>Ideally I would start by defining probability, but that <a class="reference external" href="https://en.wikipedia.org/wiki/Probability_interpretations">turns out to be surprisingly difficult</a>.  To avoid a philosophical black hole, I’ll start with a simple definition for now and refine it later: A <strong>probability</strong> is a fraction of a finite set.</p>
+<p>At this point I should provide a definition of “probability”, but that <a class="reference external" href="https://en.wikipedia.org/wiki/Probability_interpretations">turns out to be surprisingly difficult</a>.  To avoid getting stuck before we start, we will use a simple definition for now and refine it later: A <strong>probability</strong> is a fraction of a finite set.</p>
 <p>For example, if we survey 1000 people, and 20 of them are bank tellers, the fraction that work as bank tellers is 0.02 or 2%.  If we choose a person from this population at random, the probability that they are a bank teller is 2%.
 By “at random” I mean that every person in the dataset has the same chance of being chosen.</p>
-<p>With this definition and an appropriate dataset, we can compute probabilities by counting.</p>
-<p>To demonstrate, I’ll use data from the <a class="reference external" href="http://gss.norc.org/">General Social Survey</a> (GSS).</p>
-<p>We can use Pandas to read the data and store it in a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
+<p>With this definition and an appropriate dataset, we can compute probabilities by counting.
+To demonstrate, I’ll use data from the <a class="reference external" href="http://gss.norc.org/">General Social Survey</a> (GSS).</p>
+<p>I’ll use Pandas to read the data and store it in a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -793,18 +809,18 @@ For example, we have already computed the probability that a respondent is a ban
 </div>
 <p>About 77% of the bankers in this dataset are female.</p>
 <p>Let’s wrap this computation in a function.
-I’ll define <code class="docutils literal notranslate"><span class="pre">conditional</span></code> to take two Boolean series, <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">given</span></code>, and compute the conditional probability of <code class="docutils literal notranslate"><span class="pre">A</span></code> conditioned on <code class="docutils literal notranslate"><span class="pre">given</span></code>:</p>
+I’ll define <code class="docutils literal notranslate"><span class="pre">conditional</span></code> to take two Boolean series, <code class="docutils literal notranslate"><span class="pre">proposition</span></code> and <code class="docutils literal notranslate"><span class="pre">given</span></code>, and compute the conditional probability of <code class="docutils literal notranslate"><span class="pre">proposition</span></code> conditioned on <code class="docutils literal notranslate"><span class="pre">given</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">conditional</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">given</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">conditional</span><span class="p">(</span><span class="n">proposition</span><span class="p">,</span> <span class="n">given</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Conditional probability of A conditioned on `given`.</span>
 <span class="sd">    </span>
-<span class="sd">    A: Boolean series</span>
+<span class="sd">    proposition: Boolean series</span>
 <span class="sd">    given: Boolean series</span>
 <span class="sd">    </span>
 <span class="sd">    returns: probability</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">prob</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">given</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">prob</span><span class="p">(</span><span class="n">proposition</span><span class="p">[</span><span class="n">given</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -828,7 +844,7 @@ I’ll define <code class="docutils literal notranslate"><span class="pre">condi
 <div class="section" id="conditional-probability-is-not-commutative">
 <h2>Conditional probability is not commutative<a class="headerlink" href="#conditional-probability-is-not-commutative" title="Permalink to this headline">¶</a></h2>
 <p>We have seen that conjunction is commutative; that is, <code class="docutils literal notranslate"><span class="pre">prob(A</span> <span class="pre">&amp;</span> <span class="pre">B)</span></code> is always equal to <code class="docutils literal notranslate"><span class="pre">prob(B</span> <span class="pre">&amp;</span> <span class="pre">A)</span></code>.</p>
-<p>But conditional probability is NOT commutative; that is, <code class="docutils literal notranslate"><span class="pre">conditional(A,</span> <span class="pre">B)</span></code> is not the same as <code class="docutils literal notranslate"><span class="pre">conditional(B,</span> <span class="pre">A)</span></code>.</p>
+<p>But conditional probability is <em>not</em> commutative; that is, <code class="docutils literal notranslate"><span class="pre">conditional(A,</span> <span class="pre">B)</span></code> is not the same as <code class="docutils literal notranslate"><span class="pre">conditional(B,</span> <span class="pre">A)</span></code>.</p>
 <p>That should be clear if we look at an example.  Previously, we computed the probability a respondent is female, given that they are banker.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -944,7 +960,7 @@ I’ll define <code class="docutils literal notranslate"><span class="pre">condi
 <li><p>The fraction of respondents who are female bankers, and</p></li>
 <li><p>The fraction of respondents who are bankers.</p></li>
 </ol>
-<p>That is, of all the bankers, what fraction are female bankers?
+<p>In other words: of all the bankers, what fraction are female bankers?
 Here’s how we compute this ratio.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1017,7 +1033,7 @@ Here’s how we compute this ratio.</p>
 <p>To see how it works, let’s compute the fraction of bankers who are liberal, first using <code class="docutils literal notranslate"><span class="pre">conditional</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">conditional</span><span class="p">(</span><span class="n">liberal</span><span class="p">,</span> <span class="n">banker</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">conditional</span><span class="p">(</span><span class="n">liberal</span><span class="p">,</span> <span class="n">given</span><span class="o">=</span><span class="n">banker</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1063,11 +1079,11 @@ Here’s how we compute this ratio.</p>
 <p><strong>Exercise:</strong> Let’s use the tools in this chapter to solve a variation of the Linda problem.</p>
 <blockquote>
 <div><p>Linda is 31 years old, single, outspoken, and very bright. She majored in philosophy. As a student, she was deeply concerned with issues of discrimination and social justice, and also participated in anti-nuclear demonstrations.  Which is more probable?</p>
-</div></blockquote>
 <ol class="simple">
 <li><p>Linda is a banker.</p></li>
 <li><p>Linda is a banker and considers herself a liberal Democrat.</p></li>
 </ol>
+</div></blockquote>
 <p>To answer this question, compute</p>
 <ul class="simple">
 <li><p>The probability that Linda is a female banker,</p></li>

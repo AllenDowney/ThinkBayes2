@@ -40,7 +40,6 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <script src="_static/togglebutton.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
@@ -141,27 +140,52 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap10.html">
-   Comparison
+   Testing
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap11.html">
-   Classification
+   Comparison
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap12.html">
-   Inference
+   Classification
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap13.html">
-   Survival Analysis
+   Inference
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap14.html">
+   Survival Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap15.html">
    Mark and Recapture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap16.html">
+   Logistic regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap17.html">
+   Regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap18.html">
+   Conjugate Priors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap19.html">
+   MCMC
   </a>
  </li>
 </ul>
@@ -637,7 +661,7 @@ that factor of two makes the difference.</p>
 <p>The second half of this chapter is about distributions of sums and results of other operations.
 We’ll start with a forward problem, where we are given the inputs and compute the distribution of the output.
 Then we’ll work on inverse problems, where we are given the outputs and we compute the distribution of the inputs.</p>
-<p>As a first example, duppose you roll two dice and add them up. What is the distribution of the sum?
+<p>As a first example, suppose you roll two dice and add them up. What is the distribution of the sum?
 I’ll use the following function to create a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the
 possible outcomes of a die:</p>
 <div class="cell docutils container">
@@ -670,14 +694,16 @@ equally likely.</p>
 </div>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">die</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
+
+<span class="n">die</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Outcome&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap06_42_0.png" src="_images/chap06_42_0.png" />
+<img alt="_images/chap06_43_0.png" src="_images/chap06_43_0.png" />
 </div>
 </div>
 <p>If we roll two dice and add them up, there are 11 possible outcomes, 2
@@ -748,13 +774,13 @@ You can call it as a method, like this:</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">twice</span> <span class="o">=</span> <span class="n">add_dist</span><span class="p">(</span><span class="n">die</span><span class="p">,</span> <span class="n">die</span><span class="p">)</span>
-<span class="n">twice</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">twice</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="n">decorate_dice</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap06_52_0.png" src="_images/chap06_52_0.png" />
+<img alt="_images/chap06_53_0.png" src="_images/chap06_53_0.png" />
 </div>
 </div>
 <p>If we have a sequence of <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects that represent dice, we can compute the distribution of the sum like this:</p>
@@ -782,22 +808,6 @@ You can call it as a method, like this:</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0    0.333333
- 1    0.333333
- 2    0.333333
- dtype: float64,
- 0    0.333333
- 1    0.333333
- 2    0.333333
- dtype: float64,
- 0    0.333333
- 1    0.333333
- 2    0.333333
- dtype: float64]
-</pre></div>
-</div>
-</div>
 </div>
 <p>And we can compute the distribution of their sum like this.</p>
 <div class="cell docutils container">
@@ -822,23 +832,13 @@ and 18.</p></li>
 <span class="n">twice</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;twice&#39;</span><span class="p">)</span>
 <span class="n">thrice</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;thrice&#39;</span><span class="p">)</span>
 
-<span class="n">decorate_dice</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distributions of sums&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">18</span><span class="p">])</span>
+<span class="n">decorate_dice</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distributions of sums&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>([&lt;matplotlib.axis.XTick at 0x7fa20aec4c90&gt;,
-  &lt;matplotlib.axis.XTick at 0x7fa20aec4550&gt;,
-  &lt;matplotlib.axis.XTick at 0x7fa20b118290&gt;,
-  &lt;matplotlib.axis.XTick at 0x7fa20b11f310&gt;,
-  &lt;matplotlib.axis.XTick at 0x7fa20b11f950&gt;,
-  &lt;matplotlib.axis.XTick at 0x7fa20b11f850&gt;,
-  &lt;matplotlib.axis.XTick at 0x7fa20b121650&gt;],
- &lt;a list of 7 Text xticklabel objects&gt;)
-</pre></div>
-</div>
-<img alt="_images/chap06_60_1.png" src="_images/chap06_60_1.png" />
+<img alt="_images/chap06_61_0.png" src="_images/chap06_61_0.png" />
 </div>
 </div>
 <p>As an aside, this example demonstrates the Central Limit Theorem, which says that the distribution of a sum converges on a bell-shaped normal distribution, at least under some conditions.</p>
@@ -908,8 +908,8 @@ so the number of correct identifications follows a binomial distribution.</p>
 <p>Here are the results:</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dist_sensitive</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;sensitive&#39;</span><span class="p">)</span>
-<span class="n">dist_insensitive</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;insensitive&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dist_sensitive</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;sensitive&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+<span class="n">dist_insensitive</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;insensitive&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
 <span class="n">dist_total</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;total&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of correct identifications&#39;</span><span class="p">,</span>
@@ -919,7 +919,7 @@ so the number of correct identifications follows a binomial distribution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap06_70_0.png" src="_images/chap06_70_0.png" />
+<img alt="_images/chap06_71_0.png" src="_images/chap06_71_0.png" />
 </div>
 </div>
 <p>We expect most of the sensitive subjects to identify the gluten flour correctly.
@@ -952,7 +952,7 @@ So we expect about 20 correct identifications in total.</p>
 For each value, it computes the distribution of the total number of correct identifications, and stores the result as a column in a Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1071,238 +1071,18 @@ For each value, it computes the distribution of the total number of correct iden
       <td>7.088005e-40</td>
       <td>6.251357e-41</td>
     </tr>
-    <tr>
-      <th>3</th>
-      <td>3.333724e-05</td>
-      <td>9.326490e-06</td>
-      <td>2.205654e-06</td>
-      <td>4.377061e-07</td>
-      <td>7.398116e-08</td>
-      <td>1.107854e-08</td>
-      <td>1.517139e-09</td>
-      <td>1.942513e-10</td>
-      <td>2.361331e-11</td>
-      <td>2.754929e-12</td>
-      <td>...</td>
-      <td>2.784933e-29</td>
-      <td>2.596024e-30</td>
-      <td>2.410204e-31</td>
-      <td>2.229314e-32</td>
-      <td>2.054801e-33</td>
-      <td>1.887764e-34</td>
-      <td>1.728997e-35</td>
-      <td>1.579030e-36</td>
-      <td>1.438169e-37</td>
-      <td>1.306534e-38</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1.777986e-04</td>
-      <td>6.138285e-05</td>
-      <td>1.841174e-05</td>
-      <td>4.734794e-06</td>
-      <td>1.038280e-06</td>
-      <td>1.962745e-07</td>
-      <td>3.288580e-08</td>
-      <td>5.013120e-09</td>
-      <td>7.095823e-10</td>
-      <td>9.468298e-11</td>
-      <td>...</td>
-      <td>3.089268e-27</td>
-      <td>2.998031e-28</td>
-      <td>2.893328e-29</td>
-      <td>2.777860e-30</td>
-      <td>2.654159e-31</td>
-      <td>2.524558e-32</td>
-      <td>2.391168e-33</td>
-      <td>2.255871e-34</td>
-      <td>2.120317e-35</td>
-      <td>1.985931e-36</td>
-    </tr>
   </tbody>
 </table>
-<p>5 rows × 36 columns</p>
-</div></div></div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0</th>
-      <th>1</th>
-      <th>2</th>
-      <th>3</th>
-      <th>4</th>
-      <th>5</th>
-      <th>6</th>
-      <th>7</th>
-      <th>8</th>
-      <th>9</th>
-      <th>...</th>
-      <th>26</th>
-      <th>27</th>
-      <th>28</th>
-      <th>29</th>
-      <th>30</th>
-      <th>31</th>
-      <th>32</th>
-      <th>33</th>
-      <th>34</th>
-      <th>35</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>31</th>
-      <td>3.129424e-09</td>
-      <td>6.612770e-09</td>
-      <td>1.392448e-08</td>
-      <td>2.921173e-08</td>
-      <td>6.104006e-08</td>
-      <td>1.270103e-07</td>
-      <td>2.630903e-07</td>
-      <td>5.423435e-07</td>
-      <td>1.112231e-06</td>
-      <td>2.268282e-06</td>
-      <td>...</td>
-      <td>0.076263</td>
-      <td>0.113117</td>
-      <td>0.158167</td>
-      <td>0.205351</td>
-      <td>0.242569</td>
-      <td>0.253962</td>
-      <td>0.229212</td>
-      <td>0.176406</td>
-      <td>0.116399</td>
-      <td>0.066729</td>
-    </tr>
-    <tr>
-      <th>32</th>
-      <td>2.607853e-10</td>
-      <td>5.681394e-10</td>
-      <td>1.234576e-09</td>
-      <td>2.675493e-09</td>
-      <td>5.781488e-09</td>
-      <td>1.245501e-08</td>
-      <td>2.674410e-08</td>
-      <td>5.722594e-08</td>
-      <td>1.219917e-07</td>
-      <td>2.590112e-07</td>
-      <td>...</td>
-      <td>0.028107</td>
-      <td>0.047681</td>
-      <td>0.077631</td>
-      <td>0.119999</td>
-      <td>0.173427</td>
-      <td>0.229212</td>
-      <td>0.268399</td>
-      <td>0.267681</td>
-      <td>0.224017</td>
-      <td>0.158480</td>
-    </tr>
-    <tr>
-      <th>33</th>
-      <td>1.580517e-11</td>
-      <td>3.546755e-11</td>
-      <td>7.945935e-11</td>
-      <td>1.777041e-10</td>
-      <td>3.966808e-10</td>
-      <td>8.837405e-10</td>
-      <td>1.964679e-09</td>
-      <td>4.357916e-09</td>
-      <td>9.643122e-09</td>
-      <td>2.128292e-08</td>
-      <td>...</td>
-      <td>0.006934</td>
-      <td>0.013293</td>
-      <td>0.024849</td>
-      <td>0.044987</td>
-      <td>0.078129</td>
-      <td>0.128295</td>
-      <td>0.194677</td>
-      <td>0.262734</td>
-      <td>0.296379</td>
-      <td>0.273739</td>
-    </tr>
-    <tr>
-      <th>34</th>
-      <td>6.198106e-13</td>
-      <td>1.431467e-12</td>
-      <td>3.303351e-12</td>
-      <td>7.616545e-12</td>
-      <td>1.754563e-11</td>
-      <td>4.037966e-11</td>
-      <td>9.283506e-11</td>
-      <td>2.132000e-10</td>
-      <td>4.890524e-10</td>
-      <td>1.120418e-09</td>
-      <td>...</td>
-      <td>0.001027</td>
-      <td>0.002202</td>
-      <td>0.004666</td>
-      <td>0.009741</td>
-      <td>0.019955</td>
-      <td>0.039837</td>
-      <td>0.076669</td>
-      <td>0.139472</td>
-      <td>0.230032</td>
-      <td>0.305943</td>
-    </tr>
-    <tr>
-      <th>35</th>
-      <td>1.180592e-14</td>
-      <td>2.803905e-14</td>
-      <td>6.659275e-14</td>
-      <td>1.581578e-13</td>
-      <td>3.756247e-13</td>
-      <td>8.921087e-13</td>
-      <td>2.118758e-12</td>
-      <td>5.032051e-12</td>
-      <td>1.195112e-11</td>
-      <td>2.838391e-11</td>
-      <td>...</td>
-      <td>0.000069</td>
-      <td>0.000164</td>
-      <td>0.000390</td>
-      <td>0.000925</td>
-      <td>0.002198</td>
-      <td>0.005220</td>
-      <td>0.012398</td>
-      <td>0.029444</td>
-      <td>0.069930</td>
-      <td>0.166083</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 36 columns</p>
+<p>3 rows × 36 columns</p>
 </div></div></div>
 </div>
 <p>The following figure shows selected columns from the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>, corresponding to different hypothetical values of <code class="docutils literal notranslate"><span class="pre">n_sensitive</span></code>:</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n_sensitive</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]:</span>
-    <span class="n">table</span><span class="p">[</span><span class="n">n_sensitive</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;n_sensitive = </span><span class="si">{</span><span class="n">n_sensitive</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;n_sensitive = 0&#39;</span><span class="p">)</span>
+<span class="n">table</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;n_sensitive = 10&#39;</span><span class="p">)</span>
+<span class="n">table</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;n_sensitive = 20&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+<span class="n">table</span><span class="p">[</span><span class="mi">30</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;n_sensitive = 30&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">)</span>
     
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of correct identifications&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>

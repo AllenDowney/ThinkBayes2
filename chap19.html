@@ -1,0 +1,1911 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCMC &#8212; Think Bayes</title>
+    
+  <link rel="stylesheet" href="_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinx-book-theme.40e2e510f6b7d1648584402491bb10fe.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.3da636dd464baa7582d2.js">
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/sphinx-book-theme.d31b09fe5c1d09cb49b26a786de4a05d.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Conjugate Priors" href="chap18.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">Think Bayes</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="README.html">
+   ThinkBayes2
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap01.html">
+   Probability
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap02.html">
+   Bayes’s Theorem
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap03.html">
+   Distributions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap04.html">
+   Estimating proportions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap05.html">
+   Estimating counts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap06.html">
+   Odds and Addends
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap07.html">
+   Minimum, maximum, and mixture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap08.html">
+   Poisson Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap09.html">
+   Decision Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap10.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap11.html">
+   Comparison
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap12.html">
+   Classification
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap13.html">
+   Inference
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap14.html">
+   Survival Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap15.html">
+   Mark and Recapture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap16.html">
+   Logistic regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap17.html">
+   Regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap18.html">
+   Conjugate Priors
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   MCMC
+  </a>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/chap19.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/AllenDowney/ThinkBayes2"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/chap19.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-world-cup-problem">
+   The World Cup problem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#grid-approximation">
+   Grid approximation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#prior-predictive-distribution">
+   Prior Predictive Distribution
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#introducing-pymc">
+   Introducing PyMC
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#prior-distribution">
+   Prior Distribution
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#prior-predictive">
+   Prior predictive
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#when-do-we-get-to-inference">
+   When do we get to inference?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#posterior-predictive-distribution">
+   Posterior Predictive Distribution
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#happiness">
+   Happiness
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#simple-regression">
+   Simple Regression
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#multiple-regression">
+   Multiple Regression
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
+  </a>
+ </li>
+</ul>
+
+        </nav>
+        
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="mcmc">
+<h1>MCMC<a class="headerlink" href="#mcmc" title="Permalink to this headline">¶</a></h1>
+<p>For most of this book we’ve been using grid methods to approximate posterior distributions.
+For models with one or two parameters, grid algorithms are fast and the results are precise enough for most practical purposes.
+With three parameters, they start to be computationally-intensive, and with more than three they are usually not practical.</p>
+<p>In the previous chapter we saw that we can solve some problems using conjugate priors.
+But the problems we can solve this way tend to be the same ones we can solve with grid algorithms.</p>
+<p>For problems with more than a few parameters, the most powerful tool we have is MCMC, which stands for “Markov chain Monte Carlo”.</p>
+<p>In this context, “Monte Carlo” refers to to methods that generate random samples from a distribution.
+Unlike grid methods, MCMC methods don’t try to compute the posterior distribution; they sample from it instead.</p>
+<p>It might seem strange that you can generate sample without ever computing the distribution, but that’s the magic of MCMC.</p>
+<p>To demonstrate, we’ll start by solving the World Cup problem.</p>
+<div class="section" id="the-world-cup-problem">
+<h2>The World Cup problem<a class="headerlink" href="#the-world-cup-problem" title="Permalink to this headline">¶</a></h2>
+<p>In Chapter xxx we solved the World Cup problem:</p>
+<blockquote>
+<div><p>In the 2018 FIFA World Cup final, France defeated Croatia 4 goals to 2.  Based on this outcome:</p>
+<ol class="simple">
+<li><p>How confident should we be that France is the better team?</p></li>
+<li><p>If the same teams played again, what is the chance France would win again?</p></li>
+</ol>
+</div></blockquote>
+<p>We modeled goal scoring in football (soccer) as a Poisson process characterized by a goal-scoring rate, denoted <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+<p>We used a gamma distribution to represent the prior distribution of <span class="math notranslate nohighlight">\(\lambda\)</span>, then we used to outcome of the game to compute the posterior distribution for both teams.</p>
+<p>To answer the first question, we used the posterior distributions to compute the “probability of superiority” for France.</p>
+<p>To answer the second question, we computed the posterior predictive distributions for each team, that it, the distribution of goals we expect in a rematch.</p>
+<p>In this chapter we’ll solve this problem again using PyMC, which is a library that provides implementation of several MCMC methods.
+But we’ll start by reviewing the grid approximation of the prior and the prior predictive distribution.</p>
+</div>
+<div class="section" id="grid-approximation">
+<h2>Grid approximation<a class="headerlink" href="#grid-approximation" title="Permalink to this headline">¶</a></h2>
+<p>As we did in Chapter 8xxx we’ll use a gamma distribution with parameter <span class="math notranslate nohighlight">\(\alpha=1.4\)</span> to represent the prior.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gamma</span>
+
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.4</span>
+<span class="n">prior_dist</span> <span class="o">=</span> <span class="n">gamma</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>I’ll use <code class="docutils literal notranslate"><span class="pre">linspace</span></code> to generate an array of possible values for <span class="math notranslate nohighlight">\(\lambda\)</span>, and <code class="docutils literal notranslate"><span class="pre">pmf_from_dist</span></code> to compute a discrete approximation of the prior.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">pmf_from_dist</span>
+
+<span class="n">lams</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">prior_pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">prior_dist</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can use the Poisson distribution to compute the likelihood of the data; as an example, we’ll use the 4 goals France scored.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">likelihood</span> <span class="o">=</span> <span class="n">poisson</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we can do the update in the usual way.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">prior_pmf</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.05015532557804499
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following figure shows the prior and posterior distributions.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
+
+<span class="n">prior_pmf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Goals per game ($\lambda$)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior and posterior distributions, grid approximation&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_16_0.png" src="_images/chap19_16_0.png" />
+</div>
+</div>
+<p>Soon we will solve the same problem with PyMC, but first it will be useful to introduce a new idea: the prior predictive distribution.</p>
+</div>
+<div class="section" id="prior-predictive-distribution">
+<h2>Prior Predictive Distribution<a class="headerlink" href="#prior-predictive-distribution" title="Permalink to this headline">¶</a></h2>
+<p>We have seen the posterior predictive distribution in previous chapters; the prior predictive distribution is similar, except that (as you might have guessed) it is based on the prior.</p>
+<p>To estimate the prior predictive distribution, we’ll start by drawing a sample from the prior.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_prior</span> <span class="o">=</span> <span class="n">prior_dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">sample_prior</span></code> is an array of possible values for the goal-scoring rate, <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+<p>For each value in <code class="docutils literal notranslate"><span class="pre">sample_prior</span></code>, I’ll generate one value from a Poisson distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
+
+<span class="n">sample_prior_pred</span> <span class="o">=</span> <span class="n">poisson</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">sample_prior</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a sample from the prior predictive distribution.
+To see what it looks like, I’ll plot its PMF.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+
+<span class="n">pmf_prior_pred</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">sample_prior_pred</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s what it looks like:</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_prior_pred</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of goals&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior Predictive Distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_25_0.png" src="_images/chap19_25_0.png" />
+</div>
+</div>
+<p>One reason to compute the prior predictive distribution is to check whether our model of the system seems reasonable.
+In this case, the distribution of goals scored seems consistent with what we know about World Cup football.</p>
+<p>But in this chapter we have another reason: computing the prior predictive distribution is a first step toward using MCMC.</p>
+</div>
+<div class="section" id="introducing-pymc">
+<h2>Introducing PyMC<a class="headerlink" href="#introducing-pymc" title="Permalink to this headline">¶</a></h2>
+<p>PyMC is a Python library that provides several MCMC methods.
+To use PyMC, we have to specify a model of the process that generates the data.
+In this example, the model has two steps:</p>
+<ul class="simple">
+<li><p>First we draw a goal-scoring rate from the prior distribution,</p></li>
+<li><p>Then we draw a number of goals from a Poisson distribution.</p></li>
+</ul>
+<p>Here’s how we specify this model in PyMC:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymc3</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">lam</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="s1">&#39;lam&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.4</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">goals</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="n">lam</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>After importing <code class="docutils literal notranslate"><span class="pre">pymc3</span></code>, we create a <code class="docutils literal notranslate"><span class="pre">Model</span></code> object named <code class="docutils literal notranslate"><span class="pre">model</span></code>.</p>
+<p>If you are not familiar with the <code class="docutils literal notranslate"><span class="pre">with</span></code> statement in Python, it is a way to associate a block of statements with an object.
+In this example, the two indented statements are associated with the new <code class="docutils literal notranslate"><span class="pre">Model</span></code> object so that when we create the distribution objects, <code class="docutils literal notranslate"><span class="pre">Gamma</span></code> and <code class="docutils literal notranslate"><span class="pre">Poisson</span></code>, they are added to the <code class="docutils literal notranslate"><span class="pre">Model</span></code>.</p>
+<p>Inside the <code class="docutils literal notranslate"><span class="pre">with</span></code> statement:</p>
+<ul class="simple">
+<li><p>The first line creates the prior, which is a gamma distribution with the given parameters.</p></li>
+<li><p>The second line creates the prior predictive, which is a Poisson distribution with the parameter <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p></li>
+</ul>
+<p>The first parameter of <code class="docutils literal notranslate"><span class="pre">Gamma</span></code> and <code class="docutils literal notranslate"><span class="pre">Poisson</span></code> is a string variable name.</p>
+<p>PyMC provides a function that generates a visual representation of the model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pm</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_30_0.svg" src="_images/chap19_30_0.svg" /></div>
+</div>
+<p>In this visualization, the ovals show that <code class="docutils literal notranslate"><span class="pre">lam</span></code> is drawn from a gamma distribution and <code class="docutils literal notranslate"><span class="pre">goals</span></code> is drawn from a Poisson distribution.
+The arrow shows that the values of <code class="docutils literal notranslate"><span class="pre">lam</span></code> are used as parameters for the distribution of <code class="docutils literal notranslate"><span class="pre">goals</span></code>.</p>
+</div>
+<div class="section" id="prior-distribution">
+<h2>Prior Distribution<a class="headerlink" href="#prior-distribution" title="Permalink to this headline">¶</a></h2>
+<p>PyMC provides a function that generates samples from the prior and prior predictive distributions.
+We can use a <code class="docutils literal notranslate"><span class="pre">with</span></code> statement to run this function in the context of the model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_prior_predictive</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a dictionary that maps from the variables, <code class="docutils literal notranslate"><span class="pre">lam</span></code> and <code class="docutils literal notranslate"><span class="pre">goals</span></code>, to the samples.</p>
+<p>We can extract the sample of <code class="docutils literal notranslate"><span class="pre">lam</span></code> like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_prior_pymc</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;lam&#39;</span><span class="p">]</span>
+<span class="n">sample_prior_pymc</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1000,)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following figure compares the CDF of this sample to the CDF of the sample we generated using the <code class="docutils literal notranslate"><span class="pre">gamma</span></code> object from SciPy.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
+
+<span class="k">def</span> <span class="nf">plot_cdf</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot the CDF of a sample.</span>
+<span class="sd">    </span>
+<span class="sd">    sample: sequence of quantities</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_cdf</span><span class="p">(</span><span class="n">sample_prior</span><span class="p">,</span> 
+         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;SciPy sample&#39;</span><span class="p">,</span>
+         <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+<span class="n">plot_cdf</span><span class="p">(</span><span class="n">sample_prior_pymc</span><span class="p">,</span> 
+         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC sample&#39;</span><span class="p">,</span>
+         <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Goals per game ($\lambda$)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_38_0.png" src="_images/chap19_38_0.png" />
+</div>
+</div>
+<p>The results are similar, which helps to confirm that the specification of the PyMC model is correct, and the sampler works as advertised.</p>
+</div>
+<div class="section" id="prior-predictive">
+<h2>Prior predictive<a class="headerlink" href="#prior-predictive" title="Permalink to this headline">¶</a></h2>
+<p>We can also extract <code class="docutils literal notranslate"><span class="pre">goals</span></code> from <code class="docutils literal notranslate"><span class="pre">trace</span></code>, which is a sample from the prior predictive distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_prior_pred_pymc</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;goals&#39;</span><span class="p">]</span>
+<span class="n">sample_prior_pred_pymc</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1000,)
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can compare it to the sample we generating using the <code class="docutils literal notranslate"><span class="pre">poisson</span></code> object from SciPy.</p>
+<p>Because the quantities in the posterior predictive distribution are discrete (number of goals) I’ll plot the CDFs as step functions.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_pred</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+    <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_pred</span><span class="p">(</span><span class="n">sample_prior_pred</span><span class="p">,</span> 
+          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;SciPy sample&#39;</span><span class="p">,</span> 
+          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+<span class="n">plot_pred</span><span class="p">(</span><span class="n">sample_prior_pred_pymc</span><span class="p">,</span> 
+          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC sample&#39;</span><span class="p">,</span> 
+          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C13&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of goals&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior Predictive Distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_44_0.png" src="_images/chap19_44_0.png" />
+</div>
+</div>
+<p>The CDFs of the samples are similar, which confirms that the specification of the PyMC model is as intended.</p>
+</div>
+<div class="section" id="when-do-we-get-to-inference">
+<h2>When do we get to inference?<a class="headerlink" href="#when-do-we-get-to-inference" title="Permalink to this headline">¶</a></h2>
+<p>Finally, we are ready to use PyMC for actual inference.  We just have to make one small change.</p>
+<p>Here is the model we used to generate the prior predictive distribution:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">lam</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="s1">&#39;lam&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.4</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">goals</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="n">lam</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here is the model we’ll use to compute the posterior distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model2</span><span class="p">:</span>
+    <span class="n">lam</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="s1">&#39;lam&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.4</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">goals</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="n">lam</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The difference is that we mark goals as <code class="docutils literal notranslate"><span class="pre">observed</span></code> and provide the observed data, <code class="docutils literal notranslate"><span class="pre">4</span></code>.</p>
+<p>And instead of called <code class="docutils literal notranslate"><span class="pre">sample_prior_predictive</span></code>, we’ll call <code class="docutils literal notranslate"><span class="pre">sample</span></code>, which is understood to sample from the posterior distribution of <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">return_inferencedata</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">model2</span><span class="p">:</span>
+    <span class="n">trace2</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (2 chains in 2 jobs)
+NUTS: [lam]
+</pre></div>
+</div>
+<div class="output text_html">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [3000/3000 00:01<00:00 Sampling 2 chains, 0 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 2 seconds.
+</pre></div>
+</div>
+</div>
+</div>
+<p>Although the specification of these models is similar, the sampling process is very different.</p>
+<p>I won’t go into the details of how MCMC works, but there are a few things you should be aware of:</p>
+<ul class="simple">
+<li><p>Depending on the model, PyMC uses one of several MCMC methods; in this example, it the <a class="reference external" href="https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo#No_U-Turn_Sampler">No U-Turn Sampler</a> (NUTS), which is one of the most efficient and reliable methods we have.</p></li>
+<li><p>When the sampler starts, the first values it generates are usually not a representative sample from the posterior distribution, so these values are usually discarded.  This process is called “tuning”.</p></li>
+<li><p>Instead of using a single MCMC chain to generate a single sample, PyMC uses multiple chains.  We can compare results from multiple chains to make sure they are consistent.</p></li>
+</ul>
+<p>Although we asked for a sample of 500, PyMC generated a sample of 2000, discarded half, and returned a sample of 1000.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_post_pymc</span> <span class="o">=</span> <span class="n">trace2</span><span class="p">[</span><span class="s1">&#39;lam&#39;</span><span class="p">]</span>
+<span class="n">sample_post_pymc</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1000,)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s compare this sample to the posterior we computed by grid approximation:</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior grid&#39;</span><span class="p">,</span> 
+                          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+<span class="n">plot_cdf</span><span class="p">(</span><span class="n">sample_post_pymc</span><span class="p">,</span> 
+         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC sample&#39;</span><span class="p">,</span>
+         <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Goals per game ($\lambda$)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_55_0.png" src="_images/chap19_55_0.png" />
+</div>
+</div>
+<p>The results from PyMC are consistent with the results from the grid approximation.</p>
+</div>
+<div class="section" id="posterior-predictive-distribution">
+<h2>Posterior Predictive Distribution<a class="headerlink" href="#posterior-predictive-distribution" title="Permalink to this headline">¶</a></h2>
+<p>Finally, to sample from the posterior predictive distribution, we can use <code class="docutils literal notranslate"><span class="pre">sample_posterior_predictive</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model2</span><span class="p">:</span>
+    <span class="n">post_pred</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_posterior_predictive</span><span class="p">(</span><span class="n">trace2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='1000' class='' max='1000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [1000/1000 00:00<00:00]
+</div>
+</div></div>
+</div>
+<p>The result is a dictionary, like <code class="docutils literal notranslate"><span class="pre">trace2</span></code>, that contains a sample of <code class="docutils literal notranslate"><span class="pre">goals</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_post_pred_pymc</span> <span class="o">=</span> <span class="n">post_pred</span><span class="p">[</span><span class="s1">&#39;goals&#39;</span><span class="p">]</span>
+<span class="n">sample_post_pred_pymc</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1000,)
+</pre></div>
+</div>
+</div>
+</div>
+<p>I’ll also generate a sample from the posterior distribution we computed by grid approximation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_post</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sample_post_pred</span> <span class="o">=</span> <span class="n">poisson</span><span class="p">(</span><span class="n">sample_post</span><span class="p">)</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can compare the two samples.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_pred</span><span class="p">(</span><span class="n">sample_post_pred</span><span class="p">,</span> 
+          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;grid sample&#39;</span><span class="p">,</span>
+          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+<span class="n">plot_pred</span><span class="p">(</span><span class="n">sample_post_pred_pymc</span><span class="p">,</span> 
+          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC sample&#39;</span><span class="p">,</span>
+          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C12&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of goals&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior Predictive Distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_64_0.png" src="_images/chap19_64_0.png" />
+</div>
+</div>
+<p>Again, the results are consistent.
+So we’ve established that we can compute the same results using a grid approximation or PyMC.
+But it might not be clear why.</p>
+<p>In this example, the grid algorithm requires less computation, and the result is a pretty good approximation of the posterior distribution, rather than a sample.</p>
+<p>But this is a simple model with just one parameter.
+In fact, we could have solved it with even less computation, using a conjugate prior.</p>
+<p>The power of PyMC will be clearer with a more complex model.</p>
+</div>
+<div class="section" id="happiness">
+<h2>Happiness<a class="headerlink" href="#happiness" title="Permalink to this headline">¶</a></h2>
+<p>Recently I read <a class="reference external" href="https://ourworldindata.org/happiness-and-life-satisfaction">“Happiness and Life Satisfaction”</a>
+by Esteban Ortiz-Ospina and Max Roser, which discusses (among many other things) the relationship between income and happiness, both between countries, within countries, and over time.</p>
+<p>It cites the <a class="reference external" href="https://worldhappiness.report/">“World Happiness Report”</a>, which includes <a class="reference external" href="https://worldhappiness.report/ed/2020/social-environments-for-world-happiness/">results of a multiple regression analysis</a> that explores the relationship between happiness and six potentially predictive factors:</p>
+<ul class="simple">
+<li><p>Income as represented by per capita GDP.</p></li>
+<li><p>Social support</p></li>
+<li><p>Healthy life expectancy at birth</p></li>
+<li><p>Freedom to make life choices</p></li>
+<li><p>Generosity</p></li>
+<li><p>Perceptions of corruption</p></li>
+</ul>
+<p>The dependent variable is the national average of responses to the “Cantril ladder question” used by the <a class="reference external" href="https://news.gallup.com/poll/122453/understanding-gallup-uses-cantril-scale.aspx">Gallup World Poll</a>:</p>
+<blockquote>
+<div><p>Please imagine a ladder with steps numbered from zero at the bottom to 10 at the top.
+The top of the ladder represents the best possible life for you and the bottom of the ladder represents the worst possible life for you.
+On which step of the ladder would you say you personally feel you stand at this time?</p>
+</div></blockquote>
+<p>I’ll refer to the responses as a measure of “happiness”, but it might be more precise to think of them as a measure of satisfaction with quality of life.</p>
+<p>In the next few sections we’ll replicate the analysis in this report using Bayesian regression.</p>
+<p>We can read the into a Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;WHR20_DataForFigure2.1.xls&#39;</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Country name</th>
+      <th>Regional indicator</th>
+      <th>Ladder score</th>
+      <th>Standard error of ladder score</th>
+      <th>upperwhisker</th>
+      <th>lowerwhisker</th>
+      <th>Logged GDP per capita</th>
+      <th>Social support</th>
+      <th>Healthy life expectancy</th>
+      <th>Freedom to make life choices</th>
+      <th>Generosity</th>
+      <th>Perceptions of corruption</th>
+      <th>Ladder score in Dystopia</th>
+      <th>Explained by: Log GDP per capita</th>
+      <th>Explained by: Social support</th>
+      <th>Explained by: Healthy life expectancy</th>
+      <th>Explained by: Freedom to make life choices</th>
+      <th>Explained by: Generosity</th>
+      <th>Explained by: Perceptions of corruption</th>
+      <th>Dystopia + residual</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Finland</td>
+      <td>Western Europe</td>
+      <td>7.8087</td>
+      <td>0.031156</td>
+      <td>7.869766</td>
+      <td>7.747634</td>
+      <td>10.639267</td>
+      <td>0.954330</td>
+      <td>71.900826</td>
+      <td>0.949172</td>
+      <td>-0.059482</td>
+      <td>0.195445</td>
+      <td>1.972317</td>
+      <td>1.285190</td>
+      <td>1.499526</td>
+      <td>0.961271</td>
+      <td>0.662317</td>
+      <td>0.159670</td>
+      <td>0.477857</td>
+      <td>2.762835</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Denmark</td>
+      <td>Western Europe</td>
+      <td>7.6456</td>
+      <td>0.033492</td>
+      <td>7.711245</td>
+      <td>7.579955</td>
+      <td>10.774001</td>
+      <td>0.955991</td>
+      <td>72.402504</td>
+      <td>0.951444</td>
+      <td>0.066202</td>
+      <td>0.168489</td>
+      <td>1.972317</td>
+      <td>1.326949</td>
+      <td>1.503449</td>
+      <td>0.979333</td>
+      <td>0.665040</td>
+      <td>0.242793</td>
+      <td>0.495260</td>
+      <td>2.432741</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Switzerland</td>
+      <td>Western Europe</td>
+      <td>7.5599</td>
+      <td>0.035014</td>
+      <td>7.628528</td>
+      <td>7.491272</td>
+      <td>10.979933</td>
+      <td>0.942847</td>
+      <td>74.102448</td>
+      <td>0.921337</td>
+      <td>0.105911</td>
+      <td>0.303728</td>
+      <td>1.972317</td>
+      <td>1.390774</td>
+      <td>1.472403</td>
+      <td>1.040533</td>
+      <td>0.628954</td>
+      <td>0.269056</td>
+      <td>0.407946</td>
+      <td>2.350267</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(153, 20)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> has one row for each of 153 countries and 20 columns.
+It includes countries from the following regions:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Regional indicator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sub-Saharan Africa                    39
+Western Europe                        21
+Latin America and Caribbean           21
+Middle East and North Africa          17
+Central and Eastern Europe            17
+Commonwealth of Independent States    12
+Southeast Asia                         9
+South Asia                             7
+East Asia                              6
+North America and ANZ                  4
+Name: Regional indicator, dtype: int64
+</pre></div>
+</div>
+</div>
+</div>
+<p>The column called <code class="docutils literal notranslate"><span class="pre">'Ladder</span> <span class="pre">score'</span></code> contains the measurements of happiness we will try to predict.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">score</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Ladder score&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="simple-regression">
+<h2>Simple Regression<a class="headerlink" href="#simple-regression" title="Permalink to this headline">¶</a></h2>
+<p>To get started, let’s look at the relationship between happiness and income, as represented by gross domestic product (GDP) per person.</p>
+<p>The column named <code class="docutils literal notranslate"><span class="pre">'Logged</span> <span class="pre">GDP</span> <span class="pre">per</span> <span class="pre">capita'</span></code> represents the natural logarithm of GDP for each country, divided by population, corrected for purchasing power parity (PPP).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">log_gdp</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Logged GDP per capita&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following figure is a scatter plot of <code class="docutils literal notranslate"><span class="pre">score</span></code> versus <code class="docutils literal notranslate"><span class="pre">log_gdp</span></code>, with one marker for each country.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">log_gdp</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Log GDP per capita at PPP&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Happiness ladder score&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_80_0.png" src="_images/chap19_80_0.png" />
+</div>
+</div>
+<p>It’s clear that there is a relationship between these variables: people in countries with higher GDP generally report higher levels of happiness.</p>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">linregress</span></code> to compute a simple regression of these variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">linregress</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span><span class="n">log_gdp</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+<span class="n">result</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>LinregressResult(slope=0.717738495630452, intercept=-1.1986460618088843, rvalue=0.7753744007429199, pvalue=5.983050807797873e-32, stderr=0.047570849726545426)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The estimated slope is about 0.72, which suggests that an increase of one unit in log-GDP, which is a factor of <span class="math notranslate nohighlight">\(e \approx 2.7\)</span> in GDP, is associated with an increase of 0.72 units on the happiness ladder.</p>
+<p>Now let’s estimate the same parameters using PyMC.
+We’ll use the same regression model as in Section xxx:</p>
+<div class="math notranslate nohighlight">
+\[y = a x + b + \epsilon\]</div>
+<p>where <span class="math notranslate nohighlight">\(y\)</span> is the dependent variable (ladder score), <span class="math notranslate nohighlight">\(x\)</span> is the predictive variable (log GDP) and <span class="math notranslate nohighlight">\(\epsilon\)</span> is a series of random values from a normal distribution with standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> are the slope and intercept of the regression line.
+They are unknown parameters, so we will use the data to estimate them.</p>
+<p>The following is the PyMC specification of this model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_data</span> <span class="o">=</span> <span class="n">log_gdp</span>
+<span class="n">y_data</span> <span class="o">=</span> <span class="n">score</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model3</span><span class="p">:</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">y_est</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x_data</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> 
+                  <span class="n">mu</span><span class="o">=</span><span class="n">y_est</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> 
+                  <span class="n">observed</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The prior distributions for the parameters, <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code>, and <code class="docutils literal notranslate"><span class="pre">sigma</span></code> are uniform with ranges that are wide enough to cover the posterior distributions.</p>
+<p><code class="docutils literal notranslate"><span class="pre">y_est</span></code> is the estimated value of the dependent variable, based on the regression equation.</p>
+<p>And <code class="docutils literal notranslate"><span class="pre">y</span></code> is a normal distribution with mean <code class="docutils literal notranslate"><span class="pre">y_est</span></code> and standard deviation <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
+<p>Notice how the data are included in the model:</p>
+<ul class="simple">
+<li><p>The values of predictive variable, <code class="docutils literal notranslate"><span class="pre">x_data</span></code>, are used to compute <code class="docutils literal notranslate"><span class="pre">y_est</span></code>.</p></li>
+<li><p>The values of the dependent variable, <code class="docutils literal notranslate"><span class="pre">y_data</span></code> are provided as the observed values of <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p></li>
+</ul>
+<p>Now we can use this model to generate a sample from the posterior distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model3</span><span class="p">:</span>
+    <span class="n">trace3</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (2 chains in 2 jobs)
+NUTS: [sigma, b, a]
+</pre></div>
+</div>
+<div class="output text_html">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [3000/3000 00:05<00:00 Sampling 2 chains, 0 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 6 seconds.
+</pre></div>
+</div>
+</div>
+</div>
+<p>When you run the sampler, you might get warning messages about “divergences” and the “acceptance probability”.
+You can ignore them for now; we will come back to this.</p>
+<p>The result is an object that contains samples from the joint posterior distribution of <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code>, and <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trace3</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;MultiTrace: 2 chains, 500 iterations, 6 variables&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>PyMC provides <code class="docutils literal notranslate"><span class="pre">plot_posterior</span></code>, which we can use to plot the posterior distributions of the parameters.
+Here’s the posterior distribution of the slope, <code class="docutils literal notranslate"><span class="pre">a</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace3</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_91_0.png" src="_images/chap19_91_0.png" />
+</div>
+</div>
+<p>The mean of the sample is consistent with the slope we estimated with <code class="docutils literal notranslate"><span class="pre">linregress</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sample mean:&#39;</span><span class="p">,</span> <span class="n">trace3</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Regression slope:&#39;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">slope</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: 0.7186192485065676
+Regression slope: 0.717738495630452
+</pre></div>
+</div>
+</div>
+</div>
+<p>The graph also shows the distribution of the sample, estimated by KDE, and the 94% highest density interval (HDI), which is a common way to define a credible interval.</p>
+<p>Here’s the posterior distribution for the intercept, <code class="docutils literal notranslate"><span class="pre">b</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace3</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_95_0.png" src="_images/chap19_95_0.png" />
+</div>
+</div>
+<p>Similarly, the mean of <code class="docutils literal notranslate"><span class="pre">b</span></code> is consistent with the intercept from the linear regression.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sample mean:&#39;</span><span class="p">,</span> <span class="n">trace3</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Regression intercept:&#39;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">intercept</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: -1.206303223110857
+Regression intercept: -1.1986460618088843
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, we can check the marginal posterior distribution of <code class="docutils literal notranslate"><span class="pre">sigma</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace3</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_99_0.png" src="_images/chap19_99_0.png" />
+</div>
+</div>
+<p>The simple regression model has only three parameters, so we could have used a grid algorithm.</p>
+<p>But the regression model in the happiness report has six predictive variables, so it has eight parameters in total, including the intercept and <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
+<p>It is not practical to compute a grid approximation for a model with eight parameters.
+Even a coarse grid, with 20 points along each dimension, would have more than 25 billion points.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="mi">20</span> <span class="o">**</span> <span class="mi">8</span> <span class="o">/</span> <span class="mf">1e9</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>25.6
+</pre></div>
+</div>
+</div>
+</div>
+<p>And with 153 countries, we would have to compute almost 4 trillion likelihoods.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="mi">153</span> <span class="o">*</span> <span class="mi">20</span> <span class="o">**</span> <span class="mi">8</span> <span class="o">/</span> <span class="mf">1e12</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.9168
+</pre></div>
+</div>
+</div>
+</div>
+<p>But PyMC can handle a model with eight parameters comfortably, as we’ll see in the next section.</p>
+</div>
+<div class="section" id="multiple-regression">
+<h2>Multiple Regression<a class="headerlink" href="#multiple-regression" title="Permalink to this headline">¶</a></h2>
+<p>Before we implement the multiple regression model, I’ll select the columns we need from the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Ladder score&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Logged GDP per capita&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Social support&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Healthy life expectancy&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Freedom to make life choices&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Generosity&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Perceptions of corruption&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">subset</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span>
+<span class="n">subset</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Ladder score</th>
+      <th>Logged GDP per capita</th>
+      <th>Social support</th>
+      <th>Healthy life expectancy</th>
+      <th>Freedom to make life choices</th>
+      <th>Generosity</th>
+      <th>Perceptions of corruption</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>7.8087</td>
+      <td>10.639267</td>
+      <td>0.954330</td>
+      <td>71.900826</td>
+      <td>0.949172</td>
+      <td>-0.059482</td>
+      <td>0.195445</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>7.6456</td>
+      <td>10.774001</td>
+      <td>0.955991</td>
+      <td>72.402504</td>
+      <td>0.951444</td>
+      <td>0.066202</td>
+      <td>0.168489</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>7.5599</td>
+      <td>10.979933</td>
+      <td>0.942847</td>
+      <td>74.102448</td>
+      <td>0.921337</td>
+      <td>0.105911</td>
+      <td>0.303728</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The predictive variables have different units.
+For example, log-GDP is in log-dollars, life expectancy is in years, and the other variables are on arbitrary scales.</p>
+<p>To make these factors comparable, I’ll standardize the data so that each variable has mean 0 and standard deviation 1.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">standardized</span> <span class="o">=</span> <span class="p">(</span><span class="n">subset</span> <span class="o">-</span> <span class="n">subset</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="n">subset</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s build the model.
+I’ll extract the dependent variable.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_data</span> <span class="o">=</span> <span class="n">standardized</span><span class="p">[</span><span class="s1">&#39;Ladder score&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And the dependent variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x1</span> <span class="o">=</span> <span class="n">standardized</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">standardized</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+<span class="n">x3</span> <span class="o">=</span> <span class="n">standardized</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+<span class="n">x4</span> <span class="o">=</span> <span class="n">standardized</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="mi">4</span><span class="p">]]</span>
+<span class="n">x5</span> <span class="o">=</span> <span class="n">standardized</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="mi">5</span><span class="p">]]</span>
+<span class="n">x6</span> <span class="o">=</span> <span class="n">standardized</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="mi">6</span><span class="p">]]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s the model.  <code class="docutils literal notranslate"><span class="pre">b0</span></code> is the intercept; <code class="docutils literal notranslate"><span class="pre">b1</span></code> through <code class="docutils literal notranslate"><span class="pre">b6</span></code> are the parameters associated with the predictive variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model4</span><span class="p">:</span>
+    <span class="n">b0</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;b0&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;b1&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">b2</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;b2&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">b3</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;b3&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">b4</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;b4&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">b5</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;b5&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">b6</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;b6&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">y_est</span> <span class="o">=</span> <span class="n">b0</span> <span class="o">+</span> <span class="n">b1</span><span class="o">*</span><span class="n">x1</span> <span class="o">+</span> <span class="n">b2</span><span class="o">*</span><span class="n">x2</span> <span class="o">+</span> <span class="n">b3</span><span class="o">*</span><span class="n">x3</span> <span class="o">+</span> <span class="n">b4</span><span class="o">*</span><span class="n">x4</span> <span class="o">+</span> <span class="n">b5</span><span class="o">*</span><span class="n">x5</span> <span class="o">+</span> <span class="n">b6</span><span class="o">*</span><span class="n">x6</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> 
+                  <span class="n">mu</span><span class="o">=</span><span class="n">y_est</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> 
+                  <span class="n">observed</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We could express this model more concisely using a vector of predictive variables and a vector of parameters, but I decided to keep it simple.</p>
+<p>Now we can sample from the joint posterior distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model4</span><span class="p">:</span>
+    <span class="n">trace4</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (2 chains in 2 jobs)
+NUTS: [sigma, b6, b5, b4, b3, b2, b1, b0]
+</pre></div>
+</div>
+<div class="output text_html">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [3000/3000 00:04<00:00 Sampling 2 chains, 0 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 5 seconds.
+</pre></div>
+</div>
+</div>
+</div>
+<p>Because we standardized the data, we expect the intercept to be 0, and in fact the posterior mean of <code class="docutils literal notranslate"><span class="pre">b0</span></code> is close to 0.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trace4</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2.045766738011601e-05
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can also check the posterior mean of <code class="docutils literal notranslate"><span class="pre">sigma</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trace4</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.515316228296758
+</pre></div>
+</div>
+</div>
+</div>
+<p>But what we are really interested in is the parameters of the predictive variables.
+Here’s how we compute the posterior means.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;b1&#39;</span><span class="p">,</span> <span class="s1">&#39;b3&#39;</span><span class="p">,</span> <span class="s1">&#39;b3&#39;</span><span class="p">,</span> <span class="s1">&#39;b4&#39;</span><span class="p">,</span> <span class="s1">&#39;b5&#39;</span><span class="p">,</span> <span class="s1">&#39;b6&#39;</span><span class="p">]</span>
+
+<span class="n">means</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace4</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> 
+         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And the 94% credible intervals (between the 3rd and 97th percentiles).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">credible_interval</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
+    <span class="n">ci</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">97</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ci</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cis</span> <span class="o">=</span> <span class="p">[</span><span class="n">credible_interval</span><span class="p">(</span><span class="n">trace4</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+       <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following table summarizes the results.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">index</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+<span class="n">table</span><span class="p">[</span><span class="s1">&#39;Posterior mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">means</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">table</span><span class="p">[</span><span class="s1">&#39;90% CI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cis</span>
+<span class="n">table</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Posterior mean</th>
+      <th>90% CI</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Logged GDP per capita</th>
+      <td>0.255</td>
+      <td>[0.108, 0.4]</td>
+    </tr>
+    <tr>
+      <th>Social support</th>
+      <td>0.222</td>
+      <td>[0.082, 0.353]</td>
+    </tr>
+    <tr>
+      <th>Healthy life expectancy</th>
+      <td>0.222</td>
+      <td>[0.082, 0.353]</td>
+    </tr>
+    <tr>
+      <th>Freedom to make life choices</th>
+      <td>0.189</td>
+      <td>[0.096, 0.281]</td>
+    </tr>
+    <tr>
+      <th>Generosity</th>
+      <td>0.059</td>
+      <td>[-0.018, 0.134]</td>
+    </tr>
+    <tr>
+      <th>Perceptions of corruption</th>
+      <td>-0.096</td>
+      <td>[-0.185, -0.014]</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>It looks like GDP has the strongest association with happiness (or satisfaction), followed by social support, life expectancy, and freedom.</p>
+<p>After controlling for those other factors, the parameters of the other factors are substantially smaller, and since the CI for generosity includes 0, it is plausible that generosity (at least as it was measured in this study) is not substantially related to happiness.</p>
+<p>This example demonstrates the power of MCMC to handle models with more than a few parameters.
+But it does not really demonstrate the power of Bayesian regression.</p>
+<p>If the goal of a regression model is to estimate parameters, there is no great advantage to Bayesian regression, compared to conventions least squares regression.</p>
+<p>Bayesian methods are more useful if we plan to use the posterior distribution of the parameters as part of a decision analysis process.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>In this chapter we used PyMC to implement two models we’ve seen before: a Poisson model of goal-scoring in soccer and a simple regression model.</p>
+<p>Then we implemented a multiple regression model that would not have been possible to compute with a grid approximation.</p>
+<p>MCMC is more powerful than grid methods, but that power comes with some disadvantages:</p>
+<ul class="simple">
+<li><p>I find it easier to develop models incrementally using grid algorithms, checking intermediate results along the way.  With PyMC, it is not as easy to be confident that you have specified a model correctly.</p></li>
+<li><p>MCMC algorithms are fiddly.  The same model might behave well with some priors and less well with others.  And the sampling process often produces warnings about tuning steps, divergences, “rhat statistics”, acceptance rates, and effective samples.  It takes some expertise to diagnose and correct these issues.</p></li>
+</ul>
+<p>For these reasons, I recommend a model development process that starts with grid algorithms and resorts to MCMC only when necessary.
+As we saw in the previous chapters, you can solve a lot of real-world problems with grid methods.
+But if you find that you need MCMC, it is useful to have a grid algorithm to compare to (even if it is based on a simpler model).</p>
+<p>All of the models in this book can be implemented in PyMC, but some of them are easier to translate than others.
+In the exercises, you will have a chance to practice.</p>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p><strong>Exercise:</strong> As a warmup, let’s use PyMC to solve the Euro problem.
+Suppose we spin a coin 250 times and it comes up heads 140 times.
+What is the posterior distribution of <span class="math notranslate nohighlight">\(x\)</span>, the probability of heads.</p>
+<p>For the prior, use a beta distribution with parameters <span class="math notranslate nohighlight">\(\alpha=1\)</span> and <span class="math notranslate nohighlight">\(\beta=1\)</span>.</p>
+<p>See <a class="reference external" href="https://docs.pymc.io/api/distributions/continuous.html">the PyMC documentation</a> for the list of continuous distributions.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">250</span>
+<span class="n">k_obs</span> <span class="o">=</span> <span class="mi">140</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model5</span><span class="p">:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Binomial</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">k_obs</span><span class="p">)</span>
+    <span class="n">trace5</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (2 chains in 2 jobs)
+NUTS: [x]
+</pre></div>
+</div>
+<div class="output text_html">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [3000/3000 00:01<00:00 Sampling 2 chains, 0 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 2 seconds.
+</pre></div>
+</div>
+<img alt="_images/chap19_133_3.png" src="_images/chap19_133_3.png" />
+</div>
+</div>
+<p><strong>Exercise:</strong> Now let’s use PyMC to replicate the solution to the Grizzly Bear problem in Section xxx, which is based on the hypergeometric distribution.</p>
+<p>I’ll present the problem with slightly different notation, to make it consistent with PyMC.</p>
+<p>Suppose that during the first session, <code class="docutils literal notranslate"><span class="pre">k=23</span></code> bears are tagged.  During the second session, <code class="docutils literal notranslate"><span class="pre">n=19</span></code> bears are identified, of which <code class="docutils literal notranslate"><span class="pre">x=4</span></code> had been tagged.</p>
+<p>Estimate the posterior distribution of <code class="docutils literal notranslate"><span class="pre">N</span></code>, the number of bears in the environment.</p>
+<p>For the prior, use a discrete uniform distribution from 50 to 500.</p>
+<p>See <a class="reference external" href="https://docs.pymc.io/api/distributions/discrete.html">the PyMC documentation</a> for the list of discrete distributions.</p>
+<p>Note: <code class="docutils literal notranslate"><span class="pre">HyperGeometric</span></code> was added to PyMC after version 3.8, so you might need to update your installation to do this exercise.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Solution</span>
+
+<span class="n">k</span> <span class="o">=</span> <span class="mi">23</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">19</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model6</span><span class="p">:</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">DiscreteUniform</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">HyperGeometric</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">trace6</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiprocess sampling (2 chains in 2 jobs)
+Metropolis: [N]
+</pre></div>
+</div>
+<div class="output text_html">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [4000/4000 00:00<00:00 Sampling 2 chains, 0 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+The number of effective samples is smaller than 25% for some parameters.
+</pre></div>
+</div>
+<img alt="_images/chap19_135_3.png" src="_images/chap19_135_3.png" />
+</div>
+</div>
+<p><strong>Exercise:</strong> In Chapter xxx we generated a sample from a Weibull distribution with <span class="math notranslate nohighlight">\(\lambda=3\)</span> and <span class="math notranslate nohighlight">\(k=0.8\)</span>.
+Then we used the data to compute a grid approximation of the posterior distribution of those parameters.</p>
+<p>Now let’s do the same with PyMC.</p>
+<p>Here’s the data again:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.80497283</span><span class="p">,</span> <span class="mf">2.11577082</span><span class="p">,</span> <span class="mf">0.43308797</span><span class="p">,</span> <span class="mf">0.10862644</span><span class="p">,</span> <span class="mf">5.17334866</span><span class="p">,</span>
+       <span class="mf">3.25745053</span><span class="p">,</span> <span class="mf">3.05555883</span><span class="p">,</span> <span class="mf">2.47401062</span><span class="p">,</span> <span class="mf">0.05340806</span><span class="p">,</span> <span class="mf">1.08386395</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For the prior distributions, you can use uniform distributions as we did in Chapter xxx, or you could use <code class="docutils literal notranslate"><span class="pre">HalfNormal</span></code> distributions provided by PyMC.</p>
+<p>Note: The <code class="docutils literal notranslate"><span class="pre">Weibull</span></code> class in PyMC uses different parameters than SciPy.  The parameter <code class="docutils literal notranslate"><span class="pre">alpha</span></code> in PyMC corresponds to <span class="math notranslate nohighlight">\(k\)</span>, and <code class="docutils literal notranslate"><span class="pre">beta</span></code> corresponds to <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model7</span><span class="p">:</span>
+    <span class="n">lam</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;lam&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.1</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">5.1</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Weibull</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">lam</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">trace7</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace7</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (2 chains in 2 jobs)
+NUTS: [k, lam]
+</pre></div>
+</div>
+<div class="output text_html">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [4000/4000 00:02<00:00 Sampling 2 chains, 1 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 3 seconds.
+There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
+</pre></div>
+</div>
+<img alt="_images/chap19_139_3.png" src="_images/chap19_139_3.png" />
+</div>
+</div>
+<p><strong>Exercise:</strong></p>
+<p><strong>Exercise:</strong> The Lincoln Index problem</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k10</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">-</span> <span class="mi">3</span>
+<span class="n">k01</span> <span class="o">=</span> <span class="mi">15</span> <span class="o">-</span> <span class="mi">3</span>
+<span class="n">k11</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">num_seen</span> <span class="o">=</span> <span class="n">k01</span> <span class="o">+</span> <span class="n">k10</span> <span class="o">+</span> <span class="n">k11</span>
+<span class="n">num_seen</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>32
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model8</span><span class="p">:</span>
+    <span class="n">p0</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s1">&#39;p0&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">DiscreteUniform</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">num_seen</span><span class="p">,</span> <span class="mi">350</span><span class="p">)</span>
+    
+    <span class="n">q0</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">p0</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">p1</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="n">q0</span><span class="o">*</span><span class="n">q1</span><span class="p">,</span> <span class="n">q0</span><span class="o">*</span><span class="n">p1</span><span class="p">,</span> <span class="n">p0</span><span class="o">*</span><span class="n">q1</span><span class="p">,</span> <span class="n">p0</span><span class="o">*</span><span class="n">p1</span><span class="p">]</span>
+    
+    <span class="n">k00</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">num_seen</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">k00</span><span class="p">,</span> <span class="n">k01</span><span class="p">,</span> <span class="n">k10</span><span class="p">,</span> <span class="n">k11</span><span class="p">))</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Multinomial</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">ps</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model8</span><span class="p">:</span>
+    <span class="n">trace8</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/downey/anaconda3/envs/ThinkBayes2/lib/python3.8/site-packages/pymc3/sampling.py:465: FutureWarning: In an upcoming release, pm.sample will return an `arviz.InferenceData` object instead of a `MultiTrace` by default. You can pass return_inferencedata=True or return_inferencedata=False to be safe and silence this warning.
+  warnings.warn(
+Multiprocess sampling (2 chains in 2 jobs)
+CompoundStep
+&gt;NUTS: [p1, p0]
+&gt;Metropolis: [N]
+</pre></div>
+</div>
+<div class="output text_html">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [4000/4000 00:04<00:00 Sampling 2 chains, 0 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 4 seconds.
+The rhat statistic is larger than 1.05 for some parameters. This indicates slight problems during sampling.
+The estimated number of effective samples is smaller than 200 for some parameters.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model8</span><span class="p">:</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_149_0.png" src="_images/chap19_149_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model8</span><span class="p">:</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">traceplot</span><span class="p">(</span><span class="n">trace8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap19_150_0.png" src="_images/chap19_150_0.png" />
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="chap18.html" title="previous page">Conjugate Priors</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Allen B. Downey<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="_static/js/index.3da636dd464baa7582d2.js"></script>
+
+
+    
+  </body>
+</html>
