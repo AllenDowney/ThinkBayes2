@@ -499,12 +499,12 @@ Given a <code class="docutils literal notranslate"><span class="pre">Pmf</span><
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">cdf</span><span class="p">[</span><span class="mf">0.615</span><span class="p">]</span>
 <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;KeyError&#39;&gt;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>KeyError(0.615)
 </pre></div>
 </div>
 </div>
@@ -690,21 +690,21 @@ The probability that all 6 of them are less than or equal to <code class="docuti
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3     5.314410e-19
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3     1.771561e-18
 4     3.010936e-15
-5     2.839761e-12
-6     6.327115e-10
-7     3.614157e-08
-8     1.048970e-06
-9     2.680875e-05
-10    3.370146e-04
-11    3.151463e-03
-12    1.929636e-02
-13    7.254179e-02
-14    2.055161e-01
-15    4.469520e-01
-16    6.973895e-01
-17    9.116405e-01
+5     1.586874e-12
+6     3.622994e-10
+7     3.502484e-08
+8     1.340096e-06
+9     2.775208e-05
+10    3.447529e-04
+11    3.015694e-03
+12    1.782524e-02
+13    7.127062e-02
+14    2.047148e-01
+15    4.306443e-01
+16    6.960576e-01
+17    9.038914e-01
 18    1.000000e+00
 dtype: float64
 </pre></div>
@@ -854,8 +854,8 @@ And that means we can compute the CDF of the minimum like this:</p>
 <p>Here’s what it looks like, along with the distribution of the maximum.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_min6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;minimum of 6&#39;</span><span class="p">)</span>
-<span class="n">cdf_max6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;maximum of 6&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_min6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;minimum of 6&#39;</span><span class="p">)</span>
+<span class="n">cdf_max6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;maximum of 6&#39;</span><span class="p">)</span>
 <span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Minimum and maximum of six attributes&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
 </pre></div>
@@ -976,36 +976,64 @@ then, more usefully, we’ll see how these mixtures are used to make predictions
 </div>
 </div>
 <p>To compute the distribution of the mixture, we could loop through the possible outcomes and compute their probabilities.</p>
-<p>But we can do the same computation using the <code class="docutils literal notranslate"><span class="pre">Pmf.add</span></code> method:</p>
+<p>But we can do the same computation using the <code class="docutils literal notranslate"><span class="pre">+</span></code> operator:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">total1</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d4</span><span class="p">,</span> <span class="n">d6</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
-<span class="n">total1</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mix1</span> <span class="o">=</span> <span class="p">(</span><span class="n">d4</span> <span class="o">+</span> <span class="n">d6</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">mix1</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1    0.208333
-2    0.208333
-3    0.208333
-4    0.208333
-5    0.083333
-6    0.083333
-dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">Pmf.add</span></code> is actually the same as <code class="docutils literal notranslate"><span class="pre">Series.add</span></code>; it adds the probabilities in the two distributions.</p>
-<p>In this example, we use <code class="docutils literal notranslate"><span class="pre">fill_value=0</span></code> because the two distributions don’t have the same set of quantities.
-If a quantity from one distribution does not appear in the other, it is given the probability 0.</p>
-<p>The result from <code class="docutils literal notranslate"><span class="pre">Pmf.add</span></code> is a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code>, but we can convert it to a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> like this:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mix1</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">total1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.208333</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.208333</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.208333</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.208333</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.083333</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.083333</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <p>Here’s what the mixture of these distributions looks like.</p>
 <div class="cell tag_hide-input docutils container">
@@ -1016,7 +1044,7 @@ If a quantity from one distribution does not appear in the other, it is given th
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_105_0.png" src="_images/chap07_105_0.png" />
+<img alt="_images/chap07_103_0.png" src="_images/chap07_103_0.png" />
 </div>
 </div>
 <p>Now suppose you are fighting three monsters:</p>
@@ -1029,8 +1057,7 @@ If a quantity from one distribution does not appear in the other, it is given th
 <p>To find the distribution of the damage they inflict, we can compute a weighted average of the distributions, like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">total2</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d4</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">d6</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span>
-<span class="n">mix2</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">total2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mix2</span> <span class="o">=</span> <span class="p">(</span><span class="n">d4</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">d6</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span>
 </pre></div>
 </div>
 </div>
@@ -1045,11 +1072,11 @@ Here’s what it looks like.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_109_0.png" src="_images/chap07_109_0.png" />
+<img alt="_images/chap07_107_0.png" src="_images/chap07_107_0.png" />
 </div>
 </div>
-<p>In this section we used <code class="docutils literal notranslate"><span class="pre">Pmf.add</span></code>, which add the probabilities in the distributions, not to be confused with <code class="docutils literal notranslate"><span class="pre">Pmf.add_dist</span></code>, which computes the distribution of the sum of the distributions.</p>
-<p>To demonstrate the difference, I’ll use <code class="docutils literal notranslate"><span class="pre">Pmf.add_dist</span></code> to compute the distribution of the total damage done per round, the sum of the two mixtures:</p>
+<p>In this section we used the <code class="docutils literal notranslate"><span class="pre">+</span></code> operator, which adds the probabilities in the distributions, not to be confused with <code class="docutils literal notranslate"><span class="pre">Pmf.add_dist</span></code>, which computes the distribution of the sum of the distributions.</p>
+<p>To demonstrate the difference, I’ll use <code class="docutils literal notranslate"><span class="pre">Pmf.add_dist</span></code> to compute the distribution of the total damage done per round, which is the sum of the two mixtures:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">total_damage</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">add_dist</span><span class="p">(</span><span class="n">mix1</span><span class="p">,</span> <span class="n">mix2</span><span class="p">)</span>
@@ -1066,7 +1093,7 @@ Here’s what it looks like.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_113_0.png" src="_images/chap07_113_0.png" />
+<img alt="_images/chap07_111_0.png" src="_images/chap07_111_0.png" />
 </div>
 </div>
 </div>
@@ -1527,7 +1554,7 @@ We can call it like this:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_133_0.png" src="_images/chap07_133_0.png" />
+<img alt="_images/chap07_131_0.png" src="_images/chap07_131_0.png" />
 </div>
 </div>
 <p>This section I used Pandas so that <code class="docutils literal notranslate"><span class="pre">make_mixture</span></code> is concise, efficient, and hopefully not too hard to understand.
@@ -1575,7 +1602,7 @@ You will see some examples in the exercises, and in future chapters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_141_0.png" src="_images/chap07_141_0.png" />
+<img alt="_images/chap07_139_0.png" src="_images/chap07_139_0.png" />
 </div>
 </div>
 <p>I plotted <code class="docutils literal notranslate"><span class="pre">cdf_standard</span></code> as a step function to show more clearly that it contains only a few quantities.</p>
@@ -1589,7 +1616,7 @@ You will see some examples in the exercises, and in future chapters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(12.243400000000001, 12.0)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(12.260100000000003, 12.0)
 </pre></div>
 </div>
 </div>
@@ -1604,7 +1631,7 @@ You will see some examples in the exercises, and in future chapters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(2.833435448355935, 2.3804761428476167)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(2.8431053427546438, 2.3804761428476167)
 </pre></div>
 </div>
 </div>
@@ -1619,7 +1646,7 @@ You will see some examples in the exercises, and in future chapters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.057499999999999996
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0572
 </pre></div>
 </div>
 </div>
@@ -1634,7 +1661,7 @@ You will see some examples in the exercises, and in future chapters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.12560000000000004
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.131
 </pre></div>
 </div>
 </div>
@@ -1650,7 +1677,7 @@ You will see some examples in the exercises, and in future chapters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.2990482033172146, 0.2990482033172146)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.29770844981474853, 0.29770844981474853)
 </pre></div>
 </div>
 </div>
@@ -1666,7 +1693,7 @@ You will see some examples in the exercises, and in future chapters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.5530479910761684, 0.5530479910761684)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.5693557442097624, 0.5693557442097618)
 </pre></div>
 </div>
 </div>
@@ -1763,7 +1790,7 @@ You will see some examples in the exercises, and in future chapters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_152_0.png" src="_images/chap07_152_0.png" />
+<img alt="_images/chap07_150_0.png" src="_images/chap07_150_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1816,7 +1843,7 @@ You will see some examples in the exercises, and in future chapters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_156_0.png" src="_images/chap07_156_0.png" />
+<img alt="_images/chap07_154_0.png" src="_images/chap07_154_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1832,7 +1859,7 @@ You will see some examples in the exercises, and in future chapters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_157_0.png" src="_images/chap07_157_0.png" />
+<img alt="_images/chap07_155_0.png" src="_images/chap07_155_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1994,7 +2021,7 @@ You will see some examples in the exercises, and in future chapters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_165_0.png" src="_images/chap07_165_0.png" />
+<img alt="_images/chap07_163_0.png" src="_images/chap07_163_0.png" />
 </div>
 </div>
 <p>Note: The following exercise uses a Poisson distribution, which we will see in Section xx.
@@ -2044,7 +2071,7 @@ If you are not familiar with the Poisson distribution, you might want to skip th
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_171_0.png" src="_images/chap07_171_0.png" />
+<img alt="_images/chap07_169_0.png" src="_images/chap07_169_0.png" />
 </div>
 </div>
 <p>The mean of this distribution is the parameter, <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
@@ -2077,7 +2104,7 @@ If you are not familiar with the Poisson distribution, you might want to skip th
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_175_0.png" src="_images/chap07_175_0.png" />
+<img alt="_images/chap07_173_0.png" src="_images/chap07_173_0.png" />
 </div>
 </div>
 <p>Now you finish it off from there.</p>
@@ -2176,7 +2203,7 @@ If you are not familiar with the Poisson distribution, you might want to skip th
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_182_0.png" src="_images/chap07_182_0.png" />
+<img alt="_images/chap07_180_0.png" src="_images/chap07_180_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2192,252 +2219,6 @@ If you are not familiar with the Poisson distribution, you might want to skip th
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(14.794330239819137, 14.327038448986379)
-</pre></div>
-</div>
-</div>
-</div>
-<p><strong>Exercise:</strong>  This question is related to <a class="reference external" href="https://patents.google.com/patent/US8385227B1/en">a method I developed</a> for estimating the minimum time for a packet of data to travel through a path in the internet.
-It is a little more challenging than some of the previous problems.
-If you have a hard time with it, you might want to skip it for now.</p>
-<p>Suppose I drive the same route three times and the fastest of the three attempts takes 8 minutes.</p>
-<p>There are two traffic lights on the route.  As I approach each light, there is a 40% chance that it is green; in that case, it causes no delay.  And there is a 60% change it is red; in that case it causes a delay that is uniformly distributed from 0 to 60 seconds.</p>
-<p>What is the posterior distribution of the time it would take to drive the route with no delays?</p>
-<p>To get you started, here is the distribution of delays if the light is red.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">61</span><span class="p">)</span>
-<span class="n">pmf_delay</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
-<span class="n">pmf_delay</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>60
-</pre></div>
-</div>
-</div>
-</div>
-<p>And the distribution of delays if the light is green: always 0.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_nodelay</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">pmf_nodelay</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>probs</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1.0</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>Here is the mixture of delays due to red and green lights.</p>
-<div class="cell tag_hide-output docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">([</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
-<span class="n">pmf_total</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="p">[</span><span class="n">pmf_nodelay</span><span class="p">,</span> <span class="n">pmf_delay</span><span class="p">])</span>
-<span class="n">pmf_total</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>probs</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0.40</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0.01</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0.01</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0.01</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0.01</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>56</th>
-      <td>0.01</td>
-    </tr>
-    <tr>
-      <th>57</th>
-      <td>0.01</td>
-    </tr>
-    <tr>
-      <th>58</th>
-      <td>0.01</td>
-    </tr>
-    <tr>
-      <th>59</th>
-      <td>0.01</td>
-    </tr>
-    <tr>
-      <th>60</th>
-      <td>0.01</td>
-    </tr>
-  </tbody>
-</table>
-<p>61 rows × 1 columns</p>
-</div></div></div>
-</div>
-<p>Now I suggest the following steps:</p>
-<ol class="simple">
-<li><p>Compute the distribution for the sum of two delays.</p></li>
-<li><p>Compute the distribution for the lowest total delay after three attempts.</p></li>
-<li><p>Make a prior distribution with a range of possible values for the no-delay travel time.</p></li>
-<li><p>For each hypothesis, compute the likelihood of the observed minimum travel time, 8 minutes.</p></li>
-<li><p>Compute the posterior distribution for the no-delay travel time.</p></li>
-</ol>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="n">twice</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">add_dist</span><span class="p">(</span><span class="n">pmf_total</span><span class="p">,</span> <span class="n">pmf_total</span><span class="p">)</span>
-<span class="n">twice</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Delay time (s)&#39;</span><span class="p">,</span> 
-         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
-         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Total delay&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap07_191_0.png" src="_images/chap07_191_0.png" />
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="n">twice_min3</span> <span class="o">=</span> <span class="n">twice</span><span class="o">.</span><span class="n">min_dist</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">twice_min3</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Delay time (s)&#39;</span><span class="p">,</span> 
-         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
-         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Minimum of three total delays&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap07_192_0.png" src="_images/chap07_192_0.png" />
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="n">hypos</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">-</span> <span class="n">twice_min3</span><span class="o">.</span><span class="n">qs</span>
-<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="n">data</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="mi">60</span>
-<span class="n">likelihood</span> <span class="o">=</span> <span class="p">[</span><span class="n">twice_min3</span><span class="o">.</span><span class="n">add_dist</span><span class="p">(</span><span class="n">hypo</span><span class="p">)(</span><span class="n">data</span><span class="p">)</span>
-              <span class="k">for</span> <span class="n">hypo</span> <span class="ow">in</span> <span class="n">hypos</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
-<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Travel time (s)&#39;</span><span class="p">,</span> 
-         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
-         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution of no-delay travel time&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap07_196_0.png" src="_images/chap07_196_0.png" />
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">/</span> <span class="mi">60</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7.777945555443998
 </pre></div>
 </div>
 </div>

@@ -682,7 +682,8 @@ dtype: float64
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_uniform</span>
 
-<span class="n">prior_p</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">prior_p</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
 <span class="n">prior_p</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1358,8 +1359,9 @@ Here are the priors:</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_p0</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p0&#39;</span><span class="p">)</span>
-<span class="n">prior_p1</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">51</span><span class="p">)</span>
+<span class="n">prior_p0</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p0&#39;</span><span class="p">)</span>
+<span class="n">prior_p1</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
 
 <span class="n">prior_p0</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
@@ -1639,28 +1641,19 @@ dtype: float64
 </div>
 </div>
 <p>Now, to extract the marginal distributions, we could unstack the joint posterior as we did in the previous section.
-But an alternative is to select “levels” from the <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code>.
-The following is a version of <code class="docutils literal notranslate"><span class="pre">marginal</span></code> that works with a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> rather than a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>:</p>
+But <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> provides a version of <code class="docutils literal notranslate"><span class="pre">marginal</span></code> that works with a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> rather than a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.
+Here’s how we use it to get the posterior distribution for <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pmf_marginal</span><span class="p">(</span><span class="n">joint_pmf</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute a marginal distribution.</span>
-<span class="sd">    </span>
-<span class="sd">    joint_pmf: Pmf representing a joint distribution</span>
-<span class="sd">    level: int, level to sum along</span>
-<span class="sd">    </span>
-<span class="sd">    returns: Pmf</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">joint_pmf</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_N</span> <span class="o">=</span> <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>Here’s the posterior distribution for <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
-<div class="cell docutils container">
+<p>And here’s what it looks look.</p>
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_N</span> <span class="o">=</span> <span class="n">pmf_marginal</span><span class="p">(</span><span class="n">posterior_pmf</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">posterior_N</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_N</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of bugs (N)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
@@ -1688,8 +1681,8 @@ The following is a version of <code class="docutils literal notranslate"><span c
 <p>And here are the posteriors for <code class="docutils literal notranslate"><span class="pre">p0</span></code> and <code class="docutils literal notranslate"><span class="pre">p1</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_p1</span> <span class="o">=</span> <span class="n">pmf_marginal</span><span class="p">(</span><span class="n">posterior_pmf</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">posterior_p2</span> <span class="o">=</span> <span class="n">pmf_marginal</span><span class="p">(</span><span class="n">posterior_pmf</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_p1</span> <span class="o">=</span> <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">posterior_p2</span> <span class="o">=</span> <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="n">posterior_p1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
 <span class="n">posterior_p2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
@@ -1767,7 +1760,8 @@ The method we’ve been using so far, enumerating all possible combinations, bec
 <p>Here are priors you can start with (but feel free to modify them).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_N</span> <span class="o">=</span> <span class="n">discrete_uniform</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">prior_N</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
 <span class="n">prior_N</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1784,7 +1778,8 @@ dtype: float64
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_p</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">prior_p</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
 <span class="n">prior_p</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>

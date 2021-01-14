@@ -1587,9 +1587,9 @@ But it does not really demonstrate the power of Bayesian regression.</p>
 <li><p>I find it easier to develop models incrementally using grid algorithms, checking intermediate results along the way.  With PyMC, it is not as easy to be confident that you have specified a model correctly.</p></li>
 <li><p>MCMC algorithms are fiddly.  The same model might behave well with some priors and less well with others.  And the sampling process often produces warnings about tuning steps, divergences, “rhat statistics”, acceptance rates, and effective samples.  It takes some expertise to diagnose and correct these issues.</p></li>
 </ul>
-<p>For these reasons, I recommend a model development process that starts with grid algorithms and resorts to MCMC only when necessary.
+<p>For these reasons, I recommend a model development process that starts with grid algorithms and resorts to MCMC if necessary.
 As we saw in the previous chapters, you can solve a lot of real-world problems with grid methods.
-But if you find that you need MCMC, it is useful to have a grid algorithm to compare to (even if it is based on a simpler model).</p>
+But when you need MCMC, it is useful to have a grid algorithm to compare to (even if it is based on a simpler model).</p>
 <p>All of the models in this book can be implemented in PyMC, but some of them are easier to translate than others.
 In the exercises, you will have a chance to practice.</p>
 </div>
@@ -1753,15 +1753,166 @@ There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 <img alt="_images/chap19_139_3.png" src="_images/chap19_139_3.png" />
 </div>
 </div>
-<p><strong>Exercise:</strong></p>
-<p><strong>Exercise:</strong> The Lincoln Index problem</p>
+<p><strong>Exercise:</strong> In Chapter xxx we used data from a reading test to estimate the parameters of a normal distribution.</p>
+<p>Here’s the data again.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;drp_scores.csv&#39;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Treatment</th>
+      <th>Response</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Treated</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Treated</td>
+      <td>43</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Treated</td>
+      <td>58</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Treated</td>
+      <td>71</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Treated</td>
+      <td>43</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>I’ll use <code class="docutils literal notranslate"><span class="pre">groupby</span></code> to separate the treated group from the control group.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Treatment&#39;</span><span class="p">)</span>
+<span class="n">responses</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">:</span>
+    <span class="n">responses</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;Response&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s estimate the parameters for the treated group.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">responses</span><span class="p">[</span><span class="s1">&#39;Treated&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Make a model that defines uniform prior distributions for <code class="docutils literal notranslate"><span class="pre">mu</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma</span></code> and uses the data to estimate their posterior distributions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model8</span><span class="p">:</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">trace8</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (2 chains in 2 jobs)
+NUTS: [sigma, mu]
+</pre></div>
+</div>
+<div class="output text_html">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [3000/3000 00:01<00:00 Sampling 2 chains, 0 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 2 seconds.
+</pre></div>
+</div>
+<img alt="_images/chap19_148_3.png" src="_images/chap19_148_3.png" />
+</div>
+</div>
+<p><strong>Exercise:</strong> In Chapter xxx we used a grid algorithm to solve the Lincoln Index problem as presented by John D. Cook:</p>
+<blockquote>
+<div><p>“Suppose you have a tester who finds 20 bugs in your program. You
+want to estimate how many bugs are really in the program. You know
+there are at least 20 bugs, and if you have supreme confidence in your
+tester, you may suppose there are around 20 bugs. But maybe your
+tester isn’t very good. Maybe there are hundreds of bugs. How can you
+have any idea how many bugs there are? There’s no way to know with one
+tester. But if you have two testers, you can get a good idea, even if
+you don’t know how skilled the testers are.”</p>
+</div></blockquote>
+<p>Suppose the first tester finds 20 bugs, the second finds 15, and they
+find 3 in common; let’s use PyMC to estimate the number of bugs.</p>
+<p>I’ll use the following notation for the data:</p>
+<ul class="simple">
+<li><p>k11 is the number of bugs found by both testers,</p></li>
+<li><p>k10 is the number of bugs found by the first tester but not the second,</p></li>
+<li><p>k01 is the number of bugs found by the second tester but not the first, and</p></li>
+<li><p>k00 is the unknown number of undiscovered bugs.</p></li>
+</ul>
+<p>Here are the values for all but <code class="docutils literal notranslate"><span class="pre">k00</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k10</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">-</span> <span class="mi">3</span>
 <span class="n">k01</span> <span class="o">=</span> <span class="mi">15</span> <span class="o">-</span> <span class="mi">3</span>
 <span class="n">k11</span> <span class="o">=</span> <span class="mi">3</span>
-
-<span class="n">num_seen</span> <span class="o">=</span> <span class="n">k01</span> <span class="o">+</span> <span class="n">k10</span> <span class="o">+</span> <span class="n">k11</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>In total, 32 bugs have been discovered:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_seen</span> <span class="o">=</span> <span class="n">k01</span> <span class="o">+</span> <span class="n">k10</span> <span class="o">+</span> <span class="n">k11</span>
 <span class="n">num_seen</span>
 </pre></div>
 </div>
@@ -1772,9 +1923,20 @@ There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 </div>
 </div>
 </div>
+<p>See if you can write a PyMC model that solves this problem.</p>
+<p>Note: This one is more difficult that some of the previous ones.  One of the challenges is that the data includes <code class="docutils literal notranslate"><span class="pre">k00</span></code>, which depends on <code class="docutils literal notranslate"><span class="pre">N</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">k00</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">num_seen</span>
+</pre></div>
+</div>
+<p>So we have to construct the data as part of the model.
+To do that, we can use <code class="docutils literal notranslate"><span class="pre">pm.math.stack</span></code>, which makes an array:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">k00</span><span class="p">,</span> <span class="n">k01</span><span class="p">,</span> <span class="n">k10</span><span class="p">,</span> <span class="n">k11</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Finally, you might find it helpful to use <code class="docutils literal notranslate"><span class="pre">pm.Multinomial</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model8</span><span class="p">:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model9</span><span class="p">:</span>
     <span class="n">p0</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s1">&#39;p0&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">p1</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">DiscreteUniform</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">num_seen</span><span class="p">,</span> <span class="mi">350</span><span class="p">)</span>
@@ -1792,15 +1954,13 @@ There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model8</span><span class="p">:</span>
-    <span class="n">trace8</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model9</span><span class="p">:</span>
+    <span class="n">trace9</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/downey/anaconda3/envs/ThinkBayes2/lib/python3.8/site-packages/pymc3/sampling.py:465: FutureWarning: In an upcoming release, pm.sample will return an `arviz.InferenceData` object instead of a `MultiTrace` by default. You can pass return_inferencedata=True or return_inferencedata=False to be safe and silence this warning.
-  warnings.warn(
-Multiprocess sampling (2 chains in 2 jobs)
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiprocess sampling (2 chains in 2 jobs)
 CompoundStep
 &gt;NUTS: [p1, p0]
 &gt;Metropolis: [N]
@@ -1821,9 +1981,10 @@ CompoundStep
         }
     </style>
   <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [4000/4000 00:04<00:00 Sampling 2 chains, 0 divergences]
+  100.00% [4000/4000 00:03<00:00 Sampling 2 chains, 0 divergences]
 </div>
 </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 4 seconds.
+The acceptance probability does not match the target. It is 0.5861617210062687, but should be close to 0.8. Try to increase the number of tuning steps.
 The rhat statistic is larger than 1.05 for some parameters. This indicates slight problems during sampling.
 The estimated number of effective samples is smaller than 200 for some parameters.
 </pre></div>
@@ -1832,24 +1993,13 @@ The estimated number of effective samples is smaller than 200 for some parameter
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model8</span><span class="p">:</span>
-    <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace8</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model9</span><span class="p">:</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace9</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap19_149_0.png" src="_images/chap19_149_0.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model8</span><span class="p">:</span>
-    <span class="n">pm</span><span class="o">.</span><span class="n">traceplot</span><span class="p">(</span><span class="n">trace8</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap19_150_0.png" src="_images/chap19_150_0.png" />
+<img alt="_images/chap19_156_0.png" src="_images/chap19_156_0.png" />
 </div>
 </div>
 </div>
