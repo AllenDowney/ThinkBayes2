@@ -320,7 +320,7 @@ def pmf_from_dist(dist, qs):
     return pmf
 
 
-def kde_from_sample(sample, qs):
+def kde_from_sample(sample, qs, **options):
     """Make a kernel density estimate from a sample
     
     sample: sequence of values
@@ -330,12 +330,12 @@ def kde_from_sample(sample, qs):
     """
     kde = gaussian_kde(sample)
     ps = kde(qs)
-    pmf = Pmf(ps, qs)
+    pmf = Pmf(ps, qs, **options)
     pmf.normalize()
     return pmf
 
 
-def kde_from_pmf(pmf, n=101):
+def kde_from_pmf(pmf, n=101, **options):
     """Make a kernel density estimate from a Pmf.
     
     pmf: Pmf object
@@ -343,10 +343,11 @@ def kde_from_pmf(pmf, n=101):
     
     returns: Pmf object
     """
+    # TODO: should this take qs rather than use min-max?
     kde = gaussian_kde(pmf.qs, weights=pmf.ps)
     qs = np.linspace(pmf.qs.min(), pmf.qs.max(), n)
     ps = kde.evaluate(qs)
-    pmf = Pmf(ps, qs)
+    pmf = Pmf(ps, qs, **options)
     pmf.normalize()
     return pmf
 
