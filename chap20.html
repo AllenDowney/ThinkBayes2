@@ -1,0 +1,2190 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Approximate Bayesian Computation &#8212; Think Bayes</title>
+    
+  <link rel="stylesheet" href="_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinx-book-theme.40e2e510f6b7d1648584402491bb10fe.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.3da636dd464baa7582d2.js">
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/sphinx-book-theme.d31b09fe5c1d09cb49b26a786de4a05d.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="MCMC" href="chap19.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">Think Bayes</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="README.html">
+   ThinkBayes2
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap01.html">
+   Probability
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap02.html">
+   Bayes’s Theorem
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap03.html">
+   Distributions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap04.html">
+   Estimating proportions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap05.html">
+   Estimating counts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap06.html">
+   Odds and Addends
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap07.html">
+   Minimum, maximum, and mixture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap08.html">
+   Poisson Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap09.html">
+   Decision Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap10.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap11.html">
+   Comparison
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap12.html">
+   Classification
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap13.html">
+   Inference
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap14.html">
+   Survival Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap15.html">
+   Mark and Recapture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap16.html">
+   Logistic regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap17.html">
+   Regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap18.html">
+   Conjugate Priors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap19.html">
+   MCMC
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Approximate Bayesian Computation
+  </a>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/chap20.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/AllenDowney/ThinkBayes2"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/chap20.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-kidney-tumor-problem">
+   The Kidney Tumor Problem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#a-growth-model">
+   A Growth Model
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#working-backwards">
+   Working Backwards
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#a-more-general-model">
+   A More General Model
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#distribution-of-growth-rates">
+   Distribution of Growth Rates
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#simulation">
+   Simulation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#serial-correlation">
+   Serial Correlation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#correlated-growth">
+   Correlated Growth
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#simulation-with-correlation">
+   Simulation with Correlation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#approximate-bayesian-calculation">
+   Approximate Bayesian Calculation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#counting-cells">
+   Counting Cells
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#when-do-we-get-to-the-approximate-part">
+   When do we get to the approximate part?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
+  </a>
+ </li>
+</ul>
+
+        </nav>
+        
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="approximate-bayesian-computation">
+<h1>Approximate Bayesian Computation<a class="headerlink" href="#approximate-bayesian-computation" title="Permalink to this headline">¶</a></h1>
+<p>In this chapter I describe my solution to a problem posed by a patient
+with a kidney tumor. I think the problem is important and relevant to
+patients with these tumors and doctors treating them.</p>
+<p>And I think the solution is interesting because, although it is a
+Bayesian approach to the problem, the use of Bayes’s theorem is
+implicit. I present the solution and my code; at the end of the example I will explain the Bayesian part.</p>
+<p>TODO: Update this intro</p>
+<div class="section" id="the-kidney-tumor-problem">
+<h2>The Kidney Tumor Problem<a class="headerlink" href="#the-kidney-tumor-problem" title="Permalink to this headline">¶</a></h2>
+<p>I am a frequent reader and occasional contributor to the online
+statistics forum at <a class="reference external" href="http://reddit.com/r/statistics">http://reddit.com/r/statistics</a>.
+In November 2011, I read the following message:</p>
+<blockquote>
+<div><p>“I have Stage IV Kidney Cancer and am trying to determine if the cancer formed before I retired from the military. … Given the dates of retirement and detection is it possible to determine when there was a 50/50 chance that I developed the disease? Is it possible to determine the probability on the retirement date? My tumor was 15.5 cm x 15 cm at detection. Grade II.”</p>
+</div></blockquote>
+<p>I contacted the author of the message to get more information; I
+learned that veterans get different benefits if it is “more likely than not” that a tumor formed while they were in military service (among other considerations).</p>
+<p>Because renal tumors grow slowly, and often do not cause symptoms, they are sometimes left untreated. As a result, doctors can observe the rate of growth for untreated tumors by comparing scans from the same patient at different times. Several papers have reported these growth rates.</p>
+<p>For my analysis I used data from a paper by <a class="reference external" href="https://pubs.rsna.org/doi/full/10.1148/radiol.2501071712">Zhang et al</a>.
+They report growth rates in two forms:</p>
+<ul class="simple">
+<li><p>Volumetric doubling time, which is the time it would take for a tumor to double in size.</p></li>
+<li><p>Reciprocal doubling time (RDT), which is the number of doublings per year.</p></li>
+</ul>
+<p>The next section shows how we work with these growth rates.</p>
+</div>
+<div class="section" id="a-growth-model">
+<h2>A Growth Model<a class="headerlink" href="#a-growth-model" title="Permalink to this headline">¶</a></h2>
+<p>We’ll start with a simple model of tumor growth and gradually add complications.</p>
+<p>For the simple model, we’ll assume</p>
+<ul class="simple">
+<li><p>Tumors grow with a constant doubling time, and</p></li>
+<li><p>They are roughly spherical in shape.</p></li>
+</ul>
+<p>And I’ll define three points in time:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">t0</span></code> is when the tumor formed (soon I’ll be more precise about what that means).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">t1</span></code> is when my correspondent retired.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">t2</span></code> is when the tumor was detected.</p></li>
+</ul>
+<p>I learned from my correspondent that the time between <code class="docutils literal notranslate"><span class="pre">t1</span></code> and <code class="docutils literal notranslate"><span class="pre">t2</span></code> was 3291 days (about 9 years).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">interval</span> <span class="o">=</span> <span class="mi">3291</span>      <span class="c1"># days</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>As an example, let’s assume that the diameter of the tumor at <code class="docutils literal notranslate"><span class="pre">t1</span></code> was 1 cm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="mi">1</span>      <span class="c1"># cm</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following function computes the volume of a sphere with a given diameter.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">calc_vol</span><span class="p">(</span><span class="n">diameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a diameter to a volume.</span>
+
+<span class="sd">    V = 4/3 pi (d/2)^3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span>
+    <span class="k">return</span> <span class="n">factor</span> <span class="o">*</span> <span class="p">(</span><span class="n">diameter</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>So if we assume that the tumor is spherical, we can compute its volume at <code class="docutils literal notranslate"><span class="pre">t1</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">v1</span> <span class="o">=</span> <span class="n">calc_vol</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span>
+<span class="n">v1</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5235987755982988
+</pre></div>
+</div>
+</div>
+</div>
+<p>The median volume doubling time reported by Zhang et al. is 811 days.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">median_doubling_time</span> <span class="o">=</span> <span class="mi">811</span>       <span class="c1"># days</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>So we can compute the number of doublings that would have happened in the given interval at the median growth rate.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">doublings</span> <span class="o">=</span> <span class="n">interval</span> <span class="o">/</span> <span class="n">median_doubling_time</span>
+<span class="n">doublings</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.057953144266338
+</pre></div>
+</div>
+</div>
+</div>
+<p>Given <code class="docutils literal notranslate"><span class="pre">v1</span></code> and the number of doublings, we can compute the volume at <code class="docutils literal notranslate"><span class="pre">t2</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">v2</span> <span class="o">=</span> <span class="n">v1</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="n">doublings</span>
+<span class="n">v2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.720958899498342
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following function computes the diameter of a sphere with the given volume.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calc_diameter</span><span class="p">(</span><span class="n">volume</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a volume to a diameter.</span>
+
+<span class="sd">    d = 2r = 2 * (3/4/pi V)^1/3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">factor</span> <span class="o">*</span> <span class="n">volume</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>So we can compute the diameter of the tumor at <code class="docutils literal notranslate"><span class="pre">t2</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span> <span class="o">=</span> <span class="n">calc_diameter</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+<span class="n">d2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.553809740864908
+</pre></div>
+</div>
+</div>
+</div>
+<p>If the diameter of the tumor was 1 cm at <code class="docutils literal notranslate"><span class="pre">t1</span></code>, and it grew at the median rate, the diameter would be about 2.6 cm at <code class="docutils literal notranslate"><span class="pre">t2</span></code>.</p>
+<p>This example demonstrates the growth model, but it doesn’t answer the question my correspondent posed.</p>
+</div>
+<div class="section" id="working-backwards">
+<h2>Working Backwards<a class="headerlink" href="#working-backwards" title="Permalink to this headline">¶</a></h2>
+<p>We can get a partial answer by starting at the end and working backwards; that is, given that the diameter of the tumor was 15.5 cm at <code class="docutils literal notranslate"><span class="pre">t2</span></code>, how big would it have been at <code class="docutils literal notranslate"><span class="pre">t1</span></code>, assuming that it grew at the median rate?</p>
+<p>Here’s the volume at <code class="docutils literal notranslate"><span class="pre">t2</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span> <span class="o">=</span> <span class="mf">15.5</span>
+<span class="n">v2</span> <span class="o">=</span> <span class="n">calc_vol</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
+<span class="n">v2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1949.816390481115
+</pre></div>
+</div>
+</div>
+</div>
+<p>Since we already know the number of doublings in the interval, we can compute the volume at <code class="docutils literal notranslate"><span class="pre">t1</span></code> like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">v1</span> <span class="o">=</span> <span class="n">v2</span> <span class="o">/</span> <span class="mi">2</span><span class="o">**</span><span class="n">doublings</span>
+<span class="n">v1</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>117.06527762172266
+</pre></div>
+</div>
+</div>
+</div>
+<p>And given <code class="docutils literal notranslate"><span class="pre">v1</span></code>, we can compute the corresponding diameter:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">calc_diameter</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+<span class="n">d1</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6.06936364599759
+</pre></div>
+</div>
+</div>
+</div>
+<p>The diameter at <code class="docutils literal notranslate"><span class="pre">t1</span></code> would have been about 6 cm.
+We can conclude:</p>
+<ul class="simple">
+<li><p>If the tumor grew at the median rate, it must have formed prior to <code class="docutils literal notranslate"><span class="pre">t1</span></code>, or</p></li>
+<li><p>If it formed after <code class="docutils literal notranslate"><span class="pre">t1</span></code>, it must have grown substantially faster than the median rate.</p></li>
+</ul>
+<p>Based on these results, I concluded that is “more likely than not” that the tumor formed prior to the date of discharge, and on behalf of my correspondent, I wrote a letter to the Veterans’ Benefit Administration.</p>
+<p>Later I told a friend, who is an oncologist, about my results.
+He was surprised by the growth rates I found and by what they imply about the ages of these tumors.
+He suggested that the results might be interesting to researchers and doctors.</p>
+<p>But in order to make them useful, I needed a more general model of the
+relationship between age and size.</p>
+</div>
+<div class="section" id="a-more-general-model">
+<h2>A More General Model<a class="headerlink" href="#a-more-general-model" title="Permalink to this headline">¶</a></h2>
+<p>Given the size of a tumor at time of diagnosis, we would like to know the distribution of its age.</p>
+<p>To find it, we’ll run simulations of tumor growth to get the distribution of size conditioned on age.
+Then we’ll use a Bayesian approach to get the distribution of age conditioned on size.</p>
+<p>The simulation starts with a small tumor and runs these steps:</p>
+<ol class="simple">
+<li><p>Choose a value from the distribution of growth rates.</p></li>
+<li><p>Compute the size of the tumor at the end of an interval.</p></li>
+<li><p>Repeat until the tumor exceeds the maximum relevant size.</p></li>
+</ol>
+<p>So the first thing we need is the distribution of growth rates.</p>
+</div>
+<div class="section" id="distribution-of-growth-rates">
+<h2>Distribution of Growth Rates<a class="headerlink" href="#distribution-of-growth-rates" title="Permalink to this headline">¶</a></h2>
+<p>Using the figures in the paper by Zhange et al., I created an array, <code class="docutils literal notranslate"><span class="pre">rdt_sample</span></code>, that contains estimated values of RDT for the 53 patients in the study.</p>
+<p>Again, RDT stands for “reciprocal doubling time”, which is in doublings per year.
+So if <code class="docutils literal notranslate"><span class="pre">rdt=1</span></code>, a tumor would double in volume in one year.
+If <code class="docutils literal notranslate"><span class="pre">rdt=2</span></code>, it would double twice; that is, the volume would quadruple.
+And if <code class="docutils literal notranslate"><span class="pre">rdt=-1</span></code>, it would halve in volume.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Data from the scatter plot in Figure 4</span>
+
+<span class="n">rdts</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.089</span><span class="p">,</span>  <span class="mf">3.572</span><span class="p">,</span>  <span class="mf">3.242</span><span class="p">,</span>  <span class="mf">2.642</span><span class="p">,</span>  <span class="mf">1.982</span><span class="p">,</span>  <span class="mf">1.847</span><span class="p">,</span>  <span class="mf">1.908</span><span class="p">,</span>  <span class="mf">1.798</span><span class="p">,</span>
+        <span class="mf">1.798</span><span class="p">,</span>  <span class="mf">1.761</span><span class="p">,</span>  <span class="mf">2.703</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.416</span><span class="p">,</span>  <span class="mf">0.024</span><span class="p">,</span>  <span class="mf">0.869</span><span class="p">,</span>  <span class="mf">0.746</span><span class="p">,</span>  <span class="mf">0.257</span><span class="p">,</span>
+        <span class="mf">0.269</span><span class="p">,</span>  <span class="mf">0.086</span><span class="p">,</span>  <span class="mf">0.086</span><span class="p">,</span>  <span class="mf">1.321</span><span class="p">,</span>  <span class="mf">1.052</span><span class="p">,</span>  <span class="mf">1.076</span><span class="p">,</span>  <span class="mf">0.758</span><span class="p">,</span>  <span class="mf">0.587</span><span class="p">,</span>
+        <span class="mf">0.367</span><span class="p">,</span>  <span class="mf">0.416</span><span class="p">,</span>  <span class="mf">0.073</span><span class="p">,</span>  <span class="mf">0.538</span><span class="p">,</span>  <span class="mf">0.281</span><span class="p">,</span>  <span class="mf">0.122</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.869</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.431</span><span class="p">,</span>
+        <span class="mf">0.012</span><span class="p">,</span>  <span class="mf">0.037</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.135</span><span class="p">,</span>  <span class="mf">0.122</span><span class="p">,</span>  <span class="mf">0.208</span><span class="p">,</span>  <span class="mf">0.245</span><span class="p">,</span>  <span class="mf">0.404</span><span class="p">,</span>  <span class="mf">0.648</span><span class="p">,</span>
+        <span class="mf">0.673</span><span class="p">,</span>  <span class="mf">0.673</span><span class="p">,</span>  <span class="mf">0.563</span><span class="p">,</span>  <span class="mf">0.391</span><span class="p">,</span>  <span class="mf">0.049</span><span class="p">,</span>  <span class="mf">0.538</span><span class="p">,</span>  <span class="mf">0.514</span><span class="p">,</span>  <span class="mf">0.404</span><span class="p">,</span>
+        <span class="mf">0.404</span><span class="p">,</span>  <span class="mf">0.33</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.061</span><span class="p">,</span>  <span class="mf">0.538</span><span class="p">,</span>  <span class="mf">0.306</span><span class="p">]</span>
+
+<span class="n">rdt_sample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rdts</span><span class="p">)</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">rdt_sample</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>53
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can use the sample of RDTs to estimate the PDF of the distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">kde_from_sample</span>
+
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
+<span class="n">kde_rdt</span> <span class="o">=</span> <span class="n">kde_from_sample</span><span class="p">(</span><span class="n">rdt_sample</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">kde_rdt</span></code> is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> object; we can use it to estimate the CDF of the distribution, too.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_rdt</span> <span class="o">=</span> <span class="n">kde_rdt</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
+
+<span class="n">cdf_rdt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;rdts&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Reciprocal doubling time (RDT)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_43_0.png" src="_images/chap20_43_0.png" />
+</div>
+</div>
+<p>To generate a random value from the distribution, we can use <code class="docutils literal notranslate"><span class="pre">Pmf.choice</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kde_rdt</span><span class="o">.</span><span class="n">choice</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9199999999999999
+</pre></div>
+</div>
+</div>
+</div>
+<p>To generate a sequence of random values, I’ll use the following generator function.
+If you are not familiar with generator functions in Python, you can <a class="reference external" href="https://wiki.python.org/moin/Generators">read about them here</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">uncorrelated_generator</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates a sequence of values from pmf.</span>
+
+<span class="sd">    pmf: distribution to choose from</span>
+<span class="sd">    rho: ignored</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">pmf</span><span class="o">.</span><span class="n">choice</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For the current version of the model, using a generator function isn’t really necessary, but for the next version it will turn out to be convenient.</p>
+<p>When we call <code class="docutils literal notranslate"><span class="pre">uncorrelated_generator</span></code>, it returns a generator object:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rdt_gen</span> <span class="o">=</span> <span class="n">uncorrelated_generator</span><span class="p">(</span><span class="n">kde_rdt</span><span class="p">)</span>
+<span class="n">rdt_gen</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;generator object uncorrelated_generator at 0x7f2a6eaa4f90&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>The generator behaves like a iterator, so we can use it in a <code class="docutils literal notranslate"><span class="pre">for</span></code> loop, or we can use <code class="docutils literal notranslate"><span class="pre">next</span></code> to get the next value.</p>
+<p>For example, here’s a function that takes a generator and generates a sample with the given number of values:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_sample</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get a sample from a generator.</span>
+<span class="sd">    </span>
+<span class="sd">    gen: generator</span>
+<span class="sd">    size: sample size</span>
+<span class="sd">    </span>
+<span class="sd">    returns: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can call it like this.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span> <span class="o">=</span> <span class="n">generate_sample</span><span class="p">(</span><span class="n">rdt_gen</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s a quick test to confirm that it works:</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
+
+<span class="n">cdf_sample</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_rdt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+<span class="n">cdf_sample</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;random sample&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Reciprocal doubling time (RDT)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_57_0.png" src="_images/chap20_57_0.png" />
+</div>
+</div>
+<p>With that, we have everything we need to simulate the growth of a tumor.</p>
+</div>
+<div class="section" id="simulation">
+<h2>Simulation<a class="headerlink" href="#simulation" title="Permalink to this headline">¶</a></h2>
+<p>For the initial diameter I chose 0.3 cm, because carcinomas smaller than that are less likely to be invasive and less likely to have the blood supply needed for rapid growth (see <a class="reference external" href="http://en.wikipedia.org/wiki/Carcinoma_in_situ">this page on carcinoma</a>).</p>
+<p>I chose an interval of 245 days (about 8 months) because that is the
+median time between measurements in the data source.</p>
+<p>For the maximum diameter I chose 20 cm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">interval</span> <span class="o">=</span> <span class="mi">245</span> <span class="o">/</span> <span class="mi">365</span>      <span class="c1"># year</span>
+<span class="n">min_diameter</span> <span class="o">=</span> <span class="mf">0.3</span>        <span class="c1"># cm</span>
+<span class="n">max_diameter</span> <span class="o">=</span> <span class="mi">20</span>         <span class="c1"># cm</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>In the data source, the range of observed sizes is 1.0 to 12.0 cm, so we are extrapolating beyond the observed range at each end, but not by far.</p>
+<p>I’ll use <code class="docutils literal notranslate"><span class="pre">calc_vol</span></code> to compute the initial and maximum volumes:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">v0</span> <span class="o">=</span> <span class="n">calc_vol</span><span class="p">(</span><span class="n">min_diameter</span><span class="p">)</span>
+<span class="n">vmax</span> <span class="o">=</span> <span class="n">calc_vol</span><span class="p">(</span><span class="n">max_diameter</span><span class="p">)</span>
+<span class="n">v0</span><span class="p">,</span> <span class="n">vmax</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.014137166941154066, 4188.790204786391)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following function runs the simulation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="k">def</span> <span class="nf">simulate_growth</span><span class="p">(</span><span class="n">rdt_gen</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulate the growth of a tumor.</span>
+<span class="sd">    </span>
+<span class="sd">    rdt_gen: generator that yields RDT</span>
+<span class="sd">    </span>
+<span class="sd">    returns: DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="n">v0</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">rdt</span> <span class="ow">in</span> <span class="n">rdt_gen</span><span class="p">:</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">age</span><span class="p">,</span> <span class="n">volume</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">volume</span> <span class="o">&gt;</span> <span class="n">vmax</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="n">age</span> <span class="o">+=</span> <span class="n">interval</span> 
+        <span class="n">doublings</span> <span class="o">=</span> <span class="n">rdt</span> <span class="o">*</span> <span class="n">interval</span>
+        <span class="n">volume</span> <span class="o">*=</span> <span class="mi">2</span><span class="o">**</span><span class="n">doublings</span>
+        
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">]</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;diameter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc_diameter</span><span class="p">(</span><span class="n">sim</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">sim</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">simulate_growth</span></code> takes as a parameter a generator that yields reciprocal doubling times (RDT).</p>
+<p>It initializes the age and volume of the tumor, then runs a loop that simulates one interval at a time.</p>
+<p>Each time through the loop, it checks the volume of the tumor and exits when it exceeds <code class="docutils literal notranslate"><span class="pre">vmax</span></code>.</p>
+<p>Then it updates <code class="docutils literal notranslate"><span class="pre">age</span></code> and <code class="docutils literal notranslate"><span class="pre">volume</span></code>.  Since <code class="docutils literal notranslate"><span class="pre">rdt</span></code> is in doublings per year, we multiply by <code class="docutils literal notranslate"><span class="pre">interval</span></code> to get compute the number of doublings during each interval.</p>
+<p>At the end of the loop, <code class="docutils literal notranslate"><span class="pre">simulate_growth</span></code> puts the results in a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> and computes the diameter that corresponds to each volume.</p>
+<p>Here’s how we call this function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rdt_gen</span> <span class="o">=</span> <span class="n">uncorrelated_generator</span><span class="p">(</span><span class="n">kde_rdt</span><span class="p">)</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="n">simulate_growth</span><span class="p">(</span><span class="n">rdt_gen</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here are the results for the first few intervals:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>volume</th>
+      <th>diameter</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.000000</td>
+      <td>0.014137</td>
+      <td>0.300000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.671233</td>
+      <td>0.014949</td>
+      <td>0.305635</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.342466</td>
+      <td>0.019763</td>
+      <td>0.335441</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2.013699</td>
+      <td>0.018690</td>
+      <td>0.329256</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2.684932</td>
+      <td>0.014137</td>
+      <td>0.300000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>And the last few intervals.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>volume</th>
+      <th>diameter</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>41</th>
+      <td>27.520548</td>
+      <td>502.089669</td>
+      <td>9.861150</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>28.191781</td>
+      <td>379.790894</td>
+      <td>8.984943</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>28.863014</td>
+      <td>1882.067427</td>
+      <td>15.318357</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>29.534247</td>
+      <td>2887.563277</td>
+      <td>17.667603</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>30.205479</td>
+      <td>4953.618273</td>
+      <td>21.149883</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The simulation is based on the assumption that the growth rate is
+chosen independently during each interval, so it does not depend on age, size, or growth rate during previous intervals.</p>
+<p>In Section xxx I review these assumptions and consider more detailed models.
+But first let’s look at some examples.
+To show the results graphically, I’ll run 101 simulations:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rdt_gen</span> <span class="o">=</span> <span class="n">uncorrelated_generator</span><span class="p">(</span><span class="n">kde_rdt</span><span class="p">)</span>
+<span class="n">sims</span> <span class="o">=</span> <span class="p">[</span><span class="n">simulate_growth</span><span class="p">(</span><span class="n">rdt_gen</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And plot the results.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">diameters</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">diameter</span> <span class="ow">in</span> <span class="n">diameters</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">diameter</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">sims</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sim</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">],</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;diameter&#39;</span><span class="p">],</span>
+             <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Tumor age (years)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Diameter (cm, log scale)&#39;</span><span class="p">,</span>
+         <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
+         <span class="n">yscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+
+<span class="n">yticks</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">,</span> <span class="n">yticks</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_76_0.png" src="_images/chap20_76_0.png" />
+</div>
+</div>
+<p>In this figure, each thin, solid line shows the simulated growth of a tumor over time, with diameter on a log scale.
+The dotted lines are at 4, 8, and 16 cm.</p>
+<p>By reading across the dotted lines, you can get a sense of the distribution of age at each size.
+For example, reading across the top line, we see that a 16 cm tumor might be as young as 10 years or as old as 40 years, but it is most likely to be between 15 and 30.</p>
+<p>To compute this distribution more precisely, we can interpolate the growth curves to see when each one passes through a given size.
+The following function takes the results of the simulations and returns the age when each tumor reached a given diameter.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+<span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+
+<span class="k">def</span> <span class="nf">interpolate_ages</span><span class="p">(</span><span class="n">sims</span><span class="p">,</span> <span class="n">diameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Interpolate the age when each tumor reached a given size.</span>
+<span class="sd">    </span>
+<span class="sd">    sims: sequence of DataFrames</span>
+<span class="sd">    diameter: float</span>
+<span class="sd">    </span>
+<span class="sd">    returns: list of ages</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ages</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">sims</span><span class="p">:</span>
+        <span class="n">interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">sim</span><span class="p">[</span><span class="s1">&#39;diameter&#39;</span><span class="p">],</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">])</span>
+        <span class="n">age</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span><span class="n">diameter</span><span class="p">)</span>
+        <span class="n">ages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">age</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">ages</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following figure shows the distribution of ages for tumors with diameters 4, 8, and 16 cm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">diameter</span> <span class="ow">in</span> <span class="n">diameters</span><span class="p">:</span>
+    <span class="n">ages</span> <span class="o">=</span> <span class="n">interpolate_ages</span><span class="p">(</span><span class="n">sims</span><span class="p">,</span> <span class="n">diameter</span><span class="p">)</span>
+    <span class="n">cdf</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">ages</span><span class="p">)</span>
+    <span class="n">cdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">diameter</span><span class="si">}</span><span class="s1"> cm&#39;</span><span class="p">)</span>
+    
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Tumor age (years)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_80_0.png" src="_images/chap20_80_0.png" />
+</div>
+</div>
+<p>For a tumor 16 cm in diameter, the median age is about 21 years; the 90% credible interval is between 13 and 34 years.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">cdf</span><span class="o">.</span><span class="n">median</span><span class="p">(),</span> <span class="n">cdf</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>21.601211412918516 [13.55775098 34.2009248 ]
+</pre></div>
+</div>
+</div>
+</div>
+<p>These results are consistent with the simple model; it is unlikely that a tumor of this size is less than 9 years old.</p>
+</div>
+<div class="section" id="serial-correlation">
+<h2>Serial Correlation<a class="headerlink" href="#serial-correlation" title="Permalink to this headline">¶</a></h2>
+<p>The results so far are based on a number of modeling decisions; let’s
+review them and consider which ones are the most likely sources of
+error:</p>
+<ul class="simple">
+<li><p>To convert from linear measure to volume, we assume that tumors are approximately spherical. This assumption is probably fine for tumors up to a few centimeters, but not for very large tumors.</p></li>
+<li><p>The distribution of growth rates is estimated on the basis of only 53 patients. A larger sample might yield a different distribution.</p></li>
+<li><p>The growth model does not take into account tumor subtype or grade; this assumption is consistent with the findings of Zhang et al; they conclude: “Growth rates in renal tumors of different sizes, subtypes and grades represent a wide range and overlap substantially.” But with a larger sample, a difference might become apparent.</p></li>
+<li><p>The distribution of growth rate does not depend on the size of the tumor. This assumption would not be realistic for very small and very large tumors, whose growth is limited by blood supply. But tumors observed by Zhang et al ranged from 1 to 12 cm, and they found no statistically significant relationship between size and growth rate. So if there is a relationship, it is likely to be weak, at least in this size range.</p></li>
+<li><p>In the simulations, growth rate during each interval is independent of previous growth rates. In reality it is plausible that tumors that have grown quickly in the past are likely to grow quickly in the future. In other words, there is probably a serial correlation in growth rate.</p></li>
+</ul>
+<p>Of these, the first and last might be the most problematic. I’ll investigate serial correlation first, then come back to spherical geometry.</p>
+<p>In the next section, we’ll modify the simulations to include serial correlation.</p>
+</div>
+<div class="section" id="correlated-growth">
+<h2>Correlated Growth<a class="headerlink" href="#correlated-growth" title="Permalink to this headline">¶</a></h2>
+<p>To simulate correlated growth, we need to generate random numbers from a given distribution with a given serial correlation.</p>
+<p>Here’s how we can do that:</p>
+<ol class="simple">
+<li><p>First we generate correlated values from a Gaussian distribution. This is easy to do because we can compute the distribution of each value conditioned on the previous value.</p></li>
+<li><p>Then we transform each value to its cumulative probability using the Gaussian CDF.</p></li>
+<li><p>Finally, we transform each cumulative probability to the corresponding value using the given <code class="docutils literal notranslate"><span class="pre">Cdf</span></code>.</p></li>
+</ol>
+<p>The following function computes Steps 2 and 3.
+It takes <code class="docutils literal notranslate"><span class="pre">z</span></code>, which is a value from a standard normal distribution (with mean 0 and standard deviation 1) and a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code>.</p>
+<p>It uses the <code class="docutils literal notranslate"><span class="pre">norm</span></code> object from SciPy to compute <code class="docutils literal notranslate"><span class="pre">p</span></code>, which is the cumulative probability of <code class="docutils literal notranslate"><span class="pre">z</span></code> in the normal distribution.</p>
+<p>Then it uses <code class="docutils literal notranslate"><span class="pre">Cdf.inverse</span></code> to find the quantity in <code class="docutils literal notranslate"><span class="pre">cdf</span></code> that corresponds to <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+
+<span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">cdf</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Map a standard normal variate to a CDF.</span>
+<span class="sd">    </span>
+<span class="sd">    z: value from a standard normal distribution</span>
+<span class="sd">    cdf: Cdf object</span>
+<span class="sd">    </span>
+<span class="sd">    returns: value from cdf</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">cdf</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s an example that uses <code class="docutils literal notranslate"><span class="pre">transform</span></code> to compute the RDT that corresponds to the value 1 in a standard normal distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">transform</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cdf_rdt</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.8399999999999999
+</pre></div>
+</div>
+</div>
+</div>
+<p>If we pass to <code class="docutils literal notranslate"><span class="pre">transform</span></code> a series of values drawn from a standard normal distribution, the values we get back are drawn from <code class="docutils literal notranslate"><span class="pre">cdf</span></code>.</p>
+<p>Now for Step 1.  To generate values with a given serial correlation, <span class="math notranslate nohighlight">\(\rho\)</span>, we start by generating a single value from a standard normal distribution, which I’ll call <span class="math notranslate nohighlight">\(x\)</span>.</p>
+<p>Given <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(\rho\)</span>, the next value in the series is drawn from a normal distribution with mean <span class="math notranslate nohighlight">\(\rho x\)</span> and standard deviation <span class="math notranslate nohighlight">\(\sqrt{1 - \rho^2}\)</span>.</p>
+<p>Then each successive value depends on the previous one in the same way.</p>
+<p>The following is a generator function that implements this algorithm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">correlated_generator</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span> <span class="n">rho</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate correlated values from cdf.</span>
+<span class="sd">    </span>
+<span class="sd">    cdf: Cdf object</span>
+<span class="sd">    rho: float -1 to 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cdf</span><span class="p">)</span>
+
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="o">**</span><span class="mi">2</span><span class="p">);</span>    
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">rho</span><span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cdf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s an example that generates 1000 values from <code class="docutils literal notranslate"><span class="pre">cdf_rdt</span></code> with <code class="docutils literal notranslate"><span class="pre">rho=0.5</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rdt_gen</span> <span class="o">=</span> <span class="n">correlated_generator</span><span class="p">(</span><span class="n">cdf_rdt</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">generate_sample</span><span class="p">(</span><span class="n">rdt_gen</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">np.corrcoeff</span></code> to confirm that we got the correlation we wanted.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">sample</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[1.        , 0.49417755],
+       [0.49417755, 1.        ]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>The results vary from sample to sample, but they are generally near 0.5.</p>
+<p>We can also check that the distribution of the values follows <code class="docutils literal notranslate"><span class="pre">cdf_rdt</span></code>.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_sample</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+
+<span class="n">cdf_rdt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+<span class="n">cdf_sample</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;random sample&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Reciprocal doubling time (RDT)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_99_0.png" src="_images/chap20_99_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="simulation-with-correlation">
+<h2>Simulation with Correlation<a class="headerlink" href="#simulation-with-correlation" title="Permalink to this headline">¶</a></h2>
+<p>Recall that <code class="docutils literal notranslate"><span class="pre">simulate_growth</span></code> takes a generator as an argument, so it is easy to run the simulations with the correlated generator.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rdt_gen</span> <span class="o">=</span> <span class="n">correlated_generator</span><span class="p">(</span><span class="n">cdf_rdt</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">sims2</span> <span class="o">=</span> <span class="p">[</span><span class="n">simulate_growth</span><span class="p">(</span><span class="n">rdt_gen</span><span class="p">)</span>
+         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can use <code class="docutils literal notranslate"><span class="pre">interpolate_ages</span></code> to extract the distribution of ages for a tumor with a diameter of 16 cm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diameter</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">ages</span> <span class="o">=</span> <span class="n">interpolate_ages</span><span class="p">(</span><span class="n">sims</span><span class="p">,</span> <span class="n">diameter</span><span class="p">)</span>
+<span class="n">cdf</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">ages</span><span class="p">)</span>
+    
+<span class="n">ages2</span> <span class="o">=</span> <span class="n">interpolate_ages</span><span class="p">(</span><span class="n">sims2</span><span class="p">,</span> <span class="n">diameter</span><span class="p">)</span>
+<span class="n">cdf2</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">ages2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following figure shows the distribution of ages with <span class="math notranslate nohighlight">\(\rho=0\)</span> and <span class="math notranslate nohighlight">\(\rho=0.5\)</span>.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;rho=0&#39;</span><span class="p">)</span>
+<span class="n">cdf2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;rho=0.5&#39;</span><span class="p">)</span>
+    
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Tumor age (years)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_106_0.png" src="_images/chap20_106_0.png" />
+</div>
+</div>
+<p>Correlation makes the fastest growing tumors faster and the slowest
+slower, so the range of ages is wider.
+The following table shows the differences between these distributions for several percentiles.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">])</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">ps</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Percentiles&#39;</span>
+<span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Correlation&#39;</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cdf</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">ps</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mf">0.5</span><span class="p">]</span> <span class="o">=</span> <span class="n">cdf2</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">ps</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Percentiles</th>
+      <th>5.0</th>
+      <th>25.0</th>
+      <th>50.0</th>
+      <th>75.0</th>
+      <th>95.0</th>
+    </tr>
+    <tr>
+      <th>Correlation</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.0</th>
+      <td>13.557751</td>
+      <td>18.048221</td>
+      <td>21.601211</td>
+      <td>27.438600</td>
+      <td>34.200925</td>
+    </tr>
+    <tr>
+      <th>0.5</th>
+      <td>9.155178</td>
+      <td>16.015247</td>
+      <td>22.466764</td>
+      <td>29.689567</td>
+      <td>42.857344</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The difference is modest for low
+percentiles, but for the 95th percentile it is more than 8 years.</p>
+<p>These differences show that serial correlation has a substantial effect on the results.
+So if we need to compute these distribution precisely, we would need a better estimate of the actual serial correlation.</p>
+<p>However, this model is sufficient to answer the question we started
+with: given a tumor with a linear dimension of 15.5 cm, what is the
+probability that it formed more than 9 years ago?</p>
+<p>With no serial correlation, the probability is roughly 99.9%, or almost certain.
+With correlation 0.5, faster-growing tumors are more likely, but the probability is still about 99%.</p>
+<p>Another likely source of error is the assumption that tumors are
+approximately spherical. For a tumor with linear dimensions 15.5 x 15
+cm, this assumption is probably not valid. If, as seems likely, a tumor this size is relatively flat, it might have the same volume as a 6 cm sphere.
+With this smaller volume and correlation 0.5, the probability the age of the tumor is greater than 9 years is still 95%.</p>
+<p>So even taking into account modeling errors, it is unlikely that such a large tumor could have formed less than 9 years prior to the date of
+diagnosis.</p>
+</div>
+<div class="section" id="approximate-bayesian-calculation">
+<h2>Approximate Bayesian Calculation<a class="headerlink" href="#approximate-bayesian-calculation" title="Permalink to this headline">¶</a></h2>
+<p>At this point you might wonder why this example is in a book about Bayesian statistics.
+We never defined a prior distribution or did a Bayesian update.
+Why not?</p>
+<p>Because we didn’t have to.
+Instead we used simulations to compute ages and sizes for a collection of hypothetical tumors.
+Then, implicitly, we used the simulation results to form a joint distribution of age and size.</p>
+<p>If we select a column from the joint distribution, we get a distribution of size conditioned on age.
+If we select a row, we get a distribution of age conditioned on size.</p>
+<p>So this example is like the ones we saw in Chapter 1: if you have all of the data, you don’t need Bayes’s theorem; you can compute probabilities by counting.</p>
+<p>This example is a first step toward Approximate Bayesian Computation (ABC).
+The next example is a second step.</p>
+<p>Zhang et al, Distribution of Renal Tumor Growth Rates Determined
+by Using Serial Volumetric CT Measurements, January 2009
+<em>Radiology</em>, 250, 137-144.</p>
+<p>https://pubs.rsna.org/doi/full/10.1148/radiol.2501071712</p>
+</div>
+<div class="section" id="counting-cells">
+<h2>Counting Cells<a class="headerlink" href="#counting-cells" title="Permalink to this headline">¶</a></h2>
+<p>This example comes from Cameron Davidson-Pilon, who also provides the Space Shuttle problem in Chapter xxx.</p>
+<p>In <a class="reference external" href="https://dataorigami.net/blogs/napkin-folding/bayesian-cell-counting">this blog post</a>, Davidson-Pilon builds a model of the process biologists use to estimate the concentration of cells, or other discrete elements, in a sample of liquid.</p>
+<p>The example he presents is counting cells in a “yeast slurry”, which is a mixture of yeast and water used in brewing beer.</p>
+<p>There are two steps in the process:</p>
+<ul class="simple">
+<li><p>First, the slurry is diluted until the concentration is low enough that it is practical to count cells.</p></li>
+<li><p>Then a small sample is put on a hemocytometer, which is a specialized slide that holds a fixed amount of liquid above a rectangular grid etched in the glass.</p></li>
+</ul>
+<p>The cells and the grid are visible in a microscope, making it easy to count the cells accurately.</p>
+<p>As an example, suppose we start with a yeast slurry with unknown concentration of cells.</p>
+<p>Starting with a 1 mL sample, we will dilute it by adding it to a shaker with 9 mL of water and mixing well.
+Then we’ll dilute it again, and then a third time.
+Each dilution reduces the concentration by a factor of 10, so three dilutions reduces the concentration by a factor of 1000.</p>
+<p>Then we add the diluted sample to the hemocytometer, which has a capacity of 0.0001 mL spread over a 5x5 grid.</p>
+<p>Although the grid has 25 squares, it is standard practice to inspect only a few of them, say five, and report the total number of cells in the inspected squares.</p>
+<p>This process is simple enough, but at every stage there are sources of error:</p>
+<ul class="simple">
+<li><p>During the dilution process, liquids are measured using pipettes that introduce measurement error.</p></li>
+<li><p>The amount of liquid in the hemocytometer might vary from sample to sample.</p></li>
+<li><p>During each step of the sampling process, we might select more or less than the average number of cells, due to random variation.</p></li>
+</ul>
+<p>Davidson-Pilon presents a PyMC model that describes these errors.
+I’ll start by replicating his model; then we’ll adapt it for ABC.</p>
+<p>Suppose there are 25 squares in the grid, we count 5 of them, and the total number of cells is 49.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">total_squares</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">squares_counted</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">yeast_counted</span> <span class="o">=</span> <span class="mi">49</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s the first part of the model, which defines the prior distribution of <code class="docutils literal notranslate"><span class="pre">yeast_conc</span></code>, which is the concentration of yeast we’re trying to estimate.</p>
+<p><code class="docutils literal notranslate"><span class="pre">shaker1_vol</span></code> is the actual volume of water in the first shaker, which should be 9 mL, but might be higher or lower, with standard deviation 0.05 mL.</p>
+<p><code class="docutils literal notranslate"><span class="pre">shaker2_vol</span></code> and <code class="docutils literal notranslate"><span class="pre">shaker3_vol</span></code> are the volumes in the second and third shakers.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymc3</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="n">billion</span> <span class="o">=</span> <span class="mf">1e9</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">yeast_conc</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;yeast conc&quot;</span><span class="p">,</span> 
+                           <span class="n">mu</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">billion</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">0.4</span> <span class="o">*</span> <span class="n">billion</span><span class="p">)</span>
+
+    <span class="n">shaker1_vol</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;shaker1 vol&quot;</span><span class="p">,</span> 
+                               <span class="n">mu</span><span class="o">=</span><span class="mf">9.0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">shaker2_vol</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;shaker2 vol&quot;</span><span class="p">,</span> 
+                               <span class="n">mu</span><span class="o">=</span><span class="mf">9.0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">shaker3_vol</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;shaker3 vol&quot;</span><span class="p">,</span> 
+                               <span class="n">mu</span><span class="o">=</span><span class="mf">9.0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now, the sample we draw from the yeast slurry is supposed to be 1 mL, but might be more or less.
+And similarly for the sample we draw from the first shaker and from the second shaker.</p>
+<p>The following variables model these samples.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">yeast_slurry_vol</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;yeast slurry vol&quot;</span><span class="p">,</span>
+                                    <span class="n">mu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">shaker1_to_shaker2_vol</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;shaker1 to shaker2&quot;</span><span class="p">,</span>
+                                    <span class="n">mu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">shaker2_to_shaker3_vol</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;shaker2 to shaker3&quot;</span><span class="p">,</span>
+                                    <span class="n">mu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Given the actual volumes in the samples and in the shakers, we can compute the effective dilution, <code class="docutils literal notranslate"><span class="pre">final_dilution</span></code>, which should be approximately 1000, but might be higher or lower.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">dilution_shaker1</span> <span class="o">=</span> <span class="p">(</span><span class="n">yeast_slurry_vol</span>       <span class="o">/</span> 
+                        <span class="p">(</span><span class="n">yeast_slurry_vol</span> <span class="o">+</span> <span class="n">shaker1_vol</span><span class="p">))</span>
+    <span class="n">dilution_shaker2</span> <span class="o">=</span> <span class="p">(</span><span class="n">shaker1_to_shaker2_vol</span> <span class="o">/</span> 
+                        <span class="p">(</span><span class="n">shaker1_to_shaker2_vol</span> <span class="o">+</span> <span class="n">shaker2_vol</span><span class="p">))</span>
+    <span class="n">dilution_shaker3</span> <span class="o">=</span> <span class="p">(</span><span class="n">shaker2_to_shaker3_vol</span> <span class="o">/</span> 
+                        <span class="p">(</span><span class="n">shaker2_to_shaker3_vol</span> <span class="o">+</span> <span class="n">shaker3_vol</span><span class="p">))</span>
+    
+    <span class="n">final_dilution</span> <span class="o">=</span> <span class="p">(</span><span class="n">dilution_shaker1</span> <span class="o">*</span> 
+                      <span class="n">dilution_shaker2</span> <span class="o">*</span> 
+                      <span class="n">dilution_shaker3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The next step is to place a sample from the third shaker in the chamber of the hemocytomer.
+The capacity of the chamber should be 0.0001 mL, but might vary; to describe this variance, we’ll use a gamma distribution, which ensures that we don’t generate negative values.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">chamber_vol</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="s2">&quot;chamber_vol&quot;</span><span class="p">,</span> 
+                           <span class="n">mu</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">0.0001</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>On average, the number of cells in the chamber is the product of the actual concentration, final dilution, and chamber volume.
+But the actual number might vary; we’ll use a Poisson distribution to model this variance.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">yeast_in_chamber</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s2">&quot;yeast in chamber&quot;</span><span class="p">,</span> 
+        <span class="n">mu</span><span class="o">=</span><span class="n">yeast_conc</span> <span class="o">*</span> <span class="n">final_dilution</span> <span class="o">*</span> <span class="n">chamber_vol</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, each cell in the chamber might be in one of the squares we count, with probability <code class="docutils literal notranslate"><span class="pre">p=squares_counted/total_squares</span></code>.
+So the actual count follows a binomial distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Binomial</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> 
+        <span class="n">n</span><span class="o">=</span><span class="n">yeast_in_chamber</span><span class="p">,</span> 
+        <span class="n">p</span><span class="o">=</span><span class="n">squares_counted</span><span class="o">/</span><span class="n">total_squares</span><span class="p">,</span>
+        <span class="n">observed</span><span class="o">=</span><span class="n">yeast_counted</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>With the model specified, we can use <code class="docutils literal notranslate"><span class="pre">sample</span></code> to generate a sample from the posterior distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">return_inferencedata</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiprocess sampling (2 chains in 2 jobs)
+CompoundStep
+&gt;NUTS: [chamber_vol, shaker2 to shaker3, shaker1 to shaker2, yeast slurry vol, shaker3 vol, shaker2 vol, shaker1 vol, yeast conc]
+&gt;Metropolis: [yeast in chamber]
+</pre></div>
+</div>
+<div class="output text_html">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [4000/4000 00:04<00:00 Sampling 2 chains, 0 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 5 seconds.
+The estimated number of effective samples is smaller than 200 for some parameters.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_sample</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;yeast conc&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">billion</span>
+<span class="n">cdf_pymc</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">posterior_sample</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cdf_pymc</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">cdf_pymc</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.280586336273483 [1.81533604 2.74310193]
+</pre></div>
+</div>
+</div>
+</div>
+<p>So far we’ve been following in Davidson-Pilon’s steps.
+And for this problem, the solution using MCMC is sufficient.
+But it also provides an opportunity to demonstrate ABC.</p>
+<p>The fundamental idea of ABC is that we use the prior distribution to generate a sample of the parameters, and then simulate the system for each set of parameters in the sample.</p>
+<p>In this case, since we already have a PyMC model, we can use <code class="docutils literal notranslate"><span class="pre">sample_prior_predictive</span></code> to do the sampling and the simulation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">prior_sample</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_prior_predictive</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a dictionary that contains samples from the prior distribution of the parameters and the prior predictive distribution of count.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">count</span> <span class="o">=</span> <span class="n">prior_sample</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">count</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>40.1451
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now, to generate a sample from the posterior distribution, we’ll select only the elements in the prior sample where <code class="docutils literal notranslate"><span class="pre">count</span></code> equals the observed data, 49.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">count</span> <span class="o">==</span> <span class="mi">49</span><span class="p">)</span>
+<span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>246
+</pre></div>
+</div>
+</div>
+</div>
+<p>If we select only the samples that yield the observed data, the result is a sample from the posterior distribution of the parameter.
+Of course, the parameter we are most interested in is the yeast concentration.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_sample2</span> <span class="o">=</span> <span class="n">prior_sample</span><span class="p">[</span><span class="s1">&#39;yeast conc&#39;</span><span class="p">][</span><span class="n">mask</span><span class="p">]</span> <span class="o">/</span> <span class="n">billion</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can use the posterior sample to estimate the CDF of the posterior distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_abc</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">posterior_sample2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cdf_abc</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> 
+      <span class="n">cdf_abc</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.271206960458791 [1.8196759  2.69836686]
+</pre></div>
+</div>
+</div>
+</div>
+<p>The posterior mean and credible interval are similar to what we got with MCMC.
+Here’s what the distributions look like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_pymc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;MCMC&#39;</span><span class="p">)</span>
+<span class="n">cdf_abc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;ABC&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Yeast concentration (cells/mL)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution&#39;</span><span class="p">,</span>
+         <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mf">1.4</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_141_0.png" src="_images/chap20_141_0.png" />
+</div>
+</div>
+<p>The distributions are similar, but the results from ABC are noisier because the sample size is smaller.</p>
+</div>
+<div class="section" id="when-do-we-get-to-the-approximate-part">
+<h2>When do we get to the approximate part?<a class="headerlink" href="#when-do-we-get-to-the-approximate-part" title="Permalink to this headline">¶</a></h2>
+<p>The examples in this chapter are similar to Approximate Bayesian Computation, but neither of them demonstrates all of the elements of ABC.</p>
+<p>More generally, ABC is characterized by:</p>
+<ol class="simple">
+<li><p>A prior distribution of parameters.</p></li>
+<li><p>A simulation of the system that generates the data.</p></li>
+<li><p>A criterion for when we should accept that the output of the simulation matches the data.</p></li>
+</ol>
+<p>The kidney tumor example was atypical because we didn’t represent the prior distribution of age explicitly.
+Because the simulations generate a joint distribution of age and size, we we able to get the marginal posterior distribution of age directly from the results.</p>
+<p>The yeast example is more typical because we represented the distributions of the parameters explicitly.
+But we accepted only simulations where the output matches the data exactly.
+The result is approximate in the sense that we have a sample from the posterior distribution, rather than the posterior distribution itself.
+But it is not approximate in the sense of Approximate Bayesian Computation, which often accepts simulations where the output matches the data only approximately.</p>
+<p>To show how that works, I will extend the yeast example with an approximate matching criterion.
+In the previous section, we accepted a simulation if the output is precisely 49 and rejected it otherwise.
+As a result, we got only a few hundred samples out of 10,000 simulations, so that’s not very efficient.</p>
+<p>We can make better use of the simulations if we give “partial credit” when the output is close to 49.
+But how close?  And how much credit?</p>
+<p>One way to answer that is to back up to the second-to-last step of the simulation, where we know the number of cells in the chamber, and we use the binomial distribution to generate the final count.</p>
+<p>If there are <code class="docutils literal notranslate"><span class="pre">n</span></code> cells in the chamber, each has a probability <code class="docutils literal notranslate"><span class="pre">p</span></code> of being counted, depending on whether it falls in one of the squares in the grid that get counted.</p>
+<p>We can extract <code class="docutils literal notranslate"><span class="pre">n</span></code> from the prior sample, like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="n">prior_sample</span><span class="p">[</span><span class="s1">&#39;yeast in chamber&#39;</span><span class="p">]</span>
+<span class="n">n</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(10000,)
+</pre></div>
+</div>
+</div>
+</div>
+<p>And compute <code class="docutils literal notranslate"><span class="pre">p</span></code> like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">squares_counted</span><span class="o">/</span><span class="n">total_squares</span>
+<span class="n">p</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.2
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now here’s the idea: we’ll use the binomial distribution to compute the likelihood of the data, <code class="docutils literal notranslate"><span class="pre">yeast_counted</span></code>, for each value of <code class="docutils literal notranslate"><span class="pre">n</span></code> and the fixed value of <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
+
+<span class="n">likelihood</span> <span class="o">=</span> <span class="n">binom</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">yeast_counted</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">likelihood</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(10000,)
+</pre></div>
+</div>
+</div>
+</div>
+<p>When the expected count, <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">*</span> <span class="pre">p</span></code>, is close to the actual count, <code class="docutils literal notranslate"><span class="pre">49</span></code>, <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> is relatively high; when it is farther away, <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> is lower.</p>
+<p>The following is a scatter plot of these likelihoods versus the expected counts.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="n">likelihood</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Expected count (number of cells)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Likelihood&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_151_0.png" src="_images/chap20_151_0.png" />
+</div>
+</div>
+<p>We can’t use these likelihoods to do a Bayesian update because they are incomplete; that is, each likelihood is the probability of the data given <code class="docutils literal notranslate"><span class="pre">n</span></code>, which is the result of a single simulation.</p>
+<p>But we <em>can</em> use them to weight the results of the simulations.
+Instead of requiring the output of the simulation to match the data exactly, we’ll use the likelihoods to give partial credit when the output is close.</p>
+<p>Here’s how: I’ll construct a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that contains the parameter we are trying to estimate, <code class="docutils literal notranslate"><span class="pre">yeast</span> <span class="pre">conc</span></code>, as quantities and the likelihoods as unnormalized probabilities.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">prior_sample</span><span class="p">[</span><span class="s1">&#39;yeast conc&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">billion</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">likelihood</span>
+<span class="n">posterior_pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>In this <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, values of <code class="docutils literal notranslate"><span class="pre">yeast</span> <span class="pre">conc</span></code> that yield outputs close to the data map to higher probabilities.</p>
+<p>If we sort the quantities and normalize the probabilities, the result is an estimate of the posterior distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_pmf</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">posterior_pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">posterior_pmf</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span> 
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.2712644108955566 [1.8627758  2.70469296]
+</pre></div>
+</div>
+</div>
+</div>
+<p>The posterior mean and credible interval are similar to the values we got from PyMC.</p>
+<p>And here’s what the posterior distributions look like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_pymc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;MCMC&#39;</span><span class="p">)</span>
+<span class="c1">#cdf_abc.plot(label=&#39;ABC&#39;)</span>
+<span class="n">posterior_pmf</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;ABC2&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Yeast concentration (cells/mL)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution&#39;</span><span class="p">,</span>
+         <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mf">1.4</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_157_0.png" src="_images/chap20_157_0.png" />
+</div>
+</div>
+<p>The results are similar, but the results from MCMC are a little noisier.
+In this example, ABC is more efficient than MCMC, requiring less computation to generate a better estimate of the posterior distribution.</p>
+<p>But that’s unusual; usually ABC requires a lot of computation.
+For that reason, it is generally a method of last resort.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>In this chapter we saw two examples of Approximate Bayesian Computation (ABC), based on simulations of tumor growth and cell counting.</p>
+<p>The definitive elements of ABC are:</p>
+<ol class="simple">
+<li><p>A prior distribution of parameters.</p></li>
+<li><p>A simulation of the system that generates the data.</p></li>
+<li><p>A criterion for when we should accept that the output of the simulation matches the data.</p></li>
+</ol>
+<p>ABC is particularly useful when the system is too complex to model with tools like PyMC.
+For example, it might involve a physical simulation based on differential equations.
+In that case, each simulation might require substantial computation, and many simulations might be needed to estimate the posterior distribution.</p>
+<p>In the next section, you’ll have a chance to practice with one more example.</p>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p><strong>Exercise:</strong> This exercise is based on <a class="reference external" href="http://www.sumsar.net/blog/2014/10/tiny-data-and-the-socks-of-karl-broman">a blog post by Rasmus Bååth</a>, which is motivates by a tweet from Karl Broman, who wrote:</p>
+<blockquote>
+<div><p>That the first 11 socks in the laundry are distinct suggests that there are a lot of socks.</p>
+</div></blockquote>
+<p>Suppose you pull 11 socks out of the laundry and find that no two of them make a matched pair.  Estimate the number of socks in the laundry.</p>
+<p>To solve this problem, we’ll use the model Bååth suggests, which is based on these assumptions:</p>
+<ul class="simple">
+<li><p>The laundry contains some number of pairs of socks, <code class="docutils literal notranslate"><span class="pre">n_pairs</span></code>, plus some number of unpaired socks, <code class="docutils literal notranslate"><span class="pre">n_odds</span></code>.</p></li>
+<li><p>The pairs of socks are different from each other and different from the unpaired socks; in other words, the number of socks of each type is either 1 or 2, never more.</p></li>
+</ul>
+<p>We’ll also use the prior distributions Bååth suggests, which are:</p>
+<ul class="simple">
+<li><p>The number of socks follow a negative binomial distribution with mean 30 and standard deviation 15.</p></li>
+<li><p>The proportion of socks that are paired follows a beta distribution with parameters <code class="docutils literal notranslate"><span class="pre">alpha=15</span></code> and <code class="docutils literal notranslate"><span class="pre">beta=2</span></code>.</p></li>
+</ul>
+<p>To get you started, I’ll define the priors.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">nbinom</span><span class="p">,</span> <span class="n">beta</span>
+
+<span class="n">mu</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">0.8666666</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="n">p</span>
+
+<span class="n">prior_n_socks</span> <span class="o">=</span> <span class="n">nbinom</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">)</span>
+<span class="n">prior_n_socks</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">prior_n_socks</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(29.999999999999996, 14.999996250001402)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_prop_pair</span> <span class="o">=</span> <span class="n">beta</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">prior_prop_pair</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.8823529411764706
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">prior_n_socks</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+<span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+
+<span class="n">pmf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">drawstyle</span><span class="o">=</span><span class="s1">&#39;steps&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of socks&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_164_0.png" src="_images/chap20_164_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">pmf_from_dist</span>
+
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">prior_prop_pair</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+<span class="n">pmf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Proportion of socks in pairs&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_165_0.png" src="_images/chap20_165_0.png" />
+</div>
+</div>
+<p>We can sample from the prior distributions like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_socks</span> <span class="o">=</span> <span class="n">prior_n_socks</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span>
+<span class="n">prop_pairs</span> <span class="o">=</span> <span class="n">prior_prop_pair</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span>
+
+<span class="n">n_socks</span><span class="p">,</span> <span class="n">prop_pairs</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(29, 0.8617263482869272)
+</pre></div>
+</div>
+</div>
+</div>
+<p>And use the values to compute <code class="docutils literal notranslate"><span class="pre">n_pairs</span></code> and <code class="docutils literal notranslate"><span class="pre">n_odds</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">n_socks</span><span class="o">//</span><span class="mi">2</span> <span class="o">*</span> <span class="n">prop_pairs</span><span class="p">)</span>
+<span class="n">n_odds</span> <span class="o">=</span> <span class="n">n_socks</span> <span class="o">-</span> <span class="n">n_pairs</span><span class="o">*</span><span class="mi">2</span>
+
+<span class="n">n_pairs</span><span class="p">,</span> <span class="n">n_odds</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(12.0, 5.0)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now you can take it from there.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">n_pairs</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">n_odds</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="n">socks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_pairs</span><span class="p">),</span> 
+                  <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_pairs</span> <span class="o">+</span> <span class="n">n_odds</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">socks</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[ 0  1  2  3  4  5  6  7  8  0  1  2  3  4  5  6  7  8  9 10 11 12 13]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">picked_socks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">socks</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">picked_socks</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([10,  5,  7,  8,  5,  6,  1,  2,  2,  9,  0])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">values</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">picked_socks</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">values</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 0,  1,  2,  5,  6,  7,  8,  9, 10])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">counts</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([1, 1, 2, 2, 1, 1, 1, 1, 1])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">solo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">counts</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">counts</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">solo</span><span class="p">,</span> <span class="n">pairs</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(7, 2)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="k">def</span> <span class="nf">pick_socks</span><span class="p">(</span><span class="n">n_pairs</span><span class="p">,</span> <span class="n">n_odds</span><span class="p">,</span> <span class="n">n_pick</span><span class="p">):</span>
+    <span class="n">socks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_pairs</span><span class="p">),</span> 
+                      <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_pairs</span> <span class="o">+</span> <span class="n">n_odds</span><span class="p">))</span>
+    
+    <span class="n">picked_socks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">socks</span><span class="p">,</span> 
+                                    <span class="n">size</span><span class="o">=</span><span class="n">n_pick</span><span class="p">,</span> 
+                                    <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    
+    <span class="n">values</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">picked_socks</span><span class="p">,</span> 
+                               <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">counts</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">odds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">counts</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">odds</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">pick_socks</span><span class="p">(</span><span class="n">n_pairs</span><span class="p">,</span> <span class="n">n_odds</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(3, 5)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="n">n_socks</span> <span class="o">=</span> <span class="n">prior_n_socks</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">n_socks</span> <span class="o">&lt;</span> <span class="mi">11</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="n">prop_pairs</span> <span class="o">=</span> <span class="n">prior_prop_pair</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span>
+    <span class="n">n_pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">n_socks</span><span class="o">//</span><span class="mi">2</span> <span class="o">*</span> <span class="n">prop_pairs</span><span class="p">)</span>
+    <span class="n">n_odds</span> <span class="o">=</span> <span class="n">n_socks</span> <span class="o">-</span> <span class="n">n_pairs</span><span class="o">*</span><span class="mi">2</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">pick_socks</span><span class="p">(</span><span class="n">n_pairs</span><span class="p">,</span> <span class="n">n_odds</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n_socks</span><span class="p">,</span> <span class="n">n_pairs</span><span class="p">,</span> <span class="n">n_odds</span><span class="p">))</span>
+
+<span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1209
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;n_socks&#39;</span><span class="p">,</span> <span class="s1">&#39;n_pairs&#39;</span><span class="p">,</span> <span class="s1">&#39;n_odds&#39;</span><span class="p">]</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+<span class="n">results</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>n_socks</th>
+      <th>n_pairs</th>
+      <th>n_odds</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>53</td>
+      <td>19.0</td>
+      <td>15.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>48</td>
+      <td>23.0</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>29</td>
+      <td>14.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>50</td>
+      <td>20.0</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>63</td>
+      <td>28.0</td>
+      <td>7.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1209
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">posterior_n_socks</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;n_socks&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">posterior_n_socks</span><span class="o">.</span><span class="n">median</span><span class="p">(),</span>
+      <span class="n">posterior_n_socks</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>44.0 [26. 74.]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">posterior_n_socks</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior&#39;</span><span class="p">,</span> <span class="n">drawstyle</span><span class="o">=</span><span class="s1">&#39;steps&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of socks&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap20_182_0.png" src="_images/chap20_182_0.png" />
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="chap19.html" title="previous page">MCMC</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Allen B. Downey<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="_static/js/index.3da636dd464baa7582d2.js"></script>
+
+
+    
+  </body>
+</html>

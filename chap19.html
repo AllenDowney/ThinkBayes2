@@ -56,6 +56,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Approximate Bayesian Computation" href="chap20.html" />
     <link rel="prev" title="Conjugate Priors" href="chap18.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -185,6 +186,11 @@
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    MCMC
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap20.html">
+   Approximate Bayesian Computation
   </a>
  </li>
 </ul>
@@ -689,7 +695,7 @@ We can use a <code class="docutils literal notranslate"><span class="pre">with</
 </div>
 <p>The difference is that we mark goals as <code class="docutils literal notranslate"><span class="pre">observed</span></code> and provide the observed data, <code class="docutils literal notranslate"><span class="pre">4</span></code>.</p>
 <p>And instead of called <code class="docutils literal notranslate"><span class="pre">sample_prior_predictive</span></code>, we’ll call <code class="docutils literal notranslate"><span class="pre">sample</span></code>, which is understood to sample from the posterior distribution of <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">return_inferencedata</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -720,9 +726,10 @@ NUTS: [lam]
         }
     </style>
   <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [3000/3000 00:01<00:00 Sampling 2 chains, 0 divergences]
+  100.00% [3000/3000 00:02<00:00 Sampling 2 chains, 0 divergences]
 </div>
 </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 2 seconds.
+The acceptance probability does not match the target. It is 0.8907893747574612, but should be close to 0.8. Try to increase the number of tuning steps.
 </pre></div>
 </div>
 </div>
@@ -816,7 +823,7 @@ NUTS: [lam]
 <p>I’ll also generate a sample from the posterior distribution we computed by grid approximation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_post</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_post</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
 <span class="n">sample_post_pred</span> <span class="o">=</span> <span class="n">poisson</span><span class="p">(</span><span class="n">sample_post</span><span class="p">)</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1019,10 +1026,10 @@ It includes countries from the following regions:</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sub-Saharan Africa                    39
-Western Europe                        21
 Latin America and Caribbean           21
-Middle East and North Africa          17
+Western Europe                        21
 Central and Eastern Europe            17
+Middle East and North Africa          17
 Commonwealth of Independent States    12
 Southeast Asia                         9
 South Asia                             7
@@ -1122,7 +1129,7 @@ They are unknown parameters, so we will use the data to estimate them.</p>
 <li><p>The values of the dependent variable, <code class="docutils literal notranslate"><span class="pre">y_data</span></code> are provided as the observed values of <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p></li>
 </ul>
 <p>Now we can use this model to generate a sample from the posterior distribution.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model3</span><span class="p">:</span>
     <span class="n">trace3</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
@@ -1194,7 +1201,7 @@ Here’s the posterior distribution of the slope, <code class="docutils literal 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: 0.7186192485065676
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: 0.7179616905297317
 Regression slope: 0.717738495630452
 </pre></div>
 </div>
@@ -1221,7 +1228,7 @@ Regression slope: 0.717738495630452
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: -1.206303223110857
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: -1.2013312911048168
 Regression intercept: -1.1986460618088843
 </pre></div>
 </div>
@@ -1410,7 +1417,7 @@ I’ll extract the dependent variable.</p>
 </div>
 <p>We could express this model more concisely using a vector of predictive variables and a vector of parameters, but I decided to keep it simple.</p>
 <p>Now we can sample from the joint posterior distribution.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model4</span><span class="p">:</span>
     <span class="n">trace4</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
@@ -1439,9 +1446,9 @@ NUTS: [sigma, b6, b5, b4, b3, b2, b1, b0]
         }
     </style>
   <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [3000/3000 00:04<00:00 Sampling 2 chains, 0 divergences]
+  100.00% [3000/3000 00:05<00:00 Sampling 2 chains, 0 divergences]
 </div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 5 seconds.
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 6 seconds.
 </pre></div>
 </div>
 </div>
@@ -1454,7 +1461,7 @@ NUTS: [sigma, b6, b5, b4, b3, b2, b1, b0]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2.045766738011601e-05
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0016142961307664665
 </pre></div>
 </div>
 </div>
@@ -1467,7 +1474,7 @@ NUTS: [sigma, b6, b5, b4, b3, b2, b1, b0]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.515316228296758
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.517690112311331
 </pre></div>
 </div>
 </div>
@@ -1539,33 +1546,33 @@ Here’s how we compute the posterior means.</p>
   <tbody>
     <tr>
       <th>Logged GDP per capita</th>
-      <td>0.255</td>
-      <td>[0.108, 0.4]</td>
+      <td>0.245</td>
+      <td>[0.08, 0.419]</td>
     </tr>
     <tr>
       <th>Social support</th>
-      <td>0.222</td>
-      <td>[0.082, 0.353]</td>
+      <td>0.225</td>
+      <td>[0.062, 0.389]</td>
     </tr>
     <tr>
       <th>Healthy life expectancy</th>
-      <td>0.222</td>
-      <td>[0.082, 0.353]</td>
+      <td>0.225</td>
+      <td>[0.062, 0.389]</td>
     </tr>
     <tr>
       <th>Freedom to make life choices</th>
-      <td>0.189</td>
-      <td>[0.096, 0.281]</td>
+      <td>0.191</td>
+      <td>[0.088, 0.293]</td>
     </tr>
     <tr>
       <th>Generosity</th>
-      <td>0.059</td>
-      <td>[-0.018, 0.134]</td>
+      <td>0.055</td>
+      <td>[-0.034, 0.147]</td>
     </tr>
     <tr>
       <th>Perceptions of corruption</th>
-      <td>-0.096</td>
-      <td>[-0.185, -0.014]</td>
+      <td>-0.100</td>
+      <td>[-0.193, -0.002]</td>
     </tr>
   </tbody>
 </table>
@@ -1639,7 +1646,7 @@ NUTS: [x]
   <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
   100.00% [3000/3000 00:01<00:00 Sampling 2 chains, 0 divergences]
 </div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 2 seconds.
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 1 seconds.
 </pre></div>
 </div>
 <img alt="_images/chap19_133_3.png" src="_images/chap19_133_3.png" />
@@ -1654,7 +1661,7 @@ NUTS: [x]
 <p>Note: <code class="docutils literal notranslate"><span class="pre">HyperGeometric</span></code> was added to PyMC after version 3.8, so you might need to update your installation to do this exercise.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Solution</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
 <span class="n">k</span> <span class="o">=</span> <span class="mi">23</span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">19</span>
@@ -1711,9 +1718,11 @@ Then we used the data to compute a grid approximation of the posterior distribut
 </div>
 <p>For the prior distributions, you can use uniform distributions as we did in Chapter xxx, or you could use <code class="docutils literal notranslate"><span class="pre">HalfNormal</span></code> distributions provided by PyMC.</p>
 <p>Note: The <code class="docutils literal notranslate"><span class="pre">Weibull</span></code> class in PyMC uses different parameters than SciPy.  The parameter <code class="docutils literal notranslate"><span class="pre">alpha</span></code> in PyMC corresponds to <span class="math notranslate nohighlight">\(k\)</span>, and <code class="docutils literal notranslate"><span class="pre">beta</span></code> corresponds to <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model7</span><span class="p">:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model7</span><span class="p">:</span>
     <span class="n">lam</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;lam&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.1</span><span class="p">)</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">5.1</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Weibull</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">lam</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
@@ -1746,7 +1755,7 @@ NUTS: [k, lam]
   <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
   100.00% [4000/4000 00:02<00:00 Sampling 2 chains, 1 divergences]
 </div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 3 seconds.
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 2 seconds.
 There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 </pre></div>
 </div>
@@ -1838,9 +1847,11 @@ There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 </div>
 </div>
 <p>Make a model that defines uniform prior distributions for <code class="docutils literal notranslate"><span class="pre">mu</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma</span></code> and uses the data to estimate their posterior distributions.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model8</span><span class="p">:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model8</span><span class="p">:</span>
     <span class="n">mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
     <span class="n">sigma</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
@@ -1934,9 +1945,11 @@ To do that, we can use <code class="docutils literal notranslate"><span class="p
 </pre></div>
 </div>
 <p>Finally, you might find it helpful to use <code class="docutils literal notranslate"><span class="pre">pm.Multinomial</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model9</span><span class="p">:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model9</span><span class="p">:</span>
     <span class="n">p0</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s1">&#39;p0&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">p1</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">DiscreteUniform</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">num_seen</span><span class="p">,</span> <span class="mi">350</span><span class="p">)</span>
@@ -1952,9 +1965,11 @@ To do that, we can use <code class="docutils literal notranslate"><span class="p
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model9</span><span class="p">:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="k">with</span> <span class="n">model9</span><span class="p">:</span>
     <span class="n">trace9</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1984,16 +1999,17 @@ CompoundStep
   100.00% [4000/4000 00:03<00:00 Sampling 2 chains, 0 divergences]
 </div>
 </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 4 seconds.
-The acceptance probability does not match the target. It is 0.5861617210062687, but should be close to 0.8. Try to increase the number of tuning steps.
 The rhat statistic is larger than 1.05 for some parameters. This indicates slight problems during sampling.
 The estimated number of effective samples is smaller than 200 for some parameters.
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model9</span><span class="p">:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="k">with</span> <span class="n">model9</span><span class="p">:</span>
     <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace9</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2034,6 +2050,7 @@ The estimated number of effective samples is smaller than 200 for some parameter
     <div class='prev-next-bottom'>
         
     <a class='left-prev' id="prev-link" href="chap18.html" title="previous page">Conjugate Priors</a>
+    <a class='right-next' id="next-link" href="chap20.html" title="next page">Approximate Bayesian Computation</a>
 
     </div>
     <footer class="footer mt-5 mt-md-0">
