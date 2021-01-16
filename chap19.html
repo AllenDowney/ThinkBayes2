@@ -87,12 +87,17 @@
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <ul class="nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="README.html">
-   ThinkBayes2
+  <a class="reference internal" href="index.html">
+   Think Bayes 2
   </a>
  </li>
 </ul>
 <ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="preface.html">
+   Preface
+  </a>
+ </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap01.html">
    Probability
@@ -373,17 +378,17 @@
 <h1>MCMC<a class="headerlink" href="#mcmc" title="Permalink to this headline">¶</a></h1>
 <p>For most of this book we’ve been using grid methods to approximate posterior distributions.
 For models with one or two parameters, grid algorithms are fast and the results are precise enough for most practical purposes.
-With three parameters, they start to be computationally-intensive, and with more than three they are usually not practical.</p>
+With three parameters, they start to be slow, and with more than three they are usually not practical.</p>
 <p>In the previous chapter we saw that we can solve some problems using conjugate priors.
 But the problems we can solve this way tend to be the same ones we can solve with grid algorithms.</p>
 <p>For problems with more than a few parameters, the most powerful tool we have is MCMC, which stands for “Markov chain Monte Carlo”.</p>
 <p>In this context, “Monte Carlo” refers to to methods that generate random samples from a distribution.
 Unlike grid methods, MCMC methods don’t try to compute the posterior distribution; they sample from it instead.</p>
-<p>It might seem strange that you can generate sample without ever computing the distribution, but that’s the magic of MCMC.</p>
+<p>It might seem strange that you can generate a sample without ever computing the distribution, but that’s the magic of MCMC.</p>
 <p>To demonstrate, we’ll start by solving the World Cup problem.</p>
 <div class="section" id="the-world-cup-problem">
 <h2>The World Cup problem<a class="headerlink" href="#the-world-cup-problem" title="Permalink to this headline">¶</a></h2>
-<p>In Chapter xxx we solved the World Cup problem:</p>
+<p>In Chapter xxx I posed this problem:</p>
 <blockquote>
 <div><p>In the 2018 FIFA World Cup final, France defeated Croatia 4 goals to 2.  Based on this outcome:</p>
 <ol class="simple">
@@ -394,8 +399,8 @@ Unlike grid methods, MCMC methods don’t try to compute the posterior distribut
 <p>We modeled goal scoring in football (soccer) as a Poisson process characterized by a goal-scoring rate, denoted <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
 <p>We used a gamma distribution to represent the prior distribution of <span class="math notranslate nohighlight">\(\lambda\)</span>, then we used to outcome of the game to compute the posterior distribution for both teams.</p>
 <p>To answer the first question, we used the posterior distributions to compute the “probability of superiority” for France.</p>
-<p>To answer the second question, we computed the posterior predictive distributions for each team, that it, the distribution of goals we expect in a rematch.</p>
-<p>In this chapter we’ll solve this problem again using PyMC, which is a library that provides implementation of several MCMC methods.
+<p>To answer the second question, we computed the posterior predictive distributions for each team, that is, the distribution of goals we expect in a rematch.</p>
+<p>In this chapter we’ll solve this problem again using PyMC, which is a library that provides several MCMC methods.
 But we’ll start by reviewing the grid approximation of the prior and the prior predictive distribution.</p>
 </div>
 <div class="section" id="grid-approximation">
@@ -411,7 +416,7 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 </div>
 </div>
 </div>
-<p>I’ll use <code class="docutils literal notranslate"><span class="pre">linspace</span></code> to generate an array of possible values for <span class="math notranslate nohighlight">\(\lambda\)</span>, and <code class="docutils literal notranslate"><span class="pre">pmf_from_dist</span></code> to compute a discrete approximation of the prior.</p>
+<p>I’ll use <code class="docutils literal notranslate"><span class="pre">linspace</span></code> to generate possible values for <span class="math notranslate nohighlight">\(\lambda\)</span>, and <code class="docutils literal notranslate"><span class="pre">pmf_from_dist</span></code> to compute a discrete approximation of the prior.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -466,11 +471,11 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 <img alt="_images/chap19_16_0.png" src="_images/chap19_16_0.png" />
 </div>
 </div>
-<p>Soon we will solve the same problem with PyMC, but first it will be useful to introduce a new idea: the prior predictive distribution.</p>
+<p>Soon we will solve the same problem with PyMC, but first it will be useful to introduce something new: the prior predictive distribution.</p>
 </div>
 <div class="section" id="prior-predictive-distribution">
 <h2>Prior Predictive Distribution<a class="headerlink" href="#prior-predictive-distribution" title="Permalink to this headline">¶</a></h2>
-<p>We have seen the posterior predictive distribution in previous chapters; the prior predictive distribution is similar, except that (as you might have guessed) it is based on the prior.</p>
+<p>We have seen the posterior predictive distribution in previous chapters; the prior predictive distribution is similar except that (as you might have guessed) it is based on the prior.</p>
 <p>To estimate the prior predictive distribution, we’ll start by drawing a sample from the prior.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -491,7 +496,7 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 </div>
 </div>
 <p>The result is a sample from the prior predictive distribution.
-To see what it looks like, I’ll plot its PMF.</p>
+To see what it looks like, I’ll use the sample to estimate the PMF of the distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
@@ -516,7 +521,7 @@ To see what it looks like, I’ll plot its PMF.</p>
 </div>
 </div>
 <p>One reason to compute the prior predictive distribution is to check whether our model of the system seems reasonable.
-In this case, the distribution of goals scored seems consistent with what we know about World Cup football.</p>
+In this case, the distribution of goals seems consistent with what we know about World Cup football.</p>
 <p>But in this chapter we have another reason: computing the prior predictive distribution is a first step toward using MCMC.</p>
 </div>
 <div class="section" id="introducing-pymc">
@@ -622,11 +627,11 @@ We can use a <code class="docutils literal notranslate"><span class="pre">with</
 <img alt="_images/chap19_38_0.png" src="_images/chap19_38_0.png" />
 </div>
 </div>
-<p>The results are similar, which helps to confirm that the specification of the PyMC model is correct, and the sampler works as advertised.</p>
+<p>The results are similar, which helps to confirm that the specification of the PyMC model is correct and the sampler works as advertised.</p>
 </div>
 <div class="section" id="prior-predictive">
 <h2>Prior predictive<a class="headerlink" href="#prior-predictive" title="Permalink to this headline">¶</a></h2>
-<p>We can also extract <code class="docutils literal notranslate"><span class="pre">goals</span></code> from <code class="docutils literal notranslate"><span class="pre">trace</span></code>, which is a sample from the prior predictive distribution.</p>
+<p>From the trace we can also extract <code class="docutils literal notranslate"><span class="pre">goals</span></code>, which is a sample from the prior predictive distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_prior_pred_pymc</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;goals&#39;</span><span class="p">]</span>
@@ -726,22 +731,21 @@ NUTS: [lam]
         }
     </style>
   <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [3000/3000 00:02<00:00 Sampling 2 chains, 0 divergences]
+  100.00% [3000/3000 00:01<00:00 Sampling 2 chains, 0 divergences]
 </div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 2 seconds.
-The acceptance probability does not match the target. It is 0.8907893747574612, but should be close to 0.8. Try to increase the number of tuning steps.
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 1 seconds.
 </pre></div>
 </div>
 </div>
 </div>
 <p>Although the specification of these models is similar, the sampling process is very different.</p>
-<p>I won’t go into the details of how MCMC works, but there are a few things you should be aware of:</p>
+<p>I won’t go into the details of how MCMC works, but here are a few things you should be aware of:</p>
 <ul class="simple">
-<li><p>Depending on the model, PyMC uses one of several MCMC methods; in this example, it the <a class="reference external" href="https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo#No_U-Turn_Sampler">No U-Turn Sampler</a> (NUTS), which is one of the most efficient and reliable methods we have.</p></li>
-<li><p>When the sampler starts, the first values it generates are usually not a representative sample from the posterior distribution, so these values are usually discarded.  This process is called “tuning”.</p></li>
-<li><p>Instead of using a single MCMC chain to generate a single sample, PyMC uses multiple chains.  We can compare results from multiple chains to make sure they are consistent.</p></li>
+<li><p>Depending on the model, PyMC uses one of several MCMC methods; in this example, it uses the <a class="reference external" href="https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo#No_U-Turn_Sampler">No U-Turn Sampler</a> (NUTS), which is one of the most efficient and reliable methods we have.</p></li>
+<li><p>When the sampler starts, the first values it generates are usually not a representative sample from the posterior distribution, so these values are discarded.  This process is called “tuning”.</p></li>
+<li><p>Instead of using a single MCMC chain to generate a single sample, PyMC uses multiple chains.  Then we can compare results from multiple chains to make sure they are consistent.</p></li>
 </ul>
-<p>Although we asked for a sample of 500, PyMC generated a sample of 2000, discarded half, and returned a sample of 1000.</p>
+<p>Although we asked for a sample of 500, PyMC generated two samples of 1000, discarded half of each, and returned a sample of 1000.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_post_pymc</span> <span class="o">=</span> <span class="n">trace2</span><span class="p">[</span><span class="s1">&#39;lam&#39;</span><span class="p">]</span>
@@ -779,7 +783,7 @@ The acceptance probability does not match the target. It is 0.8907893747574612, 
 <div class="section" id="posterior-predictive-distribution">
 <h2>Posterior Predictive Distribution<a class="headerlink" href="#posterior-predictive-distribution" title="Permalink to this headline">¶</a></h2>
 <p>Finally, to sample from the posterior predictive distribution, we can use <code class="docutils literal notranslate"><span class="pre">sample_posterior_predictive</span></code>:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model2</span><span class="p">:</span>
     <span class="n">post_pred</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_posterior_predictive</span><span class="p">(</span><span class="n">trace2</span><span class="p">)</span>
@@ -806,7 +810,7 @@ The acceptance probability does not match the target. It is 0.8907893747574612, 
 </div>
 </div></div>
 </div>
-<p>The result is a dictionary, like <code class="docutils literal notranslate"><span class="pre">trace2</span></code>, that contains a sample of <code class="docutils literal notranslate"><span class="pre">goals</span></code>.</p>
+<p>The result is a dictionary that contains a sample of <code class="docutils literal notranslate"><span class="pre">goals</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_post_pred_pymc</span> <span class="o">=</span> <span class="n">post_pred</span><span class="p">[</span><span class="s1">&#39;goals&#39;</span><span class="p">]</span>
@@ -850,9 +854,9 @@ The acceptance probability does not match the target. It is 0.8907893747574612, 
 </div>
 </div>
 <p>Again, the results are consistent.
-So we’ve established that we can compute the same results using a grid approximation or PyMC.
-But it might not be clear why.</p>
-<p>In this example, the grid algorithm requires less computation, and the result is a pretty good approximation of the posterior distribution, rather than a sample.</p>
+So we’ve established that we can compute the same results using a grid approximation or PyMC.</p>
+<p>But it might not be clear why.
+In this example, the grid algorithm requires less computation, and the result is a pretty good approximation of the posterior distribution, rather than a sample.</p>
 <p>But this is a simple model with just one parameter.
 In fact, we could have solved it with even less computation, using a conjugate prior.</p>
 <p>The power of PyMC will be clearer with a more complex model.</p>
@@ -876,7 +880,7 @@ by Esteban Ortiz-Ospina and Max Roser, which discusses (among many other things)
 The top of the ladder represents the best possible life for you and the bottom of the ladder represents the worst possible life for you.
 On which step of the ladder would you say you personally feel you stand at this time?</p>
 </div></blockquote>
-<p>I’ll refer to the responses as a measure of “happiness”, but it might be more precise to think of them as a measure of satisfaction with quality of life.</p>
+<p>I’ll refer to the responses as “happiness”, but it might be more precise to think of them as a measure of satisfaction with quality of life.</p>
 <p>In the next few sections we’ll replicate the analysis in this report using Bayesian regression.</p>
 <p>We can read the into a Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
 <div class="cell docutils container">
@@ -1016,9 +1020,9 @@ On which step of the ladder would you say you personally feel you stand at this 
 </div>
 </div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> has one row for each of 153 countries and 20 columns.
-It includes countries from the following regions:</p>
-<div class="cell docutils container">
+<p>The <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> has one row for each of 153 countries and one column for each of 20 measurements.</p>
+<p>It includes countries from the following regions:</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Regional indicator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 </pre></div>
@@ -1028,8 +1032,8 @@ It includes countries from the following regions:</p>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sub-Saharan Africa                    39
 Latin America and Caribbean           21
 Western Europe                        21
-Central and Eastern Europe            17
 Middle East and North Africa          17
+Central and Eastern Europe            17
 Commonwealth of Independent States    12
 Southeast Asia                         9
 South Asia                             7
@@ -1052,7 +1056,7 @@ Name: Regional indicator, dtype: int64
 <div class="section" id="simple-regression">
 <h2>Simple Regression<a class="headerlink" href="#simple-regression" title="Permalink to this headline">¶</a></h2>
 <p>To get started, let’s look at the relationship between happiness and income, as represented by gross domestic product (GDP) per person.</p>
-<p>The column named <code class="docutils literal notranslate"><span class="pre">'Logged</span> <span class="pre">GDP</span> <span class="pre">per</span> <span class="pre">capita'</span></code> represents the natural logarithm of GDP for each country, divided by population, corrected for purchasing power parity (PPP).</p>
+<p>The column named <code class="docutils literal notranslate"><span class="pre">'Logged</span> <span class="pre">GDP</span> <span class="pre">per</span> <span class="pre">capita'</span></code> represents the natural logarithm of GDP for each country, divided by population, corrected for <a class="reference external" href="https://en.wikipedia.org/wiki/Purchasing_power_parity">purchasing power parity</a> (PPP).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">log_gdp</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Logged GDP per capita&#39;</span><span class="p">]</span>
@@ -1073,7 +1077,7 @@ Name: Regional indicator, dtype: int64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap19_80_0.png" src="_images/chap19_80_0.png" />
+<img alt="_images/chap19_81_0.png" src="_images/chap19_81_0.png" />
 </div>
 </div>
 <p>It’s clear that there is a relationship between these variables: people in countries with higher GDP generally report higher levels of happiness.</p>
@@ -1098,7 +1102,7 @@ Name: Regional indicator, dtype: int64
 We’ll use the same regression model as in Section xxx:</p>
 <div class="math notranslate nohighlight">
 \[y = a x + b + \epsilon\]</div>
-<p>where <span class="math notranslate nohighlight">\(y\)</span> is the dependent variable (ladder score), <span class="math notranslate nohighlight">\(x\)</span> is the predictive variable (log GDP) and <span class="math notranslate nohighlight">\(\epsilon\)</span> is a series of random values from a normal distribution with standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
+<p>where <span class="math notranslate nohighlight">\(y\)</span> is the dependent variable (ladder score), <span class="math notranslate nohighlight">\(x\)</span> is the predictive variable (log GDP) and <span class="math notranslate nohighlight">\(\epsilon\)</span> is a series of values from a normal distribution with standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
 <p><span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> are the slope and intercept of the regression line.
 They are unknown parameters, so we will use the data to estimate them.</p>
 <p>The following is the PyMC specification of this model.</p>
@@ -1125,7 +1129,7 @@ They are unknown parameters, so we will use the data to estimate them.</p>
 <p>And <code class="docutils literal notranslate"><span class="pre">y</span></code> is a normal distribution with mean <code class="docutils literal notranslate"><span class="pre">y_est</span></code> and standard deviation <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
 <p>Notice how the data are included in the model:</p>
 <ul class="simple">
-<li><p>The values of predictive variable, <code class="docutils literal notranslate"><span class="pre">x_data</span></code>, are used to compute <code class="docutils literal notranslate"><span class="pre">y_est</span></code>.</p></li>
+<li><p>The values of the predictive variable, <code class="docutils literal notranslate"><span class="pre">x_data</span></code>, are used to compute <code class="docutils literal notranslate"><span class="pre">y_est</span></code>.</p></li>
 <li><p>The values of the dependent variable, <code class="docutils literal notranslate"><span class="pre">y_data</span></code> are provided as the observed values of <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p></li>
 </ul>
 <p>Now we can use this model to generate a sample from the posterior distribution.</p>
@@ -1158,9 +1162,9 @@ NUTS: [sigma, b, a]
         }
     </style>
   <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [3000/3000 00:05<00:00 Sampling 2 chains, 0 divergences]
+  100.00% [3000/3000 00:06<00:00 Sampling 2 chains, 0 divergences]
 </div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 6 seconds.
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 7 seconds.
 </pre></div>
 </div>
 </div>
@@ -1189,7 +1193,7 @@ Here’s the posterior distribution of the slope, <code class="docutils literal 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap19_91_0.png" src="_images/chap19_91_0.png" />
+<img alt="_images/chap19_92_0.png" src="_images/chap19_92_0.png" />
 </div>
 </div>
 <p>The mean of the sample is consistent with the slope we estimated with <code class="docutils literal notranslate"><span class="pre">linregress</span></code>.</p>
@@ -1201,7 +1205,7 @@ Here’s the posterior distribution of the slope, <code class="docutils literal 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: 0.7179616905297317
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: 0.7199022679338193
 Regression slope: 0.717738495630452
 </pre></div>
 </div>
@@ -1216,7 +1220,7 @@ Regression slope: 0.717738495630452
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap19_95_0.png" src="_images/chap19_95_0.png" />
+<img alt="_images/chap19_96_0.png" src="_images/chap19_96_0.png" />
 </div>
 </div>
 <p>Similarly, the mean of <code class="docutils literal notranslate"><span class="pre">b</span></code> is consistent with the intercept from the linear regression.</p>
@@ -1228,21 +1232,10 @@ Regression slope: 0.717738495630452
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: -1.2013312911048168
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: -1.2165270068417413
 Regression intercept: -1.1986460618088843
 </pre></div>
 </div>
-</div>
-</div>
-<p>Finally, we can check the marginal posterior distribution of <code class="docutils literal notranslate"><span class="pre">sigma</span></code></p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace3</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]);</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap19_99_0.png" src="_images/chap19_99_0.png" />
 </div>
 </div>
 <p>The simple regression model has only three parameters, so we could have used a grid algorithm.</p>
@@ -1362,8 +1355,7 @@ Even a coarse grid, with 20 points along each dimension, would have more than 25
 </table>
 </div></div></div>
 </div>
-<p>The predictive variables have different units.
-For example, log-GDP is in log-dollars, life expectancy is in years, and the other variables are on arbitrary scales.</p>
+<p>The predictive variables have different units: log-GDP is in log-dollars, life expectancy is in years, and the other variables are on arbitrary scales.</p>
 <p>To make these factors comparable, I’ll standardize the data so that each variable has mean 0 and standard deviation 1.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1446,9 +1438,9 @@ NUTS: [sigma, b6, b5, b4, b3, b2, b1, b0]
         }
     </style>
   <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [3000/3000 00:05<00:00 Sampling 2 chains, 0 divergences]
+  100.00% [3000/3000 00:04<00:00 Sampling 2 chains, 0 divergences]
 </div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 6 seconds.
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 4 seconds.
 </pre></div>
 </div>
 </div>
@@ -1461,7 +1453,7 @@ NUTS: [sigma, b6, b5, b4, b3, b2, b1, b0]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0016142961307664665
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0005062214664832086
 </pre></div>
 </div>
 </div>
@@ -1474,7 +1466,7 @@ NUTS: [sigma, b6, b5, b4, b3, b2, b1, b0]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.517690112311331
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5166106218467821
 </pre></div>
 </div>
 </div>
@@ -1495,6 +1487,12 @@ Here’s how we compute the posterior means.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">credible_interval</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute 94% credible interval.</span>
+<span class="sd">    </span>
+<span class="sd">    sample: sequence of quantities</span>
+<span class="sd">    </span>
+<span class="sd">    returns: tuple of two quantities</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ci</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">97</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ci</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 </pre></div>
@@ -1546,43 +1544,43 @@ Here’s how we compute the posterior means.</p>
   <tbody>
     <tr>
       <th>Logged GDP per capita</th>
-      <td>0.245</td>
-      <td>[0.08, 0.419]</td>
+      <td>0.246</td>
+      <td>[0.087, 0.415]</td>
     </tr>
     <tr>
       <th>Social support</th>
-      <td>0.225</td>
-      <td>[0.062, 0.389]</td>
+      <td>0.223</td>
+      <td>[0.074, 0.377]</td>
     </tr>
     <tr>
       <th>Healthy life expectancy</th>
-      <td>0.225</td>
-      <td>[0.062, 0.389]</td>
+      <td>0.223</td>
+      <td>[0.074, 0.377]</td>
     </tr>
     <tr>
       <th>Freedom to make life choices</th>
-      <td>0.191</td>
-      <td>[0.088, 0.293]</td>
+      <td>0.189</td>
+      <td>[0.086, 0.29]</td>
     </tr>
     <tr>
       <th>Generosity</th>
-      <td>0.055</td>
-      <td>[-0.034, 0.147]</td>
+      <td>0.057</td>
+      <td>[-0.022, 0.143]</td>
     </tr>
     <tr>
       <th>Perceptions of corruption</th>
       <td>-0.100</td>
-      <td>[-0.193, -0.002]</td>
+      <td>[-0.192, -0.012]</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
 <p>It looks like GDP has the strongest association with happiness (or satisfaction), followed by social support, life expectancy, and freedom.</p>
-<p>After controlling for those other factors, the parameters of the other factors are substantially smaller, and since the CI for generosity includes 0, it is plausible that generosity (at least as it was measured in this study) is not substantially related to happiness.</p>
+<p>After controlling for those other factors, the parameters of the other factors are substantially smaller, and since the CI for generosity includes 0, it is plausible that generosity is not substantially related to happiness, at least as they were measured in this study.</p>
 <p>This example demonstrates the power of MCMC to handle models with more than a few parameters.
 But it does not really demonstrate the power of Bayesian regression.</p>
-<p>If the goal of a regression model is to estimate parameters, there is no great advantage to Bayesian regression, compared to conventions least squares regression.</p>
+<p>If the goal of a regression model is to estimate parameters, there is no great advantage to Bayesian regression compared to conventional least squares regression.</p>
 <p>Bayesian methods are more useful if we plan to use the posterior distribution of the parameters as part of a decision analysis process.</p>
 </div>
 <div class="section" id="summary">
@@ -1592,7 +1590,7 @@ But it does not really demonstrate the power of Bayesian regression.</p>
 <p>MCMC is more powerful than grid methods, but that power comes with some disadvantages:</p>
 <ul class="simple">
 <li><p>I find it easier to develop models incrementally using grid algorithms, checking intermediate results along the way.  With PyMC, it is not as easy to be confident that you have specified a model correctly.</p></li>
-<li><p>MCMC algorithms are fiddly.  The same model might behave well with some priors and less well with others.  And the sampling process often produces warnings about tuning steps, divergences, “rhat statistics”, acceptance rates, and effective samples.  It takes some expertise to diagnose and correct these issues.</p></li>
+<li><p>MCMC algorithms are fiddly.  The same model might behave well with some priors and less well with others.  And the sampling process often produces warnings about tuning steps, divergences, “r-hat statistics”, acceptance rates, and effective samples.  It takes some expertise to diagnose and correct these issues.</p></li>
 </ul>
 <p>For these reasons, I recommend a model development process that starts with grid algorithms and resorts to MCMC if necessary.
 As we saw in the previous chapters, you can solve a lot of real-world problems with grid methods.
@@ -1604,7 +1602,7 @@ In the exercises, you will have a chance to practice.</p>
 <h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
 <p><strong>Exercise:</strong> As a warmup, let’s use PyMC to solve the Euro problem.
 Suppose we spin a coin 250 times and it comes up heads 140 times.
-What is the posterior distribution of <span class="math notranslate nohighlight">\(x\)</span>, the probability of heads.</p>
+What is the posterior distribution of <span class="math notranslate nohighlight">\(x\)</span>, the probability of heads?</p>
 <p>For the prior, use a beta distribution with parameters <span class="math notranslate nohighlight">\(\alpha=1\)</span> and <span class="math notranslate nohighlight">\(\beta=1\)</span>.</p>
 <p>See <a class="reference external" href="https://docs.pymc.io/api/distributions/continuous.html">the PyMC documentation</a> for the list of continuous distributions.</p>
 <div class="cell tag_hide-cell docutils container">
@@ -1649,7 +1647,7 @@ NUTS: [x]
 </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 1 seconds.
 </pre></div>
 </div>
-<img alt="_images/chap19_133_3.png" src="_images/chap19_133_3.png" />
+<img alt="_images/chap19_135_3.png" src="_images/chap19_135_3.png" />
 </div>
 </div>
 <p><strong>Exercise:</strong> Now let’s use PyMC to replicate the solution to the Grizzly Bear problem in Section xxx, which is based on the hypergeometric distribution.</p>
@@ -1701,7 +1699,7 @@ Metropolis: [N]
 The number of effective samples is smaller than 25% for some parameters.
 </pre></div>
 </div>
-<img alt="_images/chap19_135_3.png" src="_images/chap19_135_3.png" />
+<img alt="_images/chap19_137_3.png" src="_images/chap19_137_3.png" />
 </div>
 </div>
 <p><strong>Exercise:</strong> In Chapter xxx we generated a sample from a Weibull distribution with <span class="math notranslate nohighlight">\(\lambda=3\)</span> and <span class="math notranslate nohighlight">\(k=0.8\)</span>.
@@ -1753,92 +1751,19 @@ NUTS: [k, lam]
         }
     </style>
   <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [4000/4000 00:02<00:00 Sampling 2 chains, 1 divergences]
+  100.00% [4000/4000 00:02<00:00 Sampling 2 chains, 56 divergences]
 </div>
 </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 2 seconds.
-There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
+There were 56 divergences after tuning. Increase `target_accept` or reparameterize.
+The acceptance probability does not match the target. It is 0.5270630784410014, but should be close to 0.8. Try to increase the number of tuning steps.
 </pre></div>
 </div>
-<img alt="_images/chap19_139_3.png" src="_images/chap19_139_3.png" />
+<img alt="_images/chap19_141_3.png" src="_images/chap19_141_3.png" />
 </div>
 </div>
 <p><strong>Exercise:</strong> In Chapter xxx we used data from a reading test to estimate the parameters of a normal distribution.</p>
-<p>Here’s the data again.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;drp_scores.csv&#39;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Treatment</th>
-      <th>Response</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>Treated</td>
-      <td>24</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Treated</td>
-      <td>43</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Treated</td>
-      <td>58</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Treated</td>
-      <td>71</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Treated</td>
-      <td>43</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>I’ll use <code class="docutils literal notranslate"><span class="pre">groupby</span></code> to separate the treated group from the control group.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Treatment&#39;</span><span class="p">)</span>
-<span class="n">responses</span> <span class="o">=</span> <span class="p">{}</span>
-
-<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">:</span>
-    <span class="n">responses</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;Response&#39;</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Let’s estimate the parameters for the treated group.</p>
+<p>Make a model that defines uniform prior distributions for <code class="docutils literal notranslate"><span class="pre">mu</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma</span></code> and uses the data to estimate their posterior distributions.</p>
+<p>Now estimate the parameters for the treated group.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">responses</span><span class="p">[</span><span class="s1">&#39;Treated&#39;</span><span class="p">]</span>
@@ -1846,7 +1771,6 @@ There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 </div>
 </div>
 </div>
-<p>Make a model that defines uniform prior distributions for <code class="docutils literal notranslate"><span class="pre">mu</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma</span></code> and uses the data to estimate their posterior distributions.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1887,7 +1811,7 @@ NUTS: [sigma, mu]
 </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 2 seconds.
 </pre></div>
 </div>
-<img alt="_images/chap19_148_3.png" src="_images/chap19_148_3.png" />
+<img alt="_images/chap19_150_3.png" src="_images/chap19_150_3.png" />
 </div>
 </div>
 <p><strong>Exercise:</strong> In Chapter xxx we used a grid algorithm to solve the Lincoln Index problem as presented by John D. Cook:</p>
@@ -1902,25 +1826,7 @@ tester. But if you have two testers, you can get a good idea, even if
 you don’t know how skilled the testers are.”</p>
 </div></blockquote>
 <p>Suppose the first tester finds 20 bugs, the second finds 15, and they
-find 3 in common; let’s use PyMC to estimate the number of bugs.</p>
-<p>I’ll use the following notation for the data:</p>
-<ul class="simple">
-<li><p>k11 is the number of bugs found by both testers,</p></li>
-<li><p>k10 is the number of bugs found by the first tester but not the second,</p></li>
-<li><p>k01 is the number of bugs found by the second tester but not the first, and</p></li>
-<li><p>k00 is the unknown number of undiscovered bugs.</p></li>
-</ul>
-<p>Here are the values for all but <code class="docutils literal notranslate"><span class="pre">k00</span></code>:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k10</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">-</span> <span class="mi">3</span>
-<span class="n">k01</span> <span class="o">=</span> <span class="mi">15</span> <span class="o">-</span> <span class="mi">3</span>
-<span class="n">k11</span> <span class="o">=</span> <span class="mi">3</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>In total, 32 bugs have been discovered:</p>
+find 3 in common; use PyMC to estimate the number of bugs.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_seen</span> <span class="o">=</span> <span class="n">k01</span> <span class="o">+</span> <span class="n">k10</span> <span class="o">+</span> <span class="n">k11</span>
@@ -1934,17 +1840,6 @@ find 3 in common; let’s use PyMC to estimate the number of bugs.</p>
 </div>
 </div>
 </div>
-<p>See if you can write a PyMC model that solves this problem.</p>
-<p>Note: This one is more difficult that some of the previous ones.  One of the challenges is that the data includes <code class="docutils literal notranslate"><span class="pre">k00</span></code>, which depends on <code class="docutils literal notranslate"><span class="pre">N</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">k00</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">num_seen</span>
-</pre></div>
-</div>
-<p>So we have to construct the data as part of the model.
-To do that, we can use <code class="docutils literal notranslate"><span class="pre">pm.math.stack</span></code>, which makes an array:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">k00</span><span class="p">,</span> <span class="n">k01</span><span class="p">,</span> <span class="n">k10</span><span class="p">,</span> <span class="n">k11</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>Finally, you might find it helpful to use <code class="docutils literal notranslate"><span class="pre">pm.Multinomial</span></code>.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1998,7 +1893,7 @@ CompoundStep
   <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
   100.00% [4000/4000 00:03<00:00 Sampling 2 chains, 0 divergences]
 </div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 4 seconds.
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 3 seconds.
 The rhat statistic is larger than 1.05 for some parameters. This indicates slight problems during sampling.
 The estimated number of effective samples is smaller than 200 for some parameters.
 </pre></div>
@@ -2015,7 +1910,7 @@ The estimated number of effective samples is smaller than 200 for some parameter
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap19_156_0.png" src="_images/chap19_156_0.png" />
+<img alt="_images/chap19_159_0.png" src="_images/chap19_159_0.png" />
 </div>
 </div>
 </div>
