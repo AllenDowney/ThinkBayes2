@@ -362,7 +362,7 @@ Again, some of the examples will seem silly, but some of them, like the German T
 in Frederick Mosteller’s, <a class="reference external" href="https://store.doverpublications.com/0486653552.html"><em>Fifty Challenging Problems in
 Probability with Solutions</em></a>:</p>
 <blockquote>
-<div><p>“A railroad numbers its locomotives in order <span class="math notranslate nohighlight">\(1..N\)</span>.  One day you see a locomotive with the number 60.  Estimate how many locomotives the railroad has.”</p>
+<div><p>“A railroad numbers its locomotives in order 1..N.  One day you see a locomotive with the number 60.  Estimate how many locomotives the railroad has.”</p>
 </div></blockquote>
 <p>Based on this observation, we know the railroad has 60 or more
 locomotives.  But how many more?  To apply Bayesian reasoning, we
@@ -374,7 +374,7 @@ can break this problem into two steps:</p>
 <p>The answer to the first question is the prior.  The answer to the
 second is the likelihood.</p>
 <p>We don’t have much basis to choose a prior, so we’ll start with
-something simple and then consider alternatives.<br />
+something simple and then consider alternatives.
 Let’s assume that <span class="math notranslate nohighlight">\(N\)</span> is equally likely to be any value from 1 to 1000.</p>
 <p>Here’s the prior distribution:</p>
 <div class="cell docutils container">
@@ -395,11 +395,7 @@ If we assume that we are equally likely to see any locomotive, the chance of see
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_train</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Update a pmf based on new data.</span>
-<span class="sd">    </span>
-<span class="sd">    pmf: Pmf of possible numbers of trains</span>
-<span class="sd">    data: integer train #</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Update pmf based on new data.&quot;&quot;&quot;</span>
     <span class="n">hypos</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">qs</span>
     <span class="n">likelihood</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">hypos</span>
     <span class="n">impossible</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">hypos</span><span class="p">)</span>
@@ -427,15 +423,15 @@ In terms of likelihood, the train problem is the same as the dice problem.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
 
-<span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior after train 60&#39;</span><span class="p">)</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior after train 60&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of trains&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
-         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Train Problem&#39;</span><span class="p">)</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_12_0.png" src="_images/chap05_12_0.png" />
+<img alt="_images/chap05_13_0.png" src="_images/chap05_13_0.png" />
 </div>
 </div>
 <p>Not surprisingly, all values of <span class="math notranslate nohighlight">\(N\)</span> below 60 have been eliminated.</p>
@@ -458,7 +454,8 @@ the answer exactly right, you should guess 60.</p>
 <p>But maybe that’s not the right goal.
 An alternative is to compute the mean of the posterior distribution.
 Given a set of possible quantities, <span class="math notranslate nohighlight">\(q_i\)</span>, and their probabilities, <span class="math notranslate nohighlight">\(p_i\)</span>, the mean of the distribution is:</p>
-<p><span class="math notranslate nohighlight">\(\mathrm{mean} = \sum_i p_i q_i\)</span></p>
+<div class="math notranslate nohighlight">
+\[\mathrm{mean} = \sum_i p_i q_i\]</div>
 <p>Which we can compute like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -485,16 +482,16 @@ Given a set of possible quantities, <span class="math notranslate nohighlight">\
 </div>
 </div>
 </div>
-<p>The mean of the posterior is 333, so that might be a good guess if you want to minimize error.<br />
+<p>The mean of the posterior is 333, so that might be a good guess if you want to minimize error.
 If you played this guessing game over and over, using the mean of the posterior as your estimate would minimize the <a class="reference external" href="http://en.wikipedia.org/wiki/Minimum_mean_square_error">mean squared error</a> over the long run.</p>
 </div>
 <div class="section" id="sensitivity-to-the-prior">
 <h2>Sensitivity to the prior<a class="headerlink" href="#sensitivity-to-the-prior" title="Permalink to this headline">¶</a></h2>
-<p>The prior I used in the previous section is uniform from 1 to 1000, but I offered no justification for choosing a uniform distribution or that particular upper bound.</p>
-<p>We might wonder whether the posterior distribution is sensitive to the prior.
+<p>The prior I used in the previous section is uniform from 1 to 1000, but I offered no justification for choosing a uniform distribution or that particular upper bound.
+We might wonder whether the posterior distribution is sensitive to the prior.
 With so little data—only one observation—it is.</p>
-<p>Here’s what happens as we vary the upper bound:</p>
-<div class="cell docutils container">
+<p>This table shows what happens as we vary the upper bound:</p>
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
@@ -630,22 +627,19 @@ For example, suppose that in addition to train 60 we also see trains 30 and 90.<
 <div class="section" id="power-law-prior">
 <h2>Power law prior<a class="headerlink" href="#power-law-prior" title="Permalink to this headline">¶</a></h2>
 <p>If more data are not available, another option is to improve the
-priors by gathering more background information.<br />
+priors by gathering more background information.
 It is probably not reasonable to assume that a train-operating company with 1000 locomotives is just as likely as a company with only 1.</p>
 <p>With some effort, we could probably find a list of companies that
 operate locomotives in the area of observation.
 Or we could interview an expert in rail shipping to gather information about the typical size of companies.</p>
 <p>But even without getting into the specifics of railroad economics, we
-can make some educated guesses.<br />
+can make some educated guesses.
 In most fields, there are many small companies, fewer medium-sized companies, and only one or two very large companies.</p>
-<p>In fact, the distribution of company sizes tends to follow a power law, as Robert Axtell reports in <em>Science</em> (<a class="reference external" href="http://www.sciencemag.org/content/293/5536/1818.full.pdf">official site</a>, <a class="reference external" href="https://sci-hub.tw/10.1126/science.1062081">available here</a>)
-).</p>
+<p>In fact, the distribution of company sizes tends to follow a power law, as Robert Axtell reports in <em>Science</em> (<a class="reference external" href="http://www.sciencemag.org/content/293/5536/1818.full.pdf">official site</a>, <a class="reference external" href="https://sci-hub.tw/10.1126/science.1062081">available here</a>).</p>
 <p>This law suggests that if there are 1000 companies with fewer than
 10 locomotives, there might be 100 companies with 100 locomotives,
 10 companies with 1000, and possibly one company with 10,000 locomotives.</p>
-<p>Mathematically, a power law means that the number of companies with a given size is inversely proportional to size, or</p>
-<p><span class="math notranslate nohighlight">\( \mathrm{PMF}(N) \sim \left( \frac{1}{N} \right)^{\alpha} \)</span></p>
-<p>where <span class="math notranslate nohighlight">\(\mathrm{PMF}(N)\)</span> is the probability mass function of <span class="math notranslate nohighlight">\(N\)</span> and <span class="math notranslate nohighlight">\(\alpha\)</span> is a parameter that is often near 1.</p>
+<p>Mathematically, a power law means that the number of companies with a given size, <span class="math notranslate nohighlight">\(N\)</span>, is proportional to <span class="math notranslate nohighlight">\((1/N)^{\alpha}\)</span>, where <span class="math notranslate nohighlight">\(\alpha\)</span> is a parameter that is often near 1.</p>
 <p>We can construct a power law prior like this:</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
@@ -677,27 +671,26 @@ In most fields, there are many small companies, fewer medium-sized companies, an
 </div>
 </div>
 </div>
-<p>Here’s what a power law prior looks like, compared to the uniform prior</p>
-<div class="cell docutils container">
+<p>Here’s what a power law prior looks like, compared to the uniform prior:</p>
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">uniform</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="n">power</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of trains&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
-         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Train Problem&#39;</span><span class="p">)</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior distributions&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_30_0.png" src="_images/chap05_30_0.png" />
+<img alt="_images/chap05_31_0.png" src="_images/chap05_31_0.png" />
 </div>
 </div>
 <p>Here’s the update for both priors.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">60</span><span class="p">]</span>
-
 <span class="n">update_train</span><span class="p">(</span><span class="n">uniform</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
 <span class="n">update_train</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
 </pre></div>
@@ -712,12 +705,12 @@ In most fields, there are many small companies, fewer medium-sized companies, an
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of trains&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
-         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Train Problem&#39;</span><span class="p">)</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distributions&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_34_0.png" src="_images/chap05_34_0.png" />
+<img alt="_images/chap05_35_0.png" src="_images/chap05_35_0.png" />
 </div>
 </div>
 <p>The power law gives less prior probability to high values, which yields lower posterior means, and less sensitivity to the upper bound.</p>
@@ -820,13 +813,7 @@ Here’s a function that does it:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">quantile</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">prob</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute a quantile.</span>
-<span class="sd">    </span>
-<span class="sd">    pmf: Pmf representing a normalized distribution</span>
-<span class="sd">    prob: float probability</span>
-<span class="sd">    </span>
-<span class="sd">    returns: quantity from the distribution</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Compute a quantile with the given prob.&quot;&quot;&quot;</span>
     <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pmf</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">total</span> <span class="o">+=</span> <span class="n">p</span>
@@ -915,7 +902,7 @@ substantially more accurate.</p>
 equipment, yielding accurate and actionable economic intelligence.</p>
 <p>The German tank problem is historically interesting; it is also a nice
 example of real-world application of statistical estimation.</p>
-<p>For more on this problem, see <a class="reference external" href="https://en.wikipedia.org/wiki/German_tank_problem">this Wikipedia page</a> and Ruggles and Brodie, “An Empirical Approach to Economic Intelligence in World War II”, <em>Journal of the American Statistical Association</em>, March 1947, <a class="reference external" href="https://www.cia.gov/library/readingroom/docs/CIA-RDP79R01001A001300010013-3.pdf">available here</a>)</p>
+<p>For more on this problem, see <a class="reference external" href="https://en.wikipedia.org/wiki/German_tank_problem">this Wikipedia page</a> and Ruggles and Brodie, “An Empirical Approach to Economic Intelligence in World War II”, <em>Journal of the American Statistical Association</em>, March 1947, <a class="reference external" href="https://www.cia.gov/library/readingroom/docs/CIA-RDP79R01001A001300010013-3.pdf">available here</a>.</p>
 </div>
 <div class="section" id="informative-priors">
 <h2>Informative priors<a class="headerlink" href="#informative-priors" title="Permalink to this headline">¶</a></h2>
@@ -923,11 +910,11 @@ example of real-world application of statistical estimation.</p>
 distributions.  Some recommend choosing the prior that best represents
 background information about the problem; in that case the prior
 is said to be <strong>informative</strong>.  The problem with using an informative
-prior is that people might use different background information (or
-interpret it differently).  So informative priors might seem arbitrary.</p>
+prior is that people might have different information or
+interpret it differently.  So informative priors might seem arbitrary.</p>
 <p>The alternative is a so-called <strong>uninformative prior</strong>, which is
 intended to be as unrestricted as possible, in order to let the data
-speak for themselves.  In some cases you can identify a unique prior
+speak for itself.  In some cases you can identify a unique prior
 that has some desirable property, like representing minimal prior
 information about the estimated quantity.</p>
 <p>Uninformative priors are appealing because they seem more
@@ -937,11 +924,9 @@ modeling decisions.  Choosing the prior is one of those decisions, but
 it is not the only one, and it might not even be the most subjective.
 So even if an uninformative prior is more objective, the entire analysis is still subjective.</p>
 <p>Also, for most practical problems, you are likely to be in one of two
-regimes: either you have a lot of data or not very much.  If you have
-a lot of data, the choice of the prior doesn’t matter very much;
-informative and uninformative priors yield almost the same results.</p>
-<p>But if, as in the train problem, you don’t have much data,
-using relevant background information (like the power law distribution) makes a big difference.</p>
+situations: either you have a lot of data or not very much.  If you have a lot of data, the choice of the prior doesn’t matter;
+informative and uninformative priors yield almost the same results.
+If you don’t have much data, using relevant background information (like the power law distribution) makes a big difference.</p>
 <p>And if, as in the German tank problem, you have to make life and death
 decisions based on your results, you should probably use all of the
 information at your disposal, rather than maintaining the illusion of
@@ -949,8 +934,8 @@ objectivity by pretending to know less than you do.</p>
 </div>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
-<p>This chapter introduces the train problem, which turns out to have the same likelihood function as the dice problem, and which can be applied to the German Tank problem.</p>
-<p>In all of these examples, the goal is to estimate a count, or the size of a population.</p>
+<p>This chapter introduces the train problem, which turns out to have the same likelihood function as the dice problem, and which can be applied to the German Tank problem.
+In all of these examples, the goal is to estimate a count, or the size of a population.</p>
 <p>In the next chapter, I’ll introduce “odds” as an alternative to probabilities, and Bayes’s Rule as another form of Bayes’s Theorem.
 We’ll compute distributions of sums and products, and use them to estimate the number of Members of Congress who are corrupt, among other problems.</p>
 <p>But first, you might want to work on these exercises.</p>
@@ -965,8 +950,8 @@ It would take too long to count, so you try an experiment:</p>
 <li><p>You ask how many were born on May 23 and 1 person raises their hand.</p></li>
 <li><p>Finally, you ask how many were born on August 1, and no one raises their hand.</p></li>
 </ul>
-<p>How many people are in the audience?  What is the probability that there are more than 1200 people.</p>
-<p>Hint: Remember the binomial distribution.</p>
+<p>How many people are in the audience?  What is the probability that there are more than 1200 people.
+Hint: Remember the binomial distribution.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1245,8 +1230,9 @@ It would take too long to count, so you try an experiment:</p>
 </div>
 </div>
 <p><strong>Exercise:</strong> If I chose a random adult in the U.S., what is the probability that they have a sibling?  To be precise, what is the probability that their mother has had at least one other child.</p>
-<p><a class="reference external" href="https://www.pewsocialtrends.org/2015/05/07/family-size-among-mothers/">This article from the Pew Research Center</a> provides some relevant data.  From it, I extracted the following distribution of family size for mothers in the U.S. who were 40-44 years old in 2014:</p>
-<div class="cell docutils container">
+<p><a class="reference external" href="https://www.pewsocialtrends.org/2015/05/07/family-size-among-mothers/">This article from the Pew Research Center</a> provides some relevant data.</p>
+<p>From it, I extracted the following distribution of family size for mothers in the U.S. who were 40-44 years old in 2014:</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -1262,7 +1248,7 @@ It would take too long to count, so you try an experiment:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_69_0.png" src="_images/chap05_69_0.png" />
+<img alt="_images/chap05_70_0.png" src="_images/chap05_70_0.png" />
 </div>
 </div>
 <p>For simplicity, let’s assume that all families in the 4+ category have exactly 4 children.</p>
