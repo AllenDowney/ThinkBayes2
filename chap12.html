@@ -299,8 +299,8 @@
         <nav id="bd-toc-nav">
             <ul class="nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#distributions-of-measurements">
-   Distributions of measurements
+  <a class="reference internal nav-link" href="#penguin-data">
+   Penguin Data
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -359,7 +359,9 @@
 <p>Classification might be the most well-known application of Bayesian methods, made famous in the 1990s as the basis of the first generation of <a class="reference external" href="https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering">spam filters</a>.</p>
 <p>In this chapter, I’ll demonstrate Bayesian classification using data collected and made available by Dr. Kristen Gorman at the Palmer Long-Term Ecological Research Station in Antarctica (see Gorman, Williams, and Fraser, <a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081">“Ecological Sexual Dimorphism and Environmental Variability within a Community of Antarctic Penguins (Genus <em>Pygoscelis</em>)”</a>, March 2014).
 We’ll use this data to classify penguins by species.</p>
-<p>The dataset contains one row for each penguin and one column for each variable, including the measurements we will use for classification.</p>
+<div class="section" id="penguin-data">
+<h2>Penguin Data<a class="headerlink" href="#penguin-data" title="Permalink to this headline">¶</a></h2>
+<p>The penguin dataset is available in a CSV file.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -375,7 +377,8 @@ We’ll use this data to classify penguins by species.</p>
 </div>
 </div>
 </div>
-<div class="cell tag_hide-output docutils container">
+<p>It contains one row for each penguin and one column for each variable.</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -533,34 +536,15 @@ We’ll use this data to classify penguins by species.</p>
 <li><p>Culmen Depth in millimeters.</p></li>
 </ul>
 <p>If you are not familiar with the word “culmen”, it refers to the <a class="reference external" href="https://en.wikipedia.org/wiki/Bird_measurement#Culmen">top margin of the beak</a>.</p>
-<div class="section" id="distributions-of-measurements">
-<h2>Distributions of measurements<a class="headerlink" href="#distributions-of-measurements" title="Permalink to this headline">¶</a></h2>
 <p>These measurements will be most useful for classification if there are substantial differences between species and small variation within species.  To see whether that is true, and to what degree, I’ll plot cumulative distribution functions (CDFs) of each measurement for each species.</p>
-<p>For convenience, I’ll create a new column called <code class="docutils literal notranslate"><span class="pre">Species2</span></code> that contains a shorter version of the species names.</p>
+<p>The following function takes the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> and a column name.
+It returns a dictionary that maps from each species name to a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> of the values in the column named <code class="docutils literal notranslate"><span class="pre">colname</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">shorten</span><span class="p">(</span><span class="n">species</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">species</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-
-<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Species2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Species&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">shorten</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>The following function takes the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> and a column name, and returns a dictionary that maps from each species name to a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> of the values in the given column.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_cdf_map</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;Species2&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Make a CDF for each species.</span>
-<span class="sd">    </span>
-<span class="sd">    df: DataFrame</span>
-<span class="sd">    varname: string column name</span>
-<span class="sd">    by: string column name</span>
-<span class="sd">    </span>
-<span class="sd">    returns: dictionary from species name to Cdf</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_cdf_map</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">colname</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;Species2&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a CDF for each species.&quot;&quot;&quot;</span>
     <span class="n">cdf_map</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="p">)[</span><span class="n">varname</span><span class="p">]</span>
+    <span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="p">)[</span><span class="n">colname</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">species</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">:</span>
         <span class="n">cdf_map</span><span class="p">[</span><span class="n">species</span><span class="p">]</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">species</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cdf_map</span>
@@ -574,21 +558,21 @@ We’ll use this data to classify penguins by species.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
 <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
 
-<span class="k">def</span> <span class="nf">plot_cdfs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;Species2&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">plot_cdfs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">colname</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;Species2&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Make a CDF for each species.</span>
 <span class="sd">    </span>
 <span class="sd">    df: DataFrame</span>
-<span class="sd">    varname: string column name</span>
+<span class="sd">    colname: string column name</span>
 <span class="sd">    by: string column name</span>
 
 <span class="sd">    returns: dictionary from species name to Cdf</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cdf_map</span> <span class="o">=</span> <span class="n">make_cdf_map</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span> <span class="n">by</span><span class="p">)</span>
+    <span class="n">cdf_map</span> <span class="o">=</span> <span class="n">make_cdf_map</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">colname</span><span class="p">,</span> <span class="n">by</span><span class="p">)</span>
     
     <span class="k">for</span> <span class="n">species</span><span class="p">,</span> <span class="n">cdf</span> <span class="ow">in</span> <span class="n">cdf_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">cdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     
-    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="n">varname</span><span class="p">,</span>
+    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="n">colname</span><span class="p">,</span>
              <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -597,46 +581,35 @@ We’ll use this data to classify penguins by species.</p>
 <p>Here’s what the distributions look like for culmen length.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">varname</span> <span class="o">=</span> <span class="s1">&#39;Culmen Length (mm)&#39;</span>
-<span class="n">plot_cdfs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">varname</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">colname</span> <span class="o">=</span> <span class="s1">&#39;Culmen Length (mm)&#39;</span>
+<span class="n">plot_cdfs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">colname</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap12_25_0.png" src="_images/chap12_25_0.png" />
+<img alt="_images/chap12_26_0.png" src="_images/chap12_26_0.png" />
 </div>
 </div>
 <p>It looks like we can use culmen length to identify  Adélie penguins, but the distributions for the other two species almost entirely overlap.</p>
 <p>Here are the distributions for flipper length.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">varname</span> <span class="o">=</span> <span class="s1">&#39;Flipper Length (mm)&#39;</span>
-<span class="n">plot_cdfs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">varname</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">colname</span> <span class="o">=</span> <span class="s1">&#39;Flipper Length (mm)&#39;</span>
+<span class="n">plot_cdfs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">colname</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap12_27_0.png" src="_images/chap12_27_0.png" />
+<img alt="_images/chap12_28_0.png" src="_images/chap12_28_0.png" />
 </div>
 </div>
 <p>Using flipper length, we can distinguish Gentoo penguins from the other two species.  So with just these two features, it seems like we should be able to classify penguins with some accuracy.</p>
+<p>All of these CDFs show the sigmoid shape characteristic of the normal distribution;  I will take advantage of that observation in the next section.</p>
 <p>Here are the distributions for culmen depth.</p>
-<div class="cell tag_hide-input docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">varname</span> <span class="o">=</span> <span class="s1">&#39;Culmen Depth (mm)&#39;</span>
-<span class="n">plot_cdfs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">varname</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap12_29_0.png" src="_images/chap12_29_0.png" />
-</div>
-</div>
-<p>And here are the distributions of body mass.</p>
-<div class="cell tag_hide-input docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">varname</span> <span class="o">=</span> <span class="s1">&#39;Body Mass (g)&#39;</span>
-<span class="n">plot_cdfs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">varname</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">colname</span> <span class="o">=</span> <span class="s1">&#39;Culmen Depth (mm)&#39;</span>
+<span class="n">plot_cdfs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">colname</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -644,13 +617,23 @@ We’ll use this data to classify penguins by species.</p>
 <img alt="_images/chap12_31_0.png" src="_images/chap12_31_0.png" />
 </div>
 </div>
+<p>And here are the distributions of body mass.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">colname</span> <span class="o">=</span> <span class="s1">&#39;Body Mass (g)&#39;</span>
+<span class="n">plot_cdfs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">colname</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap12_33_0.png" src="_images/chap12_33_0.png" />
+</div>
+</div>
 <p>Culmen depth and body mass distinguish Gentoo penguins from the other two species, but these features might not add a lot of additional information, beyond what we get from flipper length and culmen length.</p>
-<p>All of these CDFs show the sigmoid shape characteristic of the normal distribution;  I will take advantage of that observation in the next section.</p>
 </div>
 <div class="section" id="normal-models">
 <h2>Normal models<a class="headerlink" href="#normal-models" title="Permalink to this headline">¶</a></h2>
-<p>Now let’s use these features to classify penguins.<br />
-We’ll proceed in the usual Bayesian way:</p>
+<p>Let’s use these features to classify penguins. We’ll proceed in the usual Bayesian way:</p>
 <ol class="simple">
 <li><p>Define a prior distribution with the three possible species and a prior probability for each,</p></li>
 <li><p>Compute the likelihood of the data for each hypothetical species, and then</p></li>
@@ -663,17 +646,10 @@ We’ll proceed in the usual Bayesian way:</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
 
-<span class="k">def</span> <span class="nf">make_norm_map</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;Species2&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Make a map from species to norm object.</span>
-<span class="sd">    </span>
-<span class="sd">    df: DataFrame</span>
-<span class="sd">    varname: string column name</span>
-<span class="sd">    by: string column name</span>
-
-<span class="sd">    returns: dictionary from species name to norm object</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">make_norm_map</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">colname</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;Species2&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a map from species to norm object.&quot;&quot;&quot;</span>
     <span class="n">norm_map</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="p">)[</span><span class="n">varname</span><span class="p">]</span>
+    <span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="p">)[</span><span class="n">colname</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">species</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">:</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="n">std</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
@@ -687,29 +663,27 @@ We’ll proceed in the usual Bayesian way:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">flipper_map</span> <span class="o">=</span> <span class="n">make_norm_map</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Flipper Length (mm)&#39;</span><span class="p">)</span>
-<span class="n">flipper_map</span>
+<span class="n">flipper_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;Adelie&#39;: &lt;scipy.stats._distn_infrastructure.rv_frozen at 0x7f9e7e322d90&gt;,
- &#39;Chinstrap&#39;: &lt;scipy.stats._distn_infrastructure.rv_frozen at 0x7f9e7e3b6310&gt;,
- &#39;Gentoo&#39;: &lt;scipy.stats._distn_infrastructure.rv_frozen at 0x7f9e7e318fa0&gt;}
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dict_keys([&#39;Adelie&#39;, &#39;Chinstrap&#39;, &#39;Gentoo&#39;])
 </pre></div>
 </div>
 </div>
 </div>
-<p>Now suppose we measure a penguin and find that its flipper is 210 cm.  What is the probability of that measurement under each hypothesis?</p>
+<p>Now suppose we measure a penguin and find that its flipper is 193 cm.  What is the probability of that measurement under each hypothesis?</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">norm</span></code> object provides <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, which computes the probability density function (PDF) of the normal distribution.  We can use it to compute the likelihood of the observed data in a given distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="mi">210</span>
-<span class="n">flipper_map</span><span class="p">[</span><span class="s1">&#39;Gentoo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="mi">193</span>
+<span class="n">flipper_map</span><span class="p">[</span><span class="s1">&#39;Adelie&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.03328865501748979
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.054732511875530694
 </pre></div>
 </div>
 </div>
@@ -725,7 +699,7 @@ We’ll proceed in the usual Bayesian way:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.0005557043153857454, 0.007757433347055787, 0.03328865501748979]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.054732511875530694, 0.05172135615888162, 5.8660453661990634e-05]
 </pre></div>
 </div>
 </div>
@@ -817,34 +791,27 @@ We’ll proceed in the usual Bayesian way:</p>
   <tbody>
     <tr>
       <th>Adelie</th>
-      <td>0.013358</td>
+      <td>0.513860</td>
     </tr>
     <tr>
       <th>Chinstrap</th>
-      <td>0.186469</td>
+      <td>0.485589</td>
     </tr>
     <tr>
       <th>Gentoo</th>
-      <td>0.800174</td>
+      <td>0.000551</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<p>A penguin with a 210 mm flipper has an 80% chance of being a Gentoo and about an 19% chance of being a Chinstrap (assuming that the three species were equally likely before the measurement).</p>
+<p>A penguin with a 193 mm flipper is unlikely to be a Gentoo, but might be either an Adélie or Chinstrap (assuming that the three species were equally likely before the measurement).</p>
 <p>The following function encapsulates the steps we just ran.
 It takes a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> representing the prior distribution, the observed data, and a map from each hypothesis to the distribution of the feature.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">norm_map</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Update hypothetical species.</span>
-<span class="sd">    </span>
-<span class="sd">    prior: Pmf</span>
-<span class="sd">    data: measurement of a feature</span>
-<span class="sd">    norm_map: map from hypothesis to distribution of data</span>
-<span class="sd">    </span>
-<span class="sd">    returns: posterior Pmf</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Update hypothetical species.&quot;&quot;&quot;</span>
     <span class="n">hypos</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">qs</span>
     <span class="n">likelihood</span> <span class="o">=</span> <span class="p">[</span><span class="n">norm_map</span><span class="p">[</span><span class="n">hypo</span><span class="p">]</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">hypo</span> <span class="ow">in</span> <span class="n">hypos</span><span class="p">]</span>
     <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
@@ -858,56 +825,8 @@ It takes a <code class="docutils literal notranslate"><span class="pre">Pmf</spa
 <p>Here’s the previous example again, using <code class="docutils literal notranslate"><span class="pre">update_penguin</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior1</span> <span class="o">=</span> <span class="n">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="n">flipper_map</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior1</span> <span class="o">=</span> <span class="n">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="mi">193</span><span class="p">,</span> <span class="n">flipper_map</span><span class="p">)</span>
 <span class="n">posterior1</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>probs</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Adelie</th>
-      <td>0.013358</td>
-    </tr>
-    <tr>
-      <th>Chinstrap</th>
-      <td>0.186469</td>
-    </tr>
-    <tr>
-      <th>Gentoo</th>
-      <td>0.800174</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>As we saw in the CDFs, flipper length does not distinguish strongly between Adélie and Chinstrap penguins.
-For example, if a penguin has a 193 mm flipper, it is almost equally likely to be Adélie or Chinstrap.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior2</span> <span class="o">=</span> <span class="n">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="mi">193</span><span class="p">,</span> <span class="n">flipper_map</span><span class="p">)</span>
-<span class="n">posterior2</span>
 </pre></div>
 </div>
 </div>
@@ -950,8 +869,9 @@ For example, if a penguin has a 193 mm flipper, it is almost equally likely to b
 </table>
 </div></div></div>
 </div>
-<p>But culmen length <em>can</em> make this distinction, so let’s use it to do a second round of classification.</p>
-<p>First we estimate distributions of culmen length for each species like this:</p>
+<p>As we saw in the CDFs, flipper length does not distinguish strongly between Adélie and Chinstrap penguins.</p>
+<p>But culmen length <em>can</em> make this distinction, so let’s use it to do a second round of classification.
+First we estimate distributions of culmen length for each species like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">culmen_map</span> <span class="o">=</span> <span class="n">make_norm_map</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Culmen Length (mm)&#39;</span><span class="p">)</span>
@@ -959,60 +879,12 @@ For example, if a penguin has a 193 mm flipper, it is almost equally likely to b
 </div>
 </div>
 </div>
-<p>Now suppose we see a penguin with culmen length 38 mm.
+<p>Now suppose we see a penguin with culmen length 48 mm.
 We can use this data to update the prior.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior3</span> <span class="o">=</span> <span class="n">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="n">culmen_map</span><span class="p">)</span>
-<span class="n">posterior3</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>probs</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Adelie</th>
-      <td>0.988058</td>
-    </tr>
-    <tr>
-      <th>Chinstrap</th>
-      <td>0.004266</td>
-    </tr>
-    <tr>
-      <th>Gentoo</th>
-      <td>0.007675</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>A penguin with culmen length 38 mm is almost certainly an Adélie.</p>
-<p>On the other hand, a penguin with culmen length 48 mm is about equally likely to be a Chinstrap or Gentoo.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior4</span> <span class="o">=</span> <span class="n">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="n">culmen_map</span><span class="p">)</span>
-<span class="n">posterior4</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior2</span> <span class="o">=</span> <span class="n">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="n">culmen_map</span><span class="p">)</span>
+<span class="n">posterior2</span>
 </pre></div>
 </div>
 </div>
@@ -1055,12 +927,13 @@ We can use this data to update the prior.</p>
 </table>
 </div></div></div>
 </div>
-<p>Using one feature at a time, sometimes we can classify penguins with high confidence; sometimes we can’t.
+<p>A penguin with culmen length 48 mm is about equally likely to be a Chinstrap or Gentoo.</p>
+<p>Using one feature at a time, we can often rule out one species or another, but we generally can’t identify species with confidence.
 We can do better using multiple features.</p>
 </div>
 <div class="section" id="naive-bayesian-classification">
 <h2>Naive Bayesian classification<a class="headerlink" href="#naive-bayesian-classification" title="Permalink to this headline">¶</a></h2>
-<p>To make it easier to do multiple updates, I’ll use the following function, which takes a prior <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, sequence of measurements and a corresponding sequence of dictionaries containing estimated distributions.</p>
+<p>To make it easier to do multiple updates, I’ll use the following function, which takes a prior <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, a sequence of measurements and a corresponding sequence of dictionaries containing estimated distributions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_naive</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data_seq</span><span class="p">,</span> <span class="n">norm_maps</span><span class="p">):</span>
@@ -1080,21 +953,21 @@ We can do better using multiple features.</p>
 </div>
 </div>
 </div>
-<p>The return value is a posterior <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
-<p>I’ll use the same features we looked at in the previous section: culmen length and flipper length.</p>
+<p>It performs a series of updates, using one variable at a time, and returns the posterior <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
+<p>To test it, I’ll use the same features we looked at in the previous section: culmen length and flipper length.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">varnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Flipper Length (mm)&#39;</span><span class="p">,</span> <span class="s1">&#39;Culmen Length (mm)&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">colnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Flipper Length (mm)&#39;</span><span class="p">,</span> <span class="s1">&#39;Culmen Length (mm)&#39;</span><span class="p">]</span>
 <span class="n">norm_maps</span> <span class="o">=</span> <span class="p">[</span><span class="n">flipper_map</span><span class="p">,</span> <span class="n">culmen_map</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>Now suppose we find a penguin with culmen length 48 mm and flipper length 210 mm.
+<p>Now suppose we find a penguin with flipper length 193 mm and culmen length 48.
 Here’s the update:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_seq</span> <span class="o">=</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">48</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_seq</span> <span class="o">=</span> <span class="mi">193</span><span class="p">,</span> <span class="mi">48</span>
 <span class="n">posterior</span> <span class="o">=</span> <span class="n">update_naive</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data_seq</span><span class="p">,</span> <span class="n">norm_maps</span><span class="p">)</span>
 <span class="n">posterior</span>
 </pre></div>
@@ -1125,21 +998,21 @@ Here’s the update:</p>
   <tbody>
     <tr>
       <th>Adelie</th>
-      <td>0.000041</td>
+      <td>0.003455</td>
     </tr>
     <tr>
       <th>Chinstrap</th>
-      <td>0.174351</td>
+      <td>0.995299</td>
     </tr>
     <tr>
       <th>Gentoo</th>
-      <td>0.825608</td>
+      <td>0.001246</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<p>It’s most likely to be a Gentoo.</p>
+<p>It is almost certain to be a Chinstrap.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span><span class="o">.</span><span class="n">max_prob</span><span class="p">()</span>
@@ -1147,12 +1020,12 @@ Here’s the update:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;Gentoo&#39;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;Chinstrap&#39;
 </pre></div>
 </div>
 </div>
 </div>
-<p>I’ll loop through the dataset and classify each penguin with these two features.</p>
+<p>We can loop through the dataset and classify each penguin with these two features.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -1160,7 +1033,7 @@ Here’s the update:</p>
 <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Classification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="n">data_seq</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">varnames</span><span class="p">]</span>
+    <span class="n">data_seq</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">colnames</span><span class="p">]</span>
     <span class="n">posterior</span> <span class="o">=</span> <span class="n">update_naive</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data_seq</span><span class="p">,</span> <span class="n">norm_maps</span><span class="p">)</span>
     <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;Classification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">max_prob</span><span class="p">()</span>
 </pre></div>
@@ -1169,8 +1042,7 @@ Here’s the update:</p>
 </div>
 <p>This loop adds a column called <code class="docutils literal notranslate"><span class="pre">Classification</span></code> to the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>; it contains the species with the maximum posterior probability for each penguin.</p>
 <p>So let’s see how many we got right.</p>
-<p>There are 344 penguins in the dataset, but two of them are missing measurements, so we have 342 valid cases.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
@@ -1195,7 +1067,6 @@ Here’s the update:</p>
 </div>
 </div>
 </div>
-<p>Of those, 324 are classified correctly.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">same</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Species2&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Classification&#39;</span><span class="p">]</span>
@@ -1209,6 +1080,8 @@ Here’s the update:</p>
 </div>
 </div>
 </div>
+<p>There are 344 penguins in the dataset, but two of them are missing measurements, so we have 342 valid cases.
+Of those, 324 are classified correctly.</p>
 <p>Which is almost 95%.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1226,12 +1099,7 @@ Here’s the update:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the accuracy of classification.</span>
-<span class="sd">    </span>
-<span class="sd">    Compares columns Classification and Species2</span>
-<span class="sd">    </span>
-<span class="sd">    df: DataFrame</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Compute the accuracy of classification.&quot;&quot;&quot;</span>
     <span class="n">valid</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Classification&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span>
     <span class="n">same</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Species2&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Classification&#39;</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">same</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">valid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -1249,12 +1117,7 @@ Here’s the update:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="k">def</span> <span class="nf">scatterplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">var1</span><span class="p">,</span> <span class="n">var2</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Make a scatter plot.</span>
-<span class="sd">    </span>
-<span class="sd">    df: DataFrame</span>
-<span class="sd">    var1: string column name, x-axis</span>
-<span class="sd">    var2: string column name, y-axis</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Make a scatter plot.&quot;&quot;&quot;</span>
     <span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Species2&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">species</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="n">var1</span><span class="p">],</span> <span class="n">group</span><span class="p">[</span><span class="n">var2</span><span class="p">],</span>
@@ -1270,13 +1133,12 @@ Here’s the update:</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var1</span> <span class="o">=</span> <span class="s1">&#39;Flipper Length (mm)&#39;</span>
 <span class="n">var2</span> <span class="o">=</span> <span class="s1">&#39;Culmen Length (mm)&#39;</span>
-
 <span class="n">scatterplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">var1</span><span class="p">,</span> <span class="n">var2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap12_83_0.png" src="_images/chap12_83_0.png" />
+<img alt="_images/chap12_80_0.png" src="_images/chap12_80_0.png" />
 </div>
 </div>
 <p>Within each species, the joint distribution of these measurements forms an oval shape, at least roughly.  The orientation of the ovals is along a diagonal, which indicates that there is a correlation between culmen length and flipper length.</p>
@@ -1284,13 +1146,8 @@ Here’s the update:</p>
 <p>The following function makes a discrete <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that approximates a normal distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_pmf</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">sigmas</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">101</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Make a Pmf approximation to a normal distribution.</span>
-<span class="sd">    </span>
-<span class="sd">    dist: norm object</span>
-<span class="sd">    </span>
-<span class="sd">    returns: Pmf</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_pmf_norm</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">sigmas</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">101</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a Pmf approximation to a normal distribution.&quot;&quot;&quot;</span>
     <span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">dist</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
     <span class="n">low</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">-</span> <span class="n">sigmas</span> <span class="o">*</span> <span class="n">std</span>
     <span class="n">high</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">sigmas</span> <span class="o">*</span> <span class="n">std</span>
@@ -1310,8 +1167,8 @@ Here’s the update:</p>
 
 <span class="n">joint_map</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">species</span> <span class="ow">in</span> <span class="n">hypos</span><span class="p">:</span>
-    <span class="n">pmf1</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">flipper_map</span><span class="p">[</span><span class="n">species</span><span class="p">])</span>
-    <span class="n">pmf2</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">culmen_map</span><span class="p">[</span><span class="n">species</span><span class="p">])</span>
+    <span class="n">pmf1</span> <span class="o">=</span> <span class="n">make_pmf_norm</span><span class="p">(</span><span class="n">flipper_map</span><span class="p">[</span><span class="n">species</span><span class="p">])</span>
+    <span class="n">pmf2</span> <span class="o">=</span> <span class="n">make_pmf_norm</span><span class="p">(</span><span class="n">culmen_map</span><span class="p">[</span><span class="n">species</span><span class="p">])</span>
     <span class="n">joint_map</span><span class="p">[</span><span class="n">species</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">pmf1</span><span class="p">,</span> <span class="n">pmf2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1323,17 +1180,16 @@ Here’s the update:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">plot_contour</span>
 
 <span class="n">scatterplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">var1</span><span class="p">,</span> <span class="n">var2</span><span class="p">)</span>
-
 <span class="k">for</span> <span class="n">species</span> <span class="ow">in</span> <span class="n">hypos</span><span class="p">:</span>
     <span class="n">plot_contour</span><span class="p">(</span><span class="n">joint_map</span><span class="p">[</span><span class="n">species</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap12_89_0.png" src="_images/chap12_89_0.png" />
+<img alt="_images/chap12_86_0.png" src="_images/chap12_86_0.png" />
 </div>
 </div>
-<p>The contours of a joint normal distribution form ellipses.<br />
+<p>The contours of a joint normal distribution form ellipses.
 In this example, because the features are uncorrelated, the ellipses are aligned with the axes.
 But they are not well aligned with the data.</p>
 <p>We can make a better model of the data, and use it to compute better likelihoods, with a multivariate normal distribution.</p>
@@ -1347,62 +1203,9 @@ First I’ll select the columns we want.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">features</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="n">var1</span><span class="p">,</span> <span class="n">var2</span><span class="p">]]</span>
-<span class="n">features</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Flipper Length (mm)</th>
-      <th>Culmen Length (mm)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>181.0</td>
-      <td>39.1</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>186.0</td>
-      <td>39.5</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>195.0</td>
-      <td>40.3</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>193.0</td>
-      <td>36.7</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>And compute the means.</p>
 <div class="cell docutils container">
@@ -1420,7 +1223,6 @@ dtype: float64
 </div>
 </div>
 </div>
-<p>The result is a <code class="docutils literal notranslate"><span class="pre">Series</span></code> containing the mean culmen length and flipper length.</p>
 <p>We can also compute the covariance matrix:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1476,12 +1278,6 @@ dtype: float64
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">multivariate_normal</span>
 
 <span class="n">multinorm</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="p">)</span>
-<span class="n">multinorm</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;scipy.stats._multivariate.multivariate_normal_frozen at 0x7f9e7e18fca0&gt;
 </pre></div>
 </div>
 </div>
@@ -1489,18 +1285,12 @@ dtype: float64
 <p>The following function makes a <code class="docutils literal notranslate"><span class="pre">multivariate_normal</span></code> object for each species.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_multinorm_map</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">varnames</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Make a map from each species to a multivariate normal.</span>
-<span class="sd">    </span>
-<span class="sd">    df: DataFrame</span>
-<span class="sd">    varnames: list of string column names</span>
-<span class="sd">    </span>
-<span class="sd">    returns: map from species name to multivariate_normal</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_multinorm_map</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a map from each species to a multivariate normal.&quot;&quot;&quot;</span>
     <span class="n">multinorm_map</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Species2&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">species</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">:</span>
-        <span class="n">features</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">varnames</span><span class="p">]</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">colnames</span><span class="p">]</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="n">cov</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">cov</span><span class="p">()</span>
         <span class="n">multinorm_map</span><span class="p">[</span><span class="n">species</span><span class="p">]</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="p">)</span>
@@ -1513,27 +1303,22 @@ dtype: float64
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">multinorm_map</span> <span class="o">=</span> <span class="n">make_multinorm_map</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[</span><span class="n">var1</span><span class="p">,</span> <span class="n">var2</span><span class="p">])</span>
-<span class="n">multinorm_map</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;Adelie&#39;: &lt;scipy.stats._multivariate.multivariate_normal_frozen at 0x7f9e7e18ffd0&gt;,
- &#39;Chinstrap&#39;: &lt;scipy.stats._multivariate.multivariate_normal_frozen at 0x7f9e7e1cfdc0&gt;,
- &#39;Gentoo&#39;: &lt;scipy.stats._multivariate.multivariate_normal_frozen at 0x7f9e7e18f580&gt;}
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dict_keys([&#39;Adelie&#39;, &#39;Chinstrap&#39;, &#39;Gentoo&#39;])
 </pre></div>
 </div>
 </div>
 </div>
-<p>In the next section we’ll see what these distributions looks like.</p>
-<p>Then we’ll use them to classify penguins, and we’ll see if the results are more accurate than the naive Bayesian classifier.</p>
 </div>
 <div class="section" id="visualizing-a-multivariate-normal-distribution">
 <h2>Visualizing a Multivariate Normal Distribution<a class="headerlink" href="#visualizing-a-multivariate-normal-distribution" title="Permalink to this headline">¶</a></h2>
 <p>This section uses some NumPy magic to generate contour plots for multivariate normal distributions.  If that’s interesting for you, great!  Otherwise, feel free to skip to the results.  In the next section we’ll do the actual classification, which turns out to be easier than the visualization.</p>
 <p>I’ll start by making a contour map for the distribution of features among Adélie penguins.<br />
 Here are the univariate distributions for the two features we’ll use and the multivariate distribution we just computed.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">norm1</span> <span class="o">=</span> <span class="n">flipper_map</span><span class="p">[</span><span class="s1">&#39;Adelie&#39;</span><span class="p">]</span>
 <span class="n">norm2</span> <span class="o">=</span> <span class="n">culmen_map</span><span class="p">[</span><span class="s1">&#39;Adelie&#39;</span><span class="p">]</span>
@@ -1543,16 +1328,16 @@ Here are the univariate distributions for the two features we’ll use and the m
 </div>
 </div>
 <p>I’ll make a discrete <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> approximation for each of the univariate distributions.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf1</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">norm1</span><span class="p">)</span>
-<span class="n">pmf2</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">norm2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf1</span> <span class="o">=</span> <span class="n">make_pmf_norm</span><span class="p">(</span><span class="n">norm1</span><span class="p">)</span>
+<span class="n">pmf2</span> <span class="o">=</span> <span class="n">make_pmf_norm</span><span class="p">(</span><span class="n">norm2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <p>And use them to make a mesh grid that contains all pairs of values.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">pmf1</span><span class="o">.</span><span class="n">qs</span><span class="p">,</span> <span class="n">pmf2</span><span class="o">.</span><span class="n">qs</span><span class="p">)</span>
 <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
@@ -1567,7 +1352,7 @@ Here are the univariate distributions for the two features we’ll use and the m
 </div>
 <p>The mesh is represented by two arrays: the first contains the quantities from <code class="docutils literal notranslate"><span class="pre">pmf1</span></code> along the <code class="docutils literal notranslate"><span class="pre">x</span></code> axis; the second contains the quantities from <code class="docutils literal notranslate"><span class="pre">pmf2</span></code> along the <code class="docutils literal notranslate"><span class="pre">y</span></code> axis.</p>
 <p>In order to evaluate the multivariate distribution for each pair of values, we have to “stack” the arrays.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">((</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">))</span>
 <span class="n">pos</span><span class="o">.</span><span class="n">shape</span>
@@ -1581,7 +1366,7 @@ Here are the univariate distributions for the two features we’ll use and the m
 </div>
 </div>
 <p>The result is a 3-D array that you can think of as a 2-D array of pairs.  When we pass this array to <code class="docutils literal notranslate"><span class="pre">multinorm.pdf</span></code>, it evaluates the probability density function of the distribution for each pair of values.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">densities</span> <span class="o">=</span> <span class="n">multinorm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
 <span class="n">densities</span><span class="o">.</span><span class="n">shape</span>
@@ -1595,7 +1380,7 @@ Here are the univariate distributions for the two features we’ll use and the m
 </div>
 </div>
 <p>The result is an array of probability densities.  If we put them in a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> and normalize them, the result is a discrete approximation of the joint distribution of the two features.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">normalize</span>
 
@@ -1611,7 +1396,7 @@ Here are the univariate distributions for the two features we’ll use and the m
 </div>
 </div>
 <p>Here’s what the result looks like.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_contour</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="n">var1</span><span class="p">,</span>
@@ -1620,12 +1405,12 @@ Here are the univariate distributions for the two features we’ll use and the m
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap12_117_0.png" src="_images/chap12_117_0.png" />
+<img alt="_images/chap12_113_0.png" src="_images/chap12_113_0.png" />
 </div>
 </div>
 <p>The contours of a multivariate normal distribution are still ellipses, but now that we have taken into account the correlation between the features, the ellipses are no longer aligned with the axes.</p>
 <p>The following function encapsulate the steps we just did.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_joint</span><span class="p">(</span><span class="n">norm1</span><span class="p">,</span> <span class="n">norm2</span><span class="p">,</span> <span class="n">multinorm</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Make a joint distribution.</span>
@@ -1634,8 +1419,8 @@ Here are the univariate distributions for the two features we’ll use and the m
 <span class="sd">    norm2: `norm` object representing the distribution of the second feature</span>
 <span class="sd">    multinorm: `multivariate_normal` object representing the joint distribution</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">pmf1</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">norm1</span><span class="p">)</span>
-    <span class="n">pmf2</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">norm2</span><span class="p">)</span>
+    <span class="n">pmf1</span> <span class="o">=</span> <span class="n">make_pmf_norm</span><span class="p">(</span><span class="n">norm1</span><span class="p">)</span>
+    <span class="n">pmf2</span> <span class="o">=</span> <span class="n">make_pmf_norm</span><span class="p">(</span><span class="n">norm2</span><span class="p">)</span>
     <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">pmf1</span><span class="o">.</span><span class="n">qs</span><span class="p">,</span> <span class="n">pmf2</span><span class="o">.</span><span class="n">qs</span><span class="p">)</span>
     <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">((</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">))</span>
     <span class="n">densities</span> <span class="o">=</span> <span class="n">multinorm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
@@ -1660,7 +1445,7 @@ Here are the univariate distributions for the two features we’ll use and the m
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap12_121_0.png" src="_images/chap12_121_0.png" />
+<img alt="_images/chap12_117_0.png" src="_images/chap12_117_0.png" />
 </div>
 </div>
 <p>Because the multivariate normal distribution takes into account the correlations between features, it is a better model for the data.  And there is less overlap in the contours of the three distributions, which suggests that they should yield better classifications.</p>
@@ -1671,14 +1456,7 @@ Here are the univariate distributions for the two features we’ll use and the m
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">norm_map</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Update hypothetical species.</span>
-<span class="sd">    </span>
-<span class="sd">    prior: Pmf</span>
-<span class="sd">    data: measurement of a feature</span>
-<span class="sd">    norm_map: map from hypothesis to distribution of data</span>
-<span class="sd">    </span>
-<span class="sd">    returns: posterior Pmf</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Update hypothetical species.&quot;&quot;&quot;</span>
     <span class="n">hypos</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">qs</span>
     <span class="n">likelihood</span> <span class="o">=</span> <span class="p">[</span><span class="n">norm_map</span><span class="p">[</span><span class="n">hypo</span><span class="p">]</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">hypo</span> <span class="ow">in</span> <span class="n">hypos</span><span class="p">]</span>
     <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
@@ -1689,10 +1467,10 @@ Here are the univariate distributions for the two features we’ll use and the m
 </div>
 </div>
 <p>Last time we used this function, the values in <code class="docutils literal notranslate"><span class="pre">norm_map</span></code> were <code class="docutils literal notranslate"><span class="pre">norm</span></code> objects, but it also works if they are <code class="docutils literal notranslate"><span class="pre">multivariate_normal</span></code> objects.</p>
-<p>We can use it to classify a penguin with flipper length 190 and culmen length 38:</p>
+<p>We can use it to classify a penguin with flipper length 193 and culmen length 48:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">38</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="mi">193</span><span class="p">,</span> <span class="mi">48</span>
 <span class="n">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">multinorm_map</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1722,117 +1500,21 @@ Here are the univariate distributions for the two features we’ll use and the m
   <tbody>
     <tr>
       <th>Adelie</th>
-      <td>0.996771</td>
+      <td>0.002740</td>
     </tr>
     <tr>
       <th>Chinstrap</th>
-      <td>0.003068</td>
+      <td>0.997257</td>
     </tr>
     <tr>
       <th>Gentoo</th>
-      <td>0.000161</td>
+      <td>0.000003</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<p>A penguin with those measurements is almost certainly an Adélie.</p>
-<p>As another example, here’s an update for a penguin with flipper length 195 and culmen length 48.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="mi">195</span><span class="p">,</span> <span class="mi">48</span>
-<span class="n">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">multinorm_map</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>probs</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Adelie</th>
-      <td>0.003101</td>
-    </tr>
-    <tr>
-      <th>Chinstrap</th>
-      <td>0.996877</td>
-    </tr>
-    <tr>
-      <th>Gentoo</th>
-      <td>0.000023</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>A penguin with those measurements is almost certainly a Chinstrip.</p>
-<p>Finally, here’s an update with flipper length 215 mm and culmen length 48 mm.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="mi">215</span><span class="p">,</span> <span class="mi">48</span>
-<span class="n">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">multinorm_map</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>probs</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Adelie</th>
-      <td>0.000046</td>
-    </tr>
-    <tr>
-      <th>Chinstrap</th>
-      <td>0.005243</td>
-    </tr>
-    <tr>
-      <th>Gentoo</th>
-      <td>0.994710</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>It’s a Gentoo!</p>
+<p>A penguin with those measurements is almost certainly an Chinstrap.</p>
 <p>Now let’s see if this classifier does any better than the naive Bayesian classifier.
 I’ll apply it to each penguin in the dataset:</p>
 <div class="cell docutils container">
@@ -1840,7 +1522,7 @@ I’ll apply it to each penguin in the dataset:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Classification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">varnames</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">colnames</span><span class="p">]</span>
     <span class="n">posterior</span> <span class="o">=</span> <span class="n">update_penguin</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">multinorm_map</span><span class="p">)</span>
     <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;Classification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
 </pre></div>
@@ -1861,8 +1543,8 @@ I’ll apply it to each penguin in the dataset:</p>
 </div>
 </div>
 <p>It turns out to be only a little better: the accuracy is 95.3%, compared to 94.7% for the naive Bayesian classifier.</p>
-<p>In one way, that’s disappointing.  After all that work, it would have been nice to see a bigger improvement.</p>
-<p>But in another way, it’s good news.  In general, a naive Bayesian classifier is easier to implement and requires less computation.  If it works nearly as well as a more complex algorithm, it might be a good choice for practical purposes.</p>
+<p>In one way, that’s disappointing.  After all that work, it would have been nice to see a bigger improvement.
+But in another way, it’s good news.  In general, a naive Bayesian classifier is easier to implement and requires less computation.  If it works nearly as well as a more complex algorithm, it might be a good choice for practical purposes.</p>
 <p>But speaking of practical purposes, you might have noticed that this example isn’t very useful.  If we want to identify the species of a penguin, there are easier ways than measuring its flippers and beak.</p>
 <p>However, there are valid scientific uses for this type of classification.  One of them is the subject of the research paper we started with: <a class="reference external" href="https://en.wikipedia.org/wiki/Sexual_dimorphism">sexual dimorphism</a>, that is, differences in shape between male and female animals.</p>
 <p>In some species, like angler fish, males and females look very different.  In other species, like mockingbirds, they are difficult to tell apart.
@@ -1893,7 +1575,7 @@ Is it more accurate than the model with two features?</p>
 
 <span class="c1"># And here are sequences for the features and the norm maps</span>
 
-<span class="n">varnames4</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Culmen Length (mm)&#39;</span><span class="p">,</span> <span class="s1">&#39;Flipper Length (mm)&#39;</span><span class="p">,</span> 
+<span class="n">colnames4</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Culmen Length (mm)&#39;</span><span class="p">,</span> <span class="s1">&#39;Flipper Length (mm)&#39;</span><span class="p">,</span> 
              <span class="s1">&#39;Culmen Depth (mm)&#39;</span><span class="p">,</span> <span class="s1">&#39;Body Mass (g)&#39;</span><span class="p">]</span>
 <span class="n">norm_maps4</span> <span class="o">=</span> <span class="p">[</span><span class="n">culmen_map</span><span class="p">,</span> <span class="n">flipper_map</span><span class="p">,</span> 
               <span class="n">depth_map</span><span class="p">,</span> <span class="n">mass_map</span><span class="p">]</span>
@@ -1913,7 +1595,7 @@ Is it more accurate than the model with two features?</p>
 <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Classification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="n">data_seq</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">varnames4</span><span class="p">]</span>
+    <span class="n">data_seq</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">colnames4</span><span class="p">]</span>
     <span class="n">posterior</span> <span class="o">=</span> <span class="n">update_naive</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data_seq</span><span class="p">,</span> <span class="n">norm_maps4</span><span class="p">)</span>
     <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;Classification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">max_prob</span><span class="p">()</span>
 
@@ -1984,7 +1666,7 @@ Name: Sex, dtype: int64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap12_147_0.png" src="_images/chap12_147_0.png" />
+<img alt="_images/chap12_140_0.png" src="_images/chap12_140_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1996,7 +1678,7 @@ Name: Sex, dtype: int64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap12_148_0.png" src="_images/chap12_148_0.png" />
+<img alt="_images/chap12_141_0.png" src="_images/chap12_141_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2008,7 +1690,7 @@ Name: Sex, dtype: int64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap12_149_0.png" src="_images/chap12_149_0.png" />
+<img alt="_images/chap12_142_0.png" src="_images/chap12_142_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2020,7 +1702,7 @@ Name: Sex, dtype: int64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap12_150_0.png" src="_images/chap12_150_0.png" />
+<img alt="_images/chap12_143_0.png" src="_images/chap12_143_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2044,7 +1726,7 @@ Name: Sex, dtype: int64
 <span class="c1"># And here are the sequences we need for `update_naive`</span>
 
 <span class="n">norm_maps4</span> <span class="o">=</span> <span class="p">[</span><span class="n">culmen_map</span><span class="p">,</span> <span class="n">flipper_map</span><span class="p">,</span> <span class="n">depth_map</span><span class="p">,</span> <span class="n">mass_map</span><span class="p">]</span>
-<span class="n">varnames4</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Culmen Length (mm)&#39;</span><span class="p">,</span> <span class="s1">&#39;Flipper Length (mm)&#39;</span><span class="p">,</span> 
+<span class="n">colnames4</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Culmen Length (mm)&#39;</span><span class="p">,</span> <span class="s1">&#39;Flipper Length (mm)&#39;</span><span class="p">,</span> 
              <span class="s1">&#39;Culmen Depth (mm)&#39;</span><span class="p">,</span> <span class="s1">&#39;Body Mass (g)&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -2106,7 +1788,7 @@ Name: Sex, dtype: int64
 <span class="n">subset</span><span class="p">[</span><span class="s1">&#39;Classification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">subset</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="n">data_seq</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">varnames4</span><span class="p">]</span>
+    <span class="n">data_seq</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">colnames4</span><span class="p">]</span>
     <span class="n">posterior</span> <span class="o">=</span> <span class="n">update_naive</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data_seq</span><span class="p">,</span> <span class="n">norm_maps4</span><span class="p">)</span>
     <span class="n">subset</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;Classification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">max_prob</span><span class="p">()</span>
 </pre></div>
@@ -2175,7 +1857,7 @@ Name: Sex, dtype: int64
     <span class="n">subset</span><span class="p">[</span><span class="s1">&#39;Classification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">subset</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-        <span class="n">data_seq</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">varnames4</span><span class="p">]</span>
+        <span class="n">data_seq</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">colnames4</span><span class="p">]</span>
         <span class="n">posterior</span> <span class="o">=</span> <span class="n">update_naive</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data_seq</span><span class="p">,</span> <span class="n">norm_maps4</span><span class="p">)</span>
         <span class="n">subset</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;Classification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">max_prob</span><span class="p">()</span>
         
