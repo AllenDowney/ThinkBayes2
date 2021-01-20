@@ -324,13 +324,13 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#incomplete-information">
-   Incomplete Information
+  <a class="reference internal nav-link" href="#posterior-means">
+   Posterior Means
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#posterior-means">
-   Posterior Means
+  <a class="reference internal nav-link" href="#incomplete-information">
+   Incomplete Information
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -361,32 +361,21 @@
                 
   <div class="section" id="survival-analysis">
 <h1>Survival Analysis<a class="headerlink" href="#survival-analysis" title="Permalink to this headline">¶</a></h1>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">set_pyplot_params</span>
-<span class="n">set_pyplot_params</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
 <p>This chapter introduces “survival analysis”, which is a set of statistical methods used to answer questions about the time until an event.
 In the context of medicine it is literally about survival, but it can be applied to the time until any kind of event, or instead of time it can be about space or other dimensions.</p>
 <p>Survival analysis is challenging because the data we have are often incomplete.  But as we’ll see, Bayesian methods are particularly good at working with incomplete data.</p>
-<p>As examples, we’ll consider two applications that are a little less serious than life and death: the time until light bulbs fail and the time until dogs in a shelter are adopted.</p>
-<p>To describe these “survival times”, we’ll use the Weibull distribution.</p>
+<p>As examples, we’ll consider two applications that are a little less serious than life and death: the time until light bulbs fail and the time until dogs in a shelter are adopted.
+To describe these “survival times”, we’ll use the Weibull distribution.</p>
 <div class="section" id="the-weibull-distribution">
 <h2>The Weibull distribution<a class="headerlink" href="#the-weibull-distribution" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference external" href="https://en.wikipedia.org/wiki/Weibull_distribution">Weibull distribution</a> is often used in survival analysis because it is a good model for the distribution of lifetimes for manufactured products, at least over some parts of the range.</p>
-<p>SciPy provides implementations for several versions of the Weibull distribution; the one I’ll use is called <code class="docutils literal notranslate"><span class="pre">weibull_min</span></code>.</p>
-<p>To make this implementation easier to use, I’ll wrap it in a function that takes two parameters: <span class="math notranslate nohighlight">\(\lambda\)</span>, which mostly affects the location or “central tendency” of the distribution, and <span class="math notranslate nohighlight">\(k\)</span>, which affects the shape.</p>
-<p>The parameter <span class="math notranslate nohighlight">\(\lambda\)</span> is pronounced “lambda” and represented with the variable name <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p>
+<p>SciPy provides several versions of the Weibull distribution; the one we’ll use is called <code class="docutils literal notranslate"><span class="pre">weibull_min</span></code>.
+To make it easier to use, I’ll wrap it in a function that takes two parameters: <span class="math notranslate nohighlight">\(\lambda\)</span>, which mostly affects the location or “central tendency” of the distribution, and <span class="math notranslate nohighlight">\(k\)</span>, which affects the shape.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">weibull_min</span>
 
 <span class="k">def</span> <span class="nf">weibull_dist</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Makes a weibull object.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">weibull_min</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">lam</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -402,8 +391,8 @@ In the context of medicine it is literally about survival, but it can be applied
 </div>
 </div>
 </div>
-<p>The result is an object that represents the distribution.</p>
-<p>Here’s what the Weibull CDF looks like with those parameters.</p>
+<p>The result is an object that represents the distribution.
+Here’s what the Weibull CDF looks like with those parameters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -426,8 +415,7 @@ In the context of medicine it is literally about survival, but it can be applied
 <p><code class="docutils literal notranslate"><span class="pre">actual_dist</span></code> provides <code class="docutils literal notranslate"><span class="pre">rvs</span></code>, which we can use to generate a random sample from this distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">actual_dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">actual_dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">data</span>
 </pre></div>
 </div>
@@ -439,8 +427,8 @@ In the context of medicine it is literally about survival, but it can be applied
 </div>
 </div>
 </div>
-<p>So, given the parameters of the distribution, we can generate a sample.</p>
-<p>Now let’s see if we can go the other way: given the sample, we’ll estimate the parameters.</p>
+<p>So, given the parameters of the distribution, we can generate a sample.
+Now let’s see if we can go the other way: given the sample, we’ll estimate the parameters.</p>
 <p>Here’s a uniform prior distribution for <span class="math notranslate nohighlight">\(\lambda\)</span>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -448,16 +436,6 @@ In the context of medicine it is literally about survival, but it can be applied
 
 <span class="n">lams</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
 <span class="n">prior_lam</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">lams</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lambda&#39;</span><span class="p">)</span>
-<span class="n">prior_lam</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>lambda
-0.1    0.009901
-0.2    0.009901
-0.3    0.009901
-dtype: float64
 </pre></div>
 </div>
 </div>
@@ -467,176 +445,22 @@ dtype: float64
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">5.1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
 <span class="n">prior_k</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
-<span class="n">prior_k</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k
-0.10    0.009901
-0.15    0.009901
-0.20    0.009901
-dtype: float64
 </pre></div>
 </div>
 </div>
 </div>
-<p>And I’ll use <code class="docutils literal notranslate"><span class="pre">make_joint</span></code> to make a joint prior distribution for the two parameters.</p>
+<p>I’ll use <code class="docutils literal notranslate"><span class="pre">make_joint</span></code> to make a joint prior distribution for the two parameters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_joint</span>
 
 <span class="n">prior</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">prior_lam</span><span class="p">,</span> <span class="n">prior_k</span><span class="p">)</span>
-<span class="n">prior</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th>lambda</th>
-      <th>0.1</th>
-      <th>0.2</th>
-      <th>0.3</th>
-      <th>0.4</th>
-      <th>0.5</th>
-      <th>0.6</th>
-      <th>0.7</th>
-      <th>0.8</th>
-      <th>0.9</th>
-      <th>1.0</th>
-      <th>...</th>
-      <th>9.2</th>
-      <th>9.3</th>
-      <th>9.4</th>
-      <th>9.5</th>
-      <th>9.6</th>
-      <th>9.7</th>
-      <th>9.8</th>
-      <th>9.9</th>
-      <th>10.0</th>
-      <th>10.1</th>
-    </tr>
-    <tr>
-      <th>k</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0.10</th>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>...</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-    </tr>
-    <tr>
-      <th>0.15</th>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>...</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-    </tr>
-    <tr>
-      <th>0.20</th>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>...</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-      <td>0.000098</td>
-    </tr>
-  </tbody>
-</table>
-<p>3 rows × 101 columns</p>
-</div></div></div>
 </div>
-<p>The result is a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that represents the joint prior.</p>
-<p>Now I’ll use <code class="docutils literal notranslate"><span class="pre">meshgrid</span></code> to make a 3-D mesh with <span class="math notranslate nohighlight">\(\lambda\)</span> on the first axis (numbered <code class="docutils literal notranslate"><span class="pre">axis=0</span></code>), <span class="math notranslate nohighlight">\(k\)</span> on the second axis (<code class="docutils literal notranslate"><span class="pre">axis=1</span></code>), and the data on the third axis (<code class="docutils literal notranslate"><span class="pre">axis=2</span></code>).</p>
+<p>The result is a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that represents the joint prior, with possible values of <span class="math notranslate nohighlight">\(\lambda\)</span> across the columns and values of <span class="math notranslate nohighlight">\(k\)</span> down the rows.</p>
+<p>Now I’ll use <code class="docutils literal notranslate"><span class="pre">meshgrid</span></code> to make a 3-D mesh with <span class="math notranslate nohighlight">\(\lambda\)</span> on the first axis (<code class="docutils literal notranslate"><span class="pre">axis=0</span></code>), <span class="math notranslate nohighlight">\(k\)</span> on the second axis (<code class="docutils literal notranslate"><span class="pre">axis=1</span></code>), and the data on the third axis (<code class="docutils literal notranslate"><span class="pre">axis=2</span></code>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">,</span> <span class="n">data_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
@@ -659,7 +483,7 @@ dtype: float64
 </div>
 </div>
 </div>
-<p>The likelihood of the data is the product of the probability densities along <code class="docutils literal notranslate"><span class="pre">axis=2</span></code>, which is the axis of the dataset.</p>
+<p>The likelihood of the data is the product of the probability densities along <code class="docutils literal notranslate"><span class="pre">axis=2</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">densities</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -689,16 +513,12 @@ dtype: float64
 </div>
 </div>
 </div>
-<p>The following function encapsulates these steps.<br />
+<p>The following function encapsulates these steps.
 It takes a joint prior distribution and the data, and returns a joint posterior distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_weibull</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Update the prior based on data.</span>
-<span class="sd">    </span>
-<span class="sd">    prior: joint distribution of mu and sigma</span>
-<span class="sd">    data: sequence of observations</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Update the prior based on data.&quot;&quot;&quot;</span>
     <span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">,</span> <span class="n">data_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
         <span class="n">prior</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
     
@@ -732,17 +552,16 @@ It takes a joint prior distribution and the data, and returns a joint posterior 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_33_0.png" src="_images/chap14_33_0.png" />
+<img alt="_images/chap14_34_0.png" src="_images/chap14_34_0.png" />
 </div>
 </div>
-<p>The blob in the lower left contains almost all of the probability density; the jaggy line in the upper left is an irrelevent boundary between regions of very low probability.</p>
 <p>It looks like the range of likely values for <span class="math notranslate nohighlight">\(\lambda\)</span> is about 1 to 4, which contains the actual value we used to generate the data, 3.
 And the range for <span class="math notranslate nohighlight">\(k\)</span> is about 0.5 to 1.5, which contains the actual value, 0.8.</p>
 </div>
 <div class="section" id="marginal-distributions">
 <h2>Marginal distributions<a class="headerlink" href="#marginal-distributions" title="Permalink to this headline">¶</a></h2>
 <p>To be more precise about these ranges, we can extract the marginal distributions:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">marginal</span>
 
@@ -753,12 +572,12 @@ And the range for <span class="math notranslate nohighlight">\(k\)</span> is abo
 </div>
 </div>
 <p>And compute the posterior means and 90% credible intervals.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="n">posterior_lam</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+<span class="n">posterior_lam</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;lambda&#39;</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;lam&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span> 
          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior marginal distribution of lam&#39;</span><span class="p">)</span>
@@ -766,28 +585,15 @@ And the range for <span class="math notranslate nohighlight">\(k\)</span> is abo
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_38_0.png" src="_images/chap14_38_0.png" />
+<img alt="_images/chap14_39_0.png" src="_images/chap14_39_0.png" />
 </div>
 </div>
 <p>The vertical gray line show the actual value of <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
-<p>And here are the posterior means and 90% credible intervals.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_lam</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior_lam</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(2.4069001911025225, array([1.2, 4.4]))
-</pre></div>
-</div>
-</div>
-</div>
 <p>Here’s the marginal posterior distribution for <span class="math notranslate nohighlight">\(k\)</span>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_k</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+<span class="n">posterior_k</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C12&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span> 
          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior marginal distribution of k&#39;</span><span class="p">)</span>
@@ -795,24 +601,35 @@ And the range for <span class="math notranslate nohighlight">\(k\)</span> is abo
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_42_0.png" src="_images/chap14_42_0.png" />
-</div>
-</div>
-<p>And the posterior mean and credible interval.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_k</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior_k</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.9640125068746626, array([0.6, 1.4]))
-</pre></div>
-</div>
+<img alt="_images/chap14_41_0.png" src="_images/chap14_41_0.png" />
 </div>
 </div>
 <p>The posterior distributions are wide, which means that with only 10 data points we can’t estimated the parameters precisely.
 But for both parameters, the actual value falls in the credible interval.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">posterior_lam</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3 [1.2 4.4]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">posterior_k</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.8 [0.6 1.4]
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 <div class="section" id="incomplete-data">
 <h2>Incomplete Data<a class="headerlink" href="#incomplete-data" title="Permalink to this headline">¶</a></h2>
@@ -821,12 +638,11 @@ But for both parameters, the actual value falls in the credible interval.</p>
 <p>As an example, suppose you work at a dog shelter and you are interested in the time between the arrival of a new dog and when it is adopted.
 Some dogs might be snapped up immediately; others might have to wait longer.
 The people who operate the shelter might want to make inferences about the distribution of these residence times.</p>
-<p>Suppose you monitor arrivals and departures over a 8 weeks, and 10 dogs arrive during that period.
+<p>Suppose you monitor arrivals and departures over a 8 weeks, and 10 dogs arrive during that interval.
 I’ll assume that their arrival times are distributed uniformly, so I’ll generate random values like this.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">19</span><span class="p">)</span>
-<span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">start</span>
 </pre></div>
 </div>
@@ -842,8 +658,7 @@ I’ll assume that their arrival times are distributed uniformly, so I’ll gene
 We can generate a sample from that distribution like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
-<span class="n">duration</span> <span class="o">=</span> <span class="n">actual_dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">duration</span> <span class="o">=</span> <span class="n">actual_dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">duration</span>
 </pre></div>
 </div>
@@ -855,15 +670,13 @@ We can generate a sample from that distribution like this:</p>
 </div>
 </div>
 </div>
-<p>I’ll use these values to construct a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that contains the arrival and departure times for each dog, called <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code>.
-And I’ll add a third column, <code class="docutils literal notranslate"><span class="pre">status</span></code>, which indicates whether the dog has been adopted; initially the status is <code class="docutils literal notranslate"><span class="pre">1</span></code> for all dogs.</p>
+<p>I’ll use these values to construct a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that contains the arrival and departure times for each dog, called <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="n">obs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-                        <span class="n">end</span><span class="o">=</span><span class="n">start</span><span class="o">+</span><span class="n">duration</span><span class="p">,</span>
-                        <span class="n">status</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">start</span><span class="o">+</span><span class="n">duration</span><span class="p">)</span>
+<span class="n">obs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -897,7 +710,6 @@ And I’ll add a third column, <code class="docutils literal notranslate"><span 
       <th></th>
       <th>start</th>
       <th>end</th>
-      <th>status</th>
     </tr>
   </thead>
   <tbody>
@@ -905,68 +717,81 @@ And I’ll add a third column, <code class="docutils literal notranslate"><span 
       <th>0</th>
       <td>0.663997</td>
       <td>3.921447</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>1</th>
       <td>0.780269</td>
       <td>1.585242</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>2</th>
       <td>1.105053</td>
       <td>1.213680</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>3</th>
       <td>1.975504</td>
       <td>2.408592</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>4</th>
       <td>2.651573</td>
       <td>7.824921</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>5</th>
       <td>5.085286</td>
       <td>6.169150</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>6</th>
       <td>5.375817</td>
       <td>8.431375</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>7</th>
       <td>6.089998</td>
       <td>8.205769</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>8</th>
       <td>6.452750</td>
       <td>8.926761</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>9</th>
       <td>7.861935</td>
       <td>7.915343</td>
-      <td>1</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<p>The following function plots a “lifeline” for each dog, showing the arrival and departure times on a time line.</p>
+<p>Notice that several of the lifelines extend past the observation window of 8 weeks.
+So if we observed this system at the beginning of Week 8, we would have incomplete information.
+Specifically, we would not know the future adoption times for Dogs 6, 7, and 8.</p>
+<p>I’ll simulate this incomplete data by identifying the lifelines that extend past the observation window:</p>
 <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">censored</span> <span class="o">=</span> <span class="n">obs</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">8</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">censored</span></code> is a  Boolean Series that is <code class="docutils literal notranslate"><span class="pre">True</span></code> for lifelines that extend past Week 8.</p>
+<p>Data that is not available is sometimes called “censored” in the sense that it is hidden from us.
+But in this case it is hidden because we don’t know the future, not because someone is censoring it.</p>
+<p>For the lifelines that are censored, I’ll modify <code class="docutils literal notranslate"><span class="pre">end</span></code> to indicate when they are last observed and <code class="docutils literal notranslate"><span class="pre">status</span></code> to indicate that the observation is incomplete.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">obs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">censored</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">obs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">censored</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we can plot a “lifeline” for each dog, showing the arrival and departure times on a time line.</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_lifelines</span><span class="p">(</span><span class="n">obs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plot a line for each observation.</span>
@@ -994,160 +819,23 @@ And I’ll add a third column, <code class="docutils literal notranslate"><span 
 </div>
 </div>
 </div>
-<p>Here’s what it looks like for the data we just generated.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_lifelines</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_57_0.png" src="_images/chap14_57_0.png" />
-</div>
-</div>
-<p>The start times are distributed uniformly, but the lengths of the lines are highly variable.  For example, Dog 2 was adopted almost immediately; Dog 4 had to wait more than 5 weeks.</p>
-<p>But notice that several of the lifelines extend past the observation window of 8 weeks.
-So if we observed this system at the beginning of Week 8, we would have incomplete information.
-Specifically, we would not know the future adoption times for Dogs 6, 7, and 8.</p>
-<p>I’ll simulate this incomplete data by identifying the lifelines that extend past the observation window:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">obs2</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">censored</span> <span class="o">=</span> <span class="n">obs2</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">8</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">censored</span></code> is a  Boolean Series that is <code class="docutils literal notranslate"><span class="pre">True</span></code> for lifelines that extend past Week 8.</p>
-<p>Data that is not available is sometimes called “censored” in the sense that it is hidden from us.
-But in this case it is hidden because we don’t know the future, not because someone is censoring it.</p>
-<p>For the lifelines that are censored, I’ll modify <code class="docutils literal notranslate"><span class="pre">end</span></code> to indicate when they are last observed and <code class="docutils literal notranslate"><span class="pre">status</span></code> to indicate that the observation is incomplete.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">obs2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">censored</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span>
-<span class="n">obs2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">censored</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>And we can plot the results to show both complete and incomplete lifelines.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_lifelines</span><span class="p">(</span><span class="n">obs2</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap14_63_0.png" src="_images/chap14_63_0.png" />
+<img alt="_images/chap14_61_0.png" src="_images/chap14_61_0.png" />
 </div>
 </div>
 <p>And I’ll add one more column to the table, which contains the duration of the observed parts of the lifelines.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">obs2</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs2</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">obs2</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
-<span class="n">obs2</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">obs</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>start</th>
-      <th>end</th>
-      <th>status</th>
-      <th>T</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0.663997</td>
-      <td>3.921447</td>
-      <td>1</td>
-      <td>3.257451</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0.780269</td>
-      <td>1.585242</td>
-      <td>1</td>
-      <td>0.804973</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>1.105053</td>
-      <td>1.213680</td>
-      <td>1</td>
-      <td>0.108626</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>1.975504</td>
-      <td>2.408592</td>
-      <td>1</td>
-      <td>0.433088</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>2.651573</td>
-      <td>7.824921</td>
-      <td>1</td>
-      <td>5.173349</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>5.085286</td>
-      <td>6.169150</td>
-      <td>1</td>
-      <td>1.083864</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>5.375817</td>
-      <td>8.000000</td>
-      <td>0</td>
-      <td>2.624183</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>6.089998</td>
-      <td>8.000000</td>
-      <td>0</td>
-      <td>1.910002</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>6.452750</td>
-      <td>8.000000</td>
-      <td>0</td>
-      <td>1.547250</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>7.861935</td>
-      <td>7.915343</td>
-      <td>1</td>
-      <td>0.053408</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>What we have simulated is the data that would be available at the beginning of Week 8.</p>
 </div>
@@ -1157,9 +845,15 @@ But in this case it is hidden because we don’t know the future, not because so
 <p>First I’ll split the data into two sets: <code class="docutils literal notranslate"><span class="pre">data1</span></code> contains residence times for dogs whose arrival and departure times are known; <code class="docutils literal notranslate"><span class="pre">data2</span></code> contains incomplete residence times for dogs who were not adopted during the observation interval.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">complete</span> <span class="o">=</span> <span class="n">obs2</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
-<span class="n">data1</span> <span class="o">=</span> <span class="n">obs2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">complete</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">]</span>
-<span class="n">data1</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data1</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">censored</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">]</span>
+<span class="n">data2</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">censored</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data1</span>
 </pre></div>
 </div>
 </div>
@@ -1176,10 +870,9 @@ Name: T, dtype: float64
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data2</span> <span class="o">=</span> <span class="n">obs2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">complete</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">]</span>
-<span class="n">data2</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data2</span>
 </pre></div>
 </div>
 </div>
@@ -1207,11 +900,7 @@ At the end of the observation interval, we don’t know what the residence time 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_weibull_incomplete</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Update the prior based on data.</span>
-<span class="sd">    </span>
-<span class="sd">    prior: joint distribution of mu and sigma</span>
-<span class="sd">    data: sequence of observations</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Update the prior using incomplete data.&quot;&quot;&quot;</span>
     <span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">,</span> <span class="n">data_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
         <span class="n">prior</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
     <span class="n">densities</span> <span class="o">=</span> <span class="n">weibull_dist</span><span class="p">(</span><span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">)</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">data_mesh</span><span class="p">)</span>
@@ -1241,7 +930,7 @@ At the end of the observation interval, we don’t know what the residence time 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_77_0.png" src="_images/chap14_77_0.png" />
+<img alt="_images/chap14_76_0.png" src="_images/chap14_76_0.png" />
 </div>
 </div>
 <p>Compared to the previous contour plot, it looks like the range of likely values for <span class="math notranslate nohighlight">\(\lambda\)</span> is substantially wider.
@@ -1257,7 +946,8 @@ We can see that more clearly by looking at the marginal distributions.</p>
 <p>Here’s the posterior marginal distribution for <span class="math notranslate nohighlight">\(\lambda\)</span> compared to the distribution we got using all complete data.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_lam</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;All complete&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_lam</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;All complete&#39;</span><span class="p">,</span>
+                   <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
 <span class="n">posterior_lam2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Some censored&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;lambda&#39;</span><span class="p">,</span>
@@ -1267,7 +957,7 @@ We can see that more clearly by looking at the marginal distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_81_0.png" src="_images/chap14_81_0.png" />
+<img alt="_images/chap14_80_0.png" src="_images/chap14_80_0.png" />
 </div>
 </div>
 <p>The distribution with some incomplete data is substantially wider.</p>
@@ -1275,10 +965,11 @@ We can see that more clearly by looking at the marginal distributions.</p>
 That suggests that the range of the prior distribution is not wide enough to cover the most likely values for this parameter.
 If I were concerned about making this distribution more accurate, I would go back and run the update again with a wider prior.</p>
 <p>Here’s the posterior marginal distribution for <span class="math notranslate nohighlight">\(k\)</span>:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_k</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;All complete&#39;</span><span class="p">)</span>
-<span class="n">posterior_k2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Some censored&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_k</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;All complete&#39;</span><span class="p">,</span>
+                   <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+<span class="n">posterior_k2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C12&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Some censored&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span> 
@@ -1287,7 +978,7 @@ If I were concerned about making this distribution more accurate, I would go bac
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_83_0.png" src="_images/chap14_83_0.png" />
+<img alt="_images/chap14_82_0.png" src="_images/chap14_82_0.png" />
 </div>
 </div>
 <p>In this example, the marginal distribution is shifted to the left when we have incomplete data, but it is not substantially wider.</p>
@@ -1297,19 +988,12 @@ If I were concerned about making this distribution more accurate, I would go bac
 </div>
 <div class="section" id="light-bulbs">
 <h2>Light Bulbs<a class="headerlink" href="#light-bulbs" title="Permalink to this headline">¶</a></h2>
-<p>In 2007 <a class="reference external" href="https://www.researchgate.net/publication/225450325_Renewal_Rate_of_Filament_Lamps_Theory_and_Experiment">researchers ran an experiment</a> to characterize the distribution of lifetimes for light bulbs.</p>
-<p>Here is their description of the experiment:</p>
+<p>In 2007 <a class="reference external" href="https://www.researchgate.net/publication/225450325_Renewal_Rate_of_Filament_Lamps_Theory_and_Experiment">researchers ran an experiment</a> to characterize the distribution of lifetimes for light bulbs.
+Here is their description of the experiment:</p>
 <blockquote>
 <div><p>An assembly of 50 new Philips (India) lamps with the rating 40 W, 220 V (AC) was taken and installed in the horizontal orientation and uniformly distributed over a lab area 11 m x 7 m.</p>
 <p>The assembly was monitored at regular intervals of 12 h to look for failures. The instants of recorded failures were [recorded] and a total of 32 data points were obtained such that even the last bulb failed.</p>
 </div></blockquote>
-<p>The data were reported in the following columns:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">-</span> <span class="n">observation</span> <span class="n">number</span>
-<span class="n">h</span> <span class="o">-</span> <span class="n">time</span> <span class="ow">in</span> <span class="n">hours</span> <span class="n">since</span> <span class="n">experiment</span> <span class="n">start</span>
-<span class="n">f</span> <span class="o">-</span> <span class="n">number</span> <span class="n">of</span> <span class="n">failed</span> <span class="n">lamps</span> <span class="n">at</span> <span class="n">particular</span> <span class="n">time</span> <span class="n">h</span>
-<span class="n">K</span> <span class="o">-</span> <span class="n">number</span> <span class="n">of</span> <span class="n">surviving</span> <span class="n">lamps</span>  <span class="n">at</span> <span class="n">particular</span> <span class="n">time</span> <span class="n">h</span>
-</pre></div>
-</div>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -1394,7 +1078,7 @@ If I were concerned about making this distribution more accurate, I would go bac
 </table>
 </div></div></div>
 </div>
-<p>Column <code class="docutils literal notranslate"><span class="pre">h</span></code> contains the time values when bulbs failed; Column <code class="docutils literal notranslate"><span class="pre">f</span></code> contains the number of bulbs that failed at each time.
+<p>Column <code class="docutils literal notranslate"><span class="pre">h</span></code> contains the times when bulbs failed in hours; Column <code class="docutils literal notranslate"><span class="pre">f</span></code> contains the number of bulbs that failed at each time.
 We can represent these values and frequencies using a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1413,7 +1097,7 @@ We can represent these values and frequencies using a <code class="docutils lite
 </div>
 <p>Because of the design of this experiment, we can consider the data to be a representative sample from the distribution of lifetimes, at least for light bulbs that are lit continuously.</p>
 <p>The average lifetime is about 1400 h.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_bulb</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
@@ -1425,18 +1109,12 @@ We can represent these values and frequencies using a <code class="docutils lite
 </div>
 </div>
 </div>
-<p>Assuming, for now, that these data follow a Weibull distribution, let’s estimate the parameters that fit the data.</p>
-<p>Again, I’ll start with uniform priors for <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(k\)</span>:</p>
+<p>Assuming that these data are well modeled by a Weibull distribution, let’s estimate the parameters that fit the data.
+Again, I’ll start with uniform priors for <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(k\)</span>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lams</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">51</span><span class="p">)</span>
 <span class="n">prior_lam</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">lams</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lambda&#39;</span><span class="p">)</span>
-<span class="n">prior_lam</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(51,)
 </pre></div>
 </div>
 </div>
@@ -1445,12 +1123,6 @@ We can represent these values and frequencies using a <code class="docutils lite
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">51</span><span class="p">)</span>
 <span class="n">prior_k</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
-<span class="n">prior_k</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(51,)
 </pre></div>
 </div>
 </div>
@@ -1500,59 +1172,7 @@ We can use <code class="docutils literal notranslate"><span class="pre">np.repea
 <img alt="_images/chap14_103_0.png" src="_images/chap14_103_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="incomplete-information">
-<h2>Incomplete Information<a class="headerlink" href="#incomplete-information" title="Permalink to this headline">¶</a></h2>
-<p>But that’s not quite right, because it assumes each light bulb died at the instant we observed it.<br />
-According to the report, the researchers only checked the bulbs every 12 hours.  So if they see that a bulb has died, they know only that it died during the 12 hours since the last check.</p>
-<p>It is more strictly correct to use the following update function, which uses the CDF of the Weibull distribution to compute the probability that a bulb dies during a given 12 hour interval.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_weibull_between</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Update the prior based on data.</span>
-<span class="sd">    </span>
-<span class="sd">    prior: joint distribution of mu and sigma</span>
-<span class="sd">    data: sequence of observations</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">,</span> <span class="n">data_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
-        <span class="n">prior</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-    <span class="n">dist</span> <span class="o">=</span> <span class="n">weibull_dist</span><span class="p">(</span><span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">)</span>
-    <span class="n">cdf1</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">data_mesh</span><span class="p">)</span>
-    <span class="n">cdf2</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">data_mesh</span><span class="o">-</span><span class="mi">12</span><span class="p">)</span>
-    <span class="n">likelihood</span> <span class="o">=</span> <span class="p">(</span><span class="n">cdf1</span> <span class="o">-</span> <span class="n">cdf2</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-    <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
-    <span class="n">normalize</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">posterior</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>The probability that a value falls in an interval is the difference between the CDF at the beginning and end of the interval.</p>
-<p>Here’s how we run the update.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_bulb2</span> <span class="o">=</span> <span class="n">update_weibull_between</span><span class="p">(</span><span class="n">prior_bulb</span><span class="p">,</span> <span class="n">data_bulb</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>And here are the results.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_contour</span><span class="p">(</span><span class="n">posterior_bulb2</span><span class="p">)</span>
-<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Joint posterior distribution of Weibull parameters&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap14_109_0.png" src="_images/chap14_109_0.png" />
-</div>
-</div>
-<p>Visually this result is almost identical to what we got using the PDF.
-And that’s good news, because it suggests that using the PDF can be a good approximation even if it’s not strictly correct.</p>
-<p>To see whether it makes any difference at all, let’s check the posterior means.</p>
+<p>To summarize this joint posterior distribution, we’ll compute the posterior mean lifetime.</p>
 </div>
 <div class="section" id="posterior-means">
 <h2>Posterior Means<a class="headerlink" href="#posterior-means" title="Permalink to this headline">¶</a></h2>
@@ -1605,12 +1225,7 @@ And that’s good news, because it suggests that using the PDF can be a good app
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">joint_weibull_mean</span><span class="p">(</span><span class="n">joint</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the mean of a joint distribution of Weibulls.</span>
-<span class="sd">    </span>
-<span class="sd">    joint: DataFrame of Weibull parameters and probabilities</span>
-<span class="sd">    </span>
-<span class="sd">    returns: expected mean value</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Compute the mean of a joint distribution of Weibulls.&quot;&quot;&quot;</span>
     <span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
         <span class="n">joint</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">joint</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
     <span class="n">means</span> <span class="o">=</span> <span class="n">weibull_dist</span><span class="p">(</span><span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -1620,8 +1235,56 @@ And that’s good news, because it suggests that using the PDF can be a good app
 </div>
 </div>
 </div>
-<p>Here are the means of the two posterior distributions:</p>
-<div class="cell docutils container">
+</div>
+<div class="section" id="incomplete-information">
+<h2>Incomplete Information<a class="headerlink" href="#incomplete-information" title="Permalink to this headline">¶</a></h2>
+<p>The previous update was not quite right, because it assumed each light bulb died at the instant we observed it.<br />
+According to the report, the researchers only checked the bulbs every 12 hours.  So if they see that a bulb has died, they know only that it died during the 12 hours since the last check.</p>
+<p>It is more strictly correct to use the following update function, which uses the CDF of the Weibull distribution to compute the probability that a bulb dies during a given 12 hour interval.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_weibull_between</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update the prior based on data.&quot;&quot;&quot;</span>
+    <span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">,</span> <span class="n">data_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
+        <span class="n">prior</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">weibull_dist</span><span class="p">(</span><span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">)</span>
+    <span class="n">cdf1</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">data_mesh</span><span class="p">)</span>
+    <span class="n">cdf2</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">data_mesh</span><span class="o">-</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="p">(</span><span class="n">cdf1</span> <span class="o">-</span> <span class="n">cdf2</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+    <span class="n">normalize</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The probability that a value falls in an interval is the difference between the CDF at the beginning and end of the interval.</p>
+<p>Here’s how we run the update.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_bulb2</span> <span class="o">=</span> <span class="n">update_weibull_between</span><span class="p">(</span><span class="n">prior_bulb</span><span class="p">,</span> <span class="n">data_bulb</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here are the results.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_contour</span><span class="p">(</span><span class="n">posterior_bulb2</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Joint posterior distribution of Weibull parameters&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/chap14_120_0.png" src="_images/chap14_120_0.png" />
+</div>
+</div>
+<p>Visually this result is almost identical to what we got using the PDF.
+And that’s good news, because it suggests that using the PDF can be a good approximation even if it’s not strictly correct.</p>
+<p>To see whether it makes any difference at all, let’s check the posterior means.</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_weibull_mean</span><span class="p">(</span><span class="n">posterior_bulb</span><span class="p">)</span>
 </pre></div>
@@ -1633,7 +1296,7 @@ And that’s good news, because it suggests that using the PDF can be a good app
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_weibull_mean</span><span class="p">(</span><span class="n">posterior_bulb2</span><span class="p">)</span>
 </pre></div>
@@ -1650,7 +1313,7 @@ And that makes sense: if we assume that a bulb is equally likely to expire at an
 </div>
 <div class="section" id="posterior-predictive-distribution">
 <h2>Posterior Predictive Distribution<a class="headerlink" href="#posterior-predictive-distribution" title="Permalink to this headline">¶</a></h2>
-<p>Suppose you install 100 light bulbs of the kind we studied in this chapter, and you come back to check on them after 1000 hours.  Based on the posterior distribution we just computed, what is the distribution of the number of bulbs you find dead?</p>
+<p>Suppose you install 100 light bulbs of the kind in the previous section, and you come back to check on them after 1000 hours.  Based on the posterior distribution we just computed, what is the distribution of the number of bulbs you find dead?</p>
 <p>If we knew the parameters of the Weibull distribution for sure, the answer would be a binomial distribution.</p>
 <p>For example, if we know that <span class="math notranslate nohighlight">\(\lambda=1550\)</span> and <span class="math notranslate nohighlight">\(k=4.25\)</span>, we can use <code class="docutils literal notranslate"><span class="pre">weibull_dist</span></code> to compute the probability that a bulb dies before you return:</p>
 <div class="cell docutils container">
@@ -1683,9 +1346,9 @@ And that makes sense: if we assume that a bulb is equally likely to expire at an
 </div>
 </div>
 <p>And here’s what it looks like.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dist_num_dead</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dist_num_dead</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;known parameters&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of dead bulbs&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
@@ -1704,18 +1367,18 @@ Instead, we have a posterior distribution that contains possible values of these
 It doesn’t work with joint distributions, but we can convert the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that represents a joint distribution to a <code class="docutils literal notranslate"><span class="pre">Series</span></code>, like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_series</span> <span class="o">=</span> <span class="n">posterior_bulb2</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_series</span> <span class="o">=</span> <span class="n">posterior_bulb</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
 <span class="n">posterior_series</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k    lambda
-1.0  1000.0    1.080654e-24
-     1020.0    1.596253e-24
-     1040.0    2.279356e-24
-     1060.0    3.153589e-24
-     1080.0    4.236317e-24
+1.0  1000.0    8.146763e-25
+     1020.0    1.210486e-24
+     1040.0    1.738327e-24
+     1060.0    2.418201e-24
+     1080.0    3.265549e-24
 dtype: float64
 </pre></div>
 </div>
@@ -1766,15 +1429,15 @@ dtype: float64
 <p>This chapter introduces survival analysis, which is used to answer questions about the time until an event, and the Weibull distribution, which is a good model for “lifetimes” (broadly interpreted) in a number of domains.</p>
 <p>We used joint distributions to represent prior probabilities for the parameters of the Weibull distribution, and we updated them three ways: knowing the exact duration of a lifetime, knowing a lower bound, and knowing that a lifetime fell in a given interval.</p>
 <p>These examples demonstrate a feature of Bayesian methods: they can be adapted to handle incomplete, or “censored”, data with only small changes.  As an exercise, you’ll have a chance to work with one more type of censored data, when we are given an upper bound on a lifetime.</p>
-<p>The methods in this chapter work with any distribution with two parameters.<br />
+<p>The methods in this chapter work with any distribution with two parameters.
 In the exercises, you’ll have a chance to estimate the parameters of a two-parameter gamma distribution, which is used to describe a variety of natural phenomena.</p>
 <p>And in the next chapter we’ll move on to models with three parameters!</p>
 </div>
 <div class="section" id="exercises">
 <h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
 <p><strong>Exercise:</strong> Using data about the lifetimes of light bulbs, we computed the posterior distribution from the parameters of a Weibull distribution, <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(k\)</span>, and the posterior predictive distribution for the number of dead bulbs, out of 100, after 1000 hours.</p>
-<p>Now suppose you do the experiment:  You install 100 light bulbs, come back after 1000 hours, and find 20 dead light bulbs.</p>
-<p>Update the posterior distribution based on this data.
+<p>Now suppose you do the experiment:  You install 100 light bulbs, come back after 1000 hours, and find 20 dead light bulbs.<br />
+Update the posterior distribution based on this data.
 How much does it change the posterior mean?</p>
 <p>Suggestions:</p>
 <ol class="simple">
@@ -1824,7 +1487,7 @@ How much does it change the posterior mean?</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="n">posterior_bulb3</span> <span class="o">=</span> <span class="n">posterior_bulb2</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior_bulb3</span> <span class="o">=</span> <span class="n">posterior_bulb</span> <span class="o">*</span> <span class="n">likelihood</span>
 <span class="n">normalize</span><span class="p">(</span><span class="n">posterior_bulb3</span><span class="p">)</span>
 <span class="n">plot_contour</span><span class="p">(</span><span class="n">posterior_bulb3</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Joint posterior distribution with k=20&#39;</span><span class="p">)</span>
@@ -1832,7 +1495,7 @@ How much does it change the posterior mean?</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_145_0.png" src="_images/chap14_145_0.png" />
+<img alt="_images/chap14_146_0.png" src="_images/chap14_146_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1847,7 +1510,7 @@ How much does it change the posterior mean?</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1374.6787666856158
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1378.3949572816412
 </pre></div>
 </div>
 </div>
@@ -1856,10 +1519,10 @@ How much does it change the posterior mean?</p>
 Then we’ll compute the posterior predictive distribution for daily rainfall and use it to estimate the probability of a rare event, like more than 1.5 inches of rain in a day.</p>
 <p>According to hydrologists, the distribution of total daily rainfall (for days with rain) is well modeled by a two-parameter
 gamma distribution.</p>
-<p>When we worked with the one-parameter gamma distribution in Chapter xx, we used the Greek letter <span class="math notranslate nohighlight">\(\alpha\)</span> for the parameter.</p>
+<p>When we worked with the one-parameter gamma distribution in Chapter xxx, we used the Greek letter <span class="math notranslate nohighlight">\(\alpha\)</span> for the parameter.</p>
 <p>For the two-parameter gamma distribution, we will use <span class="math notranslate nohighlight">\(k\)</span> for the “shape parameter”, which determines the shape of the distribution, and the Greek letter <span class="math notranslate nohighlight">\(\theta\)</span> or <code class="docutils literal notranslate"><span class="pre">theta</span></code> for the “scale parameter”.</p>
 <p>The following function takes these parameters and returns a <code class="docutils literal notranslate"><span class="pre">gamma</span></code> object from SciPy.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.stats</span>
 
@@ -1878,7 +1541,7 @@ gamma distribution.</p>
 </div>
 <p>Now we need some data.
 The following cell downloads data I collected from the National Oceanic and Atmospheric Administration (<a class="reference external" href="http://www.ncdc.noaa.gov/cdo-web/search">NOAA</a>) for Seattle, Washington in May 2020.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the data file</span>
 
@@ -1890,7 +1553,7 @@ The following cell downloads data I collected from the National Oceanic and Atmo
 </div>
 </div>
 <p>Now we can load it into a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weather</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;2203951.csv&#39;</span><span class="p">)</span>
 <span class="n">weather</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -1999,7 +1662,7 @@ The following cell downloads data I collected from the National Oceanic and Atmo
 </div></div></div>
 </div>
 <p>I’ll make a Boolean Series to indicate which days it rained.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rained</span> <span class="o">=</span> <span class="n">weather</span><span class="p">[</span><span class="s1">&#39;PRCP&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
 <span class="n">rained</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -2013,7 +1676,7 @@ The following cell downloads data I collected from the National Oceanic and Atmo
 </div>
 </div>
 <p>And select the total rainfall on the days it rained.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prcp</span> <span class="o">=</span> <span class="n">weather</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rained</span><span class="p">,</span> <span class="s1">&#39;PRCP&#39;</span><span class="p">]</span>
 <span class="n">prcp</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -2035,7 +1698,7 @@ Name: PRCP, dtype: float64
 </div>
 </div>
 <p>Here’s what the CDF of the data looks like.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_data</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">prcp</span><span class="p">)</span>
 <span class="n">cdf_data</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -2046,7 +1709,7 @@ Name: PRCP, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_158_0.png" src="_images/chap14_158_0.png" />
+<img alt="_images/chap14_160_0.png" src="_images/chap14_160_0.png" />
 </div>
 </div>
 <p>The maximum is 1.14 inches of rain is one day.
@@ -2185,7 +1848,7 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_168_0.png" src="_images/chap14_168_0.png" />
+<img alt="_images/chap14_171_0.png" src="_images/chap14_171_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2217,7 +1880,7 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_170_0.png" src="_images/chap14_170_0.png" />
+<img alt="_images/chap14_173_0.png" src="_images/chap14_173_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2248,7 +1911,7 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_172_0.png" src="_images/chap14_172_0.png" />
+<img alt="_images/chap14_175_0.png" src="_images/chap14_175_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2311,10 +1974,11 @@ dtype: float64
 
 <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">pmf_from_dist</span>
 
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
 <span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">in</span> <span class="n">posterior_series</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
     <span class="n">dist</span> <span class="o">=</span> <span class="n">gamma_dist</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
-    <span class="n">pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
     <span class="n">pmf_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pmf</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2338,7 +2002,7 @@ dtype: float64
 
 <span class="c1"># Here&#39;s what it looks like.</span>
 
-<span class="n">post_pred</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">post_pred</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;rainfall&#39;</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Total rainfall (in)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">,</span>
          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior predictive distribution of rainfall&#39;</span><span class="p">)</span>
@@ -2346,7 +2010,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap14_178_0.png" src="_images/chap14_178_0.png" />
+<img alt="_images/chap14_181_0.png" src="_images/chap14_181_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
