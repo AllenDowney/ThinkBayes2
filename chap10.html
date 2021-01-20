@@ -319,8 +319,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#bayesian-bandit">
-   Bayesian Bandit
+  <a class="reference internal nav-link" href="#bayesian-bandits">
+   Bayesian Bandits
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -349,8 +349,13 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#standardized-testing">
-   Standardized testing
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -383,16 +388,6 @@
    Discriminatory power
   </a>
  </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
 </ul>
 
         </nav>
@@ -407,18 +402,11 @@
   <div class="section" id="testing">
 <h1>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h1>
 <p>In Chapter xxx I presented a problem from David MacKay’s book, <a class="reference external" href="http://www.inference.org.uk/mackay/itila/p0.html"><em>Information Theory, Inference, and Learning Algorithms</em></a>:</p>
+<p>“A statistical statement appeared in The Guardian on Friday January 4, 2002:</p>
 <blockquote>
-<div><p>A statistical statement appeared in The Guardian on
-Friday January 4, 2002:</p>
-<blockquote>
-<div><p>“When spun on edge 250 times, a Belgian one-euro coin came
-up heads 140 times and tails 110. ‘It looks very suspicious
-to me’, said Barry Blight, a statistics lecturer at the London
-School of Economics. ‘If the coin were unbiased the chance of
-getting a result as extreme as that would be less than 7%’.”</p>
+<div><p>“When spun on edge 250 times, a Belgian one-euro coin came up heads 140 times and tails 110. ‘It looks very suspicious to me’, said Barry Blight, a statistics lecturer at the London School of Economics. ‘If the coin were unbiased the chance of getting a result as extreme as that would be less than 7%’.”</p>
 </div></blockquote>
-<p>But [asks MacKay] do these data give evidence that the coin is biased rather than fair?</p>
-</div></blockquote>
+<p>“But [asks MacKay] do these data give evidence that the coin is biased rather than fair?”</p>
 <p>We started to answer this question in Chapter xxx and came back to it in Chapter xxx.  To review, our answer was based on these modeling decisions:</p>
 <ul class="simple">
 <li><p>If you spin a coin on edge, there is some probability, <span class="math notranslate nohighlight">\(x\)</span>, that it will land heads up.</p></li>
@@ -433,10 +421,10 @@ getting a result as extreme as that would be less than 7%’.”</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_uniform</span>
+<span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
 
 <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
-<span class="n">uniform</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="s1">&#39;uniform&#39;</span><span class="p">)</span>
+<span class="n">uniform</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -453,15 +441,10 @@ getting a result as extreme as that would be less than 7%’.”</p>
 </div>
 </div>
 <p>We computed the posterior distribution in the usual way.</p>
-<div class="cell docutils container">
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">uniform</span> <span class="o">*</span> <span class="n">likelihood</span>
 <span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0039446175693263405
 </pre></div>
 </div>
 </div>
@@ -486,14 +469,13 @@ getting a result as extreme as that would be less than 7%’.”</p>
 <p>Again, the posterior mean is about 0.56, with a 90% credible interval from 0.51 to 0.61.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">summarize</span>
-
-<span class="n">summarize</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> 
+      <span class="n">posterior</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.56 [0.51 0.61]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5595238095238095 [0.51 0.61]
 </pre></div>
 </div>
 </div>
@@ -504,7 +486,8 @@ getting a result as extreme as that would be less than 7%’.”</p>
 <div class="section" id="evidence">
 <h2>Evidence<a class="headerlink" href="#evidence" title="Permalink to this headline">¶</a></h2>
 <p>In Chapter xxx, we said that data are considered evidence in favor of a hypothesis, <span class="math notranslate nohighlight">\(A\)</span>, if the data are more likely under <span class="math notranslate nohighlight">\(A\)</span> than under the alternative, <span class="math notranslate nohighlight">\(B\)</span>; that is if</p>
-<p><span class="math notranslate nohighlight">\(P(D|A) &gt; P(D|B)\)</span></p>
+<div class="math notranslate nohighlight">
+\[P(D|A) &gt; P(D|B)\]</div>
 <p>Furthermore, we can quantify the strength of the evidence by computing the ratio of these likelihoods, which is known as the <a class="reference external" href="https://en.wikipedia.org/wiki/Bayes_factor">Bayes factor</a> and often denoted <span class="math notranslate nohighlight">\(K\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[K = \frac{P(D|A)}{P(D|B)}\]</div>
@@ -527,8 +510,8 @@ getting a result as extreme as that would be less than 7%’.”</p>
 </div>
 </div>
 <p>That’s the probability of the data, given that the coin is fair.</p>
-<p>But if the coin is biased, what’s the probability of the data?  Well, that depends on what “biased” means.</p>
-<p>If we know ahead of time that “biased” means the probability of heads is 56%, we can use the binomial distribution again:</p>
+<p>But if the coin is biased, what’s the probability of the data?  That depends on what “biased” means.
+If we know ahead of time that “biased” means the probability of heads is 56%, we can use the binomial distribution again:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">like_biased</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.56</span><span class="p">)</span>
@@ -649,13 +632,11 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 </div>
 </div>
 <p>Evidence that “moves the needle” from 50% to 68% is not very strong.</p>
-<p><strong>Exercise:</strong> Suppose “biased” doesn’t mean every value of <span class="math notranslate nohighlight">\(x\)</span> is equally likely.  Maybe values near 50% are more likely and values near the extremes are less likely.</p>
+<p>Now suppose “biased” doesn’t mean every value of <span class="math notranslate nohighlight">\(x\)</span> is equally likely.  Maybe values near 50% are more likely and values near the extremes are less likely.</p>
 <p>We could use a triangle-shaped distribution to represent this alternative definition of “biased”:</p>
-<div class="cell docutils container">
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
-
-<span class="n">ramp_up</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ramp_up</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
 <span class="n">ramp_down</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ramp_up</span><span class="p">,</span> <span class="n">ramp_down</span><span class="p">)</span>
 
@@ -664,14 +645,9 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2500
-</pre></div>
-</div>
-</div>
 </div>
 <p>As we did with the uniform distribution, we can remove 50% as a possible value of <span class="math notranslate nohighlight">\(x\)</span> (but it doesn’t make much difference if we skip this detail).</p>
-<div class="cell docutils container">
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biased_triangle</span> <span class="o">=</span> <span class="n">triangle</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">biased_triangle</span><span class="p">[</span><span class="mf">0.5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -679,13 +655,8 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.98
-</pre></div>
 </div>
-</div>
-</div>
-<p>Now compute the total probability of the data under this definition of “biased” and compute the Bayes factor, compared with the fair hypothesis.</p>
+<p><strong>Exercise:</strong> Now compute the total probability of the data under this definition of “biased” and compute the Bayes factor, compared with the fair hypothesis.</p>
 <p>Is the data evidence that the coin is biased?</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
@@ -733,12 +704,12 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 <p>What we’ve done so far in this chapter is sometimes called “Bayesian hypothesis testing” in contrast with <a class="reference external" href="https://en.wikipedia.org/wiki/Statistical_hypothesis_testing">statistical hypothesis testing</a>.</p>
 <p>In statistical hypothesis testing, we compute a p-value, which is hard to define concisely, and use it to determine whether the results are “statistically significant”, which is also  hard to define concisely.</p>
 <p>The Bayesian alternative is to report the Bayes factor, <span class="math notranslate nohighlight">\(K\)</span>, which summarizes the strength of the evidence in favor of one hypothesis or the other.</p>
-<p>Some people think it is better to report <span class="math notranslate nohighlight">\(K\)</span> than a posterior probability because <span class="math notranslate nohighlight">\(K\)</span> does not depend on a prior probability.</p>
-<p>But as we saw in this example, <span class="math notranslate nohighlight">\(K\)</span> often depends on a precise definition of the hypotheses, which can be just as controversial as a prior probability.</p>
-<p>In my opinion, Bayesian hypothesis testing is better because it measures the strength of the evidence on a continuum, rather that trying to make a binary determination.</p>
-<p>But it doesn’t solve what I think is the fundamental problem, which is that hypothesis testing is not asking the question we really care about.</p>
-<p>To see why, suppose you test the coin and decide that it is biased after all.  What can you do with this answer?  In my opinion, not much.</p>
-<p>In contrast, there are two kind of questions I think are more useful (and therefore more meaningful):</p>
+<p>Some people think it is better to report <span class="math notranslate nohighlight">\(K\)</span> than a posterior probability because <span class="math notranslate nohighlight">\(K\)</span> does not depend on a prior probability.
+But as we saw in this example, <span class="math notranslate nohighlight">\(K\)</span> often depends on a precise definition of the hypotheses, which can be just as controversial as a prior probability.</p>
+<p>In my opinion, Bayesian hypothesis testing is better because it measures the strength of the evidence on a continuum, rather that trying to make a binary determination.
+But it doesn’t solve what I think is the fundamental problem, which is that hypothesis testing is not asking the question we really care about.</p>
+<p>To see why, suppose you test the coin and decide that it is biased after all.  What can you do with this answer?  In my opinion, not much.
+In contrast, there are two kind of questions I think are more useful (and therefore more meaningful):</p>
 <ul class="simple">
 <li><p>Prediction: Based on what we know about the coin, what should we expect to happen in the future?</p></li>
 <li><p>Decision-making: Can we use those predictions to make better decisions?</p></li>
@@ -747,8 +718,8 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 <p>And we’ve seen one previous example of decision analysis: In Chapter xxx we used the distribution of prices to choose an optimal bid on <em>The Price is Right</em>.</p>
 <p>So let’s finish this chapter with another example of Bayesian decision analysis, the Bayesian Bandit strategy.</p>
 </div>
-<div class="section" id="bayesian-bandit">
-<h2>Bayesian Bandit<a class="headerlink" href="#bayesian-bandit" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="bayesian-bandits">
+<h2>Bayesian Bandits<a class="headerlink" href="#bayesian-bandits" title="Permalink to this headline">¶</a></h2>
 <p>If you have ever been to a casino, you have probably seen a slot machines, which is sometimes called a “one-armed bandit” because it has a handle like an arm and the ability to take money like a bandit.</p>
 <p>The Bayesian Bandit strategy is named after one-armed bandits because it solves a problem based a simplified version of a slot machine.</p>
 <p>Suppose that each time you play a slot machine, there is a fixed probability that you win.  And suppose that different machines give you different probabilities of winning, but you don’t know what the probabilities are.</p>
@@ -758,10 +729,11 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 <div class="section" id="prior-beliefs">
 <h2>Prior beliefs<a class="headerlink" href="#prior-beliefs" title="Permalink to this headline">¶</a></h2>
 <p>If we know nothing about the probability of winning, we can start with a uniform prior.</p>
-<div class="cell docutils container">
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
-<span class="n">prior</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+<span class="n">prior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -815,28 +787,28 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 <p>Each time we play a machine, we can use the outcome to update our beliefs.  The following function does the update.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;W&#39;</span><span class="p">:</span> <span class="n">xs</span><span class="p">,</span>
+    <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">xs</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Update the probability of winning</span>
-<span class="sd">    </span>
-<span class="sd">    pmf: Pmf of win probabilities</span>
-<span class="sd">    data: string, either &#39;W&#39; or &#39;L&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">xs</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">qs</span>
-    <span class="k">if</span> <span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;W&#39;</span><span class="p">:</span>
-        <span class="n">likelihood</span> <span class="o">=</span> <span class="n">xs</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">likelihood</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">xs</span>
-        
-    <span class="n">pmf</span> <span class="o">*=</span> <span class="n">likelihood</span>
+    <span class="sd">&quot;&quot;&quot;Update the probability of winning.&quot;&quot;&quot;</span>
+    <span class="n">pmf</span> <span class="o">*=</span> <span class="n">likelihood</span><span class="p">[</span><span class="n">data</span><span class="p">]</span>
     <span class="n">pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">pmf</span></code> is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the prior distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code>, which is the probability of winning.</p>
+<p>This function updates the prior distribution in place.
+<code class="docutils literal notranslate"><span class="pre">pmf</span></code> is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the prior distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code>, which is the probability of winning.</p>
 <p><code class="docutils literal notranslate"><span class="pre">data</span></code> is a string, either <code class="docutils literal notranslate"><span class="pre">W</span></code> if the outcome is a win or <code class="docutils literal notranslate"><span class="pre">L</span></code> if the outcome is a loss.</p>
 <p>The likelihood of the data is either <code class="docutils literal notranslate"><span class="pre">xs</span></code> or <code class="docutils literal notranslate"><span class="pre">1-xs</span></code>, depending on the outcome.</p>
-<p>This function updates the prior distribution in place.</p>
 <p>Suppose we choose a machine, play 10 times, and win once.  We can compute the posterior distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code>, based on this outcome, like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -859,7 +831,7 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap10_61_0.png" src="_images/chap10_61_0.png" />
+<img alt="_images/chap10_62_0.png" src="_images/chap10_62_0.png" />
 </div>
 </div>
 </div>
@@ -920,7 +892,7 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap10_70_0.png" src="_images/chap10_70_0.png" />
+<img alt="_images/chap10_71_0.png" src="_images/chap10_71_0.png" />
 </div>
 </div>
 <p>Here are the actual probabilities, posterior means, 90% credible intervals.</p>
@@ -943,13 +915,14 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">beliefs</span><span class="p">):</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">ci</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+        <span class="n">ci</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ci</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">actual_probs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">mean</span><span class="p">,</span> <span class="n">ci</span>
     <span class="k">return</span> <span class="n">df</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summarize_beliefs</span><span class="p">(</span><span class="n">beliefs</span><span class="p">)</span>
 </pre></div>
@@ -984,13 +957,13 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
       <th>0</th>
       <td>0.1</td>
       <td>0.250</td>
-      <td>[0.08, 0.47000000000000003]</td>
+      <td>[0.08, 0.47]</td>
     </tr>
     <tr>
       <th>1</th>
       <td>0.2</td>
       <td>0.250</td>
-      <td>[0.08, 0.47000000000000003]</td>
+      <td>[0.08, 0.47]</td>
     </tr>
     <tr>
       <th>2</th>
@@ -1022,7 +995,8 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 <p>Here’s one way to do it.  We can draw a sample of 1000 values from each posterior distribution, like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">beliefs</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> 
+                    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">beliefs</span><span class="p">])</span>
 <span class="n">samples</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 </div>
@@ -1123,7 +1097,7 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 <span class="sd">    </span>
 <span class="sd">    returns: index of the machine that yielded the highest value</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">beliefs</span><span class="p">]</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">choice</span><span class="p">()</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">beliefs</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ps</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1150,11 +1124,8 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">choose_play_update</span><span class="p">(</span><span class="n">beliefs</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Chose a machine, play it, and update beliefs.</span>
-<span class="sd">    </span>
-<span class="sd">    beliefs: list of Pmf objects</span>
-<span class="sd">    verbose: Boolean, whether to print results</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Chose a machine, play it, and update beliefs.&quot;&quot;&quot;</span>
+    
     <span class="c1"># choose a machine</span>
     <span class="n">machine</span> <span class="o">=</span> <span class="n">choose</span><span class="p">(</span><span class="n">beliefs</span><span class="p">)</span>
     
@@ -1192,11 +1163,11 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap10_92_0.png" src="_images/chap10_92_0.png" />
+<img alt="_images/chap10_93_0.png" src="_images/chap10_93_0.png" />
 </div>
 </div>
-<p>We can summarize <code class="docutils literal notranslate"><span class="pre">beliefs</span></code> by printing the posterior mean and credible interval:</p>
-<div class="cell docutils container">
+<p>The following table summarizes the results.</p>
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summarize_beliefs</span><span class="p">(</span><span class="n">beliefs</span><span class="p">)</span>
 </pre></div>
@@ -1243,7 +1214,7 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
       <th>2</th>
       <td>0.3</td>
       <td>0.293</td>
-      <td>[0.18, 0.41000000000000003]</td>
+      <td>[0.18, 0.41]</td>
     </tr>
     <tr>
       <th>3</th>
@@ -1258,7 +1229,7 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 <p>The credible intervals usually contain the actual probabilities of winning.</p>
 <p>The estimates are still rough, especially for the lower-probability machines.  But that’s a feature, not a bug: the goal is to play the high-probability machines most often.  Making the estimates more precise is a means to that end, but not an end itself.</p>
 <p>More importantly, let’s see how many times each machine got played.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">summarize_counter</span><span class="p">(</span><span class="n">counter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Report the number of times each machine was played.</span>
@@ -1277,7 +1248,7 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summarize_counter</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
 </pre></div>
@@ -1333,33 +1304,30 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 </div>
 <p>If things go according to plan, the machines with higher probabilities should get played more often.</p>
 </div>
-<div class="section" id="standardized-testing">
-<h2>Standardized testing<a class="headerlink" href="#standardized-testing" title="Permalink to this headline">¶</a></h2>
-<p>Standardized tests like the <a class="reference external" href="https://en.wikipedia.org/wiki/SAT">SAT</a> are often used as part of the admission process at colleges and universities.</p>
-<p>The goal of the SAT is to measure the academic preparation of the test-takers; if it is accurate, their scores should reflect their actual ability in the domain of the test.</p>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>In this chapter we finally solved the Euro problem, determining whether the data support the hypothesis that the coin is fair or biased.  We found that the answer depends on how we define “biased”.  And we summarized the results using a Bayes factor, which quantifies the strength of the evidence.</p>
+<p>But the answer wasn’t satisfying because, in my opinion, the question wasn’t interesting.  Knowing whether the coin is biased is not useful unless it helps us make better predictions and better decisions.</p>
+<p>As an example of a more interesting question, we looked at the “one-armed bandit” problem and a strategy for solving it, the Bayesian bandit algorithm, which tries to balance exploration and exploitation, that is, gathering more information and making the best use of the information we have.</p>
+<p>As a second example, we considered standardized tests and how they measure the ability of test-takers.  We saw that a simple test, where all questions have the same difficulty, is most precise for test-takers with average ability and less precise for test-takers with the lowest and highest ability.
+As an exercise, you’ll have a chance to see whether adaptive testing can do better.</p>
+<p>Bayesian bandits and adaptive testing are examples of <a class="reference external" href="https://wiki.lesswrong.com/wiki/Bayesian_decision_theory">Bayesian decision theory</a>, which is the idea of using a posterior distribution as part of a decision-making process, often by choosing an action that minimizes the costs we expect on average (or maximizes a benefit).</p>
+<p>The strategy we used in Chapter xxx to bid on <em>The Price is Right</em> is another example.</p>
+<p>These strategies demonstrate what I think is the biggest advantage of Bayesian methods over classical statistics.  When we represent knowledge in the form of probability distributions, Bayes’s theorem tells us how to change our beliefs as we get more data, and Bayesian decision theory tells us how to make that knowledge actionable.</p>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p><strong>Exercise:</strong> Standardized tests like the <a class="reference external" href="https://en.wikipedia.org/wiki/SAT">SAT</a> are often used as part of the admission process at colleges and universities.
+The goal of the SAT is to measure the academic preparation of the test-takers; if it is accurate, their scores should reflect their actual ability in the domain of the test.</p>
 <p>Until recently, tests like the SAT were taken with paper and pencil, but now students have the option of taking the test online.  In the online format, it is possible for the test to be “adaptive”, which means that it can <a class="reference external" href="https://www.nytimes.com/2018/04/05/education/learning/tests-act-sat.html">choose each question based on responses to previous questions</a>.</p>
-<p>If a student gets the first few questions right, the test can challenge them with harder questions.  If they are struggling, it can give them easier questions.</p>
-<p>Adaptive testing has the potential to be more “efficient”, meaning that with the name number of questions an adaptive test could measure the ability of a tester more precisely.</p>
+<p>If a student gets the first few questions right, the test can challenge them with harder questions.  If they are struggling, it can give them easier questions.
+Adaptive testing has the potential to be more “efficient”, meaning that with the name number of questions an adaptive test could measure the ability of a tester more precisely.</p>
 <p>To see whether this is true, we will develop a model of an adaptive test and quantify the precision of its measurements.</p>
-<p>The model we’ll use is based on <a class="reference external" href="https://en.wikipedia.org/wiki/Item_response_theory">item response theory</a>, which assumes that we can quantify the difficulty of each question and the ability of each test-taker, and that the probability of a correct response is a function of difficulty and ability.</p>
-<p>Specifically, a common assumption is that this function is a three-parameter logistic function:</p>
-<div class="math notranslate nohighlight">
-\[\mathrm{p} = c + \frac{1-c}{1 + e^{-a (\theta-b)}}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\theta\)</span> is the ability of the test-taker and <span class="math notranslate nohighlight">\(b\)</span> is the difficulty of the question.</p>
-<p><span class="math notranslate nohighlight">\(c\)</span> is the lowest probability of getting a question right, supposing the test-taker with the lowest ability tries to answer the hardest question.  On a multiple-choice test with four responses, <span class="math notranslate nohighlight">\(c\)</span> might be 0.25, which is the probability of getting the right answer by guessing at random.</p>
-<p><span class="math notranslate nohighlight">\(a\)</span> controls the shape of the curve.</p>
-<p>The following function computes the probability of a correct answer, given <code class="docutils literal notranslate"><span class="pre">ability</span></code> and <code class="docutils literal notranslate"><span class="pre">difficulty</span></code>:</p>
-<div class="cell docutils container">
+<p>Details of this exercise are in the notebook.</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prob_correct</span><span class="p">(</span><span class="n">ability</span><span class="p">,</span> <span class="n">difficulty</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Probability of a correct response,</span>
-<span class="sd">    based on a three-parameter logistic curve.</span>
-<span class="sd">    </span>
-<span class="sd">    ability: of the test-taker</span>
-<span class="sd">    difficulty: of the question</span>
-<span class="sd">    </span>
-<span class="sd">    returns: float probability</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Probability of a correct response.&quot;&quot;&quot;</span>
     <span class="n">a</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">c</span> <span class="o">=</span> <span class="mf">0.25</span>
     <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">ability</span> <span class="o">-</span> <span class="n">difficulty</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span>
@@ -1371,7 +1339,7 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 </div>
 <p>I chose <code class="docutils literal notranslate"><span class="pre">a</span></code> to make the range of scores comparable to the SAT, which reports scores from 200 to 800.</p>
 <p>Here’s what the logistic curve looks like for a question with difficulty 500 and a range of abilities.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">abilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">900</span><span class="p">)</span>
 <span class="n">diff</span> <span class="o">=</span> <span class="mi">500</span>
@@ -1380,7 +1348,7 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 </div>
 </div>
 </div>
-<div class="cell tag_hide-input docutils container">
+<div class="cell tag_hide-input tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">abilities</span><span class="p">,</span> <span class="n">ps</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;ability&#39;</span><span class="p">,</span>
@@ -1391,7 +1359,7 @@ For example, if the prior probability is 50% that the coin is biased, the prior 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap10_104_0.png" src="_images/chap10_104_0.png" />
+<img alt="_images/chap10_106_0.png" src="_images/chap10_106_0.png" />
 </div>
 </div>
 <p>Someone with <code class="docutils literal notranslate"><span class="pre">ability=900</span></code> is nearly certain to get the right answer.
@@ -1406,13 +1374,10 @@ Someone with <code class="docutils literal notranslate"><span class="pre">abilit
 <li><p>A function called <code class="docutils literal notranslate"><span class="pre">update</span></code> that uses the outcome (a correct response or not) to update the estimate of the test-taker’s ability.</p></li>
 </ul>
 <p>Here’s <code class="docutils literal notranslate"><span class="pre">play</span></code>, which takes <code class="docutils literal notranslate"><span class="pre">ability</span></code> and <code class="docutils literal notranslate"><span class="pre">difficulty</span></code> as parameters.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">play</span><span class="p">(</span><span class="n">ability</span><span class="p">,</span> <span class="n">difficulty</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Simulate a test-taker answering a question.</span>
-<span class="sd">    </span>
-<span class="sd">    returns: True or False</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Simulate a test-taker answering a question.&quot;&quot;&quot;</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">prob_correct</span><span class="p">(</span><span class="n">ability</span><span class="p">,</span> <span class="n">difficulty</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">p</span>
 </pre></div>
@@ -1421,7 +1386,7 @@ Someone with <code class="docutils literal notranslate"><span class="pre">abilit
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">play</span></code> uses <code class="docutils literal notranslate"><span class="pre">prob_correct</span></code> to compute the probability of a correct answer and <code class="docutils literal notranslate"><span class="pre">np.random.random</span></code> to generate a random value between 0 and 1.  The return value is <code class="docutils literal notranslate"><span class="pre">True</span></code> for a correct response and <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
 <p>As a test, let’s simulate a test-taker with <code class="docutils literal notranslate"><span class="pre">ability=600</span></code> answering a question with <code class="docutils literal notranslate"><span class="pre">difficulty=500</span></code>.  The probability of a correct response is about 80%.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prob_correct</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
 </pre></div>
@@ -1436,7 +1401,7 @@ Someone with <code class="docutils literal notranslate"><span class="pre">abilit
 <p>Suppose this person takes a test with 51 questions, all with the same difficulty, <code class="docutils literal notranslate"><span class="pre">500</span></code>.
 We expect them to get about 80% of the questions correct.</p>
 <p>Here’s the result of one simulation.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_questions</span> <span class="o">=</span> <span class="mi">51</span>
 <span class="n">outcomes</span> <span class="o">=</span> <span class="p">[</span><span class="n">play</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_questions</span><span class="p">)]</span>
@@ -1461,7 +1426,7 @@ So the lowest score, 200, is three standard deviations below the mean, and the h
 <p>We could use that distribution as a prior, but it would tend to cut off the low and high ends of the distribution.
 Instead, I’ll inflate the standard deviation to 300, to leave open the possibility that <code class="docutils literal notranslate"><span class="pre">ability</span></code> can be less than 200 or more than 800.</p>
 <p>Here’s a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the prior distribution.</p>
-<div class="cell docutils container">
+<div class="cell tag_remove-output tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
 
@@ -1476,14 +1441,9 @@ Instead, I’ll inflate the standard deviation to 300, to leave open the possibi
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.04464186995102338
-</pre></div>
-</div>
-</div>
 </div>
 <p>And here’s what it looks like.</p>
-<div class="cell tag_hide-input docutils container">
+<div class="cell tag_hide-input tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;std=300&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 
@@ -1495,21 +1455,17 @@ Instead, I’ll inflate the standard deviation to 300, to leave open the possibi
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap10_117_0.png" src="_images/chap10_117_0.png" />
+<img alt="_images/chap10_119_0.png" src="_images/chap10_119_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="id1">
 <h2>The Update<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>The following function takes a prior <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> and the outcome of a single question, and updates the <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> in place.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_ability</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Update the probability of winning</span>
-<span class="sd">    </span>
-<span class="sd">    pmf: Pmf of ability</span>
-<span class="sd">    data: tuple of (difficulty, outcome)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Update the distribution of ability.&quot;&quot;&quot;</span>
     <span class="n">difficulty</span><span class="p">,</span> <span class="n">outcome</span> <span class="o">=</span> <span class="n">data</span>
     
     <span class="n">abilities</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">qs</span>
@@ -1527,7 +1483,7 @@ Instead, I’ll inflate the standard deviation to 300, to leave open the possibi
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">data</span></code> is a tuple that contains the difficulty of a question and the outcome: <code class="docutils literal notranslate"><span class="pre">True</span></code> if the response was correct and <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
 <p>As a test, let’s do an update based on the outcomes we simulated previously, based on a person with <code class="docutils literal notranslate"><span class="pre">ability=600</span></code> answering 51 questions with <code class="docutils literal notranslate"><span class="pre">difficulty=500</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">actual_600</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
@@ -1539,7 +1495,7 @@ Instead, I’ll inflate the standard deviation to 300, to leave open the possibi
 </div>
 </div>
 <p>Here’s what the posterior distribution looks like.</p>
-<div class="cell tag_hide-input docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">actual_600</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
 
@@ -1550,11 +1506,11 @@ Instead, I’ll inflate the standard deviation to 300, to leave open the possibi
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap10_123_0.png" src="_images/chap10_123_0.png" />
+<img alt="_images/chap10_125_0.png" src="_images/chap10_125_0.png" />
 </div>
 </div>
 <p>The posterior mean is pretty close to the test-taker’s actual ability, which is 600.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">actual_600</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
@@ -1572,16 +1528,10 @@ Instead, I’ll inflate the standard deviation to 300, to leave open the possibi
 <h2>Adaptation<a class="headerlink" href="#adaptation" title="Permalink to this headline">¶</a></h2>
 <p>Now let’s simulate an adaptive test.
 I’ll use the following function to choose questions, starting with the simplest strategy: all questions have the same difficulty.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">choose</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">belief</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Choose the difficulty of the next question.</span>
-<span class="sd">    </span>
-<span class="sd">    i: index from [0..num_questions-1]</span>
-<span class="sd">    belief: Pmf representing current estimate of ability</span>
-<span class="sd">    </span>
-<span class="sd">    returns: difficulty</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Choose the difficulty of the next question.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="mi">500</span>
 </pre></div>
 </div>
@@ -1590,17 +1540,10 @@ I’ll use the following function to choose questions, starting with the simples
 <p>As parameters, <code class="docutils literal notranslate"><span class="pre">choose</span></code> takes <code class="docutils literal notranslate"><span class="pre">i</span></code>, which is the index of the question, and <code class="docutils literal notranslate"><span class="pre">belief</span></code>, which is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> representing the posterior distribution of <code class="docutils literal notranslate"><span class="pre">ability</span></code>, based on responses to previous questions.</p>
 <p>This version of <code class="docutils literal notranslate"><span class="pre">choose</span></code> doesn’t use these parameters; they are there so we can test other strategies (see the exercises at the end of the chapter).</p>
 <p>The following function simulates a person taking a test, given that we know their actual ability.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">simulate_test</span><span class="p">(</span><span class="n">actual_ability</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Simulate a person taking a test.</span>
-<span class="sd">    </span>
-<span class="sd">    actual_ability: number</span>
-<span class="sd">    </span>
-<span class="sd">    returns: the posterior distribution of ability</span>
-<span class="sd">             and a `DataFrame` containing the difficulty</span>
-<span class="sd">             of the questions and the outcomes</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Simulate a person taking a test.&quot;&quot;&quot;</span>
     <span class="n">belief</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">trace</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;difficulty&#39;</span><span class="p">,</span> <span class="s1">&#39;outcome&#39;</span><span class="p">])</span>
 
@@ -1618,7 +1561,7 @@ I’ll use the following function to choose questions, starting with the simples
 </div>
 <p>The return values are a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> representing the posterior distribution of ability and a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> containing the difficulty of the questions and the outcomes.</p>
 <p>Here’s an example, again for a test-taker with <code class="docutils literal notranslate"><span class="pre">ability=600</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">belief</span><span class="p">,</span> <span class="n">trace</span> <span class="o">=</span> <span class="n">simulate_test</span><span class="p">(</span><span class="mi">600</span><span class="p">)</span>
 </pre></div>
@@ -1626,7 +1569,7 @@ I’ll use the following function to choose questions, starting with the simples
 </div>
 </div>
 <p>We can use the trace to see how many responses were correct.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trace</span><span class="p">[</span><span class="s1">&#39;outcome&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
@@ -1639,7 +1582,7 @@ I’ll use the following function to choose questions, starting with the simples
 </div>
 </div>
 <p>And here’s what the posterior looks like.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">belief</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ability=600&#39;</span><span class="p">)</span>
 
@@ -1650,7 +1593,7 @@ I’ll use the following function to choose questions, starting with the simples
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap10_136_0.png" src="_images/chap10_136_0.png" />
+<img alt="_images/chap10_138_0.png" src="_images/chap10_138_0.png" />
 </div>
 </div>
 <p>Again, the posterior distribution represents a pretty good estimate of the test-taker’s actual ability.</p>
@@ -1659,7 +1602,7 @@ I’ll use the following function to choose questions, starting with the simples
 <h2>Quantifying precision<a class="headerlink" href="#quantifying-precision" title="Permalink to this headline">¶</a></h2>
 <p>To quantify the precision of the estimates, I’ll use the standard deviation of the posterior distribution.  The standard deviation measures the spread of the distribution, so higher value indicates more uncertainty about the ability of the test-taker.</p>
 <p>In the previous example, the standard deviation of the posterior distribution is about 40.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">belief</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">belief</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
 </pre></div>
@@ -1672,7 +1615,7 @@ I’ll use the following function to choose questions, starting with the simples
 </div>
 </div>
 <p>For an exam where all questions have the same difficulty, the precision of the estimate depends strongly on the ability of the test-taker.  To show that, I’ll loop through a range of abilities and simulate a test using the version of <code class="docutils literal notranslate"><span class="pre">choice</span></code> that always returns <code class="docutils literal notranslate"><span class="pre">difficulty=500</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">actual_abilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ability&#39;</span><span class="p">,</span> <span class="s1">&#39;posterior_std&#39;</span><span class="p">])</span>
@@ -1687,7 +1630,7 @@ I’ll use the following function to choose questions, starting with the simples
 </div>
 <p>The following plot shows the standard deviation of the posterior distribution for one simulation at each level of ability.</p>
 <p>The results are noisy, so I also plot a curve fitted to the data by <a class="reference external" href="https://en.wikipedia.org/wiki/Local_regression">local regression</a>.</p>
-<div class="cell tag_hide-input docutils container">
+<div class="cell tag_hide-input tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">plot_series_lowess</span>
 
@@ -1699,7 +1642,7 @@ I’ll use the following function to choose questions, starting with the simples
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap10_143_0.png" src="_images/chap10_143_0.png" />
+<img alt="_images/chap10_145_0.png" src="_images/chap10_145_0.png" />
 </div>
 </div>
 <p>The test is most precise for people with ability between <code class="docutils literal notranslate"><span class="pre">500</span></code> and <code class="docutils literal notranslate"><span class="pre">600</span></code>, less precise for people at the high end of the range, and even worse for people at the low end.</p>
@@ -1711,7 +1654,7 @@ I’ll use the following function to choose questions, starting with the simples
 <h2>Discriminatory power<a class="headerlink" href="#discriminatory-power" title="Permalink to this headline">¶</a></h2>
 <p>In the previous section we used the standard deviation of the posterior distribution to quantify the precision of the estimates.  Another way to describe the performance of the test (as opposed to the performance of the test-takers) is to measure “discriminatory power”, which is the ability of the test to distinguish correctly between test-takers with different ability.</p>
 <p>To measure discriminatory power, I’ll simulate a person taking the test 100 times; after each simulation, I’ll use the mean of the posterior distribution as their “score”.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sample_posterior</span><span class="p">(</span><span class="n">actual_ability</span><span class="p">,</span> <span class="n">iters</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Simulate multiple tests and compute posterior means.</span>
@@ -1734,28 +1677,28 @@ I’ll use the following function to choose questions, starting with the simples
 </div>
 </div>
 <p>Here are samples of scores for people with several levels of ability.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_500</span> <span class="o">=</span> <span class="n">sample_posterior</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">iters</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_600</span> <span class="o">=</span> <span class="n">sample_posterior</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span> <span class="n">iters</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_700</span> <span class="o">=</span> <span class="n">sample_posterior</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="n">iters</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_800</span> <span class="o">=</span> <span class="n">sample_posterior</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="n">iters</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
@@ -1763,7 +1706,7 @@ I’ll use the following function to choose questions, starting with the simples
 </div>
 </div>
 <p>Here’s what the distributions of scores look like.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
 
@@ -1775,7 +1718,7 @@ I’ll use the following function to choose questions, starting with the simples
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_500</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;ability=500&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span>
             <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
@@ -1790,69 +1733,35 @@ I’ll use the following function to choose questions, starting with the simples
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="_images/chap10_154_0.png" src="_images/chap10_154_0.png" />
-</div>
 </div>
 <p>On average, people with higher ability get higher scores, but anyone can have a bad day, or a good day, so there is some overlap between the distributions.</p>
 <p>For people with ability between <code class="docutils literal notranslate"><span class="pre">500</span></code> and <code class="docutils literal notranslate"><span class="pre">600</span></code>, where the precision of the test is highest, the discriminatory power of the test is also high.</p>
 <p>If people with abilities <code class="docutils literal notranslate"><span class="pre">500</span></code> and <code class="docutils literal notranslate"><span class="pre">600</span></code> take the test, it is almost certain that the person with higher ability will get a higher score.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sample_600</span> <span class="o">&gt;</span> <span class="n">sample_500</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.98
-</pre></div>
-</div>
-</div>
 </div>
 <p>Between people with abilities <code class="docutils literal notranslate"><span class="pre">600</span></code> and <code class="docutils literal notranslate"><span class="pre">700</span></code>, it is less certain.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sample_700</span> <span class="o">&gt;</span> <span class="n">sample_600</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.95
-</pre></div>
-</div>
-</div>
 </div>
 <p>And between people with abilities <code class="docutils literal notranslate"><span class="pre">700</span></code> and <code class="docutils literal notranslate"><span class="pre">800</span></code>, it is not certain at all.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sample_800</span> <span class="o">&gt;</span> <span class="n">sample_700</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.85
 </pre></div>
 </div>
 </div>
 </div>
 <p>But remember that these results are based on a test where all questions are equally difficult.
 If you do the exercises at the end of the chapter, you’ll see that the performance of the test is better if it includes questions with a range of difficulties, and even better if the test it is adaptive.</p>
-</div>
-<div class="section" id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
-<p>In this chapter we finally solved the Euro problem, determining whether the data support the hypothesis that the coin is fair or biased.  We found that the answer depends on how we define “biased”.  And we summarized the results using a Bayes factor, which quantifies the strength of the evidence.</p>
-<p>But the answer wasn’t satisfying because, in my opinion, the question wasn’t interesting.  Knowing whether the coin is biased is not useful unless it helps us make better predictions and better decisions.</p>
-<p>As an example of a more interesting question, we looked at the “one-armed bandit” problem and a strategy for solving it, the Bayesian bandit algorithm, which tries to balance exploration and exploitation, that is, gathering more information and making the best use of the information we have.</p>
-<p>As a second example, we considered standardized tests and how they measure the ability of test-takers.  We saw that a simple test, where all questions have the same difficulty, is most precise for test-takers with average ability and less precise for test-takers with the lowest and highest ability.
-As an exercise, you’ll have a chance to see whether adaptive testing can do better.</p>
-<p>Bayesian bandits and adaptive testing are examples of <a class="reference external" href="https://wiki.lesswrong.com/wiki/Bayesian_decision_theory">Bayesian decision theory</a>, which is the idea of using a posterior distribution as part of a decision-making process, often by choosing an action that minimizes the costs we expect on average (or maximizes a benefit).</p>
-<p>The strategy we used in Chapter xxx to bid on <em>The Price is Right</em> is another example.</p>
-<p>These strategies demonstrate what I think is the biggest advantage of Bayesian methods over classical statistics.  When we represent knowledge in the form of probability distributions, Bayes’s theorem tells us how to change our beliefs as we get more data, and Bayesian decision theory tells us how to make that knowledge actionable.</p>
-</div>
-<div class="section" id="exercises">
-<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
-<p><strong>Exercise:</strong> This chapter presents a framework for simulating a person taking a standardized test, using item response theory to compute their probability of answering a question correctly, given the ability of the test-taker and the difficulty of the question.
-I presented results for a simple test where all questions have the same difficulty.</p>
 <p>Go back and modify <code class="docutils literal notranslate"><span class="pre">choose</span></code>, which is the function that chooses the difficulty of the next question.</p>
 <ol class="simple">
 <li><p>Write a version of <code class="docutils literal notranslate"><span class="pre">choose</span></code> that returns a range of difficulties by using <code class="docutils literal notranslate"><span class="pre">i</span></code> as an index into a sequence of difficulties.</p></li>
