@@ -329,11 +329,6 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#two-parameters-better-than-one">
-   Two Parameters Better Than One?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#the-lincoln-index-problem">
    The Lincoln index problem
   </a>
@@ -414,7 +409,7 @@ During the second session, if we choose 19 bears at random, what is the probabil
 </div>
 <p>The result is the distribution of <span class="math notranslate nohighlight">\(k\)</span> with given parameters <span class="math notranslate nohighlight">\(N\)</span>, <span class="math notranslate nohighlight">\(K\)</span>, and <span class="math notranslate nohighlight">\(n\)</span>.
 Here’s what it looks like.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
@@ -439,34 +434,14 @@ Now let’s go the other way: given <span class="math notranslate nohighlight">\
 <div class="section" id="the-update">
 <h2>The Update<a class="headerlink" href="#the-update" title="Permalink to this headline">¶</a></h2>
 <p>As a starting place, let’s suppose that, prior to this study, an expert estimates that the local bear population is between 50 and 500, and equally likely to be any value in that range.</p>
+<p>I’ll use <code class="docutils literal notranslate"><span class="pre">make_uniform</span></code> to make a uniform distribution of integers in this range.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_uniform</span>
 
-<span class="k">def</span> <span class="nf">discrete_uniform</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Make a Pmf that represents a uniform distribution.</span>
-<span class="sd">    </span>
-<span class="sd">    start: lower bound</span>
-<span class="sd">    stop: upper bound</span>
-<span class="sd">    step: step size between values</span>
-<span class="sd">    name: string name for the quantities</span>
-<span class="sd">    options: passed to Pmf</span>
-<span class="sd">    </span>
-<span class="sd">    returns: Pmf</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-    <span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
-    <span class="n">pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
-        <span class="n">pmf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-    <span class="k">return</span> <span class="n">pmf</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_N</span> <span class="o">=</span> <span class="n">discrete_uniform</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">501</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">501</span><span class="p">)</span>
+<span class="n">prior_N</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
 <span class="n">prior_N</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 </div>
@@ -508,7 +483,7 @@ Now let’s go the other way: given <span class="math notranslate nohighlight">\
 <p>And here’s what it looks like.</p>
 <div class="cell tag_hide_input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_N</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_N</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;_nolegend&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Population of bears (N)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
@@ -517,7 +492,7 @@ Now let’s go the other way: given <span class="math notranslate nohighlight">\
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_22_0.png" src="_images/chap15_22_0.png" />
+<img alt="_images/chap15_21_0.png" src="_images/chap15_21_0.png" />
 </div>
 </div>
 <p>The most likely value is 109.</p>
@@ -593,8 +568,8 @@ Now let’s go the other way: given <span class="math notranslate nohighlight">\
 </div>
 </div>
 <p>Suppose we know the actual values of <code class="docutils literal notranslate"><span class="pre">N</span></code> and <code class="docutils literal notranslate"><span class="pre">p</span></code>.  We can use them to compute the likelihood of this data.</p>
-<p>For example, suppose we know that <code class="docutils literal notranslate"><span class="pre">N=100</span></code> and <code class="docutils literal notranslate"><span class="pre">p=0.2</span></code>.</p>
-<p>We can use <code class="docutils literal notranslate"><span class="pre">N</span></code> to compute <code class="docutils literal notranslate"><span class="pre">k00</span></code>, which is the number of unobserved bears.</p>
+<p>For example, suppose we know that <code class="docutils literal notranslate"><span class="pre">N=100</span></code> and <code class="docutils literal notranslate"><span class="pre">p=0.2</span></code>.
+We can use <code class="docutils literal notranslate"><span class="pre">N</span></code> to compute <code class="docutils literal notranslate"><span class="pre">k00</span></code>, which is the number of unobserved bears.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
@@ -669,41 +644,11 @@ Here is the probability of the data for these values of <code class="docutils li
 </div>
 <div class="section" id="the-prior">
 <h2>The Prior<a class="headerlink" href="#the-prior" title="Permalink to this headline">¶</a></h2>
-<p>Here is a uniform prior for the number of bears, <code class="docutils literal notranslate"><span class="pre">N</span></code>:</p>
+<p>We’ll use <code class="docutils literal notranslate"><span class="pre">prior_N</span></code> again for the prior distribution of <code class="docutils literal notranslate"><span class="pre">N</span></code>, and a uniform prior for the probability of observing a bear, <code class="docutils literal notranslate"><span class="pre">p</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_N</span> <span class="o">=</span> <span class="n">discrete_uniform</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">501</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
-<span class="n">prior_N</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>N
-50    0.002217
-51    0.002217
-52    0.002217
-dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<p>And a uniform prior for the probability of observing a bear, <code class="docutils literal notranslate"><span class="pre">p</span></code>:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_uniform</span>
-
-<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">prior_p</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
-<span class="n">prior_p</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>p
-0.00    0.01
-0.01    0.01
-0.02    0.01
-dtype: float64
 </pre></div>
 </div>
 </div>
@@ -714,7 +659,25 @@ dtype: float64
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_joint</span>
 
 <span class="n">joint_prior</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">prior_p</span><span class="p">,</span> <span class="n">prior_N</span><span class="p">)</span>
-<span class="n">joint_prior</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">joint_prior</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(451, 100)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with values of <code class="docutils literal notranslate"><span class="pre">N</span></code> down the rows and values of <code class="docutils literal notranslate"><span class="pre">p</span></code> across the columns.
+However, for this problem it will be convenient to represent the prior distribution as a 1-D <code class="docutils literal notranslate"><span class="pre">Series</span></code> rather than a 2-D <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.
+We can convert from one format to the other using <code class="docutils literal notranslate"><span class="pre">stack</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+
+<span class="n">joint_pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">joint_prior</span><span class="o">.</span><span class="n">stack</span><span class="p">())</span>
+<span class="n">joint_pmf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -736,154 +699,35 @@ dtype: float64
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th>p</th>
-      <th>0.00</th>
-      <th>0.01</th>
-      <th>0.02</th>
-      <th>0.03</th>
-      <th>0.04</th>
-      <th>0.05</th>
-      <th>0.06</th>
-      <th>0.07</th>
-      <th>0.08</th>
-      <th>0.09</th>
-      <th>...</th>
-      <th>0.90</th>
-      <th>0.91</th>
-      <th>0.92</th>
-      <th>0.93</th>
-      <th>0.94</th>
-      <th>0.95</th>
-      <th>0.96</th>
-      <th>0.97</th>
-      <th>0.98</th>
-      <th>0.99</th>
+      <th></th>
+      <th></th>
+      <th>probs</th>
     </tr>
     <tr>
       <th>N</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
+      <th>p</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>50</th>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>...</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
+      <th rowspan="3" valign="top">50</th>
+      <th>0.00</th>
       <td>0.000022</td>
     </tr>
     <tr>
-      <th>51</th>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>...</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
+      <th>0.01</th>
       <td>0.000022</td>
     </tr>
     <tr>
-      <th>52</th>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>...</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
-      <td>0.000022</td>
+      <th>0.02</th>
       <td>0.000022</td>
     </tr>
   </tbody>
 </table>
-<p>3 rows × 100 columns</p>
 </div></div></div>
 </div>
-<p>The result is a Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with values of <code class="docutils literal notranslate"><span class="pre">N</span></code> down the rows and values of <code class="docutils literal notranslate"><span class="pre">p</span></code> across the columns.
-However, for this problem it will be convenient to represent the prior distribution as a 1-D <code class="docutils literal notranslate"><span class="pre">Series</span></code> rather than a 2-D <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.
-We can convert from one format to the other using <code class="docutils literal notranslate"><span class="pre">stack</span></code>.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">joint_prior</span><span class="o">.</span><span class="n">stack</span><span class="p">())</span>
-<span class="n">joint_pmf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>N   p   
-50  0.00    0.000022
-    0.01    0.000022
-    0.02    0.000022
-dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<p>The result is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> whose index is a <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">joint_pmf</span><span class="p">)</span>
 </pre></div>
@@ -895,7 +739,7 @@ dtype: float64
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">joint_pmf</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 </pre></div>
@@ -907,10 +751,7 @@ dtype: float64
 </div>
 </div>
 </div>
-<p>A <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code> can have more than one column; in this example, the first column contains values of <code class="docutils literal notranslate"><span class="pre">N</span></code> and the second column contains values of <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> has one row (and one prior probability) for each possible pair of parameters <code class="docutils literal notranslate"><span class="pre">N</span></code> and <code class="docutils literal notranslate"><span class="pre">p</span></code>.
-So the total number of rows is the product of the lengths of <code class="docutils literal notranslate"><span class="pre">prior_N</span></code> and <code class="docutils literal notranslate"><span class="pre">prior_p</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_pmf</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
@@ -922,6 +763,10 @@ So the total number of rows is the product of the lengths of <code class="docuti
 </div>
 </div>
 </div>
+<p>The result is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> whose index is a <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code>.
+A <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code> can have more than one column; in this example, the first column contains values of <code class="docutils literal notranslate"><span class="pre">N</span></code> and the second column contains values of <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> has one row (and one prior probability) for each possible pair of parameters <code class="docutils literal notranslate"><span class="pre">N</span></code> and <code class="docutils literal notranslate"><span class="pre">p</span></code>.
+So the total number of rows is the product of the lengths of <code class="docutils literal notranslate"><span class="pre">prior_N</span></code> and <code class="docutils literal notranslate"><span class="pre">prior_p</span></code>.</p>
 <p>Now we have to compute the likelihood of the data for each pair of parameters.</p>
 </div>
 <div class="section" id="id1">
@@ -950,7 +795,7 @@ So the total number of rows is the product of the lengths of <code class="docuti
 </div>
 </div>
 <p>Now we can compute the posterior in the usual way.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_pmf</span> <span class="o">=</span> <span class="n">joint_pmf</span> <span class="o">*</span> <span class="n">likelihood</span>
 <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
@@ -963,8 +808,8 @@ So the total number of rows is the product of the lengths of <code class="docuti
 </div>
 </div>
 </div>
-<p>We can use <code class="docutils literal notranslate"><span class="pre">plot_contour</span></code> again to visualize the joint posterior distribution.</p>
-<p>But remember that the posterior distribution we just computed is represented as a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, which is a <code class="docutils literal notranslate"><span class="pre">Series</span></code>, and <code class="docutils literal notranslate"><span class="pre">plot_contour</span></code> expects a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
+<p>We’ll use <code class="docutils literal notranslate"><span class="pre">plot_contour</span></code> again to visualize the joint posterior distribution.
+But remember that the posterior distribution we just computed is represented as a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, which is a <code class="docutils literal notranslate"><span class="pre">Series</span></code>, and <code class="docutils literal notranslate"><span class="pre">plot_contour</span></code> expects a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
 <p>Since we used <code class="docutils literal notranslate"><span class="pre">stack</span></code> to convert from a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> to a <code class="docutils literal notranslate"><span class="pre">Series</span></code>, we can use <code class="docutils literal notranslate"><span class="pre">unstack</span></code> to go the other way.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -985,7 +830,7 @@ So the total number of rows is the product of the lengths of <code class="docuti
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_66_0.png" src="_images/chap15_66_0.png" />
+<img alt="_images/chap15_61_0.png" src="_images/chap15_61_0.png" />
 </div>
 </div>
 <p>The most likely values of <code class="docutils literal notranslate"><span class="pre">N</span></code> are near 100, as in the previous model. The most likely values of <code class="docutils literal notranslate"><span class="pre">p</span></code> are near 0.2.</p>
@@ -1002,7 +847,7 @@ So the total number of rows is the product of the lengths of <code class="docuti
 </div>
 </div>
 <p>Here’s the posterior distribution for <code class="docutils literal notranslate"><span class="pre">p</span></code>:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior2_p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
@@ -1013,15 +858,15 @@ So the total number of rows is the product of the lengths of <code class="docuti
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_70_0.png" src="_images/chap15_70_0.png" />
+<img alt="_images/chap15_65_0.png" src="_images/chap15_65_0.png" />
 </div>
 </div>
 <p>The most likely values are near 0.2.</p>
-<p>And here’s the posterior distribution for <code class="docutils literal notranslate"><span class="pre">N</span></code> based on the two-parameter model, along with the posterior we got using the one-parameter (hypergeometric) model.</p>
+<p>Here’s the posterior distribution for <code class="docutils literal notranslate"><span class="pre">N</span></code> based on the two-parameter model, along with the posterior we got using the one-parameter (hypergeometric) model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_N</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;one-parameter model&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
-<span class="n">posterior2_N</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;two-parameter model&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
+<span class="n">posterior2_N</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;two-parameter model&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Population of bears (N)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
@@ -1030,44 +875,114 @@ So the total number of rows is the product of the lengths of <code class="docuti
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_72_0.png" src="_images/chap15_72_0.png" />
+<img alt="_images/chap15_68_0.png" src="_images/chap15_68_0.png" />
 </div>
 </div>
 <p>The mean is a little lower and the 90% credible interval is a little narrower.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_N</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior_N</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">posterior_N</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> 
+      <span class="n">posterior_N</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(173.79880627085637, array([ 77., 363.]))
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>173.79880627085637 [ 77. 363.]
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior2_N</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior2_N</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">posterior2_N</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> 
+      <span class="n">posterior2_N</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(138.750521364726, array([ 68., 277.]))
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>138.750521364726 [ 68. 277.]
 </pre></div>
 </div>
 </div>
 </div>
-<p>It might seem surprising that the second model, which has more parameters, yields a narrower posterior distribution of <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
-<p>That’s possible if the two-parameter model is taking advantage of additional information somehow.
-See if you can figure out what that information is, and I’ll explain after the next section.</p>
+<p>The two-parameter model yields a narrower posterior distribution for <code class="docutils literal notranslate"><span class="pre">N</span></code>, compared to the one-parameter model, because it takes advantage of an additional source of information: the consistency of the two observations.</p>
+<p>To see how this helps, consider a scenario where <code class="docutils literal notranslate"><span class="pre">N</span></code> is relatively low, like 138 (the posterior mean of the two-parameter model).</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N1</span> <span class="o">=</span> <span class="mi">138</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Given that we saw 23 bears during the first trial and 19 during the second, we can estimate the corresponding value of <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean</span> <span class="o">=</span> <span class="p">(</span><span class="mi">23</span> <span class="o">+</span> <span class="mi">19</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">mean</span><span class="o">/</span><span class="n">N1</span>
+<span class="n">p</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.15217391304347827
+</pre></div>
+</div>
+</div>
+</div>
+<p>With these parameters, how much variability do you expect in the number of bears from one trial to the next?  We can quantify that by computing the standard deviation of the binomial distribution with these parameters.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
+
+<span class="n">binom</span><span class="p">(</span><span class="n">N1</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.219519857292647
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s consider a second scenario where <code class="docutils literal notranslate"><span class="pre">N</span></code> is 173, the posterior mean of the one-parameter model.  The corresponding value of <code class="docutils literal notranslate"><span class="pre">p</span></code> is lower.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N2</span> <span class="o">=</span> <span class="mi">173</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">mean</span><span class="o">/</span><span class="n">N2</span>
+<span class="n">p</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.12138728323699421
+</pre></div>
+</div>
+</div>
+</div>
+<p>In this scenario, the variation we expect to see from one trial to the next is higher.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">binom</span><span class="p">(</span><span class="n">N2</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.2954472470306415
+</pre></div>
+</div>
+</div>
+</div>
+<p>So if the number of bears we observe is the same in both trials, that would be evidence for lower values of <code class="docutils literal notranslate"><span class="pre">N</span></code>, where we expect more consistency.
+If the number of bears is substantially different between the two trials, that would be evidence for higher values of <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
+<p>In the actual data, the difference between the two trials is low, which is why the posterior mean of the two-parameter model is lower.
+The two-parameter model takes advantage of additional information, which is why the credible interval is narrower.</p>
 </div>
 <div class="section" id="joint-and-marginal-distributions">
 <h2>Joint and marginal distributions<a class="headerlink" href="#joint-and-marginal-distributions" title="Permalink to this headline">¶</a></h2>
 <p>Marginal distributions are called “marginal” because in a common visualization they appear in the margins of the plot.</p>
 <p>Seaborn provides a class called <code class="docutils literal notranslate"><span class="pre">JointGrid</span></code> that creates this visualization.
 The following function uses it to show the joint and marginal distributions in a single plot.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">seaborn</span> <span class="kn">import</span> <span class="n">JointGrid</span>
@@ -1105,92 +1020,17 @@ The following function uses it to show the joint and marginal distributions in a
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_plot</span><span class="p">(</span><span class="n">joint_posterior</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_79_0.png" src="_images/chap15_79_0.png" />
+<img alt="_images/chap15_85_0.png" src="_images/chap15_85_0.png" />
 </div>
 </div>
 <p>A <code class="docutils literal notranslate"><span class="pre">JointGrid</span></code> is a concise way to represent the joint and marginal distributions visually.</p>
-</div>
-<div class="section" id="two-parameters-better-than-one">
-<h2>Two Parameters Better Than One?<a class="headerlink" href="#two-parameters-better-than-one" title="Permalink to this headline">¶</a></h2>
-<p>The two-parameter model yields a narrower posterior distribution for <code class="docutils literal notranslate"><span class="pre">N</span></code>, compared to the one-parameter model, because it takes advantage of an additional source of information: the number of bears observed during the two trials.
-Specifically, it takes into account the consistency of the two observations.</p>
-<p>To see how this helps, consider a scenario where <code class="docutils literal notranslate"><span class="pre">N</span></code> is relatively low, like 138 (the posterior mean of the two-parameter model).</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N1</span> <span class="o">=</span> <span class="mi">138</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Given that we saw 23 bears during the first trial and 19 during the second, we can estimate the corresponding value of <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean</span> <span class="o">=</span> <span class="p">(</span><span class="mi">23</span> <span class="o">+</span> <span class="mi">19</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">mean</span><span class="o">/</span><span class="n">N1</span>
-<span class="n">p</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.15217391304347827
-</pre></div>
-</div>
-</div>
-</div>
-<p>With these parameters, how much variability do you expect in the number of bears from one trial to the next?  We can quantify that by computing the standard deviation of the binomial distribution with these parameters.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
-
-<span class="n">binom</span><span class="p">(</span><span class="n">N1</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.219519857292647
-</pre></div>
-</div>
-</div>
-</div>
-<p>Now let’s consider a second scenario where <code class="docutils literal notranslate"><span class="pre">N</span></code> is 173, the posterior mean of the one-parameter model.  The corresponding value of <code class="docutils literal notranslate"><span class="pre">p</span></code> is lower.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N2</span> <span class="o">=</span> <span class="mi">173</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">mean</span><span class="o">/</span><span class="n">N2</span>
-<span class="n">p</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.12138728323699421
-</pre></div>
-</div>
-</div>
-</div>
-<p>In this scenario, the variation we expect to see from one trial to the next is higher.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">binom</span><span class="p">(</span><span class="n">N2</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.2954472470306415
-</pre></div>
-</div>
-</div>
-</div>
-<p>So if the number of bears we observe is the same in both trials, that would be evidence for lower values of <code class="docutils literal notranslate"><span class="pre">N</span></code>, where we expect more consistency.</p>
-<p>If the number of bears is substantially different between the two trials, that would be evidence for higher values of <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
-<p>In the actual data, the difference between the two trials is low, which is why the posterior mean of the two-parameter model is lower.</p>
-<p>And the two-parameter model takes advantage of additional information, which is why the credible interval is narrower.</p>
 </div>
 <div class="section" id="the-lincoln-index-problem">
 <h2>The Lincoln index problem<a class="headerlink" href="#the-lincoln-index-problem" title="Permalink to this headline">¶</a></h2>
@@ -1235,13 +1075,7 @@ So I’ll define two parameters, <code class="docutils literal notranslate"><spa
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_probs</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Computes the probability for each of 4 categories.</span>
-<span class="sd">    </span>
-<span class="sd">    p0: Probability a bug is found by the first tester</span>
-<span class="sd">    p1: Probability a bug is found by the second tester</span>
-<span class="sd">    </span>
-<span class="sd">    returns: array of probabilities</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Computes the probability for each of 4 categories.&quot;&quot;&quot;</span>
     <span class="n">q0</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">p0</span>
     <span class="n">q1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">p1</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">q0</span><span class="o">*</span><span class="n">q1</span><span class="p">,</span> <span class="n">q0</span><span class="o">*</span><span class="n">p1</span><span class="p">,</span> <span class="n">p0</span><span class="o">*</span><span class="n">q1</span><span class="p">,</span> <span class="n">p0</span><span class="o">*</span><span class="n">p1</span><span class="p">]</span>
@@ -1266,23 +1100,57 @@ So I’ll define two parameters, <code class="docutils literal notranslate"><spa
 68% chance that neither tester finds the bug and a
 3% chance that both do.</p>
 <p>Pretending that these probabilities are known, we can compute the posterior distribution for <code class="docutils literal notranslate"><span class="pre">N</span></code>.
-Here’s the prior:</p>
+Here’s a prior distribution that’s uniform from 32 to 350 bugs.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_N</span> <span class="o">=</span> <span class="n">discrete_uniform</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">350</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">350</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> 
+<span class="n">prior_N</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
 <span class="n">prior_N</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>N
-32    0.015625
-37    0.015625
-42    0.015625
-dtype: float64
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+    <tr>
+      <th>N</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>32</th>
+      <td>0.015625</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>0.015625</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>0.015625</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <p>I’ll put the data in an array, with 0 as a place-keeper for the unknown value <code class="docutils literal notranslate"><span class="pre">k00</span></code>.</p>
 <div class="cell docutils container">
@@ -1332,57 +1200,34 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_108_0.png" src="_images/chap15_108_0.png" />
+<img alt="_images/chap15_103_0.png" src="_images/chap15_103_0.png" />
 </div>
 </div>
-<p>With the assumption that <code class="docutils literal notranslate"><span class="pre">p0</span></code> and <code class="docutils literal notranslate"><span class="pre">p1</span></code> are known to be <code class="docutils literal notranslate"><span class="pre">0.2</span></code> and <code class="docutils literal notranslate"><span class="pre">0.15</span></code>, the posterior mean is 102 with 90% credible interval (79, 128).</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_N</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior_N</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">posterior_N</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> 
+      <span class="n">posterior_N</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(102.1249999999998, array([ 77., 127.]))
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>102.1249999999998 [ 77. 127.]
 </pre></div>
 </div>
 </div>
 </div>
+<p>With the assumption that <code class="docutils literal notranslate"><span class="pre">p0</span></code> and <code class="docutils literal notranslate"><span class="pre">p1</span></code> are known to be <code class="docutils literal notranslate"><span class="pre">0.2</span></code> and <code class="docutils literal notranslate"><span class="pre">0.15</span></code>, the posterior mean is 102 with 90% credible interval (77, 127).</p>
 <p>But this result is based on the assumption that we know the probabilities, and we don’t.</p>
 </div>
 <div class="section" id="three-parameter-model">
 <h2>Three-parameter model<a class="headerlink" href="#three-parameter-model" title="Permalink to this headline">¶</a></h2>
 <p>What we need is a model with three parameters: <code class="docutils literal notranslate"><span class="pre">N</span></code>, <code class="docutils literal notranslate"><span class="pre">p0</span></code>, and <code class="docutils literal notranslate"><span class="pre">p1</span></code>.
-Here are the priors:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_N</span> <span class="o">=</span> <span class="n">discrete_uniform</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">350</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
-<span class="n">prior_N</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(64,)
-</pre></div>
-</div>
-</div>
-</div>
+We’ll use <code class="docutils literal notranslate"><span class="pre">prior_N</span></code> again for the prior distribution of <code class="docutils literal notranslate"><span class="pre">N</span></code>, and here are the priors for <code class="docutils literal notranslate"><span class="pre">p0</span></code> and <code class="docutils literal notranslate"><span class="pre">p1</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">51</span><span class="p">)</span>
 <span class="n">prior_p0</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p0&#39;</span><span class="p">)</span>
 <span class="n">prior_p1</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
-
-<span class="n">prior_p0</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>p0
-0.00    0.019608
-0.02    0.019608
-0.04    0.019608
-dtype: float64
 </pre></div>
 </div>
 </div>
@@ -1411,14 +1256,50 @@ I’ll start by putting the first two into a <code class="docutils literal notra
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>N   p0  
-32  0.00    0.000306
-    0.02    0.000306
-    0.04    0.000306
-dtype: float64
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>probs</th>
+    </tr>
+    <tr>
+      <th>N</th>
+      <th>p0</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="3" valign="top">32</th>
+      <th>0.00</th>
+      <td>0.000306</td>
+    </tr>
+    <tr>
+      <th>0.02</th>
+      <td>0.000306</td>
+    </tr>
+    <tr>
+      <th>0.04</th>
+      <td>0.000306</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <p>We can use <code class="docutils literal notranslate"><span class="pre">make_joint</span></code> again to add in the third parameter.</p>
 <div class="cell docutils container">
@@ -1435,7 +1316,7 @@ dtype: float64
 </div>
 </div>
 <p>The result is a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with values of <code class="docutils literal notranslate"><span class="pre">N</span></code> and <code class="docutils literal notranslate"><span class="pre">p0</span></code> in a <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code> that goes down the rows and values of <code class="docutils literal notranslate"><span class="pre">p1</span></code> in an index that goes across the columns.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint3</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
@@ -1597,14 +1478,53 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>N   p0   p1  
-32  0.0  0.00    0.000006
-         0.02    0.000006
-         0.04    0.000006
-dtype: float64
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>probs</th>
+    </tr>
+    <tr>
+      <th>N</th>
+      <th>p0</th>
+      <th>p1</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="3" valign="top">32</th>
+      <th rowspan="3" valign="top">0.0</th>
+      <th>0.00</th>
+      <td>0.000006</td>
+    </tr>
+    <tr>
+      <th>0.02</th>
+      <td>0.000006</td>
+    </tr>
+    <tr>
+      <th>0.04</th>
+      <td>0.000006</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <p>The result is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with a three-column <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code> containing all possible triplets of parameters.</p>
 <p>The number of rows is the product of the number of values in all three priors, which is almost 170,000.</p>
@@ -1672,10 +1592,10 @@ Here’s how we use it to get the posterior distribution for <code class="docuti
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_134_0.png" src="_images/chap15_134_0.png" />
+<img alt="_images/chap15_127_0.png" src="_images/chap15_127_0.png" />
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_N</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
@@ -1688,8 +1608,8 @@ Here’s how we use it to get the posterior distribution for <code class="docuti
 </div>
 </div>
 <p>The posterior mean is 105 bugs, which suggests that there are still many bugs the testers have not found.</p>
-<p>And here are the posteriors for <code class="docutils literal notranslate"><span class="pre">p0</span></code> and <code class="docutils literal notranslate"><span class="pre">p1</span></code>.</p>
-<div class="cell docutils container">
+<p>Here are the posteriors for <code class="docutils literal notranslate"><span class="pre">p0</span></code> and <code class="docutils literal notranslate"><span class="pre">p1</span></code>.</p>
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_p1</span> <span class="o">=</span> <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">posterior_p2</span> <span class="o">=</span> <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -1703,10 +1623,10 @@ Here’s how we use it to get the posterior distribution for <code class="docuti
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_137_0.png" src="_images/chap15_137_0.png" />
+<img alt="_images/chap15_130_0.png" src="_images/chap15_130_0.png" />
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_p1</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior_p1</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
 </pre></div>
@@ -1718,7 +1638,7 @@ Here’s how we use it to get the posterior distribution for <code class="docuti
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_p2</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior_p2</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
 </pre></div>
@@ -1741,8 +1661,8 @@ The method we’ve been using so far, enumerating all possible combinations, bec
 <p>The problems in this chapter are examples of “<a class="reference external" href="https://en.wikipedia.org/wiki/Mark_and_recapture">mark and recapture</a>” experiments, which are used in ecology to estimate animal populations.  They also have applications in engineering, as in the Lincoln index problem.  And in the exercises you’ll see that they are used in epidemiology, too.</p>
 <p>This chapter introduces two new probability distributions:</p>
 <ul class="simple">
-<li><p>The multinomial distribution is a generalization of the binomial distribution where there are more than two possible outcomes.</p></li>
 <li><p>The hypergeometric distribution is a variation of the binomial distribution in which samples are drawn from the population without replacement.</p></li>
+<li><p>The multinomial distribution is a generalization of the binomial distribution where there are more than two possible outcomes.</p></li>
 </ul>
 <p>Also in this chapter, we saw the first example of a model with three parameters.  We’ll see more in subsequent chapters.</p>
 </div>
@@ -1757,8 +1677,9 @@ The method we’ve been using so far, enumerating all possible combinations, bec
 <li><p>126 cases reported on questionnaires collected by epidemiologists.</p></li>
 </ol>
 <p>In this exercise, we’ll use only the first two lists; in the next exercise we’ll bring in the third list.</p>
+<p>Make a joint prior and update it using this data, then compute the posterior mean of <code class="docutils literal notranslate"><span class="pre">N</span></code> and a 90% credible interval.</p>
 <p>The following array contains 0 as a place-holder for the unknown value of <code class="docutils literal notranslate"><span class="pre">k00</span></code>, followed by known values of <code class="docutils literal notranslate"><span class="pre">k01</span></code>, <code class="docutils literal notranslate"><span class="pre">k10</span></code>, and <code class="docutils literal notranslate"><span class="pre">k11</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">86</span><span class="p">,</span> <span class="mi">49</span><span class="p">])</span>
 </pre></div>
@@ -1768,7 +1689,7 @@ The method we’ve been using so far, enumerating all possible combinations, bec
 <p>These data indicate that there are 73 cases on the second list that are not on the first, 86 cases on the first list that are not on the second, and 49 cases on both lists.</p>
 <p>To keep things simple, we’ll assume that each case has the same probability of appearing on each list.  So we’ll use a two-parameter model where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the total number of cases and <code class="docutils literal notranslate"><span class="pre">p</span></code> is the probability that any case appears on any list.</p>
 <p>Here are priors you can start with (but feel free to modify them).</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">prior_N</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
@@ -1777,16 +1698,49 @@ The method we’ve been using so far, enumerating all possible combinations, bec
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>N
-200    0.016667
-205    0.016667
-210    0.016667
-dtype: float64
-</pre></div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+    <tr>
+      <th>N</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>200</th>
+      <td>0.016667</td>
+    </tr>
+    <tr>
+      <th>205</th>
+      <td>0.016667</td>
+    </tr>
+    <tr>
+      <th>210</th>
+      <td>0.016667</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
-</div>
-</div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 <span class="n">prior_p</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
@@ -1795,16 +1749,48 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>p
-0.00    0.02
-0.02    0.02
-0.04    0.02
-dtype: float64
-</pre></div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+    <tr>
+      <th>p</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.00</th>
+      <td>0.02</td>
+    </tr>
+    <tr>
+      <th>0.02</th>
+      <td>0.02</td>
+    </tr>
+    <tr>
+      <th>0.04</th>
+      <td>0.02</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
-</div>
-</div>
-<p>Make a joint prior and update it using this data, then compute the posterior mean of <code class="docutils literal notranslate"><span class="pre">N</span></code> and a 90% credible interval.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1968,14 +1954,50 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>N    p   
-200  0.00    0.000333
-     0.02    0.000333
-     0.04    0.000333
-dtype: float64
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>probs</th>
+    </tr>
+    <tr>
+      <th>N</th>
+      <th>p</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="3" valign="top">200</th>
+      <th>0.00</th>
+      <td>0.000333</td>
+    </tr>
+    <tr>
+      <th>0.02</th>
+      <td>0.000333</td>
+    </tr>
+    <tr>
+      <th>0.04</th>
+      <td>0.000333</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
@@ -2029,7 +2051,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_155_0.png" src="_images/chap15_155_0.png" />
+<img alt="_images/chap15_148_0.png" src="_images/chap15_148_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2046,7 +2068,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_156_0.png" src="_images/chap15_156_0.png" />
+<img alt="_images/chap15_149_0.png" src="_images/chap15_149_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2076,8 +2098,9 @@ P    Q    E    Data
 0    0    0    k000 =??
 </pre></div>
 </div>
-<p>And here it is in a NumPy array (in reverse order).</p>
-<div class="cell docutils container">
+<p>Write a loop that computes the likelihood of the data for each pair of parameters, then update the prior and compute the posterior mean of <code class="docutils literal notranslate"><span class="pre">N</span></code>.  How does it compare to the results using only the first two lists?</p>
+<p>Here’s the data in a NumPy array (in reverse order).</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">28</span><span class="p">])</span>
 </pre></div>
@@ -2086,7 +2109,7 @@ P    Q    E    Data
 </div>
 <p>Again, the first value is a place-keeper for the unknown <code class="docutils literal notranslate"><span class="pre">k000</span></code>.  The second value is <code class="docutils literal notranslate"><span class="pre">k001</span></code>, which means there are 63 cases that appear on the third list but not the first two.  And the last value is <code class="docutils literal notranslate"><span class="pre">k111</span></code>, which means there are 28 cases that appear on all three lists.</p>
 <p>In the two-list version of the problem we computed <code class="docutils literal notranslate"><span class="pre">ps</span></code> by enumerating the combinations of <code class="docutils literal notranslate"><span class="pre">p</span></code> and <code class="docutils literal notranslate"><span class="pre">q</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">q</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">p</span>
 <span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span><span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="n">q</span><span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="n">p</span><span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="n">p</span><span class="o">*</span><span class="n">p</span><span class="p">]</span>
@@ -2096,7 +2119,7 @@ P    Q    E    Data
 </div>
 <p>We could do the same thing for the three-list version, computing the probability for each of the eight categories.  But we can generalize it by recognizing that we are computing the cartesian product of <code class="docutils literal notranslate"><span class="pre">p</span></code> and <code class="docutils literal notranslate"><span class="pre">q</span></code>, repeated once for each list.</p>
 <p>And we can use the following function (based on <a class="reference external" href="https://stackoverflow.com/questions/58242078/cartesian-product-of-arbitrary-lists-in-pandas/58242079#58242079">this StackOverflow answer</a>) to compute Cartesian products:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cartesian_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Cartesian product of sequences.</span>
@@ -2113,7 +2136,7 @@ P    Q    E    Data
 </div>
 </div>
 <p>Here’s an example with <code class="docutils literal notranslate"><span class="pre">p=0.2</span></code>:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="mf">0.2</span>
 <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
@@ -2200,7 +2223,7 @@ P    Q    E    Data
 </div></div></div>
 </div>
 <p>To compute the probability for each category, we take the product across the columns:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">y</span>
@@ -2221,7 +2244,7 @@ dtype: float64
 </div>
 </div>
 </div>
-<p>Write a loop that computes the likelihood of the data for each pair of parameters, then update the prior and compute the posterior mean of <code class="docutils literal notranslate"><span class="pre">N</span></code>.  How does it compare to the results using on the first two lists?</p>
+<p>Now you finish it off from there.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2275,7 +2298,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_172_0.png" src="_images/chap15_172_0.png" />
+<img alt="_images/chap15_166_0.png" src="_images/chap15_166_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2292,7 +2315,7 @@ dtype: float64
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
 <span class="n">marginal_N</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;After two lists&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
-<span class="n">marginal3_N</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;After three lists&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
+<span class="n">marginal3_N</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;After three lists&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of cases (N)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
@@ -2301,7 +2324,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap15_174_0.png" src="_images/chap15_174_0.png" />
+<img alt="_images/chap15_168_0.png" src="_images/chap15_168_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
