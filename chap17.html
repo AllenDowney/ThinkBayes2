@@ -314,23 +314,18 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#likelihood">
-   Likelihood
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#priors">
    Priors
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-update">
-   The Update
+  <a class="reference internal nav-link" href="#likelihood">
+   Likelihood
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#unpacking-the-marginals">
-   Unpacking the Marginals
+  <a class="reference internal nav-link" href="#the-update">
+   The Update
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -383,8 +378,9 @@
 <h2>More snow?<a class="headerlink" href="#more-snow" title="Permalink to this headline">¶</a></h2>
 <p>I am under the impression that we don’t get as much snow around here as we used to.  By “around here” I mean Norfolk County, Massachusetts, where I was born, grew up, and currently live.  And by “used to” I mean compared to when I was young, like in 1978 when we got <a class="reference external" href="https://en.wikipedia.org/wiki/Northeastern_United_States_blizzard_of_1978">27 inches of snow</a> and I didn’t have to go to school for a couple of weeks.</p>
 <p>Fortunately, we can test my conjecture with data.  Norfolk County happens to be the location of the <a class="reference external" href="https://en.wikipedia.org/wiki/Blue_Hill_Meteorological_Observatory">Blue Hill Meteorological Observatory</a>, which keeps the oldest continuous weather record in North America.</p>
-<p>Data from this and many other weather stations is available from the <a class="reference external" href="https://www.ncdc.noaa.gov/cdo-web/search">National Oceanic and Atmospheric Administration</a> (NOAA).  I collected data from the Blue Hill Observatory from May 11, 1967 to May 11, 2020.  The following cell downloads the data as a CSV file.</p>
-<div class="cell docutils container">
+<p>Data from this and many other weather stations is available from the <a class="reference external" href="https://www.ncdc.noaa.gov/cdo-web/search">National Oceanic and Atmospheric Administration</a> (NOAA).  I collected data from the Blue Hill Observatory from May 11, 1967 to May 11, 2020.</p>
+<p>The following cell downloads the data as a CSV file.</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
@@ -395,7 +391,7 @@
 </div>
 </div>
 </div>
-<p>We can read the data into a Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>:</p>
+<p>We can use Pandas to read the data into <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -406,7 +402,7 @@
 </div>
 </div>
 <p>Here’s what the last few rows look like.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
@@ -527,6 +523,11 @@
 </table>
 </div></div></div>
 </div>
+<p>The columns we’ll use are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DATE</span></code>, which is the date of each observation,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SNOW</span></code>, which is the total snowfall in inches.</p></li>
+</ul>
 <p>I’ll add a column that contains just the year part of the dates.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -539,21 +540,15 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">snow</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;YEAR&#39;</span><span class="p">)[</span><span class="s1">&#39;SNOW&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">snow</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>54
 </pre></div>
 </div>
 </div>
 </div>
 <p>The first and last years are not complete, so I’ll drop them.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">complete</span> <span class="o">=</span> <span class="n">snow</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">complete</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">snow</span> <span class="o">=</span> <span class="n">snow</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">snow</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -568,7 +563,7 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
 
-<span class="n">complete</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">snow</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Total annual snowfall (inches)&#39;</span><span class="p">,</span>
@@ -577,13 +572,14 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_19_0.png" src="_images/chap17_19_0.png" />
+<img alt="_images/chap17_20_0.png" src="_images/chap17_20_0.png" />
 </div>
 </div>
 <p>Looking at this plot, it’s hard to say whether snowfall is increasing, decreasing, or unchanged.  In the last decade, we’ve had several years with more snow than 1978, including 2015, which was the snowiest winter in the Boston area in modern history, with a total of 141 inches.</p>
-<div class="cell docutils container">
+<p>This kind of question – looking at noisy data and wondering whether it is going up or down – is precisely the question we can answer with Bayesian regression.</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">complete</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="mi">1978</span><span class="p">,</span> <span class="mi">1996</span><span class="p">,</span> <span class="mi">2015</span><span class="p">]]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">snow</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="mi">1978</span><span class="p">,</span> <span class="mi">1996</span><span class="p">,</span> <span class="mi">2015</span><span class="p">]]</span>
 </pre></div>
 </div>
 </div>
@@ -597,16 +593,15 @@ Name: SNOW, dtype: float64
 </div>
 </div>
 </div>
-<p>This kind of question – looking at noisy data and wondering whether it is going up or down – is precisely the question we can answer with Bayesian regression.</p>
 </div>
 <div class="section" id="regression-model">
 <h2>Regression model<a class="headerlink" href="#regression-model" title="Permalink to this headline">¶</a></h2>
-<p>The foundation of regression (Bayesian or not) is the model that a time series like this is the sum of two parts:</p>
+<p>The foundation of regression (Bayesian or not) is the assumption that a time series like this is the sum of two parts:</p>
 <ol class="simple">
 <li><p>A linear function of time, and</p></li>
 <li><p>A series of random values drawn from a distribution that is not changing over time.</p></li>
 </ol>
-<p>Mathematically,</p>
+<p>Mathematically, the regression model is</p>
 <div class="math notranslate nohighlight">
 \[y = a x + b + \epsilon\]</div>
 <p>where <span class="math notranslate nohighlight">\(y\)</span> is the series of measurements (snowfall in this example), <span class="math notranslate nohighlight">\(x\)</span> is the series of times (years) and <span class="math notranslate nohighlight">\(\epsilon\)</span> is the series of random values.</p>
@@ -618,7 +613,7 @@ Name: SNOW, dtype: float64
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
 
-<span class="n">pmf_snowfall</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">complete</span><span class="p">)</span>
+<span class="n">pmf_snowfall</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">snow</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -672,12 +667,12 @@ Name: SNOW, dtype: float64
 <div class="section" id="least-squares-regression">
 <h2>Least squares regression<a class="headerlink" href="#least-squares-regression" title="Permalink to this headline">¶</a></h2>
 <p>Our regression model has three parameters: slope, intercept, and standard deviation of <span class="math notranslate nohighlight">\(\epsilon\)</span>.
-Before we can estimate them, we have to choose priors.</p>
-<p>To help with that, I’ll use StatsModel to fit a line to the data by <a class="reference external" href="https://en.wikipedia.org/wiki/Least_squares">least squares regression</a>.</p>
-<p>First, I’ll use <code class="docutils literal notranslate"><span class="pre">reset_index</span></code> to convert <code class="docutils literal notranslate"><span class="pre">complete</span></code>, which is a <code class="docutils literal notranslate"><span class="pre">Series</span></code>, to a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
+Before we can estimate them, we have to choose priors.
+To help with that, I’ll use StatsModel to fit a line to the data by <a class="reference external" href="https://en.wikipedia.org/wiki/Least_squares">least squares regression</a>.</p>
+<p>First, I’ll use <code class="docutils literal notranslate"><span class="pre">reset_index</span></code> to convert <code class="docutils literal notranslate"><span class="pre">snow</span></code>, which is a <code class="docutils literal notranslate"><span class="pre">Series</span></code>, to a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">complete</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">snow</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
 <span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -729,13 +724,13 @@ Before we can estimate them, we have to choose priors.</p>
 <p>As we did in the previous chapter, I’ll center the data by subtracting off the mean.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
 <span class="n">offset</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1993.5
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1994.0
 </pre></div>
 </div>
 </div>
@@ -743,12 +738,6 @@ Before we can estimate them, we have to choose priors.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span>
-<span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
 </pre></div>
 </div>
 </div>
@@ -773,15 +762,15 @@ Before we can estimate them, we have to choose priors.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept    64.190385
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept    64.446325
 x             0.511880
 dtype: float64
 </pre></div>
 </div>
 </div>
 </div>
-<p>The intercept, about 64 inches, is the expected snowfall when <code class="docutils literal notranslate"><span class="pre">x=0</span></code>, which is the middle of 1993.</p>
-<p>The estimated slope indicates that total snowfall is increasing at a rate of about 0.5 inches per year.</p>
+<p>The intercept, about 64 inches, is the expected snowfall when <code class="docutils literal notranslate"><span class="pre">x=0</span></code>, which is the beginning of 1994.
+The estimated slope indicates that total snowfall is increasing at a rate of about 0.5 inches per year.</p>
 <p><code class="docutils literal notranslate"><span class="pre">results</span></code> also provides <code class="docutils literal notranslate"><span class="pre">resid</span></code>, which is an array of residuals, that is, the differences between the data and the fitted line.
 The standard deviation of the residuals is an estimate of <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
 <div class="cell docutils container">
@@ -797,11 +786,153 @@ The standard deviation of the residuals is an estimate of <code class="docutils 
 </div>
 </div>
 <p>We’ll use these estimates to choose prior distributions for the parameters.</p>
-<p>But first, I’ll use them to demonstrate how we compute the likelihood of the data.</p>
+</div>
+<div class="section" id="priors">
+<h2>Priors<a class="headerlink" href="#priors" title="Permalink to this headline">¶</a></h2>
+<p>I’ll use uniform distributions for all three parameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_uniform</span>
+
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">51</span><span class="p">)</span>
+<span class="n">prior_slope</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="s1">&#39;Slope&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">54</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">41</span><span class="p">)</span>
+<span class="n">prior_inter</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="s1">&#39;Intercept&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
+<span class="n">prior_sigma</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="s1">&#39;Sigma&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>I made the prior distributions different lengths for two reasons.  First, if we make a mistake and use the wrong distribution, it will be easier to catch the error if they are all different lengths.</p>
+<p>Second, it provides more precision for the most important parameter, <code class="docutils literal notranslate"><span class="pre">slope</span></code>, and spends less computational effort on the least important, <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
+<p>In Chapter xxx we made a joint distribution with three parameters.  I’ll wrap that process in a function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_joint</span>
+
+<span class="k">def</span> <span class="nf">make_joint3</span><span class="p">(</span><span class="n">pmf1</span><span class="p">,</span> <span class="n">pmf2</span><span class="p">,</span> <span class="n">pmf3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a joint distribution with three parameters.&quot;&quot;&quot;</span>
+    <span class="n">joint2</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">pmf2</span><span class="p">,</span> <span class="n">pmf1</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+    <span class="n">joint3</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">pmf3</span><span class="p">,</span> <span class="n">joint2</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">joint3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And use it to make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the joint distribution of the three parameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">make_joint3</span><span class="p">(</span><span class="n">prior_slope</span><span class="p">,</span> <span class="n">prior_inter</span><span class="p">,</span> <span class="n">prior_sigma</span><span class="p">)</span>
+<span class="n">prior</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>probs</th>
+    </tr>
+    <tr>
+      <th>Slope</th>
+      <th>Intercept</th>
+      <th>Sigma</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="3" valign="top">-0.5</th>
+      <th rowspan="3" valign="top">54.0</th>
+      <th>20.0</th>
+      <td>0.000015</td>
+    </tr>
+    <tr>
+      <th>20.5</th>
+      <td>0.000015</td>
+    </tr>
+    <tr>
+      <th>21.0</th>
+      <td>0.000015</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The index of <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> has three columns, containing values of <code class="docutils literal notranslate"><span class="pre">slope</span></code>, <code class="docutils literal notranslate"><span class="pre">inter</span></code>, and <code class="docutils literal notranslate"><span class="pre">sigma</span></code>, in that order.</p>
+<p>With three parameters, the size of the joint distribution starts to get big.  Specifically, it is the product of the lengths of the prior distributions.  In this example, the prior distributions have 51, 41, and 31 values, so the length of the joint prior is 64,821.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">prior_slope</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">prior_inter</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">prior_sigma</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(51, 41, 31)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">prior_slope</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prior_inter</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prior_sigma</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>64821
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>64821
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 <div class="section" id="likelihood">
 <h2>Likelihood<a class="headerlink" href="#likelihood" title="Permalink to this headline">¶</a></h2>
-<p>Here are approximate values for the slope, intercept, and standard deviation of the data.</p>
+<p>Now we’ll compute the likelihood of the data.
+To demonstrate the process, let’s assume temporarily that the parameters are know.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">inter</span> <span class="o">=</span> <span class="mi">64</span>
@@ -825,40 +956,19 @@ The standard deviation of the residuals is an estimate of <code class="docutils 
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expected</span> <span class="o">=</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span> <span class="o">+</span> <span class="n">inter</span>
 <span class="n">resid</span> <span class="o">=</span> <span class="n">ys</span> <span class="o">-</span> <span class="n">expected</span>
-<span class="n">resid</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>count    52.000000
-mean      0.190385
-std      25.385697
-min     -42.335000
-25%     -17.442500
-50%      -6.565000
-75%      14.125000
-max      66.135000
-dtype: float64
 </pre></div>
 </div>
 </div>
 </div>
-<p>According to the model, the residuals should follow a normal distribution with mean 0 and standard deviation <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.  We can compute the likelihood of each residual value using <code class="docutils literal notranslate"><span class="pre">norm</span></code> from <code class="docutils literal notranslate"><span class="pre">SciPy</span></code>.</p>
+<p>According to the model, the residuals should follow a normal distribution with mean 0 and standard deviation <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.  So we can compute the likelihood of each residual value using <code class="docutils literal notranslate"><span class="pre">norm</span></code> from <code class="docutils literal notranslate"><span class="pre">SciPy</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">densities</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">resid</span><span class="p">)</span>
-<span class="n">densities</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(52,)
 </pre></div>
 </div>
 </div>
 </div>
-<p>The result is an array of probability densities.
-The likelihood of the data is the product of the values in this array.</p>
+<p>The result is an array of probability densities, one for each element of the dataset; their product is the likelihood of the data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">densities</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
@@ -867,7 +977,7 @@ The likelihood of the data is the product of the values in this array.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.364365526172151e-105
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.3551948769061074e-105
 </pre></div>
 </div>
 </div>
@@ -877,223 +987,50 @@ If it’s too small, we might exceed the limits of floating-point arithmetic.
 When that happens, we can avoid the problem by computing likelihoods under a log transform.
 But in this example that’s not necessary.</p>
 </div>
-<div class="section" id="priors">
-<h2>Priors<a class="headerlink" href="#priors" title="Permalink to this headline">¶</a></h2>
-<p>Now that we have figured out the likelihood function, all we need is a prior distribution.</p>
-<p>I’ll use uniform distributions for all three parameters, using the parameters of the least squares fit as a starting place.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_uniform</span>
-
-<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">51</span><span class="p">)</span>
-<span class="n">prior_slope</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="s1">&#39;Slope&#39;</span><span class="p">)</span>
-<span class="n">prior_slope</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Slope
--0.50    0.019608
--0.46    0.019608
--0.42    0.019608
--0.38    0.019608
--0.34    0.019608
-dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">54</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">41</span><span class="p">)</span>
-<span class="n">prior_inter</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="s1">&#39;Intercept&#39;</span><span class="p">)</span>
-<span class="n">prior_inter</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept
-54.000    0.02439
-54.525    0.02439
-55.050    0.02439
-55.575    0.02439
-56.100    0.02439
-dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
-<span class="n">prior_sigma</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="s1">&#39;Sigma&#39;</span><span class="p">)</span>
-<span class="n">prior_sigma</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sigma
-20.0    0.032258
-20.5    0.032258
-21.0    0.032258
-21.5    0.032258
-22.0    0.032258
-dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<p>I made the prior distributions different lengths for two reasons.  First, if we make a mistake and use the wrong distribution, it will be easier to catch the error if they are all different lengths.</p>
-<p>Second, it provides more precision for the most important parameter, <code class="docutils literal notranslate"><span class="pre">slope</span></code>, and spends less computational effort on the least important, <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
-<p>In Chapter xxx we made a joint distribution with three parameters.  I’ll wrap that process in a function:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_joint</span>
-
-<span class="k">def</span> <span class="nf">make_joint3</span><span class="p">(</span><span class="n">pmf1</span><span class="p">,</span> <span class="n">pmf2</span><span class="p">,</span> <span class="n">pmf3</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Make a joint distribution with three parameters.</span>
-<span class="sd">    </span>
-<span class="sd">    pmf1: Pmf object</span>
-<span class="sd">    pmf2: Pmf object</span>
-<span class="sd">    pmf3: Pmf object</span>
-<span class="sd">    </span>
-<span class="sd">    returns: Pmf representing a joint distribution</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">joint2</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">pmf2</span><span class="p">,</span> <span class="n">pmf1</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
-    <span class="n">joint3</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">pmf3</span><span class="p">,</span> <span class="n">joint2</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">joint3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior3</span> <span class="o">=</span> <span class="n">make_joint3</span><span class="p">(</span><span class="n">prior_slope</span><span class="p">,</span> <span class="n">prior_inter</span><span class="p">,</span> <span class="n">prior_sigma</span><span class="p">)</span>
-<span class="n">prior3</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Slope  Intercept  Sigma
--0.5   54.0       20.0     0.000015
-                  20.5     0.000015
-                  21.0     0.000015
-dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<p>The result is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the joint prior distribution of the three parameters.
-Its index has three columns, containing values of <code class="docutils literal notranslate"><span class="pre">slope</span></code>, <code class="docutils literal notranslate"><span class="pre">inter</span></code>, and <code class="docutils literal notranslate"><span class="pre">sigma</span></code>, in that order.</p>
-<p>With three parameters, the size of the joint distribution starts to get big.  Specifically, it is the product of the lengths of the prior distributions.  In this example, the prior distributions have 51, 41, and 31 values, so the length of the joint prior is 64,821.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">prior_slope</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">prior_inter</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">prior_sigma</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(51, 41, 31)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">prior_slope</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prior_inter</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prior_sigma</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>64821
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">prior3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>64821
-</pre></div>
-</div>
-</div>
-</div>
-</div>
 <div class="section" id="the-update">
 <h2>The Update<a class="headerlink" href="#the-update" title="Permalink to this headline">¶</a></h2>
-<p>Now we’re ready to do a Bayesian update.  First, we need to compute the likelihood of the data for each possible set of parameters.</p>
-<p>The following function takes the joint prior distribution and the data, computes the likelihoods, and returns the posterior distribution.</p>
+<p>Now we’re ready to do the update.  First, we need to compute the likelihood of the data for each possible set of parameters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_regression</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Posterior distribution of regression parameters</span>
-<span class="sd">    `slope`, `inter`, and `sigma`.</span>
-<span class="sd">    </span>
-<span class="sd">    prior: Pmf representing the joint prior</span>
-<span class="sd">    data: DataFrame with columns `x` and `y`</span>
-<span class="sd">    </span>
-<span class="sd">    returns: Pmf representing the joint posterior</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">xs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
-    <span class="n">ys</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
-    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="k">for</span> <span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-        <span class="n">expected</span> <span class="o">=</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span> <span class="o">+</span> <span class="n">inter</span>
-        <span class="n">resid</span> <span class="o">=</span> <span class="n">ys</span> <span class="o">-</span> <span class="n">expected</span>
-        <span class="n">densities</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">resid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
-        <span class="n">likelihood</span><span class="p">[</span><span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">,</span> <span class="n">sigma</span><span class="p">]</span> <span class="o">=</span> <span class="n">densities</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
-        
-    <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
-    <span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">posterior</span>
+<span class="k">for</span> <span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+    <span class="n">expected</span> <span class="o">=</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span> <span class="o">+</span> <span class="n">inter</span>
+    <span class="n">resid</span> <span class="o">=</span> <span class="n">ys</span> <span class="o">-</span> <span class="n">expected</span>
+    <span class="n">densities</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">resid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+    <span class="n">likelihood</span><span class="p">[</span><span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">,</span> <span class="n">sigma</span><span class="p">]</span> <span class="o">=</span> <span class="n">densities</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>Here’s how we run it.</p>
-<div class="cell docutils container">
+<p>This computation takes longer than many of the previous examples.
+We are approaching the limit of what we can do with grid approximations.</p>
+<p>Nevertheless, we can do the update in the usual way:</p>
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">time</span> posterior = update_regression(prior3, data)
-<span class="n">posterior</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 56.8 s, sys: 43.7 ms, total: 56.8 s
-Wall time: 57.1 s
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Slope  Intercept  Sigma
--0.5   54.0       20.0     4.651041e-15
-                  20.5     2.658295e-14
-                  21.0     1.265641e-13
-                  21.5     5.111749e-13
-                  22.0     1.779767e-12
-dtype: float64
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6.769832641515733e-107
 </pre></div>
 </div>
 </div>
 </div>
-<p>With three parameters, this function takes some time to run, but soon we’ll see a way to speed it up.</p>
-<p>The result is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with a three-level index containing values of <code class="docutils literal notranslate"><span class="pre">slope</span></code>, <code class="docutils literal notranslate"><span class="pre">inter</span></code>, and <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
-</div>
-<div class="section" id="unpacking-the-marginals">
-<h2>Unpacking the Marginals<a class="headerlink" href="#unpacking-the-marginals" title="Permalink to this headline">¶</a></h2>
-<p>To get the marginal distributions from the joint posterior, we can use <code class="docutils literal notranslate"><span class="pre">Pmf.marginal</span></code>, which we saw in Chapter xxx.</p>
-<p>Here’s the posterior distribution for <code class="docutils literal notranslate"><span class="pre">sigma</span></code>:</p>
+<p>The result is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with a three-level index containing values of <code class="docutils literal notranslate"><span class="pre">slope</span></code>, <code class="docutils literal notranslate"><span class="pre">inter</span></code>, and <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.
+To get the marginal distributions from the joint posterior, we can use <code class="docutils literal notranslate"><span class="pre">Pmf.marginal</span></code>, which we saw in Chapter xxx.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_sigma</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_slope</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">posterior_inter</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">posterior_sigma</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Here’s the posterior distribution for <code class="docutils literal notranslate"><span class="pre">sigma</span></code>:</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_sigma</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -1116,15 +1053,6 @@ dtype: float64
 <li><p>The posterior probabilities are near 0 at the extremes of the range, which indicates that the prior distribution covers all parameters with non-negligible probability.</p></li>
 </ul>
 <p>In this example, the posterior distribution of <code class="docutils literal notranslate"><span class="pre">sigma</span></code> looks fine.</p>
-<p>We can use <code class="docutils literal notranslate"><span class="pre">Pmf.marginal</span></code> again to get the other marginal distributions.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_slope</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">posterior_inter</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
 <p>Here’s the posterior distribution of <code class="docutils literal notranslate"><span class="pre">inter</span></code>:</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
@@ -1136,10 +1064,10 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_78_0.png" src="_images/chap17_78_0.png" />
+<img alt="_images/chap17_77_0.png" src="_images/chap17_77_0.png" />
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">summarize</span>
     
@@ -1148,24 +1076,12 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>64.201 [58.2   70.275]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>64.448 [58.725 70.275]
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1993.5
-</pre></div>
-</div>
-</div>
-</div>
-<p>The posterior mean is about 64 inches, which the expected amount of snow during the year at the midpoint of the range, 1993.</p>
+<p>The posterior mean is about 64 inches, which the expected amount of snow during the year at the midpoint of the range, 1994.</p>
 <p>And finally, here’s the posterior distribution of <code class="docutils literal notranslate"><span class="pre">slope</span></code>:</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
@@ -1177,10 +1093,10 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_82_0.png" src="_images/chap17_82_0.png" />
+<img alt="_images/chap17_80_0.png" src="_images/chap17_80_0.png" />
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summarize</span><span class="p">(</span><span class="n">posterior_slope</span><span class="p">)</span>
 </pre></div>
@@ -1194,14 +1110,14 @@ dtype: float64
 </div>
 <p>The posterior mean is about 0.51 inches, which is consistent with the estimate we got from least squared regression.</p>
 <p>The 90% credible interval is from 0.1 to 0.9, which indicates that our uncertainty about this estimate is pretty high.  In fact, there is still a small posterior probability (about 2%) that the slope is negative.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_slope</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array(0.01840785)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array(0.01840519)
 </pre></div>
 </div>
 </div>
@@ -1217,9 +1133,9 @@ dtype: float64
 <p>The way we computed the likelihood in the previous section was pretty slow.  The problem is that we looped through every possible set of parameters in the prior distribution, and there were more than 60,000 of them.</p>
 <p>If we can do more work per iteration, and run the loop fewer times, we expect it to go faster.</p>
 <p>In order to do that, I’ll unstack the prior distribution:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint3</span> <span class="o">=</span> <span class="n">prior3</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint3</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
 <span class="n">joint3</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1373,7 +1289,7 @@ dtype: float64
 </div>
 <p>The result is a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with <code class="docutils literal notranslate"><span class="pre">slope</span></code> and <code class="docutils literal notranslate"><span class="pre">intercept</span></code> down the rows and <code class="docutils literal notranslate"><span class="pre">sigmas</span></code> across the columns.</p>
 <p>The following is a version of <code class="docutils literal notranslate"><span class="pre">likelihood_regression</span></code> that takes the joint prior distribution in this form and returns the posterior distribution in the same form.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">normalize</span>
 
@@ -1406,7 +1322,7 @@ dtype: float64
 </div>
 </div>
 <p>This version loops through all possible pairs of <code class="docutils literal notranslate"><span class="pre">slope</span></code> and <code class="docutils literal notranslate"><span class="pre">inter</span></code>, so the loop runs about 2000 times.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">prior_slope</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prior_inter</span><span class="p">)</span>
 </pre></div>
@@ -1419,21 +1335,21 @@ dtype: float64
 </div>
 </div>
 <p>Each time through the loop, it uses a grid mesh to compute the likelihood of the data for all values of <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.  The result is an array with one column for each data point and one row for each value of <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.  Taking the product across the columns (<code class="docutils literal notranslate"><span class="pre">axis=1</span></code>) yields the probability of the data for each value of sigma, which we assign as a row in <code class="docutils literal notranslate"><span class="pre">likelihood</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">time</span> posterior_opt = update_optimized(joint3, data)
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 3.13 s, sys: 4.18 ms, total: 3.14 s
-Wall time: 3.15 s
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 1.85 s, sys: 8.02 ms, total: 1.86 s
+Wall time: 1.86 s
 </pre></div>
 </div>
 </div>
 </div>
 <p>We get the same result either way.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">posterior_opt</span><span class="o">.</span><span class="n">stack</span><span class="p">())</span>
 </pre></div>
@@ -1448,7 +1364,7 @@ Wall time: 3.15 s
 <p>But this version is about 25 times faster than the previous version.</p>
 <p>This optimization works because many functions in NumPy and SciPy are written in C, so they run fast compared to Python.  If you can do more work each time you call these functions, and less time running the loop in Python, your code will often run substantially faster.</p>
 <p>In this version of the posterior distribution, <code class="docutils literal notranslate"><span class="pre">slope</span></code> and <code class="docutils literal notranslate"><span class="pre">inter</span></code> run down the rows and <code class="docutils literal notranslate"><span class="pre">sigma</span></code> runs across the columns.  So we can use <code class="docutils literal notranslate"><span class="pre">marginal</span></code> to get the posterior joint distribution of <code class="docutils literal notranslate"><span class="pre">slope</span></code> and <code class="docutils literal notranslate"><span class="pre">intercept</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">marginal</span>
 
@@ -1458,18 +1374,54 @@ Wall time: 3.15 s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Slope  Intercept
--0.5   54.000       6.640002e-08
-       54.525       8.869737e-08
-       55.050       1.169244e-07
-dtype: float64
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>probs</th>
+    </tr>
+    <tr>
+      <th>Slope</th>
+      <th>Intercept</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="3" valign="top">-0.5</th>
+      <th>54.000</th>
+      <td>7.633362e-08</td>
+    </tr>
+    <tr>
+      <th>54.525</th>
+      <td>1.013295e-07</td>
+    </tr>
+    <tr>
+      <th>55.050</th>
+      <td>1.327249e-07</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <p>The result is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with two columns in the index.
 To plot it, we have to unstack it.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_posterior</span> <span class="o">=</span> <span class="n">posterior2</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 <span class="n">joint_posterior</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -1545,75 +1497,75 @@ To plot it, we have to unstack it.</p>
   <tbody>
     <tr>
       <th>54.000</th>
-      <td>6.640002e-08</td>
-      <td>1.092361e-07</td>
-      <td>1.772653e-07</td>
-      <td>2.836386e-07</td>
-      <td>4.472961e-07</td>
-      <td>6.948632e-07</td>
+      <td>7.633362e-08</td>
+      <td>1.244120e-07</td>
+      <td>1.999617e-07</td>
+      <td>3.168007e-07</td>
+      <td>4.945131e-07</td>
+      <td>7.601557e-07</td>
       <td>0.000001</td>
       <td>0.000002</td>
-      <td>0.000002</td>
       <td>0.000003</td>
-      <td>...</td>
       <td>0.000004</td>
+      <td>...</td>
       <td>0.000003</td>
       <td>0.000002</td>
       <td>0.000001</td>
-      <td>8.960879e-07</td>
-      <td>5.821444e-07</td>
-      <td>3.724348e-07</td>
-      <td>2.347649e-07</td>
-      <td>1.458767e-07</td>
-      <td>8.939151e-08</td>
+      <td>9.123148e-07</td>
+      <td>5.975833e-07</td>
+      <td>3.853761e-07</td>
+      <td>2.448104e-07</td>
+      <td>1.532653e-07</td>
+      <td>9.460588e-08</td>
+      <td>5.760046e-08</td>
     </tr>
     <tr>
       <th>54.525</th>
-      <td>8.869737e-08</td>
-      <td>1.464906e-07</td>
-      <td>2.386763e-07</td>
-      <td>3.834648e-07</td>
-      <td>6.072319e-07</td>
-      <td>9.472696e-07</td>
-      <td>0.000001</td>
+      <td>1.013295e-07</td>
+      <td>1.658787e-07</td>
+      <td>2.678095e-07</td>
+      <td>4.262364e-07</td>
+      <td>6.684267e-07</td>
+      <td>1.032304e-06</td>
+      <td>0.000002</td>
       <td>0.000002</td>
       <td>0.000003</td>
       <td>0.000005</td>
       <td>...</td>
-      <td>0.000006</td>
       <td>0.000004</td>
       <td>0.000003</td>
       <td>0.000002</td>
-      <td>1.224634e-06</td>
-      <td>7.922585e-07</td>
-      <td>5.047505e-07</td>
-      <td>3.168613e-07</td>
-      <td>1.960919e-07</td>
-      <td>1.196862e-07</td>
+      <td>1.272146e-06</td>
+      <td>8.301525e-07</td>
+      <td>5.333476e-07</td>
+      <td>3.375444e-07</td>
+      <td>2.105422e-07</td>
+      <td>1.294898e-07</td>
+      <td>7.856004e-08</td>
     </tr>
     <tr>
       <th>55.050</th>
-      <td>1.169244e-07</td>
-      <td>1.938551e-07</td>
-      <td>3.170948e-07</td>
-      <td>5.115049e-07</td>
-      <td>8.132927e-07</td>
-      <td>1.273939e-06</td>
+      <td>1.327249e-07</td>
+      <td>2.182169e-07</td>
+      <td>3.538722e-07</td>
+      <td>5.657543e-07</td>
+      <td>8.912797e-07</td>
+      <td>1.382827e-06</td>
       <td>0.000002</td>
       <td>0.000003</td>
-      <td>0.000004</td>
+      <td>0.000005</td>
       <td>0.000007</td>
       <td>...</td>
-      <td>0.000008</td>
       <td>0.000006</td>
       <td>0.000004</td>
       <td>0.000003</td>
-      <td>1.650986e-06</td>
-      <td>1.063695e-06</td>
-      <td>6.749148e-07</td>
-      <td>4.219704e-07</td>
-      <td>2.600998e-07</td>
-      <td>1.581347e-07</td>
+      <td>1.750579e-06</td>
+      <td>1.138148e-06</td>
+      <td>7.285261e-07</td>
+      <td>4.593750e-07</td>
+      <td>2.854925e-07</td>
+      <td>1.749592e-07</td>
+      <td>1.057750e-07</td>
     </tr>
   </tbody>
 </table>
@@ -1621,7 +1573,7 @@ To plot it, we have to unstack it.</p>
 </div></div></div>
 </div>
 <p>Here’s what it looks like.</p>
-<div class="cell tag_hide-input docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">plot_contour</span>
 
@@ -1631,7 +1583,7 @@ To plot it, we have to unstack it.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_102_0.png" src="_images/chap17_102_0.png" />
+<img alt="_images/chap17_100_0.png" src="_images/chap17_100_0.png" />
 </div>
 </div>
 <p>The ovals in the contour plot are aligned with the axes, which indicates that there is no correlation between <code class="docutils literal notranslate"><span class="pre">slope</span></code> and <code class="docutils literal notranslate"><span class="pre">inter</span></code> in the posterior distribution, which is what we expect since we centered the values.</p>
@@ -1645,7 +1597,7 @@ To plot it, we have to unstack it.</p>
 (Note: In 2019 Eliud Kipchoge ran the marathon distance in under two hours, which is an astonishing achievement that I fully appreciate, but for several reasons it did not count as a world record).</p>
 <p>So, as a second example of Bayesian regression, we’ll consider the world record progression for the marathon (for male runners), estimate the parameters of a linear model, and use the model to predict when a runner will break the two-hour barrier.</p>
 <p>The following cell downloads a web page from Wikipedia that includes a table of marathon world records, and uses Pandas to put the data in a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://en.wikipedia.org/wiki/Marathon_world_record_progression#Men&#39;</span>
 <span class="n">tables</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_html</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
@@ -1675,7 +1627,7 @@ To plot it, we have to unstack it.</p>
 </div>
 </div>
 <p>The first table is the one we want.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">table</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -1747,7 +1699,7 @@ To plot it, we have to unstack it.</p>
 </div>
 <p>We can use Pandas to parse the dates.
 A few of them include notes that cause parsing problems, but the argument <code class="docutils literal notranslate"><span class="pre">errors='coerce'</span></code> tells Pandas to fill invalid dates with <code class="docutils literal notranslate"><span class="pre">NaT</span></code>, which is a version of <code class="docutils literal notranslate"><span class="pre">NaN</span></code> that represents “not a time”.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span>
 <span class="n">table</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -1766,7 +1718,7 @@ Name: date, dtype: datetime64[ns]
 </div>
 </div>
 <p>We can also use Pandas to parse the record times.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">])</span>
 </pre></div>
@@ -1774,7 +1726,7 @@ Name: date, dtype: datetime64[ns]
 </div>
 </div>
 <p>And convert the times to paces in miles per hour.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">26.2</span> <span class="o">/</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">*</span> <span class="mi">3600</span>
 <span class="n">table</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -1793,7 +1745,7 @@ Name: y, dtype: float64
 </div>
 </div>
 <p>The following function plots the results.</p>
-<div class="cell tag_hide-input docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_speeds</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plot marathon world record speed as a function of time.</span>
@@ -1813,55 +1765,149 @@ Name: y, dtype: float64
 </div>
 <p>Here’s what the results look like.
 The dashed line shows the speed required for a two-hour marathon, 13.1 miles per hour.</p>
-<div class="cell tag_hide-input docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_speeds</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_119_0.png" src="_images/chap17_119_0.png" />
+<img alt="_images/chap17_118_0.png" src="_images/chap17_118_0.png" />
 </div>
 </div>
 <p>It’s not a perfectly straight line.  In the early years of the marathon, the record speed increased quickly; since about 1970, it has been increasing more slowly.</p>
 <p>For our analysis, let’s focus on the recent progression, starting in 1970.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">recent</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;1970&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Here’s what it looks like.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">recent</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">plot_speeds</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">recent</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_123_0.png" src="_images/chap17_123_0.png" />
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Time</th>
+      <th>Name</th>
+      <th>Nationality</th>
+      <th>Date</th>
+      <th>Event/Place</th>
+      <th>Source</th>
+      <th>Notes</th>
+      <th>date</th>
+      <th>time</th>
+      <th>y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>32</th>
+      <td>2:09:28.8</td>
+      <td>Ron Hill</td>
+      <td>United Kingdom</td>
+      <td>July 23, 1970</td>
+      <td>Edinburgh, Scotland</td>
+      <td>ARRS[9]</td>
+      <td>NaN</td>
+      <td>1970-07-23</td>
+      <td>0 days 02:09:28.800000</td>
+      <td>12.140871</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>2:09:12</td>
+      <td>Ian Thompson</td>
+      <td>United Kingdom</td>
+      <td>January 31, 1974</td>
+      <td>Christchurch, New Zealand</td>
+      <td>ARRS[9]</td>
+      <td>NaN</td>
+      <td>1974-01-31</td>
+      <td>0 days 02:09:12</td>
+      <td>12.167183</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>2:09:05.6</td>
+      <td>Shigeru So</td>
+      <td>Japan</td>
+      <td>February 5, 1978</td>
+      <td>Beppu-Ōita Marathon</td>
+      <td>ARRS[9]</td>
+      <td>NaN</td>
+      <td>1978-02-05</td>
+      <td>0 days 02:09:05.600000</td>
+      <td>12.177236</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>2:09:01</td>
+      <td>Gerard Nijboer</td>
+      <td>Netherlands</td>
+      <td>April 26, 1980</td>
+      <td>Amsterdam Marathon</td>
+      <td>ARRS[9]</td>
+      <td>NaN</td>
+      <td>1980-04-26</td>
+      <td>0 days 02:09:01</td>
+      <td>12.184472</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>2:08:18</td>
+      <td>Robert De Castella</td>
+      <td>Australia</td>
+      <td>December 6, 1981</td>
+      <td>Fukuoka Marathon</td>
+      <td>IAAF,[53] ARRS[9]</td>
+      <td>NaN</td>
+      <td>1981-12-06</td>
+      <td>0 days 02:08:18</td>
+      <td>12.252533</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>In the notebook for this chapter, you can see how I loaded and cleaned the data.  The result is a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that contains the following columns (and additional information we won’t use:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">date</span></code>, which is a Pandas <code class="docutils literal notranslate"><span class="pre">Timestamp</span></code> representing the date when the world record was broken, and</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">speed</span></code>, which records the record-breaking pace in mph.</p></li>
+</ul>
+<p>Here’s what the results look like, starting in 1970:</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_speeds</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
-<p>That seems like a straighter line, although it’s possible that the slope is increasing.</p>
+<div class="cell_output docutils container">
+<img alt="_images/chap17_122_0.png" src="_images/chap17_122_0.png" />
+</div>
+</div>
+<p>The data points fall approximately on a line, although it’s possible that the slope is increasing.</p>
 <p>To prepare the data for regression, I’ll subtract away the approximate midpoint of the time interval, 1995.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;1995&#39;</span><span class="p">)</span>
-<span class="nb">type</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>pandas._libs.tslibs.timestamps.Timestamp
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">timedelta</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span>
+<span class="n">timedelta</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span>
 </pre></div>
 </div>
 </div>
@@ -1870,7 +1916,13 @@ The dashed line shows the speed required for a two-hour marathon, 13.1 miles per
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timedelta</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="mi">3600</span> <span class="o">/</span> <span class="mi">24</span> <span class="o">/</span> <span class="mf">365.24</span>
-<span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1907,7 +1959,7 @@ dtype: float64
 </div>
 </div>
 </div>
-<p>The estimated intercept is about 12.5 mph, which is the expected world record pace in 1995.  The estimated slope is about 0.015 mph per year, which is rate the world record pace is increasing, according to the model.</p>
+<p>The estimated intercept is about 12.5 mph, which is the interpolated world record pace for 1995.  The estimated slope is about 0.015 mph per year, which is rate the world record pace is increasing, according to the model.</p>
 <p>Again, we can use the standard deviation of the residuals as a point estimate for <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1953,28 +2005,8 @@ dtype: float64
 <p>And here’s the joint prior distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint3</span> <span class="o">=</span> <span class="n">make_joint3</span><span class="p">(</span><span class="n">prior_slope</span><span class="p">,</span> <span class="n">prior_inter</span><span class="p">,</span> <span class="n">prior_sigma</span><span class="p">)</span>
-<span class="n">joint3</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Slope  Intercept  Sigma   
-0.012  12.4       0.010000    0.000015
-                  0.016667    0.000015
-                  0.023333    0.000015
-                  0.030000    0.000015
-                  0.036667    0.000015
-dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<p>As in the previous example, I’ll unstack the joint prior so the values of <code class="docutils literal notranslate"><span class="pre">sigma</span></code> run across the columns.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">joint3</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
-<span class="n">prior</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">make_joint3</span><span class="p">(</span><span class="n">prior_slope</span><span class="p">,</span> <span class="n">prior_inter</span><span class="p">,</span> <span class="n">prior_sigma</span><span class="p">)</span>
+<span class="n">prior</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1997,149 +2029,79 @@ dtype: float64
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Sigma</th>
-      <th>0.010000</th>
-      <th>0.016667</th>
-      <th>0.023333</th>
-      <th>0.030000</th>
-      <th>0.036667</th>
-      <th>0.043333</th>
-      <th>0.050000</th>
-      <th>0.056667</th>
-      <th>0.063333</th>
-      <th>0.070000</th>
-      <th>...</th>
-      <th>0.150000</th>
-      <th>0.156667</th>
-      <th>0.163333</th>
-      <th>0.170000</th>
-      <th>0.176667</th>
-      <th>0.183333</th>
-      <th>0.190000</th>
-      <th>0.196667</th>
-      <th>0.203333</th>
-      <th>0.210000</th>
+      <th></th>
+      <th></th>
+      <th>probs</th>
     </tr>
     <tr>
       <th>Slope</th>
       <th>Intercept</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
+      <th>Sigma</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th rowspan="3" valign="top">0.012</th>
-      <th>12.4000</th>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>...</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
+      <th rowspan="3" valign="top">12.4</th>
+      <th>0.010000</th>
       <td>0.000015</td>
     </tr>
     <tr>
-      <th>12.4025</th>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>...</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
+      <th>0.016667</th>
       <td>0.000015</td>
     </tr>
     <tr>
-      <th>12.4050</th>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>...</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
+      <th>0.023333</th>
       <td>0.000015</td>
     </tr>
   </tbody>
 </table>
-<p>3 rows × 31 columns</p>
 </div></div></div>
 </div>
-<p>Representing the prior distribution in this way makes it possible to use the optimized version of the update function.</p>
+<p>Now we can compute likelihoods as in the previous example:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">update_optimized</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+<span class="n">ys</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
+<span class="n">likelihood</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+    <span class="n">expected</span> <span class="o">=</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span> <span class="o">+</span> <span class="n">inter</span>
+    <span class="n">resid</span> <span class="o">=</span> <span class="n">ys</span> <span class="o">-</span> <span class="n">expected</span>
+    <span class="n">densities</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">resid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+    <span class="n">likelihood</span><span class="p">[</span><span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">,</span> <span class="n">sigma</span><span class="p">]</span> <span class="o">=</span> <span class="n">densities</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>The posterior distribution is unstacked, so we can use <code class="docutils literal notranslate"><span class="pre">marginal</span></code> to extract the posterior distribution of <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
+<p>Now we can do the update in the usual way.</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>654100803618.6069
+</pre></div>
+</div>
+</div>
+</div>
+<p>And unpack the marginals:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">marginal</span>
-
-<span class="n">posterior_sigma</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">posterior_sigma</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_slope</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">posterior_inter</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">posterior_sigma</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_sigma</span><span class="o">.</span><span class="n">plot</span><span class="p">();</span>
 </pre></div>
 </div>
 </div>
@@ -2147,56 +2109,8 @@ dtype: float64
 <img alt="_images/chap17_145_0.png" src="_images/chap17_145_0.png" />
 </div>
 </div>
-<p>We don’t really care what <code class="docutils literal notranslate"><span class="pre">sigma</span></code> is, but we should look at the posterior distribution to make sure the posterior probabilities are near 0 at both extremes.</p>
-<p>We can extract the joint distribution of <code class="docutils literal notranslate"><span class="pre">slope</span></code> and <code class="docutils literal notranslate"><span class="pre">inter</span></code> like this.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_pmf</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">posterior_pmf</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(2091,)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_joint</span> <span class="o">=</span> <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-<span class="n">posterior_joint</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(41, 51)
-</pre></div>
-</div>
-</div>
-</div>
-<p>I transposed the result to put <code class="docutils literal notranslate"><span class="pre">slope</span></code> on the <code class="docutils literal notranslate"><span class="pre">x</span></code> axis.  Here’s a contour plot of the joint posterior distribution.</p>
-<div class="cell tag_hide-input docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_contour</span><span class="p">(</span><span class="n">posterior_joint</span><span class="p">)</span>
-<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior joint distribution of slope and inter&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap17_150_0.png" src="_images/chap17_150_0.png" />
-</div>
-</div>
-<p>The ovals in the contour plot are aligned with the axes, indicating no correlation between the parameters.</p>
 <p>Here’s the posterior distribution of <code class="docutils literal notranslate"><span class="pre">inter</span></code>:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_inter</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior_joint</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_inter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;intercept&#39;</span><span class="p">,</span>
@@ -2206,11 +2120,10 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_153_0.png" src="_images/chap17_153_0.png" />
+<img alt="_images/chap17_147_0.png" src="_images/chap17_147_0.png" />
 </div>
 </div>
-<p>The posterior mean is about 12.5 mph, which is the world record marathon pace the model predicts for the midpoint of the date range, 1995.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summarize</span><span class="p">(</span><span class="n">posterior_inter</span><span class="p">)</span>
 </pre></div>
@@ -2222,14 +2135,8 @@ dtype: float64
 </div>
 </div>
 </div>
+<p>The posterior mean is about 12.5 mph, which is the world record marathon pace the model predicts for the midpoint of the date range, 1994.</p>
 <p>And here’s the posterior distribution of <code class="docutils literal notranslate"><span class="pre">slope</span></code>.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_slope</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior_joint</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_slope</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
@@ -2240,11 +2147,10 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_158_0.png" src="_images/chap17_158_0.png" />
+<img alt="_images/chap17_150_0.png" src="_images/chap17_150_0.png" />
 </div>
 </div>
-<p>The posterior mean is about 0.015 mph per year, or 0.15 mph per decade.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summarize</span><span class="p">(</span><span class="n">posterior_slope</span><span class="p">)</span>
 </pre></div>
@@ -2256,41 +2162,16 @@ dtype: float64
 </div>
 </div>
 </div>
+<p>The posterior mean is about 0.015 mph per year, or 0.15 mph per decade.</p>
 <p>That’s interesting, but it doesn’t answer the question we’re interested in: when will there be a two-hour marathon.  To answer that, we have to make predictions.</p>
 </div>
 <div class="section" id="prediction">
 <h2>Prediction<a class="headerlink" href="#prediction" title="Permalink to this headline">¶</a></h2>
 <p>To generate predictions, I’ll draw a sample from the posterior distribution of parameters, then use the regression equation to combine the parameters with the data.</p>
-<p>The easiest way to sample from the posterior is to stack it and convert to a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with a three-column index.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> provides <code class="docutils literal notranslate"><span class="pre">choice</span></code>, which we can use to draw a random sample with replacement, using the posterior probabilities as weights.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">posterior</span><span class="o">.</span><span class="n">stack</span><span class="p">())</span>
-<span class="n">posterior_pmf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Slope  Intercept  Sigma   
-0.012  12.4       0.010000    1.262529e-312
-                  0.016667    3.343049e-109
-                  0.023333     1.094238e-54
-                  0.030000     3.900183e-33
-                  0.036667     8.441749e-23
-dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">Pmf</span></code> provides <code class="docutils literal notranslate"><span class="pre">sample</span></code>, which we can use to draw a random sample with replacement, using the posterior probabilities as weights.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span> <span class="o">=</span> <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span>
-<span class="n">sample</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(101,)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2304,13 +2185,6 @@ dtype: float64
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
     <span class="n">epsilon</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">))</span>
     <span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">inter</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span> <span class="o">+</span> <span class="n">epsilon</span>
-    
-<span class="n">pred</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(101, 38)
 </pre></div>
 </div>
 </div>
@@ -2320,12 +2194,6 @@ dtype: float64
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">low</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">median</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(38,)
 </pre></div>
 </div>
 </div>
@@ -2344,7 +2212,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_172_0.png" src="_images/chap17_172_0.png" />
+<img alt="_images/chap17_161_0.png" src="_images/chap17_161_0.png" />
 </div>
 </div>
 <p>The dashed line show the two-hour marathon pace, which is 13.1 miles per hour.
@@ -2357,27 +2225,62 @@ Visually we can estimate that the prediction line hits the target pace between 2
 <span class="n">future</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">interp1d</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">xs</span><span class="p">)(</span><span class="mf">13.1</span><span class="p">),</span>
                    <span class="n">interp1d</span><span class="p">(</span><span class="n">median</span><span class="p">,</span> <span class="n">xs</span><span class="p">)(</span><span class="mf">13.1</span><span class="p">),</span>
                    <span class="n">interp1d</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">xs</span><span class="p">)(</span><span class="mf">13.1</span><span class="p">)])</span>
-
-<span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">future</span><span class="o">*</span><span class="mf">365.24</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">future</span><span class="o">*</span><span class="mf">365.24</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dts</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DatetimeIndex([&#39;2030-11-12 17:56:10.436409600&#39;,
-               &#39;2035-09-18 04:43:12.873532800&#39;,
-                  &#39;2042-01-01 20:23:40.839504&#39;],
-              dtype=&#39;datetime64[ns]&#39;, freq=None)
-</pre></div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>high</th>
+      <td>2030-06-21 12:40:01.592371200</td>
+    </tr>
+    <tr>
+      <th>median</th>
+      <td>2036-09-20 09:03:28.522425600</td>
+    </tr>
+    <tr>
+      <th>low</th>
+      <td>2042-08-13 11:20:06.313315200</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
-</div>
-</div>
-<p>The median prediction is 2035, with 90% credible interval from 2030 to 2042.  So there is about a 5% chance we’ll see a two-hour marathon before 2030.</p>
+<p>The median prediction is 2036, with 90% credible interval from 2032 to 2043.  So there is about a 5% chance we’ll see a two-hour marathon before 2032.</p>
 </div>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>This chapter introduces Bayesian regression, which is based on the same model as least squares regression; the difference is that it produces a posterior distribution for the parameters rather than point estimates.</p>
 <p>In the first example, we looked at changes in snowfall in Norfolk County, Massachusetts, and concluded that we get more snowfall now than when I was young, contrary to my expectation.</p>
-<p>We computed the likelihoods two ways: the first is conceptually simple but slow; the second is optimized to use NumPy more efficiently.</p>
 <p>In the second example, we looked at the progression of world record pace for the men’s marathon, computed the joint posterior distribution of the regression parameters, and used it to generate predictions for the next 20 years.</p>
 <p>These examples have three parameters, so it takes a little longer to compute the likelihood of the data.
 With more than three parameters, it becomes impractical to use grid algorithms.</p>
@@ -2389,7 +2292,7 @@ With more than three parameters, it becomes impractical to use grid algorithms.<
 <p><strong>Exercise:</strong> I am under the impression that it is warmer around here than it used to be.  In this exercise, you can put my conjecture to the test.</p>
 <p>We’ll use the same dataset we used to model snowfall; it also includes daily low and high temperatures in Norfolk County, Massachusetts during my lifetime.</p>
 <p>Here’s the data.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;2239075.csv&#39;</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -2512,7 +2415,7 @@ With more than three parameters, it becomes impractical to use grid algorithms.<
 </div></div></div>
 </div>
 <p>Again, I’ll create a column that contains the year part of the dates.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;DATE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span>
 </pre></div>
@@ -2521,7 +2424,7 @@ With more than three parameters, it becomes impractical to use grid algorithms.<
 </div>
 <p>This dataset includes <code class="docutils literal notranslate"><span class="pre">TMIN</span></code> and <code class="docutils literal notranslate"><span class="pre">TMAX</span></code>, which are the daily low and high temperatures in degrees F.
 I’ll create a new column with the daily midpoint of the low and high temperatures.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;TMID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;TMIN&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TMAX&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
 </pre></div>
@@ -2529,7 +2432,7 @@ I’ll create a new column with the daily midpoint of the low and high temperatu
 </div>
 </div>
 <p>Now we can group by year and compute the mean of these daily temperatures.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tmid</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;YEAR&#39;</span><span class="p">)[</span><span class="s1">&#39;TMID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="nb">len</span><span class="p">(</span><span class="n">tmid</span><span class="p">)</span>
@@ -2543,7 +2446,7 @@ I’ll create a new column with the daily midpoint of the low and high temperatu
 </div>
 </div>
 <p>Again, I’ll drop the first and last years, which are incomplete.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">complete</span> <span class="o">=</span> <span class="n">tmid</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 <span class="nb">len</span><span class="p">(</span><span class="n">complete</span><span class="p">)</span>
@@ -2557,7 +2460,7 @@ I’ll create a new column with the daily midpoint of the low and high temperatu
 </div>
 </div>
 <p>Here’s what the time series looks like.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">complete</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
@@ -2567,11 +2470,11 @@ I’ll create a new column with the daily midpoint of the low and high temperatu
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_189_0.png" src="_images/chap17_189_0.png" />
+<img alt="_images/chap17_180_0.png" src="_images/chap17_180_0.png" />
 </div>
 </div>
 <p>As we did with the snow data, I’ll convert the <code class="docutils literal notranslate"><span class="pre">Series</span></code> to a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> to prepare it for regression.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">complete</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
 <span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -2631,20 +2534,20 @@ I’ll create a new column with the daily midpoint of the low and high temperatu
 </table>
 </div></div></div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
 <span class="n">offset</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1993.5
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1994.0
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span>
 <span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -2652,12 +2555,12 @@ I’ll create a new column with the daily midpoint of the low and high temperatu
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-0.5
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;TMID&#39;</span><span class="p">]</span>
 <span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
@@ -2671,7 +2574,7 @@ I’ll create a new column with the daily midpoint of the low and high temperatu
 </div>
 </div>
 <p>Now we can use StatsModels to estimate the parameters.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
 
@@ -2682,7 +2585,7 @@ I’ll create a new column with the daily midpoint of the low and high temperatu
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept    49.408046
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept    49.430172
 x             0.044252
 dtype: float64
 </pre></div>
@@ -2690,14 +2593,14 @@ dtype: float64
 </div>
 </div>
 <p>And compute the standard deviation of the parameters.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="o">.</span><span class="n">resid</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0417057653902053
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.041705765390206
 </pre></div>
 </div>
 </div>
@@ -2705,9 +2608,10 @@ dtype: float64
 <p>According to the least squares regression model, annual average temperature is increasing by about 0.044 degrees F per year.</p>
 <p>To quantify the uncertainty of these parameters and generate predictions for the future, we can use Bayesian regression.</p>
 <ol class="simple">
+<li><p>Use StatsModels to generate point estimates for the regression parameters.</p></li>
 <li><p>Choose priors for <code class="docutils literal notranslate"><span class="pre">slope</span></code>, <code class="docutils literal notranslate"><span class="pre">intercept</span></code>, and <code class="docutils literal notranslate"><span class="pre">sigma</span></code> based on these estimates, and use <code class="docutils literal notranslate"><span class="pre">make_joint3</span></code> to make a joint prior distribution.</p></li>
-<li><p>Use <code class="docutils literal notranslate"><span class="pre">update_regression</span></code> or <code class="docutils literal notranslate"><span class="pre">update_optimized</span></code> to compute the posterior distribution of the parameters.</p></li>
-<li><p>Use <code class="docutils literal notranslate"><span class="pre">Pmf.marginal</span></code> to extract the posterior distribution of <code class="docutils literal notranslate"><span class="pre">slope</span></code>.  How confident are we that temperature is increasing?</p></li>
+<li><p>Compute the likelihood of the data and compute the posterior distribution of the parameters.</p></li>
+<li><p>Extract the posterior distribution of <code class="docutils literal notranslate"><span class="pre">slope</span></code>.  How confident are we that temperature is increasing?</p></li>
 <li><p>Draw a sample of parameters from the posterior distribution and use it to generate predictions up to 2067.</p></li>
 <li><p>Plot the median of the predictions and a 90% credible interval along with the observed data.</p></li>
 </ol>
@@ -2746,28 +2650,7 @@ dtype: float64
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="n">joint3</span> <span class="o">=</span> <span class="n">make_joint3</span><span class="p">(</span><span class="n">prior_slope</span><span class="p">,</span> <span class="n">prior_inter</span><span class="p">,</span> <span class="n">prior_sigma</span><span class="p">)</span>
-<span class="n">joint3</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Slope  Intercept  Sigma
-0.0    48.0       0.50     0.000015
-                  0.55     0.000015
-                  0.60     0.000015
-                  0.65     0.000015
-                  0.70     0.000015
-dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="n">prior</span> <span class="o">=</span> <span class="n">joint3</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">make_joint3</span><span class="p">(</span><span class="n">prior_slope</span><span class="p">,</span> <span class="n">prior_inter</span><span class="p">,</span> <span class="n">prior_sigma</span><span class="p">)</span>
 <span class="n">prior</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -2791,395 +2674,49 @@ dtype: float64
   <thead>
     <tr style="text-align: right;">
       <th></th>
+      <th></th>
+      <th></th>
+      <th>probs</th>
+    </tr>
+    <tr>
+      <th>Slope</th>
+      <th>Intercept</th>
       <th>Sigma</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="3" valign="top">0.0</th>
+      <th rowspan="3" valign="top">48.0</th>
       <th>0.50</th>
+      <td>0.000015</td>
+    </tr>
+    <tr>
       <th>0.55</th>
+      <td>0.000015</td>
+    </tr>
+    <tr>
       <th>0.60</th>
-      <th>0.65</th>
-      <th>0.70</th>
-      <th>0.75</th>
-      <th>0.80</th>
-      <th>0.85</th>
-      <th>0.90</th>
-      <th>0.95</th>
-      <th>...</th>
-      <th>1.55</th>
-      <th>1.60</th>
-      <th>1.65</th>
-      <th>1.70</th>
-      <th>1.75</th>
-      <th>1.80</th>
-      <th>1.85</th>
-      <th>1.90</th>
-      <th>1.95</th>
-      <th>2.00</th>
-    </tr>
-    <tr>
-      <th>Slope</th>
-      <th>Intercept</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="5" valign="top">0.0</th>
-      <th>48.0</th>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>...</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-    </tr>
-    <tr>
-      <th>48.1</th>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>...</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-    </tr>
-    <tr>
-      <th>48.2</th>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>...</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-    </tr>
-    <tr>
-      <th>48.3</th>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>...</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-    </tr>
-    <tr>
-      <th>48.4</th>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>...</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
-      <td>0.000015</td>
       <td>0.000015</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 31 columns</p>
 </div></div></div>
 </div>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="o">%</span><span class="k">time</span> posterior = update_optimized(prior, data)
-<span class="n">posterior</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 2.17 s, sys: 305 µs, total: 2.17 s
-Wall time: 2.17 s
-</pre></div>
-</div>
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
+<span class="n">xs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+<span class="n">ys</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
+<span class="n">likelihood</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Sigma</th>
-      <th>0.50</th>
-      <th>0.55</th>
-      <th>0.60</th>
-      <th>0.65</th>
-      <th>0.70</th>
-      <th>0.75</th>
-      <th>0.80</th>
-      <th>0.85</th>
-      <th>0.90</th>
-      <th>0.95</th>
-      <th>...</th>
-      <th>1.55</th>
-      <th>1.60</th>
-      <th>1.65</th>
-      <th>1.70</th>
-      <th>1.75</th>
-      <th>1.80</th>
-      <th>1.85</th>
-      <th>1.90</th>
-      <th>1.95</th>
-      <th>2.00</th>
-    </tr>
-    <tr>
-      <th>Slope</th>
-      <th>Intercept</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="5" valign="top">0.0</th>
-      <th>48.0</th>
-      <td>5.469482e-133</td>
-      <td>8.456993e-108</td>
-      <td>5.725427e-89</td>
-      <td>1.361579e-74</td>
-      <td>2.003735e-63</td>
-      <td>1.269228e-54</td>
-      <td>1.332824e-47</td>
-      <td>6.062184e-42</td>
-      <td>2.401400e-37</td>
-      <td>1.390022e-33</td>
-      <td>...</td>
-      <td>2.157676e-17</td>
-      <td>4.222518e-17</td>
-      <td>7.062026e-17</td>
-      <td>1.030877e-16</td>
-      <td>1.337189e-16</td>
-      <td>1.565114e-16</td>
-      <td>1.674872e-16</td>
-      <td>1.657382e-16</td>
-      <td>1.531524e-16</td>
-      <td>1.332827e-16</td>
-    </tr>
-    <tr>
-      <th>48.1</th>
-      <td>1.013023e-120</td>
-      <td>1.163560e-97</td>
-      <td>1.892454e-80</td>
-      <td>2.471844e-67</td>
-      <td>3.637954e-57</td>
-      <td>3.596160e-49</td>
-      <td>8.257196e-43</td>
-      <td>1.065366e-37</td>
-      <td>1.468194e-33</td>
-      <td>3.477517e-30</td>
-      <td>...</td>
-      <td>4.078863e-16</td>
-      <td>6.661721e-16</td>
-      <td>9.450122e-16</td>
-      <td>1.186928e-15</td>
-      <td>1.341639e-15</td>
-      <td>1.383967e-15</td>
-      <td>1.318519e-15</td>
-      <td>1.172153e-15</td>
-      <td>9.810176e-16</td>
-      <td>7.789389e-16</td>
-    </tr>
-    <tr>
-      <th>48.2</th>
-      <td>2.344013e-109</td>
-      <td>2.869497e-88</td>
-      <td>1.475464e-72</td>
-      <td>1.310638e-60</td>
-      <td>2.285547e-51</td>
-      <td>4.042565e-44</td>
-      <td>2.270012e-38</td>
-      <td>9.115835e-34</td>
-      <td>4.723848e-30</td>
-      <td>4.889743e-27</td>
-      <td>...</td>
-      <td>6.210017e-15</td>
-      <td>8.577986e-15</td>
-      <td>1.044708e-14</td>
-      <td>1.141560e-14</td>
-      <td>1.135891e-14</td>
-      <td>1.042327e-14</td>
-      <td>8.916742e-15</td>
-      <td>7.177756e-15</td>
-      <td>5.480740e-15</td>
-      <td>3.997373e-15</td>
-    </tr>
-    <tr>
-      <th>48.3</th>
-      <td>6.775916e-99</td>
-      <td>1.268432e-79</td>
-      <td>2.713423e-65</td>
-      <td>2.029684e-54</td>
-      <td>4.968659e-46</td>
-      <td>1.802993e-39</td>
-      <td>2.769232e-34</td>
-      <td>3.797716e-30</td>
-      <td>7.998382e-27</td>
-      <td>3.864312e-24</td>
-      <td>...</td>
-      <td>7.614602e-14</td>
-      <td>9.015050e-14</td>
-      <td>9.541170e-14</td>
-      <td>9.171287e-14</td>
-      <td>8.115153e-14</td>
-      <td>6.686217e-14</td>
-      <td>5.180136e-14</td>
-      <td>3.805706e-14</td>
-      <td>2.670613e-14</td>
-      <td>1.801307e-14</td>
-    </tr>
-    <tr>
-      <th>48.4</th>
-      <td>2.447054e-89</td>
-      <td>1.005015e-71</td>
-      <td>1.177043e-58</td>
-      <td>9.180321e-49</td>
-      <td>3.737699e-41</td>
-      <td>3.190434e-35</td>
-      <td>1.499086e-30</td>
-      <td>7.703297e-27</td>
-      <td>7.126922e-24</td>
-      <td>1.716436e-21</td>
-      <td>...</td>
-      <td>7.519733e-13</td>
-      <td>7.732766e-13</td>
-      <td>7.198762e-13</td>
-      <td>6.154869e-13</td>
-      <td>4.892323e-13</td>
-      <td>3.653048e-13</td>
-      <td>2.585183e-13</td>
-      <td>1.747125e-13</td>
-      <td>1.134990e-13</td>
-      <td>7.127585e-14</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 31 columns</p>
-</div></div></div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="n">posterior_sigma</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+    <span class="n">expected</span> <span class="o">=</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span> <span class="o">+</span> <span class="n">inter</span>
+    <span class="n">resid</span> <span class="o">=</span> <span class="n">ys</span> <span class="o">-</span> <span class="n">expected</span>
+    <span class="n">densities</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">resid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+    <span class="n">likelihood</span><span class="p">[</span><span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">,</span> <span class="n">sigma</span><span class="p">]</span> <span class="o">=</span> <span class="n">densities</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -3188,172 +2725,24 @@ Wall time: 2.17 s
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="n">posterior_sigma</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;$\sigma$, standard deviation of $\epsilon$&#39;</span><span class="p">,</span>
-         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
-         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior marginal distribution of $\sigma$&#39;</span><span class="p">)</span>
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_207_0.png" src="_images/chap17_207_0.png" />
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6.471589606597477e-36
+</pre></div>
+</div>
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="n">posterior2</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">posterior2</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Slope  Intercept
-0.0    48.0         1.160816e-15
-       48.1         1.052695e-14
-       48.2         9.121251e-14
-       48.3         7.591311e-13
-       48.4         6.059163e-12
-dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_posterior</span> <span class="o">=</span> <span class="n">posterior2</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-<span class="n">joint_posterior</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th>Slope</th>
-      <th>0.000</th>
-      <th>0.002</th>
-      <th>0.004</th>
-      <th>0.006</th>
-      <th>0.008</th>
-      <th>0.010</th>
-      <th>0.012</th>
-      <th>0.014</th>
-      <th>0.016</th>
-      <th>0.018</th>
-      <th>...</th>
-      <th>0.082</th>
-      <th>0.084</th>
-      <th>0.086</th>
-      <th>0.088</th>
-      <th>0.090</th>
-      <th>0.092</th>
-      <th>0.094</th>
-      <th>0.096</th>
-      <th>0.098</th>
-      <th>0.100</th>
-    </tr>
-    <tr>
-      <th>Intercept</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>48.0</th>
-      <td>1.160816e-15</td>
-      <td>1.582183e-15</td>
-      <td>2.129943e-15</td>
-      <td>2.831465e-15</td>
-      <td>3.716188e-15</td>
-      <td>4.814340e-15</td>
-      <td>6.155121e-15</td>
-      <td>7.764342e-15</td>
-      <td>9.661593e-15</td>
-      <td>1.185707e-14</td>
-      <td>...</td>
-      <td>3.036299e-15</td>
-      <td>2.291371e-15</td>
-      <td>1.707482e-15</td>
-      <td>1.256646e-15</td>
-      <td>9.135882e-16</td>
-      <td>6.562184e-16</td>
-      <td>4.657827e-16</td>
-      <td>3.267587e-16</td>
-      <td>2.265936e-16</td>
-      <td>1.553486e-16</td>
-    </tr>
-    <tr>
-      <th>48.1</th>
-      <td>1.052695e-14</td>
-      <td>1.458733e-14</td>
-      <td>1.996354e-14</td>
-      <td>2.697555e-14</td>
-      <td>3.597933e-14</td>
-      <td>4.735455e-14</td>
-      <td>6.148524e-14</td>
-      <td>7.873253e-14</td>
-      <td>9.939988e-14</td>
-      <td>1.236919e-13</td>
-      <td>...</td>
-      <td>2.904556e-14</td>
-      <td>2.156559e-14</td>
-      <td>1.580825e-14</td>
-      <td>1.144368e-14</td>
-      <td>8.183163e-15</td>
-      <td>5.781758e-15</td>
-      <td>4.037250e-15</td>
-      <td>2.786737e-15</td>
-      <td>1.901876e-15</td>
-      <td>1.283595e-15</td>
-    </tr>
-  </tbody>
-</table>
-<p>2 rows × 51 columns</p>
-</div></div></div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="n">posterior_slope</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">joint_posterior</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">posterior_inter</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">joint_posterior</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">posterior_slope</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">posterior_inter</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">posterior_sigma</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">marginal</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -3370,7 +2759,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_211_0.png" src="_images/chap17_211_0.png" />
+<img alt="_images/chap17_199_0.png" src="_images/chap17_199_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -3382,7 +2771,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(49.40804621499326, array([49.2, 49.7]))
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(49.430172755332066, array([49.2, 49.7]))
 </pre></div>
 </div>
 </div>
@@ -3399,7 +2788,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_213_0.png" src="_images/chap17_213_0.png" />
+<img alt="_images/chap17_201_0.png" src="_images/chap17_201_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -3411,7 +2800,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.04425308067803347, array([0.028, 0.06 ]))
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.044253080678033116, array([0.028, 0.06 ]))
 </pre></div>
 </div>
 </div>
@@ -3420,16 +2809,7 @@ dtype: float64
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="n">posterior_pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">posterior</span><span class="o">.</span><span class="n">stack</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="n">sample</span> <span class="o">=</span> <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span>
 
 <span class="n">years</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1967</span><span class="p">,</span> <span class="mi">2067</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">xs</span> <span class="o">=</span> <span class="n">years</span> <span class="o">-</span> <span class="n">offset</span>
@@ -3478,7 +2858,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap17_218_0.png" src="_images/chap17_218_0.png" />
+<img alt="_images/chap17_205_0.png" src="_images/chap17_205_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -3492,12 +2872,11 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.257211378115983
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.264154393858554
 </pre></div>
 </div>
 </div>
 </div>
-<p><strong>Exercise:</strong>  TODO: Move the happiness-GDP example here?</p>
 </div>
 </div>
 

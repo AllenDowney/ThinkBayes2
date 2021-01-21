@@ -309,13 +309,13 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#likelihood">
-   Likelihood
+  <a class="reference internal nav-link" href="#prior-distribution">
+   Prior distribution
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#prior-distribution">
-   Prior distribution
+  <a class="reference internal nav-link" href="#likelihood">
+   Likelihood
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -797,7 +797,7 @@ The change in log odds after each update is the logarithm of the likelihood rati
 </div></div></div>
 </div>
 <p>Here are the first few rows:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -869,7 +869,7 @@ The change in log odds after each update is the logarithm of the likelihood rati
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code> if there was a damage incident and <code class="docutils literal notranslate"><span class="pre">0</span></code> otherwise.</p></li>
 </ul>
 <p>There are 23 launches in the dataset; 7 with damage incidents.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Damage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
@@ -920,13 +920,13 @@ The change in log odds after each update is the logarithm of the likelihood rati
 <p>For reasons I’ll explain soon, I’ll define <span class="math notranslate nohighlight">\(x\)</span> to be temperature shifted by an offset so its mean is 0.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
 <span class="n">offset</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>69.56521739130434
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>70.0
 </pre></div>
 </div>
 </div>
@@ -958,7 +958,7 @@ The change in log odds after each update is the logarithm of the likelihood rati
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept   -1.107550
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept   -1.208490
 x           -0.232163
 dtype: float64
 </pre></div>
@@ -966,7 +966,7 @@ dtype: float64
 </div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">results</span></code> contains a “point estimate” for each parameter, that is, a single value rather than a posterior distribution.</p>
-<p>The intercept is about -1.1, and the estimated slope is about -0.23.
+<p>The intercept is about -1.2, and the estimated slope is about -0.23.
 To see what these parameters mean, I’ll use them to compute probabilities for a range of temperatures.
 Here’s the range:</p>
 <div class="cell docutils container">
@@ -991,12 +991,18 @@ Here’s the range:</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">odds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_odds</span><span class="p">)</span>
 <span class="n">ps</span> <span class="o">=</span> <span class="n">odds</span> <span class="o">/</span> <span class="p">(</span><span class="n">odds</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">ps</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ps</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.4155141126966855
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.4155141126966854
 </pre></div>
 </div>
 </div>
@@ -1007,12 +1013,18 @@ Here’s the range:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">expit</span>
 
 <span class="n">ps</span> <span class="o">=</span> <span class="n">expit</span><span class="p">(</span><span class="n">inter</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span><span class="p">)</span>
-<span class="n">ps</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ps</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.4155141126966855
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.4155141126966854
 </pre></div>
 </div>
 </div>
@@ -1027,64 +1039,12 @@ Here’s the range:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_45_0.png" src="_images/chap16_45_0.png" />
+<img alt="_images/chap16_47_0.png" src="_images/chap16_47_0.png" />
 </div>
 </div>
 <p>At low temperatures, the probability of damage is high; at high temperatures, it drops off to near 0.</p>
-</div>
-<div class="section" id="likelihood">
-<h2>Likelihood<a class="headerlink" href="#likelihood" title="Permalink to this headline">¶</a></h2>
-<p>Now, to do a Bayesian update, we have to compute the likelihood function for possible pairs of parameters.</p>
-<p>To demonstrate the process, let’s assume temporarily that the parameters we just estimated are correct.
-I’ll use the model to compute the probability of damage for each launch temperature in the dataset.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
-<span class="n">ps</span> <span class="o">=</span> <span class="n">expit</span><span class="p">(</span><span class="n">inter</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">ps</span></code> contains the probability of damage for each launch, according to the model.
-And <code class="docutils literal notranslate"><span class="pre">ys</span></code> contains boolean values that indicate whether damage occurred or not.</p>
-<p>So we can use <code class="docutils literal notranslate"><span class="pre">np.where</span></code> to compute the probability of each point in the dataset.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ys</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
-<span class="n">likes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">ps</span><span class="p">)</span>
-<span class="n">likes</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.56950687, 0.22996826, 0.72637895, 0.67790595, 0.62527572,
-       0.8419509 , 0.87045398, 0.77003174, 0.85931657, 0.60268105,
-       0.22996826, 0.95545945, 0.62527572, 0.93924781, 0.62527572,
-       0.91445644, 0.77003174, 0.97729671, 0.93095593, 0.96435859,
-       0.08554356, 0.93095593, 0.82884484])
-</pre></div>
-</div>
-</div>
-</div>
-<p>For each launch where damage occurred, we choose an element from <code class="docutils literal notranslate"><span class="pre">ps</span></code>, which contains the probabilities of damage.
-For each launch where damage did not occur, we choose a value from the complement of <code class="docutils literal notranslate"><span class="pre">ps</span></code>, which contains the probabilities of no damage.</p>
-<p>The result is an array of probabilities, one for each launch.
-The likelihood of the whole dataset is the product of this array.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likes</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.878037090208389e-05
-</pre></div>
-</div>
-</div>
-</div>
-<p>That’s how we compute the likelihood of the data for a particular pair of parameters.
-Now we have to compute the likelihood of the data for all possible pairs.
-To do that, we need prior distributions.</p>
+<p>But that’s based on conventional logistic regression.
+Now we’ll do the Bayesian version.</p>
 </div>
 <div class="section" id="prior-distribution">
 <h2>Prior distribution<a class="headerlink" href="#prior-distribution" title="Permalink to this headline">¶</a></h2>
@@ -1175,48 +1135,149 @@ To do that, we need prior distributions.</p>
 </div></div></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">joint_pmf</span></code> is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with two levels in the index, one for each parameter.  That makes it easy to loop through possible pairs of parameters, as in the following function.</p>
+</div>
+<div class="section" id="likelihood">
+<h2>Likelihood<a class="headerlink" href="#likelihood" title="Permalink to this headline">¶</a></h2>
+<p>To do the update, we have to compute the likelihood of the data for each possible pair of parameters.</p>
+<p>To make that easier, I’m going to group the data by temperature, <code class="docutils literal notranslate"><span class="pre">x</span></code>, and count the number of launches and damage incidents at each temperature.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">likelihood_logistic</span><span class="p">(</span><span class="n">joint_pmf</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Likelihood of the data for each pair of parameters.&quot;&quot;&quot;</span>
-    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">joint_pmf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-    <span class="n">ys</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Damage&#39;</span><span class="p">]</span>
-    <span class="n">xs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
-
-    <span class="k">for</span> <span class="n">slope</span><span class="p">,</span> <span class="n">inter</span> <span class="ow">in</span> <span class="n">joint_pmf</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-        <span class="n">ps</span> <span class="o">=</span> <span class="n">expit</span><span class="p">(</span><span class="n">inter</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span><span class="p">)</span>
-        <span class="n">likes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">ps</span><span class="p">)</span>
-        <span class="n">likelihood</span><span class="p">[</span><span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">]</span> <span class="o">=</span> <span class="n">likes</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
-        
-    <span class="k">return</span> <span class="n">likelihood</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">likelihood_logistic</span></code> takes as arguments <code class="docutils literal notranslate"><span class="pre">joint_pmf</span></code>, which is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the joint prior distribution, and <code class="docutils literal notranslate"><span class="pre">data</span></code>, which is a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with columns <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
-<p>It returns <code class="docutils literal notranslate"><span class="pre">likelihood</span></code>, which is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that contains the likelihood of the data for each possible pair of parameters.
-To initialize <code class="docutils literal notranslate"><span class="pre">likelihood</span></code>, it makes a copy of <code class="docutils literal notranslate"><span class="pre">joint_pmf</span></code>, which is a convenient way to make sure that <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> has the same type, index, and data type as <code class="docutils literal notranslate"><span class="pre">joint_pmf</span></code>.</p>
-<p>The loop iterates through the parameters.  For each possible pair, it uses the logistic model to compute <code class="docutils literal notranslate"><span class="pre">ps</span></code>, then computes the likelihood of the data.</p>
-<p>The last line of the loop assigns each likelihood to a row in <code class="docutils literal notranslate"><span class="pre">likelihood</span></code>.</p>
-<p>Here’s how we use this function:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">likelihood_logistic</span><span class="p">(</span><span class="n">joint_pmf</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-<span class="n">likelihood</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grouped</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;sum&#39;</span><span class="p">])</span>
+<span class="n">grouped</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.016108065211672552
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>count</th>
+      <th>sum</th>
+    </tr>
+    <tr>
+      <th>x</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>-17.0</th>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>-13.0</th>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>-12.0</th>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>-7.0</th>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>-4.0</th>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The result is a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with two columns: <code class="docutils literal notranslate"><span class="pre">count</span></code> is the number of launches at each temperature; <code class="docutils literal notranslate"><span class="pre">sum</span></code> is the number of damage incidents.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ns</span> <span class="o">=</span> <span class="n">grouped</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span>
+<span class="n">ks</span> <span class="o">=</span> <span class="n">grouped</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>To compute the likelihood of the data, let’s assume temporarily that the parameters we just estimated, <code class="docutils literal notranslate"><span class="pre">slope</span></code> and <code class="docutils literal notranslate"><span class="pre">inter</span></code>,  are correct.</p>
+<p>We can use them to compute the probability of damage at each launch temperature, like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xs</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">index</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">expit</span><span class="p">(</span><span class="n">inter</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ps</span></code> contains the probability of damage for each launch temperature, according to the model.</p>
+<p>Now, for each temperature we have <code class="docutils literal notranslate"><span class="pre">ns</span></code>, <code class="docutils literal notranslate"><span class="pre">ps</span></code>, and <code class="docutils literal notranslate"><span class="pre">ks</span></code>;
+we can use the binomial distribution to compute the likelihood of the data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
+
+<span class="n">likes</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">ps</span><span class="p">)</span>
+<span class="n">likes</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.93924781, 0.85931657, 0.82884484, 0.60268105, 0.56950687,
+       0.24446388, 0.67790595, 0.72637895, 0.18815003, 0.8419509 ,
+       0.87045398, 0.15645171, 0.86667894, 0.95545945, 0.96435859,
+       0.97729671])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Each element of <code class="docutils literal notranslate"><span class="pre">likes</span></code> is the probability of seeing <code class="docutils literal notranslate"><span class="pre">k</span></code> damage incidents in <code class="docutils literal notranslate"><span class="pre">n</span></code> launches if the probability of damage is <code class="docutils literal notranslate"><span class="pre">p</span></code>.
+The likelihood of the whole dataset is the product of this array.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likes</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0004653644508250066
+</pre></div>
+</div>
+</div>
+</div>
+<p>That’s how we compute the likelihood of the data for a particular pair of parameters.
+Now we can compute the likelihood of the data for all possible pairs:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">joint_pmf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">slope</span><span class="p">,</span> <span class="n">inter</span> <span class="ow">in</span> <span class="n">joint_pmf</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">expit</span><span class="p">(</span><span class="n">inter</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span><span class="p">)</span>
+    <span class="n">likes</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">ps</span><span class="p">)</span>
+    <span class="n">likelihood</span><span class="p">[</span><span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">]</span> <span class="o">=</span> <span class="n">likes</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<p>To initialize <code class="docutils literal notranslate"><span class="pre">likelihood</span></code>, we make a copy of <code class="docutils literal notranslate"><span class="pre">joint_pmf</span></code>, which is a convenient way to make sure that <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> has the same type, index, and data type as <code class="docutils literal notranslate"><span class="pre">joint_pmf</span></code>.</p>
+<p>The loop iterates through the parameters.  For each possible pair, it uses the logistic model to compute <code class="docutils literal notranslate"><span class="pre">ps</span></code>, computes the likelihood of the data, and assigns the result to a row in <code class="docutils literal notranslate"><span class="pre">likelihood</span></code>.</p>
 </div>
 <div class="section" id="the-update">
 <h2>The Update<a class="headerlink" href="#the-update" title="Permalink to this headline">¶</a></h2>
-<p>Now <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with the same index as <code class="docutils literal notranslate"><span class="pre">joint_pmf</span></code>, so we can compute the posterior distribution in the usual way.</p>
+<p>Now we can compute the posterior distribution in the usual way.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_pmf</span> <span class="o">=</span> <span class="n">joint_pmf</span> <span class="o">*</span> <span class="n">likelihood</span>
@@ -1235,7 +1296,7 @@ To initialize <code class="docutils literal notranslate"><span class="pre">likel
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>slope   -0.23
-inter   -1.10
+inter   -1.20
 dtype: float64
 </pre></div>
 </div>
@@ -1249,7 +1310,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept   -1.107550
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept   -1.208490
 x           -0.232163
 dtype: float64
 </pre></div>
@@ -1269,12 +1330,12 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_73_0.png" src="_images/chap16_73_0.png" />
+<img alt="_images/chap16_78_0.png" src="_images/chap16_78_0.png" />
 </div>
 </div>
 <p>The ovals in the contour plot are aligned along a diagonal, which indicates that there is some correlation between <code class="docutils literal notranslate"><span class="pre">slope</span></code> and <code class="docutils literal notranslate"><span class="pre">inter</span></code> in the posterior distribution.</p>
 <p>But the correlation is weak, which is one of the reasons we subtracted off the mean launch temperature when we computed <code class="docutils literal notranslate"><span class="pre">x</span></code>; centering the data minimizes the correlation between the parameters.</p>
-<p><strong>Exercise:</strong> To see why this matters, go back and set <code class="docutils literal notranslate"><span class="pre">offset=60</span></code> and run the analysis again.  You’ll have to adjust the prior distribution of <code class="docutils literal notranslate"><span class="pre">intercept</span></code>.</p>
+<p><strong>Exercise:</strong> To see why this matters, go back and set <code class="docutils literal notranslate"><span class="pre">offset=60</span></code> and run the analysis again.</p>
 <p>The slope should be the same, but the intercept will be different.  And if you plot the joint distribution, the contours you get will be elongated, indicating stronger correlation between the estimated parameters.</p>
 <p>In theory, this correlation is not a problem, but in practice it is.  With uncentered data, the posterior distribution is more spread out, so it’s harder to cover with the joint prior distribution.
 Centering the data maximizes the precision of the estimates; with uncentered data, we have to do more computation to get the same precision.</p>
@@ -1295,7 +1356,7 @@ Centering the data maximizes the precision of the estimates; with uncentered dat
 <p>Here’s the posterior distribution of <code class="docutils literal notranslate"><span class="pre">inter</span></code>.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_inter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_inter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;intercept&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Intercept&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
@@ -1304,13 +1365,13 @@ Centering the data maximizes the precision of the estimates; with uncentered dat
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_79_0.png" src="_images/chap16_79_0.png" />
+<img alt="_images/chap16_84_0.png" src="_images/chap16_84_0.png" />
 </div>
 </div>
 <p>And here’s the posterior distribution of <code class="docutils literal notranslate"><span class="pre">slope</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_slope</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_slope</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Slope&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
@@ -1319,26 +1380,26 @@ Centering the data maximizes the precision of the estimates; with uncentered dat
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_81_0.png" src="_images/chap16_81_0.png" />
+<img alt="_images/chap16_86_0.png" src="_images/chap16_86_0.png" />
 </div>
 </div>
 <p>Here are the posterior means.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">marginal_inter</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">marginal_slope</span><span class="o">.</span><span class="n">mean</span><span class="p">()],</span>
-          <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="s1">&#39;inter&#39;</span><span class="p">])</span>
+          <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;inter&#39;</span><span class="p">,</span> <span class="s1">&#39;slope&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>slope   -1.250178
-inter   -0.289804
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>inter   -1.376121
+slope   -0.289802
 dtype: float64
 </pre></div>
 </div>
 </div>
 </div>
-<p>Like the MAP, the posterior means are close to the parameters we estimated with StatsModels.</p>
+<p>Both marginal distributions are moderately skewed, so the posterior means are somewhat different from the point estimates.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="o">.</span><span class="n">params</span>
@@ -1346,14 +1407,13 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept   -1.107550
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept   -1.208490
 x           -0.232163
 dtype: float64
 </pre></div>
 </div>
 </div>
 </div>
-<p>Both marginal distributions are moderately skewed, so the posterior means are somewhat different from the most likely values.</p>
 </div>
 <div class="section" id="transforming-distributions">
 <h2>Transforming Distributions<a class="headerlink" href="#transforming-distributions" title="Permalink to this headline">¶</a></h2>
@@ -1399,11 +1459,11 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_95_0.png" src="_images/chap16_95_0.png" />
+<img alt="_images/chap16_99_0.png" src="_images/chap16_99_0.png" />
 </div>
 </div>
-<p>The mean of this distribution is about 24%, which is the probability of damage at 70 degrees F, according to the model.</p>
-<div class="cell docutils container">
+<p>The mean of this distribution is about 22%, which is the probability of damage at 70 degrees F, according to the model.</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean_prob</span> <span class="o">=</span> <span class="n">marginal_probs</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="n">mean_prob</span>
@@ -1411,7 +1471,7 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.24011003476381534
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.2201926882950713
 </pre></div>
 </div>
 </div>
@@ -1427,7 +1487,7 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </div>
 </div>
 <p>The result is the posterior distribution of likelihood ratios; here’s what it looks like.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_lr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">)</span>
 
@@ -1438,11 +1498,10 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_102_0.png" src="_images/chap16_102_0.png" />
+<img alt="_images/chap16_106_0.png" src="_images/chap16_106_0.png" />
 </div>
 </div>
-<p>The mean of this distribution is about 0.75:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean_lr</span> <span class="o">=</span> <span class="n">marginal_lr</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="n">mean_lr</span>
@@ -1450,12 +1509,12 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7542860354699876
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7542876583763742
 </pre></div>
 </div>
 </div>
 </div>
-<p>Which means that each additional degree Fahrenheit provides evidence against the possibility of damage, with a likelihood ratio (Bayes factor) of 0.75.</p>
+<p>The mean of this distribution is about 0.75, which means that each additional degree Fahrenheit provides evidence against the possibility of damage, with a likelihood ratio (Bayes factor) of 0.75.</p>
 <p>Notice:</p>
 <ul class="simple">
 <li><p>I computed the posterior mean of the probability of damage at 70 deg F by transforming the marginal distribution of the intercept to the marginal distribution of probability, and then computing the mean.</p></li>
@@ -1471,7 +1530,7 @@ Here’s the posterior mean of <code class="docutils literal notranslate"><span 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.2226693947269983, 0.24011003476381534)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.20163269259695302, 0.2201926882950713)
 </pre></div>
 </div>
 </div>
@@ -1484,7 +1543,7 @@ Here’s the posterior mean of <code class="docutils literal notranslate"><span 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.7484101215875322, 0.7542860354699876)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.74841208471986, 0.7542876583763742)
 </pre></div>
 </div>
 </div>
@@ -1499,7 +1558,14 @@ As a general rule, transform first, then compute summary statistics.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span> <span class="o">=</span> <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span>
-<span class="n">sample</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is an array of 101 tuples, each representing a possible pair of parameters.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 </div>
 </div>
@@ -1509,7 +1575,6 @@ As a general rule, transform first, then compute summary statistics.</p>
 </div>
 </div>
 </div>
-<p>The result is an array of 101 tuples, each representing a possible pair of parameters.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">dtype</span>
@@ -1566,7 +1631,7 @@ As a general rule, transform first, then compute summary statistics.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_124_0.png" src="_images/chap16_124_0.png" />
+<img alt="_images/chap16_128_0.png" src="_images/chap16_128_0.png" />
 </div>
 </div>
 <p>The overlapping lines in this figure give a sense of the most likely value at each temperature and the degree of uncertainty.</p>
@@ -1575,17 +1640,11 @@ As a general rule, transform first, then compute summary statistics.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">low</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">median</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(52,)
 </pre></div>
 </div>
 </div>
 </div>
-<p>The result is three arrays containing predicted probabilities for the lower bound of the 90% CI, the median, and the upper bound of the CI.</p>
+<p>The results are arrays containing predicted probabilities for the lower bound of the 90% CI, the median, and the upper bound of the CI.</p>
 <p>Here’s what they look like:</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
@@ -1597,7 +1656,7 @@ As a general rule, transform first, then compute summary statistics.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_129_0.png" src="_images/chap16_129_0.png" />
+<img alt="_images/chap16_133_0.png" src="_images/chap16_133_0.png" />
 </div>
 </div>
 <p>According to these results, the probability of damage to the O-rings at 80 degrees F is near 2%, but there is some uncertainty about that prediction; the upper bound of the CI is around 10%.</p>
@@ -1620,7 +1679,7 @@ As a general rule, transform first, then compute summary statistics.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.019671908443780417 (0.0008953578714056307, 0.10291775328251446)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.01984030573407751 (0.0009110511944006454, 0.10909682119561298)
 </pre></div>
 </div>
 </div>
@@ -1633,7 +1692,7 @@ As a general rule, transform first, then compute summary statistics.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7887473601277624 (0.4815301469778966, 0.9731769503769349)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7858349830425588 (0.4750208125210602, 0.973403006423134)
 </pre></div>
 </div>
 </div>
@@ -1646,7 +1705,7 @@ As a general rule, transform first, then compute summary statistics.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9998672561563445 (0.9755120800011362, 0.9999999881852023)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9998689761293231 (0.9746672967731284, 0.9999999872788518)
 </pre></div>
 </div>
 </div>
@@ -1926,7 +1985,7 @@ The notebook for this chapter provides the data and some suggestions for getting
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_154_0.png" src="_images/chap16_154_0.png" />
+<img alt="_images/chap16_158_0.png" src="_images/chap16_158_0.png" />
 </div>
 </div>
 <p>For the first 9 months, from September to May, we see what we would expect if some of the excess diagnoses are due to “age-based variation in behavior”.  For each month of difference in age, we see an increase in the number of diagnoses.</p>
@@ -2499,7 +2558,7 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_169_0.png" src="_images/chap16_169_0.png" />
+<img alt="_images/chap16_173_0.png" src="_images/chap16_173_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2531,7 +2590,7 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_171_0.png" src="_images/chap16_171_0.png" />
+<img alt="_images/chap16_175_0.png" src="_images/chap16_175_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2547,7 +2606,7 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_172_0.png" src="_images/chap16_172_0.png" />
+<img alt="_images/chap16_176_0.png" src="_images/chap16_176_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2581,9 +2640,9 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.00680006, 0.00706438, 0.00731563, 0.00758778, 0.00785749,
-       0.00813025, 0.00844584, 0.00877356, 0.00908504, 0.00937769,
-       0.0097181 , 0.01009469])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.00680006, 0.00708687, 0.0073389 , 0.00760587, 0.00786373,
+       0.00813025, 0.00842576, 0.00871117, 0.00899902, 0.0093332 ,
+       0.00967968, 0.00999129])
 </pre></div>
 </div>
 </div>
@@ -2603,7 +2662,7 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_175_0.png" src="_images/chap16_175_0.png" />
+<img alt="_images/chap16_179_0.png" src="_images/chap16_179_0.png" />
 </div>
 </div>
 </div>
