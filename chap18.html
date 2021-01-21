@@ -299,8 +299,8 @@
         <nav id="bd-toc-nav">
             <ul class="nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#poisson-processes">
-   Poisson processes
+  <a class="reference internal nav-link" href="#the-world-cup-problem">
+   The World Cup problem
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -351,39 +351,47 @@
                 
   <div class="section" id="conjugate-priors">
 <h1>Conjugate Priors<a class="headerlink" href="#conjugate-priors" title="Permalink to this headline">¶</a></h1>
-<p>Grid algorithms… three alternative:</p>
+<p>In the previous chapters we have used grid approximations to solve a variety of problems.
+One of my goals has been to show that this approach is sufficient to solve many real-world problems.
+And I think it’s a good place to start because it shows clearly how the methods work.</p>
+<p>However, as we saw in the previous chapter, grid methods will only get you so far.
+As we increase the number of parameters, the number of points in the grid grows (literally) exponentially.
+With more than 3-4 parameters, grid methods become impractical.</p>
+<p>So, in the remaining three chapters, I will present three alternatives:</p>
 <ol class="simple">
-<li><p>Conjugate priors</p></li>
-<li><p>ABC</p></li>
-<li><p>MCMC</p></li>
+<li><p>In this chapter we’ll use <strong>conjugate priors</strong> to speed up some of the computations we’ve already done.</p></li>
+<li><p>In the next chapter, I’ll present Monte Carlo Markov Chain (MCMC) methods, which can solve problems with tens of parameters, or even hundreds, in a reasonable amount of time.</p></li>
+<li><p>And in the last chapter we’ll use Approximate Bayesian Calculation (ABC) for problems that are hard to model with simple distributions.</p></li>
 </ol>
-<div class="section" id="poisson-processes">
-<h2>Poisson processes<a class="headerlink" href="#poisson-processes" title="Permalink to this headline">¶</a></h2>
+<p>We’ll start with the World Cup problem.</p>
+<div class="section" id="the-world-cup-problem">
+<h2>The World Cup problem<a class="headerlink" href="#the-world-cup-problem" title="Permalink to this headline">¶</a></h2>
 <p>In Chapter xxx, we solved the World Cup problem using a Poisson process to model goals in a soccer game as random events that are equally likely to occur at any point during a game.</p>
-<p>We used a gamma distribution to represent the prior distribution of <span class="math notranslate nohighlight">\(\lambda\)</span>, the goal-scoring rate.  And we used a Poisson distribution to compute the probability of the data, the observed number of goals in a game.</p>
-<p>Here’s the prior distribution again.</p>
+<p>We used a gamma distribution to represent the prior distribution of <span class="math notranslate nohighlight">\(\lambda\)</span>, the goal-scoring rate.  And we used a Poisson distribution to compute the probability of <span class="math notranslate nohighlight">\(k\)</span>, the number of goals scored.</p>
+<p>Here’s a gamma object that represents the prior distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gamma</span>
+
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.4</span>
+<span class="n">dist</span> <span class="o">=</span> <span class="n">gamma</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s a grid approximation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">pmf_from_dist</span>
 
-<span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.4</span>
 <span class="n">lams</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_pmf</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gamma</span>
-
-<span class="n">dist</span> <span class="o">=</span> <span class="n">gamma</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
-<span class="n">prior</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>And here’s the likelihood of scoring 4 goals for each possible value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p>
+<p>Here’s the likelihood of scoring 4 goals for each possible value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
@@ -394,7 +402,7 @@
 </div>
 </div>
 </div>
-<p>We did the update by multiplying the prior by the likelihood and normalizing the result.</p>
+<p>And here’s the update.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
@@ -408,42 +416,12 @@
 </div>
 </div>
 </div>
-<p>And here’s the result.</p>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
-
-<span class="k">def</span> <span class="nf">decorate_rate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Goal scoring rate (lam)&#39;</span><span class="p">,</span>
-             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
-             <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-input docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
-<span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
-
-<span class="n">decorate_rate</span><span class="p">(</span><span class="s1">&#39;Posterior distribution&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap18_15_0.png" src="_images/chap18_15_0.png" />
-</div>
-</div>
+<p>So far, this should be familiar.</p>
+<p>And here’s the posterior distribution of the goal-scoring rate.</p>
 </div>
 <div class="section" id="the-conjugate-prior">
 <h2>The conjugate prior<a class="headerlink" href="#the-conjugate-prior" title="Permalink to this headline">¶</a></h2>
-<p>At the time, I said that I chose the gamma distribution for three reasons:</p>
-<ol class="simple">
-<li><p>The goal scoring rate is continuous and cannot be less than 0, and the gamma distribution is appropriate for this kind of quantity.</p></li>
-<li><p>The gamma distribution has only one parameter, <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, which is the mean.  So it’s easy to construct a gamma distribution with the mean we want.</p></li>
-<li><p>The shape of the Gamma distribution is a reasonable choice, given what we know about soccer.</p></li>
-</ol>
-<p>And I said there was a fourth reason that I would reveal later.
+<p>In Chapter xxx, I presented three reasons to use a gamma distribution for the prior and said there was a fourth reason I would reveal later.
 Well, now is the time.</p>
 <p>The other reason I chose the gamma distribution is that it is the “conjugate prior” of the Poisson distribution, so-called because the two distributions are connected or coupled, which is what “conjugate” means.</p>
 <p>In the next section I’ll explain <em>how</em> they are connected, but first I’ll show you the consequence of this connection, which is that there is a remarkably simple way to compute the posterior distribution.</p>
@@ -452,13 +430,7 @@ Well, now is the time.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_gamma_dist</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Makes a gamma object.</span>
-<span class="sd">    </span>
-<span class="sd">    alpha: shape parameter</span>
-<span class="sd">    beta: scale parameter</span>
-<span class="sd">    </span>
-<span class="sd">    returns: gamma object</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Makes a gamma object.&quot;&quot;&quot;</span>
     <span class="n">dist</span> <span class="o">=</span> <span class="n">gamma</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span>
     <span class="n">dist</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
     <span class="n">dist</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span>
@@ -484,17 +456,11 @@ Well, now is the time.</p>
 </div>
 </div>
 </div>
-<p>Now to do a Bayesian update, I claim, all we have to do is make a gamma distribution with parameters <code class="docutils literal notranslate"><span class="pre">alpha+k</span></code> and <code class="docutils literal notranslate"><span class="pre">beta+1</span></code>.</p>
+<p>Now I claim without proof that we can do a Bayesian update with <code class="docutils literal notranslate"><span class="pre">k</span></code> goals just by making a gamma distribution with parameters <code class="docutils literal notranslate"><span class="pre">alpha+k</span></code> and <code class="docutils literal notranslate"><span class="pre">beta+1</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_gamma</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Update a gamma prior.</span>
-<span class="sd">    </span>
-<span class="sd">    prior: Pmf</span>
-<span class="sd">    data: tuple of (k goals, t games)</span>
-<span class="sd">    </span>
-<span class="sd">    returns: scipy.stats.dist</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Update a gamma prior.&quot;&quot;&quot;</span>
     <span class="n">k</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">data</span>
     <span class="n">alpha</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">alpha</span> <span class="o">+</span> <span class="n">k</span>
     <span class="n">beta</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">beta</span> <span class="o">+</span> <span class="n">t</span>
@@ -503,7 +469,7 @@ Well, now is the time.</p>
 </div>
 </div>
 </div>
-<p>Here’s how we update it with the data, which is 4 goals in 1 game.</p>
+<p>Here’s how we update it with <code class="docutils literal notranslate"><span class="pre">k=4</span></code> goals in <code class="docutils literal notranslate"><span class="pre">t=1</span></code> game.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span>
@@ -512,19 +478,30 @@ Well, now is the time.</p>
 </div>
 </div>
 </div>
-<p>After all the work we did in Chapter 7, it might seem absurd that we can do a Bayesian update by adding two pairs of numbers.
+<p>After all the work we did with the grid, it might seem absurd that we can do a Bayesian update by adding two pairs of numbers.
 So let’s confirm that it works.</p>
-<p>I’ll evaluate the posterior distribution for each quantity in <code class="docutils literal notranslate"><span class="pre">lams</span></code> and put the results in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> object.</p>
+<p>I’ll make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with a discrete approximation of the posterior distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_conjugate</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">posterior_gamma</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_conjugate</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">posterior_gamma</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>So <code class="docutils literal notranslate"><span class="pre">posterior_conjugate</span></code> contains a discrete approximation of the posterior distribution we just computed using the conjugate prior.
-The following figure shows the result along with the posterior we computed using the grid algorithm.</p>
-<div class="cell docutils container">
+<p>The following figure shows the result along with the posterior we computed using the grid algorithm.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
+
+<span class="k">def</span> <span class="nf">decorate_rate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Goal scoring rate (lam)&#39;</span><span class="p">,</span>
+             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+             <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;grid posterior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 <span class="n">posterior_conjugate</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;conjugate posterior&#39;</span><span class="p">,</span> 
@@ -535,11 +512,11 @@ The following figure shows the result along with the posterior we computed using
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_27_0.png" src="_images/chap18_27_0.png" />
+<img alt="_images/chap18_28_0.png" src="_images/chap18_28_0.png" />
 </div>
 </div>
 <p>They are the same other than small differences due to floating-point approximations.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">posterior_conjugate</span><span class="p">)</span>
 </pre></div>
@@ -558,17 +535,17 @@ The following figure shows the result along with the posterior we computed using
 We’ll see that the result is a gamma distribution, and we’ll derive its parameters.</p>
 <p>Here’s the PDF of the gamma prior, which is the probability density for each value of <span class="math notranslate nohighlight">\(\lambda\)</span>, given parameters <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[\lambda^{\alpha-1}e^{-\beta \lambda}\]</div>
+\[\lambda^{\alpha-1} e^{-\lambda \beta}\]</div>
 <p>I have omitted the normalizing factor; since we are planning to normalize the posterior distribution anyway, we don’t really need it.</p>
 <p>Now suppose a team scores <span class="math notranslate nohighlight">\(k\)</span> goals in <span class="math notranslate nohighlight">\(t\)</span> games.
-The probability of this data is given by PMF of the Poisson distribution, which is a function of <span class="math notranslate nohighlight">\(k\)</span> with <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(t\)</span> as a parameter.</p>
+The probability of this data is given by PMF of the Poisson distribution, which is a function of <span class="math notranslate nohighlight">\(k\)</span> with <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(t\)</span> as parameters.</p>
 <div class="math notranslate nohighlight">
 \[\lambda^k e^{-\lambda t}\]</div>
 <p>Again, I have omitted the normalizing factor, which makes it clearer that the gamma and Poisson distributions have the same functional form.
 When we multiply them together, we can pair up the factors and add up the exponents.
 The result is the unnormalized posterior distribution,</p>
 <div class="math notranslate nohighlight">
-\[\lambda^{\alpha-1+k} e^{-(\beta + t) \lambda}\]</div>
+\[\lambda^{\alpha-1+k} e^{-\lambda(\beta + t)}\]</div>
 <p>which we can recognize as an unnormalized gamma distribution with parameters <span class="math notranslate nohighlight">\(\alpha + k\)</span> and <span class="math notranslate nohighlight">\(\beta + t\)</span>.</p>
 <p>This derivation provides insight into what the parameters of the posterior distribution mean: <span class="math notranslate nohighlight">\(\alpha\)</span> reflects the number of events that have occurred; <span class="math notranslate nohighlight">\(\beta\)</span> reflects the elapsed time.</p>
 </div>
@@ -593,14 +570,13 @@ When we solved it with a grid algorithm, we started with a uniform prior:</p>
 
 <span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">250</span>
 <span class="n">xs</span> <span class="o">=</span> <span class="n">uniform</span><span class="o">.</span><span class="n">qs</span>
-
 <span class="n">likelihood</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <p>Then we computed the posterior distribution in the usual way.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">uniform</span> <span class="o">*</span> <span class="n">likelihood</span>
 <span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
@@ -623,13 +599,7 @@ The following function takes <code class="docutils literal notranslate"><span cl
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.stats</span>
 
 <span class="k">def</span> <span class="nf">make_beta</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Makes a beta object.</span>
-<span class="sd">    </span>
-<span class="sd">    alpha: shape parameter</span>
-<span class="sd">    beta: scale parameter</span>
-<span class="sd">    </span>
-<span class="sd">    returns: scipt.stats.beta object</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Makes a beta object.&quot;&quot;&quot;</span>
     <span class="n">dist</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
     <span class="n">dist</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
     <span class="n">dist</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span>
@@ -646,12 +616,6 @@ So we can make a <code class="docutils literal notranslate"><span class="pre">be
 <span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="n">prior_beta</span> <span class="o">=</span> <span class="n">make_beta</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
-<span class="n">prior_beta</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5
 </pre></div>
 </div>
 </div>
@@ -661,7 +625,7 @@ So we can make a <code class="docutils literal notranslate"><span class="pre">be
 <div class="math notranslate nohighlight">
 \[x^{\alpha-1} (1-x)^{\beta-1}\]</div>
 <p>Again, I have omitted the normalizing factor, which we don’t need because we are going to normalize the distribution after the update.</p>
-<p>The beta PDF might look familiar: the PMF of the binomial distribution has the same form, but we interpret it as a function of <span class="math notranslate nohighlight">\(k\)</span> with <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(x\)</span> as parameters.</p>
+<p>And here’s the PMF of the binomial distribution, which is a function of <span class="math notranslate nohighlight">\(k\)</span> with <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(x\)</span> as parameters.</p>
 <div class="math notranslate nohighlight">
 \[x^{k} (1-x)^{n-k}\]</div>
 <p>Again, I have omitted the normalizing factor.
@@ -669,17 +633,12 @@ Now when we multiply the beta prior and the binomial likelihood, the result is</
 <div class="math notranslate nohighlight">
 \[x^{\alpha-1+k} (1-x)^{\beta-1+n-k}\]</div>
 <p>which we recognize as an unnormalized beta distribution with parameters <span class="math notranslate nohighlight">\(\alpha+k\)</span> and <span class="math notranslate nohighlight">\(\beta+n-k\)</span>.</p>
-<p>So, to update the beta prior, all we have to do is make a beta distribution with parameters <code class="docutils literal notranslate"><span class="pre">alpha+k</span></code> and <code class="docutils literal notranslate"><span class="pre">beta+n-k</span></code>, as in the following function.</p>
+<p>So if we observe <code class="docutils literal notranslate"><span class="pre">k</span></code> successes in <code class="docutils literal notranslate"><span class="pre">n</span></code> trials, we can do the update by making a beta distribution with parameters <code class="docutils literal notranslate"><span class="pre">alpha+k</span></code> and <code class="docutils literal notranslate"><span class="pre">beta+n-k</span></code>.
+That’s what this function does:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_beta</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Update a beta distribution.</span>
-<span class="sd">    </span>
-<span class="sd">    prior: SciPy beta object</span>
-<span class="sd">    data: number of successes and number of trials (k, n)</span>
-<span class="sd">    </span>
-<span class="sd">    returns: SciPy beta object</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Update a beta distribution.&quot;&quot;&quot;</span>
     <span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">data</span>
     <span class="n">alpha</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">alpha</span> <span class="o">+</span> <span class="n">k</span>
     <span class="n">beta</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">beta</span> <span class="o">+</span> <span class="n">n</span> <span class="o">-</span> <span class="n">k</span>
@@ -694,12 +653,6 @@ Now when we multiply the beta prior and the binomial likelihood, the result is</
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">250</span>
 <span class="n">posterior_beta</span> <span class="o">=</span> <span class="n">update_beta</span><span class="p">(</span><span class="n">prior_beta</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-<span class="n">posterior_beta</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5595238095238095
 </pre></div>
 </div>
 </div>
@@ -707,7 +660,7 @@ Now when we multiply the beta prior and the binomial likelihood, the result is</
 <p>To confirm that it works, I’ll evaluate the posterior distribution for the possible values of <code class="docutils literal notranslate"><span class="pre">xs</span></code> and put the results in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_conjugate</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">posterior_beta</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_conjugate</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">posterior_beta</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -734,11 +687,12 @@ Now when we multiply the beta prior and the binomial likelihood, the result is</
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_49_0.png" src="_images/chap18_49_0.png" />
+<img alt="_images/chap18_50_0.png" src="_images/chap18_50_0.png" />
 </div>
 </div>
 <p>They are the same other than small differences due to floating-point approximations.</p>
-<div class="cell docutils container">
+<p>The examples so far are problems we have already solved, so let’s try something new.</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">posterior_conjugate</span><span class="p">)</span>
 </pre></div>
@@ -753,18 +707,18 @@ Now when we multiply the beta prior and the binomial likelihood, the result is</
 </div>
 <div class="section" id="lions-and-tigers-and-bears">
 <h2>Lions and tigers and bears<a class="headerlink" href="#lions-and-tigers-and-bears" title="Permalink to this headline">¶</a></h2>
-<p>Suppose we visit a wild animal preserve where we know that the only animals are lions and tigers and bears, but we don’t know how many of each there are.</p>
-<p>During the tour, we see 3 lions, 2 tigers, and one bear. Assuming that every animal had an equal chance to appear in our sample, what is the probability that the next animal we see is a bear?</p>
-<p>To answer this question, we’ll use the data to estimate the prevalence of each species, that is, what fraction of the animals belong to each species.</p>
-<p>If we know the prevalences, we can use the multinomial distribution to compute the probability of the data.
+<p>Suppose we visit a wild animal preserve where we know that the only animals are lions and tigers and bears, but we don’t know how many of each there are.
+During the tour, we see 3 lions, 2 tigers, and one bear. Assuming that every animal had an equal chance to appear in our sample, what is the probability that the next animal we see is a bear?</p>
+<p>To answer this question, we’ll use the data to estimate the prevalence of each species, that is, what fraction of the animals belong to each species.
+If we know the prevalences, we can use the multinomial distribution to compute the probability of the data.
 For example, suppose we know that the fraction of lions, tigers, and bears is 0.4, 0.3, and 0.3, respectively.</p>
 <p>In that case the probability of the data is:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">multinomial</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="n">ps</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span>
 
 <span class="n">multinomial</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">ps</span><span class="p">)</span>
@@ -791,7 +745,7 @@ Here’s an instance with <span class="math notranslate nohighlight">\(\pmb{\alp
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">dirichlet</span>
 
-<span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
 <span class="n">dist</span> <span class="o">=</span> <span class="n">dirichlet</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -806,31 +760,36 @@ If we draw a random value from this distribution, like this:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.08414555, 0.11993024, 0.79592421]])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.46414019, 0.16853117, 0.36732863]])
 </pre></div>
 </div>
 </div>
 </div>
-<p>The result is an array of three values.</p>
-<p>The values are bounded between 0 and 1, so they can be interpreted as probabilities.
-Even better, they always add up to 1, so they can be interpreted as the probabilities of a set of outcomes that are mutually exclusive and collectively exhaustive.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9999999999999999
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0
 </pre></div>
 </div>
 </div>
 </div>
+<p>The result is an array of three values.
+They are bounded between 0 and 1, and they always add up to 1, so they can be interpreted as the probabilities of a set of outcomes that are mutually exclusive and collectively exhaustive.</p>
 <p>Let’s see what the distributions of these values look like.  I’ll draw 1000 random vectors from this distribution, like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
-<span class="n">sample</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 </div>
 </div>
@@ -845,13 +804,14 @@ Even better, they always add up to 1, so they can be interpreted as the probabil
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
 
-<span class="n">cdfs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">sample</span><span class="o">.</span><span class="n">transpose</span><span class="p">()]</span>
+<span class="n">cdfs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> 
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">sample</span><span class="o">.</span><span class="n">transpose</span><span class="p">()]</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>These are the marginal distributions of the three variables.  Here’s what they look like.</p>
-<div class="cell docutils container">
+<p>The result is a list of <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> objects that represent the marginal distributions of the three variables.  Here’s what they look like.</p>
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cdf</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cdfs</span><span class="p">):</span>
     <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Column </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -862,77 +822,44 @@ Even better, they always add up to 1, so they can be interpreted as the probabil
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_66_0.png" src="_images/chap18_66_0.png" />
+<img alt="_images/chap18_67_0.png" src="_images/chap18_67_0.png" />
 </div>
 </div>
 <p>Column 0, which corresponds to the lowest parameter, contains the lowest probabilities.
 Column 2, which corresponds to the highest parameter, contains the highest probabilities.</p>
-<p>We can compute the means of the marginal distributions like this:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">/</span> <span class="n">alpha</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.16666667, 0.33333333, 0.5       ])
-</pre></div>
-</div>
-</div>
-</div>
-<p>And the <code class="docutils literal notranslate"><span class="pre">dist</span></code> object can do it for us.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dist</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.16666667, 0.33333333, 0.5       ])
-</pre></div>
-</div>
-</div>
-</div>
-<p>Let’s compare those to the means of the samples.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.15800098, 0.33553451, 0.50646451])
-</pre></div>
-</div>
-</div>
-</div>
-<p>That’s pretty close.</p>
 <p>As it turns out, these marginal distributions are beta distributions.
-The following function takes the vector of parameters, <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, and computes the marginal distribution of variable <code class="docutils literal notranslate"><span class="pre">i</span></code>:</p>
+The following function takes a sequence of parameters, <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, and computes the marginal distribution of variable <code class="docutils literal notranslate"><span class="pre">i</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">marginal_beta</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the ith marginal of a Dirichlet distribution.</span>
-<span class="sd">    </span>
-<span class="sd">    alpha: vector parameter of the distribution</span>
-<span class="sd">    i: index of the marginal</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">total</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Compute the ith marginal of a Dirichlet distribution.&quot;&quot;&quot;</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">make_beta</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">total</span><span class="o">-</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>The following plot uses this function to plot the marginal beta distributions and compares them to the distributions of the columns in the sample.</p>
+<p>We can use it to compute the marginal distribution for the three variables.</p>
 <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginals</span> <span class="o">=</span> <span class="p">[</span><span class="n">marginal_beta</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alpha</span><span class="p">))]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following plot shows the CDF of these distributions as gray lines and compares them to the CDFs of the samples.</p>
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cdf</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cdfs</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alpha</span><span class="p">)):</span>
     <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Column </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
     
-    <span class="n">marginal</span> <span class="o">=</span> <span class="n">marginal_beta</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-    <span class="n">make_pmf</span><span class="p">(</span><span class="n">marginal</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">marginals</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">xs</span><span class="p">)</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;_nolegend&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+    
+    <span class="n">cdf</span> <span class="o">=</span> <span class="n">cdfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
     <span class="n">cdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">()</span>
@@ -940,26 +867,27 @@ The following function takes the vector of parameters, <code class="docutils lit
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_76_0.png" src="_images/chap18_76_0.png" />
+<img alt="_images/chap18_73_0.png" src="_images/chap18_73_0.png" />
 </div>
 </div>
-<p>So that checks out.</p>
-<p>This time I will not derive the relationship between the Dirichlet prior and the multinomial likelihood function, but I will tell you how to use this relationship to do a Bayesian update.</p>
+<p>This confirms that the marginals of the Dirichelet distribution are beta distributions.</p>
+<p>And that’s useful because the Dirichlet distribution is the conjugate prior for the multinomial likelihood function.</p>
 <p>If the prior distribution is Dirichlet with parameter vector <code class="docutils literal notranslate"><span class="pre">alpha</span></code> and the data is a vector of observations, <code class="docutils literal notranslate"><span class="pre">data</span></code>, the posterior distribution is Dirichlet with parameter vector <code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">+</span> <span class="pre">data</span></code>.</p>
 <p>As an exercise at the end of this chapter, you can use this method to solve the Lions and Tigers and Bears problem.</p>
 </div>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
-<p>After reading this chapter, if you feel like you’ve been tricked, I understand.  It turns out that many of the problems in this book can be solved, using conjugate priors, with just a few arithmetic operations.  So why did we go to all the trouble of using grid algorithms?</p>
+<p>After reading this chapter, if you feel like you’ve been tricked, I understand.  It turns out that many of the problems in this book can be solved with just a few arithmetic operations.  So why did we go to all the trouble of using grid algorithms?</p>
 <p>Sadly, there are only a few problems we can solve with conjugate priors; in fact, this chapter includes most of the ones that are useful in practice.</p>
-<p>For most problems, there is no conjugate prior and no shortcut to compute the posterior distribution.  That’s why we need grid algorithms and the methods in the next two chapters, approximate Bayesian computation (ABC) and Markov chain Monte Carlo methods (MCMC).</p>
+<p>For the vast majority of problems, there is no conjugate prior and no shortcut to compute the posterior distribution.
+That’s why we need grid algorithms and the methods in the next two chapters, Approximate Bayesian Computation (ABC) and Markov chain Monte Carlo methods (MCMC).</p>
 </div>
 <div class="section" id="exercises">
 <h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
 <p><strong>Exercise:</strong> In the second version of the World Cup problem, the data we use for the update is not the number of goals in a game, but the time until the first goal.
 So the probability of the data is given by the exponential distribution rather than the Poisson distribution.</p>
-<p>But it turns out that the gamma distribution is <em>also</em> the conjugate prior of the exponential distribution, so there is a simple closed-form way to compute this update, too.</p>
-<p>The PDF of the exponential distribution is a function of <span class="math notranslate nohighlight">\(t\)</span> with <span class="math notranslate nohighlight">\(\lambda\)</span> as a parameter.</p>
+<p>But it turns out that the gamma distribution is <em>also</em> the conjugate prior of the exponential distribution, so there is a simple way to compute this update, too.
+The PDF of the exponential distribution is a function of <span class="math notranslate nohighlight">\(t\)</span> with <span class="math notranslate nohighlight">\(\lambda\)</span> as a parameter.</p>
 <div class="math notranslate nohighlight">
 \[\lambda e^{-\lambda t}\]</div>
 <p>Multiply the PDF of the gamma prior by this likelihood, confirm that the result is an unnormalized gamma distribution, and see if you can derive its parameters.</p>
@@ -1017,23 +945,27 @@ So the probability of the data is given by the exponential distribution rather t
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># And here&#39;s what the posteriors look like</span>
 
-<span class="n">make_pmf</span><span class="p">(</span><span class="n">prior_gamma</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">)</span>
-<span class="n">make_pmf</span><span class="p">(</span><span class="n">posterior1</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;after 1 goal&#39;</span><span class="p">)</span>
-<span class="n">make_pmf</span><span class="p">(</span><span class="n">posterior2</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;after 2 goals&#39;</span><span class="p">)</span>
+<span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">prior_gamma</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">)</span>
+<span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">posterior1</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;after 1 goal&#39;</span><span class="p">)</span>
+<span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">posterior2</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;after 2 goals&#39;</span><span class="p">)</span>
 
 <span class="n">decorate_rate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;World Cup Problem, Germany v Brazil&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_83_0.png" src="_images/chap18_83_0.png" />
+<img alt="_images/chap18_81_0.png" src="_images/chap18_81_0.png" />
 </div>
 </div>
 <p><strong>Exercise:</strong> For problems like the Euro problem where the likelihood function is binomial, we can do a Bayesian update with just a few arithmetic operations, but only if the prior is a beta distribution.</p>
-<p>As we saw, the uniform distribution is a beta distribution with particular parameters, but what can we do if the prior distribution we want is not a beta distribution?  For example, in Chapter xxx we also solved the Euro problem with a triangle prior, and a beta distribution cannot be a triangle.</p>
-<p>Even so, we can often find a beta distribution that is a good-enough approximation for the prior we want.</p>
+<p>If we want a uniform prior, we can use a beta distribution with <code class="docutils literal notranslate"><span class="pre">alpha=1</span></code> and <code class="docutils literal notranslate"><span class="pre">beta=1</span></code>.
+But what can we do if the prior distribution we want is not a beta distribution?
+For example, in Chapter xxx we also solved the Euro problem with a triangle prior, which is not a beta distribution.</p>
+<p>In these cases, we can often find a beta distribution that is a good-enough approximation for the prior we want.
+See if you can find a beta distribution that fits the triangle prior, then update it using <code class="docutils literal notranslate"><span class="pre">update_beta</span></code>.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">pmf_from_dist</span></code> to make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that approximates the posterior distribution and compare it to the posterior we just computed using a grid algorithm.  How big is the largest difference between them?</p>
 <p>Here’s the triangle prior again.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
 
@@ -1055,7 +987,7 @@ So the probability of the data is given by the exponential distribution rather t
 </div>
 </div>
 <p>And here’s the update.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">250</span>
 <span class="n">likelihood</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
@@ -1071,10 +1003,8 @@ So the probability of the data is given by the exponential distribution rather t
 </div>
 </div>
 </div>
-<p>See if you can find a beta distribution that fits the triangle prior, then update it using <code class="docutils literal notranslate"><span class="pre">update_beta</span></code>.</p>
-<p>Use <code class="docutils literal notranslate"><span class="pre">make_pmf</span></code> to make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that approximates the posterior distribution and compare it to the posterior we just computed using a grid algorithm.  How big is the largest difference between them?</p>
 <p>To get you started, here’s the beta distribution that we used as a uniform prior.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1091,9 +1021,9 @@ So the probability of the data is given by the exponential distribution rather t
 </div>
 </div>
 <p>And here’s what it looks like compared to the triangle prior.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_pmf</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">prior_beta</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">prior_beta</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
 
 <span class="n">triangle</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;triangle&#39;</span><span class="p">)</span>
 <span class="n">prior_pmf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;beta&#39;</span><span class="p">)</span>
@@ -1103,9 +1033,10 @@ So the probability of the data is given by the exponential distribution rather t
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_91_0.png" src="_images/chap18_91_0.png" />
+<img alt="_images/chap18_90_0.png" src="_images/chap18_90_0.png" />
 </div>
 </div>
+<p>Now you take it from there.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1126,7 +1057,7 @@ So the probability of the data is given by the exponential distribution rather t
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="n">posterior_conjugate</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">posterior_beta</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+<span class="n">posterior_conjugate</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">posterior_beta</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1154,18 +1085,18 @@ So the probability of the data is given by the exponential distribution rather t
 
 <span class="c1"># The largest absolute difference is pretty small</span>
 
-<span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">posterior</span> <span class="o">-</span> <span class="n">posterior_conjugate</span><span class="p">))</span>
+<span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">posterior_conjugate</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.005562825429413609
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>False
 </pre></div>
 </div>
 </div>
 </div>
-<p><strong>Exercise:</strong>  <a class="reference external" href="https://en.wikipedia.org/wiki/3Blue1Brown">3Blue1Brown</a> is a YouTube channel about math; if you are not already aware of it, I recommend it highly.</p>
-<p>In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A7Q">this video</a> the narrator presents this problem:</p>
+<p><strong>Exercise:</strong>  <a class="reference external" href="https://en.wikipedia.org/wiki/3Blue1Brown">3Blue1Brown</a> is a YouTube channel about math; if you are not already aware of it, I recommend it highly.
+In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A7Q">this video</a> the narrator presents this problem:</p>
 <blockquote>
 <div><p>You are buying a product online and you see three sellers offering the same product at the same price.  One of them has a 100% positive rating, but with only 10 reviews.  Another has a 96% positive rating with 50 total reviews.  And yet another has a 93% positive rating, but with 200 total reviews.</p>
 <p>Which one should you buy from?</p>
@@ -1173,13 +1104,25 @@ So the probability of the data is given by the exponential distribution rather t
 <p>Let’s think about how to model this scenario.  Suppose each seller has some unknown probability, <code class="docutils literal notranslate"><span class="pre">x</span></code>, of providing satisfactory service and getting a positive rating, and we want to choose the seller with the highest value of <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <p>This is not the only model for this scenario, and it is not necessarily the best.  An alternative would be something like item response theory, where sellers have varying ability to provide satisfactory service and customers have varying difficulty of being satisfied.</p>
 <p>But the first model has the virtue of simplicity, so let’s see where it gets us.</p>
-<p>As a prior, I suggest we use a beta distribution with <code class="docutils literal notranslate"><span class="pre">alpha=8</span></code> and <code class="docutils literal notranslate"><span class="pre">beta=2</span></code>.  Here’s what it looks like:</p>
-<div class="cell docutils container">
+<ol class="simple">
+<li><p>As a prior, I suggest a beta distribution with <code class="docutils literal notranslate"><span class="pre">alpha=8</span></code> and <code class="docutils literal notranslate"><span class="pre">beta=2</span></code>.  What does this prior look like and what does it imply about sellers?</p></li>
+<li><p>Use the data to update the prior for the three sellers and plot the posterior distributions.  Which seller has the highest posterior mean?</p></li>
+<li><p>How confident should we be about our choice?  That is, what is the probability that the seller with the highest posterior mean actually has the highest value of <code class="docutils literal notranslate"><span class="pre">x</span></code>?</p></li>
+<li><p>Consider a beta prior with <code class="docutils literal notranslate"><span class="pre">alpha=0.7</span></code> and <code class="docutils literal notranslate"><span class="pre">beta=0.5</span></code>.  What does this prior look like and what does it imply about sellers?</p></li>
+<li><p>Run the analysis again with the this prior and see what effect it has on the results.</p></li>
+</ol>
+<p>Note: When you evaluate the beta distribution, you should restrict the range of <code class="docutils literal notranslate"><span class="pre">xs</span></code> so it does not include 0 and 1.  When the parameters of the beta distribution are less than 1, the probability density goes to infinity at 0 and 1.  From a mathematical point of view, that’s not a problem; it is still a proper probability distribution.  But from a computational point of view, it means we have to avoid evaluating the PDF at 0 and 1.</p>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">make_beta</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="c1"># The first prior implies that most sellers are </span>
+<span class="c1"># satisfactory most of the time, but none are perfect.</span>
+
+<span class="n">prior</span> <span class="o">=</span> <span class="n">make_beta</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
 <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.005</span><span class="p">,</span> <span class="mf">0.995</span><span class="p">,</span> <span class="mi">199</span><span class="p">)</span>
-<span class="n">prior_pmf</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+<span class="n">prior_pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
 <span class="n">prior_pmf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Probability of positive rating&#39;</span><span class="p">,</span>
@@ -1188,17 +1131,9 @@ So the probability of the data is given by the exponential distribution rather t
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_97_0.png" src="_images/chap18_97_0.png" />
+<img alt="_images/chap18_98_0.png" src="_images/chap18_98_0.png" />
 </div>
 </div>
-<p>This prior implies that most sellers are satisfactory most of the time, but none are perfect.</p>
-<ol class="simple">
-<li><p>Use the data to update this prior for the three sellers and plot the posterior distributions.  Which seller has the highest posterior mean?</p></li>
-<li><p>How confident should we be about our choice?  That is, what is the probability that the seller with the highest posterior mean actually has the highest value of <code class="docutils literal notranslate"><span class="pre">x</span></code>?</p></li>
-<li><p>Consider an alternative prior with <code class="docutils literal notranslate"><span class="pre">alpha=0.7</span></code> and <code class="docutils literal notranslate"><span class="pre">beta=0.5</span></code>.  What does this prior look like and what does it imply about sellers?</p></li>
-<li><p>Run the analysis again with the alternative prior and see what effect it has on the results.</p></li>
-</ol>
-<p>You might notice that I restricted the range of <code class="docutils literal notranslate"><span class="pre">xs</span></code> so it does not include 0 and 1.  I did that because when the parameters of the beta distribution are less than 1, the probability density goes to infinity at 0 and 1.  From a mathematical point of view, that’s not a problem; it is still a proper probability distribution.  But from a computational point of view, it means we have to avoid evaluating the PDF at 0 and 1.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1225,9 +1160,9 @@ So the probability of the data is given by the exponential distribution rather t
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="n">seller1_pmf</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">seller1</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
-<span class="n">seller2_pmf</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">seller2</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
-<span class="n">seller3_pmf</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">seller3</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+<span class="n">seller1_pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">seller1</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+<span class="n">seller2_pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">seller2</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+<span class="n">seller3_pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">seller3</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1247,7 +1182,7 @@ So the probability of the data is given by the exponential distribution rather t
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_103_0.png" src="_images/chap18_103_0.png" />
+<img alt="_images/chap18_102_0.png" src="_images/chap18_102_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1282,6 +1217,8 @@ So the probability of the data is given by the exponential distribution rather t
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
+<span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+
 <span class="n">best</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">best</span><span class="p">)</span>
 </pre></div>
@@ -1312,15 +1249,15 @@ So the probability of the data is given by the exponential distribution rather t
   <tbody>
     <tr>
       <th>0</th>
-      <td>0.2900</td>
+      <td>0.2834</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>0.4763</td>
+      <td>0.4828</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.2337</td>
+      <td>0.2338</td>
     </tr>
   </tbody>
 </table>
@@ -1347,6 +1284,21 @@ So the probability of the data is given by the exponential distribution rather t
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
 <span class="n">posterior_alpha</span> <span class="o">=</span> <span class="n">prior_alpha</span> <span class="o">+</span> <span class="n">data</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">marginal_bear</span> <span class="o">=</span> <span class="n">marginal_beta</span><span class="p">(</span><span class="n">posterior_alpha</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">marginal_bear</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.2222222222222222
 </pre></div>
 </div>
 </div>
