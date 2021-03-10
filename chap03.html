@@ -309,8 +309,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-cookie-problem">
-   The cookie problem
+  <a class="reference internal nav-link" href="#the-cookie-problem-revisited">
+   The Cookie Problem Revisited
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -619,9 +619,9 @@ But if it is not in the distribution, the result is <code class="docutils litera
 If you are familiar with Pandas, that will help you work with <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects.
 But I will explain what you need to know as we go along.</p>
 </div>
-<div class="section" id="the-cookie-problem">
-<h2>The cookie problem<a class="headerlink" href="#the-cookie-problem" title="Permalink to this headline">¶</a></h2>
-<p>In this section I’ll use a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> to solve the cookie problem from Section XX.
+<div class="section" id="the-cookie-problem-revisited">
+<h2>The Cookie Problem Revisited<a class="headerlink" href="#the-cookie-problem-revisited" title="Permalink to this headline">¶</a></h2>
+<p>In this section I’ll use a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> to solve the cookie problem from &lt;&lt;_TheCookieProblem&gt;&gt;.
 Here’s the statement of the problem again:</p>
 <blockquote>
 <div><p>Suppose there are two bowls of cookies.</p>
@@ -914,8 +914,7 @@ After two vanilla cookies and one chocolate, the posterior probabilities are clo
 <p>To solve this problem, I’ll use <code class="docutils literal notranslate"><span class="pre">np.arange</span></code> to make an array that represents 101 hypotheses, numbered from 0 to 100.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#id bowls101</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span>
 </pre></div>
@@ -923,7 +922,7 @@ After two vanilla cookies and one chocolate, the posterior probabilities are clo
 </div>
 </div>
 <p>We can use this array to make the prior distribution:</p>
-<div class="cell tag_hide-output docutils container">
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
 <span class="n">prior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
@@ -940,27 +939,113 @@ After two vanilla cookies and one chocolate, the posterior probabilities are clo
 The first parameter is the prior probability; the second parameter is a sequence of quantities.</p>
 <p>In this example, the probabilities are all the same, so we only have to provide one of them; it gets “broadcast” across the hypotheses.
 Since all hypotheses have the same prior probability, this distribution is <strong>uniform</strong>.</p>
+<p>Here are the first few hypotheses and their probabilities.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.009901</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.009901</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.009901</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
 <p>The likelihood of the data is the fraction of vanilla cookies in each bowl, which we can calculate using <code class="docutils literal notranslate"><span class="pre">hypos</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood_vanilla</span> <span class="o">=</span> <span class="n">hypos</span><span class="o">/</span><span class="mi">100</span>
+<span class="n">likelihood_vanilla</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.  , 0.01, 0.02, 0.03, 0.04])
 </pre></div>
 </div>
 </div>
 </div>
 <p>Now we can compute the posterior distribution in the usual way:</p>
-<div class="cell tag_hide-output docutils container">
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior1</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood_vanilla</span>
 <span class="n">posterior1</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="n">posterior1</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5000000000000001
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.000198</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.000396</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <p>The following figure shows the prior distribution and the posterior distribution after one vanilla cookie.</p>
 <div class="cell tag_hide-cell docutils container">
@@ -984,7 +1069,7 @@ Since all hypotheses have the same prior probability, this distribution is <stro
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_55_0.png" src="_images/chap03_55_0.png" />
+<img alt="_images/chap03_57_0.png" src="_images/chap03_57_0.png" />
 </div>
 </div>
 <p>The posterior probability of Bowl 0 is 0 because it contains no vanilla cookies.
@@ -1014,13 +1099,13 @@ Here’s the update after the second cookie:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_59_0.png" src="_images/chap03_59_0.png" />
+<img alt="_images/chap03_61_0.png" src="_images/chap03_61_0.png" />
 </div>
 </div>
 <p>After two vanilla cookies, the high-numbered bowls have the highest posterior probabilities because they contain the most vanilla cookies; the low-numbered bowls have the lowest probabilities.</p>
 <p>But suppose we draw again and get a chocolate cookie.
 Here’s the update:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood_chocolate</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">hypos</span><span class="o">/</span><span class="mi">100</span>
 
@@ -1044,7 +1129,7 @@ Here’s the update:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap03_63_0.png" src="_images/chap03_63_0.png" />
+<img alt="_images/chap03_65_0.png" src="_images/chap03_65_0.png" />
 </div>
 </div>
 <p>Now Bowl 100 has been eliminated because it contains no chocolate cookies.
@@ -1150,8 +1235,8 @@ I’ll use integers to represent the hypotheses:</p>
 </table>
 </div></div></div>
 </div>
-<p>As in the previous example, the prior probability gets broadcast across the hypotheses.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> object has two attributes:</p>
+<p>As in the previous example, the prior probability gets broadcast across the hypotheses.
+The <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> object has two attributes:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">qs</span></code> contains the quantities in the distribution;</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ps</span></code> contains the corresponding probabilities.</p></li>
@@ -1331,9 +1416,48 @@ I start with a fresh copy of the prior distribution:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">pmf</span>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>6</th>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>0.333333</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <p>And use <code class="docutils literal notranslate"><span class="pre">update_dice</span></code> to do the updates.</p>
 <div class="cell docutils container">
@@ -1383,14 +1507,14 @@ I start with a fresh copy of the prior distribution:</p>
 </table>
 </div></div></div>
 </div>
-<p>The result is the same.</p>
+<p>The result is the same.  We will see a version of this function in the next chapter.</p>
 </div>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>This chapter introduces the <code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code> module, which provides <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, which we use to represent a set of hypotheses and their probabilities.</p>
 <p><code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code> is based on Pandas; the <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> class inherits from the Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code> class and provides additional features specific to probability mass functions.
 We’ll use <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> and other classes from <code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code> throughout the book because they simplify the code and make it more readable.
-But it would be easy to do the same things directly with Pandas.</p>
+But we could do the same things directly with Pandas.</p>
 <p>We use a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> to solve the cookie problem and the dice problem, which we saw in the previous chapter.
 With a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> it is easy to perform sequential updates with multiple pieces of data.</p>
 <p>We also solved a more general version of the cookie problem, with 101 bowls rather than two.
@@ -1458,7 +1582,7 @@ What is the probability that I chose the 8-sided die?</p>
 </div>
 <p><strong>Exercise:</strong> In the previous version of the dice problem, the prior probabilities are the same because the box contains one of each die.
 But suppose the box contains 1 die that is 4-sided, 2 dice that are 6-sided, 3 dice that are 8-sided, 4 dice that are 12-sided, and 5 dice that are 20-sided.
-I choose a die, roll it, and get a 7.<br />
+I choose a die, roll it, and get a 7.
 What is the probability that I chose an 8-sided die?</p>
 <p>Hint: To make the prior distribution, call <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with two parameters.</p>
 <div class="cell tag_hide-cell docutils container">
@@ -1524,8 +1648,8 @@ What is the probability that I chose an 8-sided die?</p>
 </table>
 </div></div></div>
 </div>
-<p><strong>Exercise:</strong> Suppose I have two sock drawers.<br />
-One contains equal numbers of black and white socks.<br />
+<p><strong>Exercise:</strong> Suppose I have two sock drawers.
+One contains equal numbers of black and white socks.
 The other contains equal numbers of red, green, and blue socks.
 Suppose I choose a drawer at random, choose two socks at random, and I tell you that I got a matching pair.
 What is the probability that the socks are white?</p>

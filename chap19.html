@@ -314,8 +314,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#introducing-pymc">
-   Introducing PyMC
+  <a class="reference internal nav-link" href="#introducing-pymc3">
+   Introducing PyMC3
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -388,7 +388,7 @@ Yes, again.</p>
 <p>We used a gamma distribution to represent the prior distribution of <span class="math notranslate nohighlight">\(\lambda\)</span>, then we used to outcome of the game to compute the posterior distribution for both teams.</p>
 <p>To answer the first question, we used the posterior distributions to compute the “probability of superiority” for France.</p>
 <p>To answer the second question, we computed the posterior predictive distributions for each team, that is, the distribution of goals we expect in a rematch.</p>
-<p>In this chapter we’ll solve this problem again using PyMC, which is a library that provides several MCMC methods.
+<p>In this chapter we’ll solve this problem again using PyMC3, which is a library that provides several MCMC methods.
 But we’ll start by reviewing the grid approximation of the prior and the prior predictive distribution.</p>
 </div>
 <div class="section" id="grid-approximation">
@@ -441,7 +441,7 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 </div>
 </div>
 </div>
-<p>Soon we will solve the same problem with PyMC, but first it will be useful to introduce something new: the prior predictive distribution.</p>
+<p>Soon we will solve the same problem with PyMC3, but first it will be useful to introduce something new: the prior predictive distribution.</p>
 </div>
 <div class="section" id="prior-predictive-distribution">
 <h2>Prior Predictive Distribution<a class="headerlink" href="#prior-predictive-distribution" title="Permalink to this headline">¶</a></h2>
@@ -496,16 +496,16 @@ To see what it looks like, we’ll compute the PMF of the sample.</p>
 In this case, the distribution of goals seems consistent with what we know about World Cup football.</p>
 <p>But in this chapter we have another reason: computing the prior predictive distribution is a first step toward using MCMC.</p>
 </div>
-<div class="section" id="introducing-pymc">
-<h2>Introducing PyMC<a class="headerlink" href="#introducing-pymc" title="Permalink to this headline">¶</a></h2>
-<p>PyMC is a Python library that provides several MCMC methods.
-To use PyMC, we have to specify a model of the process that generates the data.
+<div class="section" id="introducing-pymc3">
+<h2>Introducing PyMC3<a class="headerlink" href="#introducing-pymc3" title="Permalink to this headline">¶</a></h2>
+<p>PyMC3 is a Python library that provides several MCMC methods.
+To use PyMC3, we have to specify a model of the process that generates the data.
 In this example, the model has two steps:</p>
 <ul class="simple">
 <li><p>First we draw a goal-scoring rate from the prior distribution,</p></li>
 <li><p>Then we draw a number of goals from a Poisson distribution.</p></li>
 </ul>
-<p>Here’s how we specify this model in PyMC:</p>
+<p>Here’s how we specify this model in PyMC3:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymc3</span> <span class="k">as</span> <span class="nn">pm</span>
@@ -513,6 +513,14 @@ In this example, the model has two steps:</p>
 <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
     <span class="n">lam</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="s1">&#39;lam&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.4</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
     <span class="n">goals</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="n">lam</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/downey/anaconda3/envs/ThinkBayes2/lib/python3.8/site-packages/theano/configdefaults.py:560: UserWarning: DeprecationWarning: there is no c++ compiler.This is deprecated and with Theano 0.11 a c++ compiler will be mandatory
+  warnings.warn(&quot;DeprecationWarning: there is no c++ compiler.&quot;
+WARNING (theano.configdefaults): g++ not detected ! Theano will be unable to execute optimized C-implementations (for both CPU and GPU) and will default to Python implementations. Performance will be severely degraded. To remove this warning, set Theano flags cxx to an empty string.
+WARNING (theano.tensor.blas): Using NumPy C-API based implementation for BLAS functions.
 </pre></div>
 </div>
 </div>
@@ -526,7 +534,7 @@ In this example, the two indented statements are associated with the new <code c
 <li><p>The second line creates the prior predictive, which is a Poisson distribution with the parameter <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p></li>
 </ul>
 <p>The first parameter of <code class="docutils literal notranslate"><span class="pre">Gamma</span></code> and <code class="docutils literal notranslate"><span class="pre">Poisson</span></code> is a string variable name.</p>
-<p>PyMC provides a function that generates a visual representation of the model.</p>
+<p>PyMC3 provides a function that generates a visual representation of the model.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pm</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
@@ -541,7 +549,7 @@ The arrow shows that the values of <code class="docutils literal notranslate"><s
 </div>
 <div class="section" id="sampling-the-prior">
 <h2>Sampling the Prior<a class="headerlink" href="#sampling-the-prior" title="Permalink to this headline">¶</a></h2>
-<p>PyMC provides a function that generates samples from the prior and prior predictive distributions.
+<p>PyMC3 provides a function that generates samples from the prior and prior predictive distributions.
 We can use a <code class="docutils literal notranslate"><span class="pre">with</span></code> statement to run this function in the context of the model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -587,7 +595,7 @@ We can extract the sample of <code class="docutils literal notranslate"><span cl
          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;SciPy sample&#39;</span><span class="p">,</span>
          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 <span class="n">plot_cdf</span><span class="p">(</span><span class="n">sample_prior_pymc</span><span class="p">,</span> 
-         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC sample&#39;</span><span class="p">,</span>
+         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC3 sample&#39;</span><span class="p">,</span>
          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Goals per game ($\lambda$)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">,</span>
@@ -630,7 +638,7 @@ We can extract the sample of <code class="docutils literal notranslate"><span cl
           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;SciPy sample&#39;</span><span class="p">,</span> 
           <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 <span class="n">plot_pred</span><span class="p">(</span><span class="n">sample_prior_pred_pymc</span><span class="p">,</span> 
-          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC sample&#39;</span><span class="p">,</span> 
+          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC3 sample&#39;</span><span class="p">,</span> 
           <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C13&#39;</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of goals&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
@@ -642,7 +650,7 @@ We can extract the sample of <code class="docutils literal notranslate"><span cl
 <img alt="_images/chap19_42_0.png" src="_images/chap19_42_0.png" />
 </div>
 </div>
-<p>Again, the results are similar, so we have some confidence we are using PyMC right.</p>
+<p>Again, the results are similar, so we have some confidence we are using PyMC3 right.</p>
 </div>
 <div class="section" id="when-do-we-get-to-inference">
 <h2>When do we get to inference?<a class="headerlink" href="#when-do-we-get-to-inference" title="Permalink to this headline">¶</a></h2>
@@ -672,6 +680,7 @@ Here is the model we used to generate the prior predictive distribution:</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">return_inferencedata</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
 <span class="k">with</span> <span class="n">model2</span><span class="p">:</span>
     <span class="n">trace2</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
@@ -683,38 +692,19 @@ Here is the model we used to generate the prior predictive distribution:</p>
 Initializing NUTS using jitter+adapt_diag...
 Multiprocess sampling (2 chains in 2 jobs)
 NUTS: [lam]
-</pre></div>
-</div>
-<div class="output text_html">
-<div>
-    <style>
-        /* Turns off some styling */
-        progress {
-            /* gets rid of default border in Firefox and Opera. */
-            border: none;
-            /* Needs to be in here for Safari polyfill so background images work as expected. */
-            background-size: auto;
-        }
-        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-            background: #F44336;
-        }
-    </style>
-  <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [3000/3000 00:01<00:00 Sampling 2 chains, 0 divergences]
-</div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 2 seconds.
+Sampling 2 chains, 0 divergences: 100%|██████████| 2000/2000 [00:02&lt;00:00, 867.83draws/s] 
 </pre></div>
 </div>
 </div>
 </div>
 <p>Although the specification of these models is similar, the sampling process is very different.
-I won’t go into the details of how PyMC works, but here are a few things you should be aware of:</p>
+I won’t go into the details of how PyMC3 works, but here are a few things you should be aware of:</p>
 <ul class="simple">
-<li><p>Depending on the model, PyMC uses one of several MCMC methods; in this example, it uses the <a class="reference external" href="https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo#No_U-Turn_Sampler">No U-Turn Sampler</a> (NUTS), which is one of the most efficient and reliable methods we have.</p></li>
+<li><p>Depending on the model, PyMC3 uses one of several MCMC methods; in this example, it uses the <a class="reference external" href="https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo#No_U-Turn_Sampler">No U-Turn Sampler</a> (NUTS), which is one of the most efficient and reliable methods we have.</p></li>
 <li><p>When the sampler starts, the first values it generates are usually not a representative sample from the posterior distribution, so these values are discarded.  This process is called “tuning”.</p></li>
-<li><p>Instead of using a single Markov chain, PyMC uses multiple chains.  Then we can compare results from multiple chains to make sure they are consistent.</p></li>
+<li><p>Instead of using a single Markov chain, PyMC3 uses multiple chains.  Then we can compare results from multiple chains to make sure they are consistent.</p></li>
 </ul>
-<p>Although we asked for a sample of 500, PyMC generated two samples of 1000, discarded half of each, and returned the remaining 1000.
+<p>Although we asked for a sample of 500, PyMC3 generated two samples of 1000, discarded half of each, and returned the remaining 1000.
 From <code class="docutils literal notranslate"><span class="pre">trace2</span></code> we can extract a sample from the posterior distribution, like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -741,7 +731,7 @@ From <code class="docutils literal notranslate"><span class="pre">trace2</span><
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior grid&#39;</span><span class="p">,</span> 
                           <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 <span class="n">plot_cdf</span><span class="p">(</span><span class="n">sample_post_pymc</span><span class="p">,</span> 
-         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC sample&#39;</span><span class="p">,</span>
+         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC3 sample&#39;</span><span class="p">,</span>
          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Goals per game ($\lambda$)&#39;</span><span class="p">,</span>
@@ -754,7 +744,7 @@ From <code class="docutils literal notranslate"><span class="pre">trace2</span><
 <img alt="_images/chap19_54_0.png" src="_images/chap19_54_0.png" />
 </div>
 </div>
-<p>The results from PyMC are consistent with the results from the grid approximation.</p>
+<p>The results from PyMC3 are consistent with the results from the grid approximation.</p>
 </div>
 <div class="section" id="posterior-predictive-distribution">
 <h2>Posterior Predictive Distribution<a class="headerlink" href="#posterior-predictive-distribution" title="Permalink to this headline">¶</a></h2>
@@ -767,24 +757,10 @@ From <code class="docutils literal notranslate"><span class="pre">trace2</span><
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html">
-<div>
-    <style>
-        /* Turns off some styling */
-        progress {
-            /* gets rid of default border in Firefox and Opera. */
-            border: none;
-            /* Needs to be in here for Safari polyfill so background images work as expected. */
-            background-size: auto;
-        }
-        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-            background: #F44336;
-        }
-    </style>
-  <progress value='1000' class='' max='1000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [1000/1000 00:00<00:00]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 1000/1000 [00:00&lt;00:00, 2682.64it/s]
+</pre></div>
 </div>
-</div></div>
+</div>
 </div>
 <p>The result is a dictionary that contains a sample of <code class="docutils literal notranslate"><span class="pre">goals</span></code>.</p>
 <div class="cell docutils container">
@@ -822,7 +798,7 @@ From <code class="docutils literal notranslate"><span class="pre">trace2</span><
           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;grid sample&#39;</span><span class="p">,</span>
           <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 <span class="n">plot_pred</span><span class="p">(</span><span class="n">sample_post_pred_pymc</span><span class="p">,</span> 
-          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC sample&#39;</span><span class="p">,</span>
+          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PyMC3 sample&#39;</span><span class="p">,</span>
           <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C12&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of goals&#39;</span><span class="p">,</span>
@@ -836,12 +812,12 @@ From <code class="docutils literal notranslate"><span class="pre">trace2</span><
 </div>
 </div>
 <p>Again, the results are consistent.
-So we’ve established that we can compute the same results using a grid approximation or PyMC.</p>
+So we’ve established that we can compute the same results using a grid approximation or PyMC3.</p>
 <p>But it might not be clear why.
 In this example, the grid algorithm requires less computation, and the result is a pretty good approximation of the posterior distribution, rather than a sample.</p>
 <p>However, this is a simple model with just one parameter.
 In fact, we could have solved it with even less computation, using a conjugate prior.
-The power of PyMC will be clearer with a more complex model.</p>
+The power of PyMC3 will be clearer with a more complex model.</p>
 </div>
 <div class="section" id="happiness">
 <h2>Happiness<a class="headerlink" href="#happiness" title="Permalink to this headline">¶</a></h2>
@@ -1101,14 +1077,14 @@ On which step of the ladder would you say you personally feel you stand at this 
 </div></div></div>
 </div>
 <p>The estimated slope is about 0.72, which suggests that an increase of one unit in log-GDP, which is a factor of <span class="math notranslate nohighlight">\(e \approx 2.7\)</span> in GDP, is associated with an increase of 0.72 units on the happiness ladder.</p>
-<p>Now let’s estimate the same parameters using PyMC.
+<p>Now let’s estimate the same parameters using PyMC3.
 We’ll use the same regression model as in Section xxx:</p>
 <div class="math notranslate nohighlight">
 \[y = a x + b + \epsilon\]</div>
 <p>where <span class="math notranslate nohighlight">\(y\)</span> is the dependent variable (ladder score), <span class="math notranslate nohighlight">\(x\)</span> is the predictive variable (log GDP) and <span class="math notranslate nohighlight">\(\epsilon\)</span> is a series of values from a normal distribution with standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
 <p><span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> are the slope and intercept of the regression line.
 They are unknown parameters, so we will use the data to estimate them.</p>
-<p>The following is the PyMC specification of this model.</p>
+<p>The following is the PyMC3 specification of this model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_data</span> <span class="o">=</span> <span class="n">log_gdp</span>
@@ -1148,27 +1124,67 @@ And <code class="docutils literal notranslate"><span class="pre">y</span></code>
 Initializing NUTS using jitter+adapt_diag...
 Multiprocess sampling (2 chains in 2 jobs)
 NUTS: [sigma, b, a]
+Sampling 2 chains, 0 divergences:   2%|▏         | 40/2000 [00:05&lt;04:44,  6.89draws/s]
 </pre></div>
 </div>
-<div class="output text_html">
-<div>
-    <style>
-        /* Turns off some styling */
-        progress {
-            /* gets rid of default border in Firefox and Opera. */
-            border: none;
-            /* Needs to be in here for Safari polyfill so background images work as expected. */
-            background-size: auto;
-        }
-        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-            background: #F44336;
-        }
-    </style>
-  <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [3000/3000 00:07<00:00 Sampling 2 chains, 0 divergences]
-</div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 7 seconds.
-The acceptance probability does not match the target. It is 0.905133245596245, but should be close to 0.8. Try to increase the number of tuning steps.
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
+<span class="nn">~/anaconda3/envs/ThinkBayes2/lib/python3.8/site-packages/pymc3/sampling.py</span> in <span class="ni">_mp_sample</span><span class="nt">(draws, tune, step, chains, cores, chain, random_seed, start, progressbar, trace, model, **kwargs)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1058</span>             <span class="k">with</span> <span class="n">sampler</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">1059</span>                 <span class="k">for</span> <span class="n">draw</span> <span class="ow">in</span> <span class="n">sampler</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1060</span>                     <span class="n">trace</span> <span class="o">=</span> <span class="n">traces</span><span class="p">[</span><span class="n">draw</span><span class="o">.</span><span class="n">chain</span> <span class="o">-</span> <span class="n">chain</span><span class="p">]</span>
+
+<span class="nn">~/anaconda3/envs/ThinkBayes2/lib/python3.8/site-packages/pymc3/parallel_sampling.py</span> in <span class="ni">__iter__</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">393</span>         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">394</span>             <span class="n">draw</span> <span class="o">=</span> <span class="n">ProcessAdapter</span><span class="o">.</span><span class="n">recv_draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">395</span>             <span class="n">proc</span><span class="p">,</span> <span class="n">is_last</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">tuning</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">warns</span> <span class="o">=</span> <span class="n">draw</span>
+
+<span class="nn">~/anaconda3/envs/ThinkBayes2/lib/python3.8/site-packages/pymc3/parallel_sampling.py</span> in <span class="ni">recv_draw</span><span class="nt">(processes, timeout)</span>
+<span class="g g-Whitespace">    </span><span class="mi">283</span>         <span class="n">pipes</span> <span class="o">=</span> <span class="p">[</span><span class="n">proc</span><span class="o">.</span><span class="n">_msg_pipe</span> <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">processes</span><span class="p">]</span>
+<span class="ne">--&gt; </span><span class="mi">284</span>         <span class="n">ready</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">pipes</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">285</span>         <span class="k">if</span> <span class="ow">not</span> <span class="n">ready</span><span class="p">:</span>
+
+<span class="nn">~/anaconda3/envs/ThinkBayes2/lib/python3.8/multiprocessing/connection.py</span> in <span class="ni">wait</span><span class="nt">(object_list, timeout)</span>
+<span class="g g-Whitespace">    </span><span class="mi">930</span>             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">931</span>                 <span class="n">ready</span> <span class="o">=</span> <span class="n">selector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">932</span>                 <span class="k">if</span> <span class="n">ready</span><span class="p">:</span>
+
+<span class="nn">~/anaconda3/envs/ThinkBayes2/lib/python3.8/selectors.py</span> in <span class="ni">select</span><span class="nt">(self, timeout)</span>
+<span class="g g-Whitespace">    </span><span class="mi">414</span>         <span class="k">try</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">415</span>             <span class="n">fd_event_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">416</span>         <span class="k">except</span> <span class="ne">InterruptedError</span><span class="p">:</span>
+
+<span class="ne">KeyboardInterrupt</span>: 
+
+<span class="n">During</span> <span class="n">handling</span> <span class="n">of</span> <span class="n">the</span> <span class="n">above</span> <span class="n">exception</span><span class="p">,</span> <span class="n">another</span> <span class="n">exception</span> <span class="n">occurred</span><span class="p">:</span>
+
+<span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">42</span><span class="o">-</span><span class="n">a1bde88eb56c</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="k">with</span> <span class="n">model3</span><span class="p">:</span>
+<span class="ne">----&gt; </span><span class="mi">2</span>     <span class="n">trace3</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+
+<span class="nn">~/anaconda3/envs/ThinkBayes2/lib/python3.8/site-packages/pymc3/sampling.py</span> in <span class="ni">sample</span><span class="nt">(draws, step, init, n_init, start, trace, chain_idx, chains, cores, tune, progressbar, model, random_seed, discard_tuned_samples, compute_convergence_checks, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">467</span>         <span class="n">_print_step_hierarchy</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">468</span>         <span class="k">try</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">469</span>             <span class="n">trace</span> <span class="o">=</span> <span class="n">_mp_sample</span><span class="p">(</span><span class="o">**</span><span class="n">sample_args</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">470</span>         <span class="k">except</span> <span class="n">pickle</span><span class="o">.</span><span class="n">PickleError</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">471</span>             <span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not pickle model, sampling singlethreaded.&quot;</span><span class="p">)</span>
+
+<span class="nn">~/anaconda3/envs/ThinkBayes2/lib/python3.8/site-packages/pymc3/sampling.py</span> in <span class="ni">_mp_sample</span><span class="nt">(draws, tune, step, chains, cores, chain, random_seed, start, progressbar, trace, model, **kwargs)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1078</span>         <span class="k">return</span> <span class="n">MultiTrace</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1079</span>     <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">1080</span>         <span class="n">traces</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">_choose_chains</span><span class="p">(</span><span class="n">traces</span><span class="p">,</span> <span class="n">tune</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1081</span>         <span class="k">return</span> <span class="n">MultiTrace</span><span class="p">(</span><span class="n">traces</span><span class="p">)[:</span><span class="n">length</span><span class="p">]</span>
+<span class="g g-Whitespace">   </span><span class="mi">1082</span>     <span class="k">finally</span><span class="p">:</span>
+
+<span class="nn">~/anaconda3/envs/ThinkBayes2/lib/python3.8/site-packages/pymc3/sampling.py</span> in <span class="ni">_choose_chains</span><span class="nt">(traces, tune)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1094</span>     <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span> <span class="o">-</span> <span class="n">tune</span><span class="p">)</span> <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">]</span>
+<span class="g g-Whitespace">   </span><span class="mi">1095</span>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">sum</span><span class="p">(</span><span class="n">lengths</span><span class="p">):</span>
+<span class="ne">-&gt; </span><span class="mi">1096</span>         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not enough samples to build a trace.&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1097</span> 
+<span class="g g-Whitespace">   </span><span class="mi">1098</span>     <span class="n">idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">lengths</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="ne">ValueError</span>: Not enough samples to build a trace.
 </pre></div>
 </div>
 </div>
@@ -1182,13 +1198,8 @@ You can ignore them for now.</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;MultiTrace: 2 chains, 500 iterations, 6 variables&gt;
-</pre></div>
 </div>
-</div>
-</div>
-<p>PyMC provides <code class="docutils literal notranslate"><span class="pre">plot_posterior</span></code>, which we can use to plot the posterior distributions of the parameters.
+<p>PyMC3 provides <code class="docutils literal notranslate"><span class="pre">plot_posterior</span></code>, which we can use to plot the posterior distributions of the parameters.
 Here are the posterior distributions of slope, <code class="docutils literal notranslate"><span class="pre">a</span></code>, and intercept, <code class="docutils literal notranslate"><span class="pre">b</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1196,9 +1207,6 @@ Here are the posterior distributions of slope, <code class="docutils literal not
     <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace3</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]);</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap19_92_0.png" src="_images/chap19_92_0.png" />
 </div>
 </div>
 <p>The graphs show the distributions of the samples, estimated by KDE, and 94% credible intervals.
@@ -1211,23 +1219,11 @@ Specifically, they are the highest density intervals (HDI).</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: 0.7118674099590533
-Regression slope: 0.717738495630452
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sample mean:&#39;</span><span class="p">,</span> <span class="n">trace3</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Regression intercept:&#39;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">intercept</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: -1.1467256999330102
-Regression intercept: -1.1986460618088843
 </pre></div>
 </div>
 </div>
@@ -1239,9 +1235,6 @@ Regression intercept: -1.1986460618088843
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="_images/chap19_97_0.png" src="_images/chap19_97_0.png" />
-</div>
 </div>
 <p>The values in the posterior distribution of <code class="docutils literal notranslate"><span class="pre">sigma</span></code> seem plausible.</p>
 <p>The simple regression model has only three parameters, so we could have used a grid algorithm.
@@ -1249,15 +1242,10 @@ But the regression model in the happiness report has six predictive variables, s
 <p>It is not practical to compute a grid approximation for a model with eight parameters.
 Even a coarse grid, with 20 points along each dimension, would have more than 25 billion points.
 And with 153 countries, we would have to compute almost 4 trillion likelihoods.</p>
-<p>But PyMC can handle a model with eight parameters comfortably, as we’ll see in the next section.</p>
+<p>But PyMC3 can handle a model with eight parameters comfortably, as we’ll see in the next section.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="mi">20</span> <span class="o">**</span> <span class="mi">8</span> <span class="o">/</span> <span class="mf">1e9</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>25.6
 </pre></div>
 </div>
 </div>
@@ -1265,11 +1253,6 @@ And with 153 countries, we would have to compute almost 4 trillion likelihoods.<
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="mi">153</span> <span class="o">*</span> <span class="mi">20</span> <span class="o">**</span> <span class="mi">8</span> <span class="o">/</span> <span class="mf">1e12</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.9168
 </pre></div>
 </div>
 </div>
@@ -1299,68 +1282,6 @@ And with 153 countries, we would have to compute almost 4 trillion likelihoods.<
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Ladder score</th>
-      <th>Logged GDP per capita</th>
-      <th>Social support</th>
-      <th>Healthy life expectancy</th>
-      <th>Freedom to make life choices</th>
-      <th>Generosity</th>
-      <th>Perceptions of corruption</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>7.8087</td>
-      <td>10.639267</td>
-      <td>0.954330</td>
-      <td>71.900826</td>
-      <td>0.949172</td>
-      <td>-0.059482</td>
-      <td>0.195445</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>7.6456</td>
-      <td>10.774001</td>
-      <td>0.955991</td>
-      <td>72.402504</td>
-      <td>0.951444</td>
-      <td>0.066202</td>
-      <td>0.168489</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>7.5599</td>
-      <td>10.979933</td>
-      <td>0.942847</td>
-      <td>74.102448</td>
-      <td>0.921337</td>
-      <td>0.105911</td>
-      <td>0.303728</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>The predictive variables have different units: log-GDP is in log-dollars, life expectancy is in years, and the other variables are on arbitrary scales.
 To make these factors comparable, I’ll standardize the data so that each variable has mean 0 and standard deviation 1.</p>
@@ -1423,34 +1344,6 @@ I’ll extract the dependent variable.</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (2 chains in 2 jobs)
-NUTS: [sigma, b6, b5, b4, b3, b2, b1, b0]
-</pre></div>
-</div>
-<div class="output text_html">
-<div>
-    <style>
-        /* Turns off some styling */
-        progress {
-            /* gets rid of default border in Firefox and Opera. */
-            border: none;
-            /* Needs to be in here for Safari polyfill so background images work as expected. */
-            background-size: auto;
-        }
-        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-            background: #F44336;
-        }
-    </style>
-  <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [3000/3000 00:04<00:00 Sampling 2 chains, 0 divergences]
-</div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 4 seconds.
-</pre></div>
-</div>
-</div>
 </div>
 <p>Because we standardized the data, we expect the intercept to be 0, and in fact the posterior mean of <code class="docutils literal notranslate"><span class="pre">b0</span></code> is close to 0.</p>
 <div class="cell tag_hide-cell docutils container">
@@ -1459,21 +1352,11 @@ NUTS: [sigma, b6, b5, b4, b3, b2, b1, b0]
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0017145827093917533
-</pre></div>
-</div>
-</div>
 </div>
 <p>We can also check the posterior mean of <code class="docutils literal notranslate"><span class="pre">sigma</span></code>:</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trace4</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5161131030982947
 </pre></div>
 </div>
 </div>
@@ -1514,63 +1397,6 @@ NUTS: [sigma, b6, b5, b4, b3, b2, b1, b0]
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Posterior mean</th>
-      <th>90% CI</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Logged GDP per capita</th>
-      <td>0.251</td>
-      <td>[0.076, 0.418]</td>
-    </tr>
-    <tr>
-      <th>Social support</th>
-      <td>0.222</td>
-      <td>[0.07, 0.368]</td>
-    </tr>
-    <tr>
-      <th>Healthy life expectancy</th>
-      <td>0.222</td>
-      <td>[0.07, 0.368]</td>
-    </tr>
-    <tr>
-      <th>Freedom to make life choices</th>
-      <td>0.192</td>
-      <td>[0.101, 0.293]</td>
-    </tr>
-    <tr>
-      <th>Generosity</th>
-      <td>0.054</td>
-      <td>[-0.024, 0.135]</td>
-    </tr>
-    <tr>
-      <th>Perceptions of corruption</th>
-      <td>-0.099</td>
-      <td>[-0.191, -0.003]</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>It looks like GDP has the strongest association with happiness (or satisfaction), followed by social support, life expectancy, and freedom.</p>
 <p>After controlling for those other factors, the parameters of the other factors are substantially smaller, and since the CI for generosity includes 0, it is plausible that generosity is not substantially related to happiness, at least as they were measured in this study.</p>
@@ -1581,26 +1407,26 @@ But it does not really demonstrate the power of Bayesian regression.</p>
 </div>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
-<p>In this chapter we used PyMC to implement two models we’ve seen before: a Poisson model of goal-scoring in soccer and a simple regression model.
+<p>In this chapter we used PyMC3 to implement two models we’ve seen before: a Poisson model of goal-scoring in soccer and a simple regression model.
 Then we implemented a multiple regression model that would not have been possible to compute with a grid approximation.</p>
 <p>MCMC is more powerful than grid methods, but that power comes with some disadvantages:</p>
 <ul class="simple">
 <li><p>MCMC algorithms are fiddly.  The same model might behave well with some priors and less well with others.  And the sampling process often produces warnings about tuning steps, divergences, “r-hat statistics”, acceptance rates, and effective samples.  It takes some expertise to diagnose and correct these issues.</p></li>
-<li><p>I find it easier to develop models incrementally using grid algorithms, checking intermediate results along the way.  With PyMC, it is not as easy to be confident that you have specified a model correctly.</p></li>
+<li><p>I find it easier to develop models incrementally using grid algorithms, checking intermediate results along the way.  With PyMC3, it is not as easy to be confident that you have specified a model correctly.</p></li>
 </ul>
 <p>For these reasons, I recommend a model development process that starts with grid algorithms and resorts to MCMC if necessary.
 As we saw in the previous chapters, you can solve a lot of real-world problems with grid methods.
 But when you need MCMC, it is useful to have a grid algorithm to compare to (even if it is based on a simpler model).</p>
-<p>All of the models in this book can be implemented in PyMC, but some of them are easier to translate than others.
+<p>All of the models in this book can be implemented in PyMC3, but some of them are easier to translate than others.
 In the exercises, you will have a chance to practice.</p>
 </div>
 <div class="section" id="exercises">
 <h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
-<p><strong>Exercise:</strong> As a warmup, let’s use PyMC to solve the Euro problem.
+<p><strong>Exercise:</strong> As a warmup, let’s use PyMC3 to solve the Euro problem.
 Suppose we spin a coin 250 times and it comes up heads 140 times.
 What is the posterior distribution of <span class="math notranslate nohighlight">\(x\)</span>, the probability of heads?</p>
 <p>For the prior, use a beta distribution with parameters <span class="math notranslate nohighlight">\(\alpha=1\)</span> and <span class="math notranslate nohighlight">\(\beta=1\)</span>.</p>
-<p>See <a class="reference external" href="https://docs.pymc.io/api/distributions/continuous.html">the PyMC documentation</a> for the list of continuous distributions.</p>
+<p>See <a class="reference external" href="https://docs.pymc.io/api/distributions/continuous.html">the PyMC3 documentation</a> for the list of continuous distributions.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1616,43 +1442,14 @@ What is the posterior distribution of <span class="math notranslate nohighlight"
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (2 chains in 2 jobs)
-NUTS: [x]
-</pre></div>
 </div>
-<div class="output text_html">
-<div>
-    <style>
-        /* Turns off some styling */
-        progress {
-            /* gets rid of default border in Firefox and Opera. */
-            border: none;
-            /* Needs to be in here for Safari polyfill so background images work as expected. */
-            background-size: auto;
-        }
-        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-            background: #F44336;
-        }
-    </style>
-  <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [3000/3000 00:01<00:00 Sampling 2 chains, 0 divergences]
-</div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<img alt="_images/chap19_129_3.png" src="_images/chap19_129_3.png" />
-</div>
-</div>
-<p><strong>Exercise:</strong> Now let’s use PyMC to replicate the solution to the Grizzly Bear problem in Section xxx, which is based on the hypergeometric distribution.</p>
-<p>I’ll present the problem with slightly different notation, to make it consistent with PyMC.</p>
+<p><strong>Exercise:</strong> Now let’s use PyMC3 to replicate the solution to the Grizzly Bear problem in &lt;&lt;_TheGrizzlyBearProblem&gt;&gt;, which is based on the hypergeometric distribution.</p>
+<p>I’ll present the problem with slightly different notation, to make it consistent with PyMC3.</p>
 <p>Suppose that during the first session, <code class="docutils literal notranslate"><span class="pre">k=23</span></code> bears are tagged.  During the second session, <code class="docutils literal notranslate"><span class="pre">n=19</span></code> bears are identified, of which <code class="docutils literal notranslate"><span class="pre">x=4</span></code> had been tagged.</p>
 <p>Estimate the posterior distribution of <code class="docutils literal notranslate"><span class="pre">N</span></code>, the number of bears in the environment.</p>
 <p>For the prior, use a discrete uniform distribution from 50 to 500.</p>
-<p>See <a class="reference external" href="https://docs.pymc.io/api/distributions/discrete.html">the PyMC documentation</a> for the list of discrete distributions.</p>
-<p>Note: <code class="docutils literal notranslate"><span class="pre">HyperGeometric</span></code> was added to PyMC after version 3.8, so you might need to update your installation to do this exercise.</p>
+<p>See <a class="reference external" href="https://docs.pymc.io/api/distributions/discrete.html">the PyMC3 documentation</a> for the list of discrete distributions.</p>
+<p>Note: <code class="docutils literal notranslate"><span class="pre">HyperGeometric</span></code> was added to PyMC3 after version 3.8, so you might need to update your installation to do this exercise.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1669,40 +1466,12 @@ NUTS: [x]
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiprocess sampling (2 chains in 2 jobs)
-Metropolis: [N]
-</pre></div>
-</div>
-<div class="output text_html">
-<div>
-    <style>
-        /* Turns off some styling */
-        progress {
-            /* gets rid of default border in Firefox and Opera. */
-            border: none;
-            /* Needs to be in here for Safari polyfill so background images work as expected. */
-            background-size: auto;
-        }
-        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-            background: #F44336;
-        }
-    </style>
-  <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [4000/4000 00:00<00:00 Sampling 2 chains, 0 divergences]
-</div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-The number of effective samples is smaller than 25% for some parameters.
-</pre></div>
-</div>
-<img alt="_images/chap19_131_3.png" src="_images/chap19_131_3.png" />
-</div>
 </div>
 <p><strong>Exercise:</strong> In Chapter xxx we generated a sample from a Weibull distribution with <span class="math notranslate nohighlight">\(\lambda=3\)</span> and <span class="math notranslate nohighlight">\(k=0.8\)</span>.
 Then we used the data to compute a grid approximation of the posterior distribution of those parameters.</p>
-<p>Now let’s do the same with PyMC.</p>
-<p>For the prior distributions, you can use uniform distributions as we did in Chapter xxx, or you could use <code class="docutils literal notranslate"><span class="pre">HalfNormal</span></code> distributions provided by PyMC.</p>
-<p>Note: The <code class="docutils literal notranslate"><span class="pre">Weibull</span></code> class in PyMC uses different parameters than SciPy.  The parameter <code class="docutils literal notranslate"><span class="pre">alpha</span></code> in PyMC corresponds to <span class="math notranslate nohighlight">\(k\)</span>, and <code class="docutils literal notranslate"><span class="pre">beta</span></code> corresponds to <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+<p>Now let’s do the same with PyMC3.</p>
+<p>For the prior distributions, you can use uniform distributions as we did in Chapter xxx, or you could use <code class="docutils literal notranslate"><span class="pre">HalfNormal</span></code> distributions provided by PyMC3.</p>
+<p>Note: The <code class="docutils literal notranslate"><span class="pre">Weibull</span></code> class in PyMC3 uses different parameters than SciPy.  The parameter <code class="docutils literal notranslate"><span class="pre">alpha</span></code> in PyMC3 corresponds to <span class="math notranslate nohighlight">\(k\)</span>, and <code class="docutils literal notranslate"><span class="pre">beta</span></code> corresponds to <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
 <p>Here’s the data again:</p>
 <div class="cell tag_hide-celll docutils container">
 <div class="cell_input docutils container">
@@ -1724,36 +1493,6 @@ Then we used the data to compute a grid approximation of the posterior distribut
     <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace7</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (2 chains in 2 jobs)
-NUTS: [k, lam]
-</pre></div>
-</div>
-<div class="output text_html">
-<div>
-    <style>
-        /* Turns off some styling */
-        progress {
-            /* gets rid of default border in Firefox and Opera. */
-            border: none;
-            /* Needs to be in here for Safari polyfill so background images work as expected. */
-            background-size: auto;
-        }
-        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-            background: #F44336;
-        }
-    </style>
-  <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [4000/4000 00:02<00:00 Sampling 2 chains, 1 divergences]
-</div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 2 seconds.
-There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
-</pre></div>
-</div>
-<img alt="_images/chap19_135_3.png" src="_images/chap19_135_3.png" />
 </div>
 </div>
 <p><strong>Exercise:</strong> In Chapter xxx we used data from a reading test to estimate the parameters of a normal distribution.</p>
@@ -1778,34 +1517,6 @@ There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (2 chains in 2 jobs)
-NUTS: [sigma, mu]
-</pre></div>
-</div>
-<div class="output text_html">
-<div>
-    <style>
-        /* Turns off some styling */
-        progress {
-            /* gets rid of default border in Firefox and Opera. */
-            border: none;
-            /* Needs to be in here for Safari polyfill so background images work as expected. */
-            background-size: auto;
-        }
-        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-            background: #F44336;
-        }
-    </style>
-  <progress value='3000' class='' max='3000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [3000/3000 00:01<00:00 Sampling 2 chains, 0 divergences]
-</div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 500 draw iterations (2_000 + 1_000 draws total) took 2 seconds.
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
@@ -1815,9 +1526,6 @@ NUTS: [sigma, mu]
     <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace8</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap19_145_0.png" src="_images/chap19_145_0.png" />
 </div>
 </div>
 <p><strong>Exercise:</strong> In Chapter xxx we used a grid algorithm to solve the Lincoln Index problem as presented by John D. Cook:</p>
@@ -1832,7 +1540,7 @@ tester. But if you have two testers, you can get a good idea, even if
 you don’t know how skilled the testers are.”</p>
 </div></blockquote>
 <p>Suppose the first tester finds 20 bugs, the second finds 15, and they
-find 3 in common; use PyMC to estimate the number of bugs.</p>
+find 3 in common; use PyMC3 to estimate the number of bugs.</p>
 <p>Note: This exercise is more difficult that some of the previous ones.  One of the challenges is that the data includes <code class="docutils literal notranslate"><span class="pre">k00</span></code>, which depends on <code class="docutils literal notranslate"><span class="pre">N</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">k00</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">num_seen</span>
 </pre></div>
@@ -1868,11 +1576,6 @@ To do that, we can use <code class="docutils literal notranslate"><span class="p
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>32
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
@@ -1903,36 +1606,6 @@ To do that, we can use <code class="docutils literal notranslate"><span class="p
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiprocess sampling (2 chains in 2 jobs)
-CompoundStep
-&gt;NUTS: [p1, p0]
-&gt;Metropolis: [N]
-</pre></div>
-</div>
-<div class="output text_html">
-<div>
-    <style>
-        /* Turns off some styling */
-        progress {
-            /* gets rid of default border in Firefox and Opera. */
-            border: none;
-            /* Needs to be in here for Safari polyfill so background images work as expected. */
-            background-size: auto;
-        }
-        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-            background: #F44336;
-        }
-    </style>
-  <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [4000/4000 00:03<00:00 Sampling 2 chains, 0 divergences]
-</div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 3 seconds.
-The rhat statistic is larger than 1.05 for some parameters. This indicates slight problems during sampling.
-The estimated number of effective samples is smaller than 200 for some parameters.
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
@@ -1942,9 +1615,6 @@ The estimated number of effective samples is smaller than 200 for some parameter
     <span class="n">pm</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace9</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap19_154_0.png" src="_images/chap19_154_0.png" />
 </div>
 </div>
 </div>

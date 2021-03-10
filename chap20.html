@@ -952,6 +952,14 @@ I’ll start by replicating his model; then we’ll adapt it for ABC.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/downey/anaconda3/envs/ThinkBayes2/lib/python3.8/site-packages/theano/configdefaults.py:560: UserWarning: DeprecationWarning: there is no c++ compiler.This is deprecated and with Theano 0.11 a c++ compiler will be mandatory
+  warnings.warn(&quot;DeprecationWarning: there is no c++ compiler.&quot;
+WARNING (theano.configdefaults): g++ not detected ! Theano will be unable to execute optimized C-implementations (for both CPU and GPU) and will default to Python implementations. Performance will be severely degraded. To remove this warning, set Theano flags cxx to an empty string.
+WARNING (theano.tensor.blas): Using NumPy C-API based implementation for BLAS functions.
+</pre></div>
+</div>
+</div>
 </div>
 <p>Now, the sample drawn from the yeast slurry is supposed to be 1 mL, but might be more or less.
 And similarly for the sample from the first shaker and from the second shaker.
@@ -1026,7 +1034,7 @@ So the actual count follows a binomial distribution.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
-    <span class="n">trace</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">return_inferencedata</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1035,26 +1043,7 @@ So the actual count follows a binomial distribution.</p>
 CompoundStep
 &gt;NUTS: [chamber_vol, shaker2 to shaker3, shaker1 to shaker2, yeast slurry vol, shaker3 vol, shaker2 vol, shaker1 vol, yeast conc]
 &gt;Metropolis: [yeast in chamber]
-</pre></div>
-</div>
-<div class="output text_html">
-<div>
-    <style>
-        /* Turns off some styling */
-        progress {
-            /* gets rid of default border in Firefox and Opera. */
-            border: none;
-            /* Needs to be in here for Safari polyfill so background images work as expected. */
-            background-size: auto;
-        }
-        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-            background: #F44336;
-        }
-    </style>
-  <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [4000/4000 00:04<00:00 Sampling 2 chains, 0 divergences]
-</div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 2 chains for 1_000 tune and 1_000 draw iterations (2_000 + 2_000 draws total) took 5 seconds.
+Sampling 2 chains, 0 divergences: 100%|██████████| 3000/3000 [00:49&lt;00:00, 60.16draws/s]
 The estimated number of effective samples is smaller than 200 for some parameters.
 </pre></div>
 </div>
@@ -1070,7 +1059,7 @@ The estimated number of effective samples is smaller than 200 for some parameter
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.2700608267545213 [1.86669531 2.72053704]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.2634970044296914 [1.8596755  2.66877785]
 </pre></div>
 </div>
 </div>
@@ -1101,7 +1090,7 @@ But it also provides an opportunity to demonstrate ABC.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>39.9522
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>39.902
 </pre></div>
 </div>
 </div>
@@ -1115,7 +1104,7 @@ But it also provides an opportunity to demonstrate ABC.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>250
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>238
 </pre></div>
 </div>
 </div>
@@ -1138,7 +1127,7 @@ But it also provides an opportunity to demonstrate ABC.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.2721642364350445 [1.85445095 2.68238424]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.295816844842803 [1.85005189 2.74822918]
 </pre></div>
 </div>
 </div>
@@ -1275,7 +1264,7 @@ If we sort the quantities and normalize the probabilities, the result is an esti
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.271394162053131 [1.85344564 2.71299385]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.272447704866729 [1.84537029 2.71759902]
 </pre></div>
 </div>
 </div>
@@ -1366,7 +1355,7 @@ In that case, each simulation might require substantial computation, and many si
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([12, 11,  2,  1,  4,  8,  8,  0,  1,  0,  7])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 4,  0,  6,  1,  2,  6,  7,  2, 10,  5,  8])
 </pre></div>
 </div>
 </div>
@@ -1381,7 +1370,7 @@ In that case, each simulation might require substantial computation, and many si
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 0,  1,  2,  4,  7,  8, 11, 12])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 0,  1,  2,  4,  5,  6,  7,  8, 10])
 </pre></div>
 </div>
 </div>
@@ -1395,7 +1384,7 @@ In that case, each simulation might require substantial computation, and many si
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([2, 2, 1, 1, 1, 2, 1, 1])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([1, 1, 2, 1, 1, 2, 1, 1, 1])
 </pre></div>
 </div>
 </div>
@@ -1412,7 +1401,7 @@ In that case, each simulation might require substantial computation, and many si
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(5, 3)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(7, 2)
 </pre></div>
 </div>
 </div>
@@ -1474,7 +1463,7 @@ In that case, each simulation might require substantial computation, and many si
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1157
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1156
 </pre></div>
 </div>
 </div>
@@ -1516,33 +1505,33 @@ In that case, each simulation might require substantial computation, and many si
   <tbody>
     <tr>
       <th>0</th>
-      <td>56</td>
+      <td>52</td>
       <td>25.0</td>
-      <td>6.0</td>
+      <td>2.0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>48</td>
-      <td>21.0</td>
-      <td>6.0</td>
+      <td>54</td>
+      <td>26.0</td>
+      <td>2.0</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>23</td>
-      <td>10.0</td>
-      <td>3.0</td>
+      <td>41</td>
+      <td>18.0</td>
+      <td>5.0</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>30</td>
-      <td>13.0</td>
-      <td>4.0</td>
-    </tr>
-    <tr>
-      <th>4</th>
       <td>35</td>
       <td>14.0</td>
       <td>7.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>57</td>
+      <td>19.0</td>
+      <td>19.0</td>
     </tr>
   </tbody>
 </table>

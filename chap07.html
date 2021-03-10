@@ -324,8 +324,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#more-generally">
-   More Generally
+  <a class="reference internal nav-link" href="#general-mixtures">
+   General Mixtures
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -363,15 +363,15 @@
 </div>
 </div>
 </div>
-<p>In the previous chapter we computed distributions of sums, differences, and products.</p>
-<p>In this chapter, we’ll compute distributions of minimums and maximums, and use them to solve both forward and inverse problems.</p>
+<p>In the previous chapter we computed distributions of sums.
+In this chapter, we’ll compute distributions of minimums and maximums, and use them to solve both forward and inverse problems.</p>
 <p>Then we’ll look at distributions that are mixtures of other distributions, which will turn out to be particularly useful for making predictions.</p>
 <p>But we’ll start with a powerful tool for working with distributions, the cumulative distribution function.</p>
 <div class="section" id="cumulative-distribution-functions">
 <h2>Cumulative Distribution Functions<a class="headerlink" href="#cumulative-distribution-functions" title="Permalink to this headline">¶</a></h2>
 <p>So far we have been using probability mass functions to represent distributions.
 A useful alternative is the <strong>cumulative distribution function</strong>, or CDF.</p>
-<p>As an example, I’ll use the posterior distribution from the Euro problem, which we computed in Chapter 3.</p>
+<p>As an example, I’ll use the posterior distribution from the Euro problem, which we computed in &lt;&lt;_BayesianEstimation&gt;&gt;.</p>
 <p>Here’s the uniform prior we started with.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -632,7 +632,7 @@ I’ll estimate the distribution by simulating 10,000 rolls.</p>
 </div>
 </div>
 </div>
-<p>To find the best three outcomes in each row, I’ll sort along <code class="docutils literal notranslate"><span class="pre">axis=1</span></code>, which means across the columns.</p>
+<p>To find the best three outcomes in each row, I’ll use <code class="docutils literal notranslate"><span class="pre">sort</span></code> with <code class="docutils literal notranslate"><span class="pre">axis=1</span></code>, which sorts the rows in ascending order.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -652,16 +652,16 @@ I’ll estimate the distribution by simulating 10,000 rolls.</p>
 We can compute the PMF of the values in <code class="docutils literal notranslate"><span class="pre">t</span></code> like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_4d6</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_best3</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>The following figure shows the distribution of the sum of three dice, <code class="docutils literal notranslate"><span class="pre">pmf_3d6</span></code>, and the distribution of the best three out of four, <code class="docutils literal notranslate"><span class="pre">pmf_4d6</span></code>.</p>
+<p>The following figure shows the distribution of the sum of three dice, <code class="docutils literal notranslate"><span class="pre">pmf_3d6</span></code>, and the distribution of the best three out of four, <code class="docutils literal notranslate"><span class="pre">pmf_best3</span></code>.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_3d6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;sum of 3 dice&#39;</span><span class="p">)</span>
-<span class="n">pmf_4d6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;best 3 of 4&#39;</span><span class="p">)</span>
+<span class="n">pmf_best3</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;best 3 of 4&#39;</span><span class="p">)</span>
 
 <span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Distribution of attributes&#39;</span><span class="p">)</span>
 </pre></div>
@@ -680,7 +680,7 @@ We can compute the PMF of the values in <code class="docutils literal notranslat
 First, I’ll compute the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> of the best three of four distribution:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_4d6</span> <span class="o">=</span> <span class="n">pmf_4d6</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_4d6</span> <span class="o">=</span> <span class="n">pmf_best3</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -697,22 +697,22 @@ The probability that all 6 of them are less than or equal to <code class="docuti
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3     5.314410e-19
-4     2.176782e-15
-5     1.000000e-12
-6     4.049612e-10
-7     2.678699e-08
-8     1.258037e-06
-9     2.765652e-05
-10    3.780461e-04
-11    3.171268e-03
-12    1.767926e-02
-13    7.227261e-02
-14    2.071265e-01
-15    4.273839e-01
-16    6.885498e-01
-17    9.149785e-01
+4     9.474297e-15
+5     2.839761e-12
+6     5.948233e-10
+7     3.767657e-08
+8     1.394601e-06
+9     2.625570e-05
+10    3.857018e-04
+11    2.917097e-03
+12    1.724728e-02
+13    6.923649e-02
+14    2.035974e-01
+15    4.259087e-01
+16    6.881103e-01
+17    9.177679e-01
 18    1.000000e+00
-dtype: float64
+Name: , dtype: float64
 </pre></div>
 </div>
 </div>
@@ -759,7 +759,7 @@ We can convert it to a <code class="docutils literal notranslate"><span class="p
 <span class="n">cdf_3d6</span> <span class="o">=</span> <span class="n">pmf_3d6</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span>
 <span class="n">cdf_3d6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;best 3 of 4 dice&#39;</span><span class="p">)</span>
 
-<span class="n">cdf_4d6</span> <span class="o">=</span> <span class="n">pmf_4d6</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span>
+<span class="n">cdf_4d6</span> <span class="o">=</span> <span class="n">pmf_best3</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span>
 <span class="n">cdf_4d6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;sum of 3 dice&#39;</span><span class="p">)</span>
 
 <span class="n">cdf_max6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;max of 6 attributes&#39;</span><span class="p">)</span>
@@ -986,14 +986,16 @@ Here’s what it looks like.</p>
 </div>
 </div>
 </div>
-<div class="section" id="more-generally">
-<h2>More Generally<a class="headerlink" href="#more-generally" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="general-mixtures">
+<h2>General Mixtures<a class="headerlink" href="#general-mixtures" title="Permalink to this headline">¶</a></h2>
 <p>In the previous section we computed mixtures in an <em>ad hoc</em> way.
-Now we’ll see a more general solution.</p>
-<p>Continuing the previous example, suppose three more monsters join the combat, each of them with a battleaxe that causes one 8-sided die of damage.
+Now we’ll see a more general solution.
+In future chapters, we’ll use this solution to generate predictions for real-world problems, not just role-playing games.
+But if you’ll bear with me, we’ll continue the previous example for one more section.</p>
+<p>Suppose three more monsters join the combat, each of them with a battle axe that causes one 8-sided die of damage.
 Still, only one monster attacks per round, chosen at random, so the damage they inflict is a mixture of:</p>
 <ul class="simple">
-<li><p>Une 4-sided die,</p></li>
+<li><p>One 4-sided die,</p></li>
 <li><p>Two 6-sided dice, and</p></li>
 <li><p>Three 8-sided dice.</p></li>
 </ul>
@@ -1098,7 +1100,7 @@ For example, one of the six monsters has a dagger, so the probability is <span c
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
+      <th></th>
       <td>0.250000</td>
       <td>0.250000</td>
       <td>0.250000</td>
@@ -1109,7 +1111,7 @@ For example, one of the six monsters has a dagger, so the probability is <span c
       <td>NaN</td>
     </tr>
     <tr>
-      <th>1</th>
+      <th></th>
       <td>0.166667</td>
       <td>0.166667</td>
       <td>0.166667</td>
@@ -1120,7 +1122,7 @@ For example, one of the six monsters has a dagger, so the probability is <span c
       <td>NaN</td>
     </tr>
     <tr>
-      <th>2</th>
+      <th></th>
       <td>0.125000</td>
       <td>0.125000</td>
       <td>0.125000</td>
@@ -1174,7 +1176,7 @@ We can use <code class="docutils literal notranslate"><span class="pre">fillna</
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
+      <th></th>
       <td>0.250000</td>
       <td>0.250000</td>
       <td>0.250000</td>
@@ -1185,7 +1187,7 @@ We can use <code class="docutils literal notranslate"><span class="pre">fillna</
       <td>0.000</td>
     </tr>
     <tr>
-      <th>1</th>
+      <th></th>
       <td>0.166667</td>
       <td>0.166667</td>
       <td>0.166667</td>
@@ -1196,7 +1198,7 @@ We can use <code class="docutils literal notranslate"><span class="pre">fillna</
       <td>0.000</td>
     </tr>
     <tr>
-      <th>2</th>
+      <th></th>
       <td>0.125000</td>
       <td>0.125000</td>
       <td>0.125000</td>
@@ -1243,9 +1245,9 @@ We can use <code class="docutils literal notranslate"><span class="pre">fillna</
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>0</th>
-      <th>1</th>
-      <th>2</th>
+      <th></th>
+      <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -1334,9 +1336,9 @@ We can use <code class="docutils literal notranslate"><span class="pre">fillna</
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>0</th>
-      <th>1</th>
-      <th>2</th>
+      <th></th>
+      <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -1442,7 +1444,7 @@ We can call it like this:</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mix</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;mixture&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
-<span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Mixture of Uniform Distributions&#39;</span><span class="p">)</span>
+<span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Distribution of damage with three different weapons&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1509,7 +1511,7 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(12.2557, 12.0)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(12.260900000000003, 12.0)
 </pre></div>
 </div>
 </div>
@@ -1524,7 +1526,7 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(2.8370261736543783, 2.3804761428476167)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(2.8570318846663234, 2.3804761428476167)
 </pre></div>
 </div>
 </div>
@@ -1539,7 +1541,7 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0547
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0579
 </pre></div>
 </div>
 </div>
@@ -1554,7 +1556,7 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.1321
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.13260000000000016
 </pre></div>
 </div>
 </div>
@@ -1570,7 +1572,7 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.2864606188786486, 0.2864606188786486)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.3008312276192917, 0.3008312276192917)
 </pre></div>
 </div>
 </div>
@@ -1586,7 +1588,7 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.5726161271622532, 0.5726161271622532)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.574091304495034, 0.5740913044950333)
 </pre></div>
 </div>
 </div>
@@ -1594,7 +1596,7 @@ Do you think you are better off using the standard array or (literally) rolling 
 <p><strong>Exercise:</strong> Suppose you are fighting three monsters:</p>
 <ul class="simple">
 <li><p>One is armed with a short sword that causes one 6-sided die of damage,</p></li>
-<li><p>One is armed with a battleaxe that causes one 8-sided die of damage, and</p></li>
+<li><p>One is armed with a battle axe that causes one 8-sided die of damage, and</p></li>
 <li><p>One is armed with a bastard sword that causes one 10-sided die of damage.</p></li>
 </ul>
 <p>One of the monsters, chosen at random, attacks you and does 1 point of damage.</p>
@@ -1856,8 +1858,8 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 <p><strong>Exercise:</strong> Henri Poincaré was a French mathematician who taught at the Sorbonne around 1900. The following anecdote about him is probably fiction, but it makes an interesting probability problem.</p>
 <p>Supposedly Poincaré suspected that his local bakery was selling loaves of bread that were lighter than the advertised weight of 1 kg, so every day for a year he bought a loaf of bread, brought it home and weighed it. At the end of the year, he plotted the distribution of his measurements and showed that it fit a normal distribution with mean 950 g and standard deviation 50 g. He brought this evidence to the bread police, who gave the baker a warning.</p>
-<p>For the next year, Poincaré continued the practice of weighing his bread every day. At the end of the year, he found that the average weight was 1000 g, just as it should be, but again he complained to the bread police, and this time they fined the baker.</p>
-<p>Why? Because the shape of the distribution was asymmetric. Unlike the normal distribution, it was skewed to the right, which is consistent with the hypothesis that the baker was still making 950 g loaves, but deliberately giving Poincaré the heavier ones.</p>
+<p>For the next year, Poincaré continued to weigh his bread every day. At the end of the year, he found that the average weight was 1000 g, just as it should be, but again he complained to the bread police, and this time they fined the baker.</p>
+<p>Why? Because the shape of the new distribution was asymmetric. Unlike the normal distribution, it was skewed to the right, which is consistent with the hypothesis that the baker was still making 950 g loaves, but deliberately giving Poincaré the heavier ones.</p>
 <p>To see whether this anecdote is plausible, let’s suppose that when the baker sees Poincaré coming, he hefts <code class="docutils literal notranslate"><span class="pre">n</span></code> loaves of bread and gives Poincaré the heaviest one.  How many loaves would the baker have to heft to make the average of the maximum 1000 g?</p>
 <p>To get you started, I’ll generate a year’s worth of data from a normal distribution with the given parameters.</p>
 <div class="cell tag_hide-cell docutils container">

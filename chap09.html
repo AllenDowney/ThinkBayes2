@@ -310,7 +310,7 @@
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#kernel-density-estimation">
-   Kernel density estimation
+   Kernel Density Estimation
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -374,11 +374,11 @@ It is a silly example, but it demonstrates a useful process called Bayesian <a c
 <div class="section" id="the-price-is-right-problem">
 <h2>The Price is Right problem<a class="headerlink" href="#the-price-is-right-problem" title="Permalink to this headline">¶</a></h2>
 <p>On November 1, 2007, contestants named Letia and Nathaniel appeared on <em>The Price is Right</em>, an American television game show. They competed in a game called “The Showcase”, where the objective is to guess the price of a collection of prizes. The contestant who comes closest to the actual price, without going over, wins the prizes.</p>
-<p>Nathaniel went first. His showcase included a dishwasher, a wine cabinet, a laptop computer, and a car. He bid $26,000.</p>
-<p>Letia’s showcase included a pinball machine, a video arcade game, a pool table, and a cruise of the Bahamas. She bid $21,500.</p>
-<p>The actual price of Nathaniel’s showcase was $25,347. His bid was too high, so he lost.</p>
-<p>The actual price of Letia’s showcase was $21,578.</p>
-<p>She was only off by $78, so she won her showcase and, because her bid was off by less than 250, she also won Nathaniel’s showcase.</p>
+<p>Nathaniel went first. His showcase included a dishwasher, a wine cabinet, a laptop computer, and a car. He bid \$26,000.</p>
+<p>Letia’s showcase included a pinball machine, a video arcade game, a pool table, and a cruise of the Bahamas. She bid \$21,500.</p>
+<p>The actual price of Nathaniel’s showcase was \$25,347. His bid was too high, so he lost.</p>
+<p>The actual price of Letia’s showcase was \$21,578.</p>
+<p>She was only off by \$78, so she won her showcase and, because her bid was off by less than 250, she also won Nathaniel’s showcase.</p>
 <p>For a Bayesian thinker, this scenario suggests several questions:</p>
 <ol class="simple">
 <li><p>Before seeing the prizes, what prior beliefs should the contestants have about the price of the showcase?</p></li>
@@ -499,7 +499,7 @@ The next two columns are the bids the contestants made.
 The last two columns are the differences between the actual values and the bids.</p>
 </div>
 <div class="section" id="kernel-density-estimation">
-<h2>Kernel density estimation<a class="headerlink" href="#kernel-density-estimation" title="Permalink to this headline">¶</a></h2>
+<h2>Kernel Density Estimation<a class="headerlink" href="#kernel-density-estimation" title="Permalink to this headline">¶</a></h2>
 <p>This dataset contains the prices for 313 previous showcases, which we can think of as a sample from the population of possible prices.</p>
 <p>We can use this sample to estimate the prior distribution of showcase prices.  One way to do that is kernel density estimation (KDE), which uses the sample to estimate a smooth distribution.  If you are not familiar with KDE, you can <a class="reference external" href="https://mathisonian.github.io/kde">read about it here</a>.</p>
 <p>SciPy provides <code class="docutils literal notranslate"><span class="pre">gaussian_kde</span></code>, which takes a sample and returns an object that represents the estimated distribution.</p>
@@ -592,8 +592,8 @@ The last two columns are the differences between the actual values and the bids.
 <p>To answer these questions, I will model each contestant as a price-guessing instrument with known error characteristics.
 In this model, when the contestant sees the prizes, they guess the price of each prize and add up the prices.
 Let’s call this total <code class="docutils literal notranslate"><span class="pre">guess</span></code>.</p>
-<p>Now the question we have to answer is, “If the actual price is <code class="docutils literal notranslate"><span class="pre">price</span></code>, what is the likelihood that the contestant’s estimate would be <code class="docutils literal notranslate"><span class="pre">guess</span></code>?”</p>
-<p>Equivalently, if we define <code class="docutils literal notranslate"><span class="pre">error</span> <span class="pre">=</span> <span class="pre">guess</span> <span class="pre">-</span> <span class="pre">price</span></code>, we can ask, “What is the likelihood that the contestant’s estimate is off by <code class="docutils literal notranslate"><span class="pre">error</span></code>?”</p>
+<p>Now the question we have to answer is, “If the actual price is <code class="docutils literal notranslate"><span class="pre">price</span></code>, what is the likelihood that the contestant’s guess would be <code class="docutils literal notranslate"><span class="pre">guess</span></code>?”</p>
+<p>Equivalently, if we define <code class="docutils literal notranslate"><span class="pre">error</span> <span class="pre">=</span> <span class="pre">guess</span> <span class="pre">-</span> <span class="pre">price</span></code>, we can ask, “What is the likelihood that the contestant’s guess is off by <code class="docutils literal notranslate"><span class="pre">error</span></code>?”</p>
 <p>To answer this question, I’ll use the historical data again.
 For each showcase in the dataset, let’s look at the difference between the contestant’s bid and the actual price:</p>
 <div class="cell docutils container">
@@ -686,9 +686,8 @@ This step is a little tricky because we don’t actually know the contestant’s
 </div>
 <div class="section" id="update">
 <h2>Update<a class="headerlink" href="#update" title="Permalink to this headline">¶</a></h2>
-<p>Suppose you are Player 1.  You see the prizes in your showcase and your estimate of the total price is $23,000.</p>
-<p>For each hypothetical price in the prior distribution, I’ll subtract away your guess.
-The result is your error under each hypothesis.</p>
+<p>Suppose you are Player 1.  You see the prizes in your showcase and your guess for the total price is \$23,000.</p>
+<p>From your guess I will subtract away each hypothetical price in the prior distribution; the result is your error under each hypothesis.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">guess1</span> <span class="o">=</span> <span class="mi">23000</span>
@@ -698,7 +697,7 @@ The result is your error under each hypothesis.</p>
 </div>
 </div>
 <p>Now suppose we know, based on past performance, that your estimation error is well modeled by <code class="docutils literal notranslate"><span class="pre">error_dist1</span></code>.
-Under that assumption we can compute the likelihood of your estimate under each hypothesis.</p>
+Under that assumption we can compute the likelihood of your error under each hypothesis.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood1</span> <span class="o">=</span> <span class="n">error_dist1</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">error1</span><span class="p">)</span>
@@ -734,7 +733,7 @@ Under that assumption we can compute the likelihood of your estimate under each 
 <img alt="_images/chap09_50_0.png" src="_images/chap09_50_0.png" />
 </div>
 </div>
-<p>Because your estimate is in the lower end of the range, the posterior distribution has shifted to the left.  We can compute the posterior mean to see by how much.</p>
+<p>Because your initial guess is in the lower end of the range, the posterior distribution has shifted to the left.  We can compute the posterior mean to see by how much.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior1</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior1</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -742,18 +741,18 @@ Under that assumption we can compute the likelihood of your estimate under each 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(30299.488817891375, 26192.024002392536)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(30299.488817891375, 12.000000007076508)
 </pre></div>
 </div>
 </div>
 </div>
-<p>Before you saw the prizes, you expected to see a showcase with a value close to $30,000.</p>
-<p>After making an estimate of $23,000, you updated the prior distribution.</p>
-<p>Based on the combination of the prior and your estimate, you now expect the actual price to be about $26,000.</p>
-<p><strong>Exercise:</strong> Now suppose you are Player 2.  When you see your showcase, you estimate that the total price is $38,000.</p>
+<p>Before you saw the prizes, you expected to see a showcase with a value close to \<span class="math notranslate nohighlight">\(30,000.
+After making a guess of \\\)</span>23,000, you updated the prior distribution.
+Based on the combination of the prior and your guess, you now expect the actual price to be about \$26,000.</p>
+<p><strong>Exercise:</strong> Now suppose you are Player 2.  When you see your showcase, you guess that the total price is \$38,000.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">diff2</span></code> to construct a normal distribution that represents the distribution of your estimation errors.</p>
-<p>Compute the likelihood of your estimate for each actual price and use it to update <code class="docutils literal notranslate"><span class="pre">prior2</span></code>.</p>
-<p>Plot the posterior distribution and compute the posterior mean.  Based on your estimate, what do you expect the actual price of the showcase to be?</p>
+<p>Compute the likelihood of your guess for each actual price and use it to update <code class="docutils literal notranslate"><span class="pre">prior2</span></code>.</p>
+<p>Plot the posterior distribution and compute the posterior mean.  Based on the prior and your guess, what do you expect the actual price of the showcase to be?</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -802,7 +801,7 @@ Under that assumption we can compute the likelihood of your estimate under each 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.697812321910703e-05
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.697812321910702e-05
 </pre></div>
 </div>
 </div>
@@ -831,7 +830,7 @@ Under that assumption we can compute the likelihood of your estimate under each 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>31047.62371912252 34305.20161642468
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>31047.623719122505 34305.20161642469
 </pre></div>
 </div>
 </div>
@@ -840,7 +839,7 @@ Under that assumption we can compute the likelihood of your estimate under each 
 <div class="section" id="probability-of-winning">
 <h2>Probability of winning<a class="headerlink" href="#probability-of-winning" title="Permalink to this headline">¶</a></h2>
 <p>Now that we have a posterior distribution for each player, let’s think about strategy.</p>
-<p>First, from the point of view of Player 1, let’s compute the probability that Player 2 overbids.  To keep it simple, I’ll use only the performance of past players, ignoring the estimated value of the showcase.</p>
+<p>First, from the point of view of Player 1, let’s compute the probability that Player 2 overbids.  To keep it simple, I’ll use only the performance of past players, ignoring the value of the showcase.</p>
 <p>The following function takes a sequence of past bids and returns the fraction that overbid.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -864,7 +863,7 @@ Under that assumption we can compute the likelihood of your estimate under each 
 </div>
 </div>
 </div>
-<p>Now suppose Player 1 underbids by $5000.
+<p>Now suppose Player 1 underbids by \$5000.
 What is the probability that Player 2 underbids by more?</p>
 <p>The following function uses past performance to estimate the probability that a player underbids by more than a given amount, <code class="docutils literal notranslate"><span class="pre">diff</span></code>:</p>
 <div class="cell docutils container">
@@ -876,7 +875,7 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 </div>
 </div>
-<p>Here’s the probability that Player 2 underbids by more than $5000.</p>
+<p>Here’s the probability that Player 2 underbids by more than \$5000.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prob_worse_than</span><span class="p">(</span><span class="o">-</span><span class="mi">5000</span><span class="p">,</span> <span class="n">sample_diff2</span><span class="p">)</span>
@@ -889,7 +888,7 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 </div>
 </div>
-<p>And here’s the probability they underbid by more than $10,000.</p>
+<p>And here’s the probability they underbid by more than \$10,000.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prob_worse_than</span><span class="p">(</span><span class="o">-</span><span class="mi">10000</span><span class="p">,</span> <span class="n">sample_diff2</span><span class="p">)</span>
@@ -923,7 +922,7 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 </div>
 </div>
-<p>Here’s the probability that you win, given that you underbid by $5000.</p>
+<p>Here’s the probability that you win, given that you underbid by \$5000.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_prob_win</span><span class="p">(</span><span class="o">-</span><span class="mi">5000</span><span class="p">,</span> <span class="n">sample_diff2</span><span class="p">)</span>
@@ -963,14 +962,14 @@ What is the probability that Player 2 underbids by more?</p>
 <img alt="_images/chap09_78_0.png" src="_images/chap09_78_0.png" />
 </div>
 </div>
-<p>If you underbid by $30,000, the chance of winning is about 30%, which is mostly the chance your opponent overbids.</p>
+<p>If you underbid by \$30,000, the chance of winning is about 30%, which is mostly the chance your opponent overbids.</p>
 <p>As your bids gets closer to the actual price, your chance of winning approaches 1.</p>
 <p>And, of course, if you overbid, you lose (even if your opponent also overbids).</p>
 <p><strong>Exercise:</strong> Run the same analysis from the point of view of Player 2.  Using the sample of differences from Player 1, compute:</p>
 <ol class="simple">
 <li><p>The probability that Player 1 overbids.</p></li>
-<li><p>The probability that Player 1 underbids by more than $5000.</p></li>
-<li><p>The probability that Player 2 wins, given that they underbid by $5000.</p></li>
+<li><p>The probability that Player 1 underbids by more than \$5000.</p></li>
+<li><p>The probability that Player 2 wins, given that they underbid by \$5000.</p></li>
 </ol>
 <p>Then plot the probability that Player 2 wins for a range of possible differences between their bid and the actual price.</p>
 <div class="cell tag_hide-cell docutils container">
@@ -1077,7 +1076,7 @@ What is the probability that Player 2 underbids by more?</p>
 <p>This loop implements the law of total probability:</p>
 <div class="math notranslate nohighlight">
 \[P(win) = \sum_{price} P(price) ~ P(win ~|~ price)\]</div>
-<p>Here’s the probability that Player 1 wins, based on a bid of $25,000 and the posterior distribution <code class="docutils literal notranslate"><span class="pre">posterior1</span></code>.</p>
+<p>Here’s the probability that Player 1 wins, based on a bid of \$25,000 and the posterior distribution <code class="docutils literal notranslate"><span class="pre">posterior1</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">total_prob_win</span><span class="p">(</span><span class="mi">25000</span><span class="p">,</span> <span class="n">posterior1</span><span class="p">,</span> <span class="n">sample_diff2</span><span class="p">)</span>
@@ -1142,9 +1141,9 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 </div>
 </div>
-<p>Recall that your estimate was $23,000.</p>
-<p>After using your estimate to compute the posterior distribution, the posterior mean is about $26,000.</p>
-<p>But the bid that maximizes your chance of winning is $21,000.</p>
+<p>Recall that your guess was \<span class="math notranslate nohighlight">\(23,000.
+Using your guess to compute the posterior distribution, the posterior mean is about \\\)</span>26,000.
+But the bid that maximizes your chance of winning is \$21,000.</p>
 <p><strong>Exercise:</strong> Do the same analysis for Player 2.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
@@ -1209,7 +1208,7 @@ What is the probability that Player 2 underbids by more?</p>
 <p>In the previous section we computed the bid that maximizes your chance of winning.
 And if that’s your goal, the bid we computed is optimal.</p>
 <p>But winning isn’t everything.
-Remember that if your bid is off by $250 or less, you win both showcases.
+Remember that if your bid is off by \$250 or less, you win both showcases.
 So it might be a good idea to increase your bid a little: it increases the chance you overbid and lose, but it also increases the chance of winning both showcases.</p>
 <p>Let’s see how that works out.
 The following function computes how much you will win, on average, given your bid, the actual price, and a sample of errors for your opponent.</p>
@@ -1259,9 +1258,7 @@ By averaging over the prices and probabilities in the posterior distribution, we
 </div>
 </div>
 </div>
-<p>For the posterior we computed earlier, based on an estimate of $23,000,</p>
-<p>the expected gain for a bid of $21,000</p>
-<p>is about $16,900.</p>
+<p>For the posterior we computed earlier, based on a guess of \<span class="math notranslate nohighlight">\(23,000, the expected gain for a bid of \\\)</span>21,000 is about \$16,900.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expected_gain</span><span class="p">(</span><span class="mi">21000</span><span class="p">,</span> <span class="n">posterior1</span><span class="p">,</span> <span class="n">sample_diff2</span><span class="p">)</span>
@@ -1315,7 +1312,7 @@ By averaging over the prices and probabilities in the posterior distribution, we
 </div>
 </div>
 </div>
-<p>With that bid, the expected gain is about $17,400.</p>
+<p>With that bid, the expected gain is about \$17,400.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expected_gain_series</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
@@ -1328,9 +1325,9 @@ By averaging over the prices and probabilities in the posterior distribution, we
 </div>
 </div>
 </div>
-<p>Recall that the estimated value of the prizes was $23,000.</p>
-<p>The bid that maximizes the chance of winning is $21,000.</p>
-<p>And the bid that maximizes your expected gain is $22,000.</p>
+<p>Recall that your initial guess was \<span class="math notranslate nohighlight">\(23,000.
+The bid that maximizes the chance of winning is \\\)</span>21,000.
+And the bid that maximizes your expected gain is \$22,000.</p>
 <p><strong>Exercise:</strong> Do the same analysis for Player 2.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
@@ -1434,27 +1431,27 @@ In general, frequentist estimation provides little guidance for decision-making.
 <p>Choose a prior you think is appropriate and use the data to compute the posterior distribution of the order rate.
 Then generate a posterior predictive distribution for the number of copies you expect during the next 8 weeks.</p>
 <ul class="simple">
-<li><p>Suppose the cost of printing the book is $5 per copy,</p></li>
-<li><p>But if you order 100 or more, it’s $4.50 per copy.</p></li>
-<li><p>For every book you sell, you get $10.</p></li>
-<li><p>But if you run out of books before the end of 8 weeks, you lose $50 in future sales for every week you are out of stock.</p></li>
-<li><p>If you have books left over at the end of 8 weeks, you lose $2 in inventory costs per extra book.</p></li>
+<li><p>Suppose the cost of printing the book is \$5 per copy,</p></li>
+<li><p>But if you order 100 or more, it’s \$4.50 per copy.</p></li>
+<li><p>For every book you sell, you get \$10.</p></li>
+<li><p>But if you run out of books before the end of 8 weeks, you lose \$50 in future sales for every week you are out of stock.</p></li>
+<li><p>If you have books left over at the end of 8 weeks, you lose \$2 in inventory costs per extra book.</p></li>
 </ul>
 <p>For example, suppose you get orders for 10 books per week, every week.</p>
 <p>If you order 60 books,</p>
 <ul class="simple">
-<li><p>The total cost is $300.</p></li>
-<li><p>You sell all 30 books, so you make $600.</p></li>
-<li><p>But the book is out of stock for two weeks, so you lose $100 in future sales.</p></li>
+<li><p>The total cost is \$300.</p></li>
+<li><p>You sell all 30 books, so you make \$600.</p></li>
+<li><p>But the book is out of stock for two weeks, so you lose \$100 in future sales.</p></li>
 </ul>
-<p>In total, your profit is $200.</p>
+<p>In total, your profit is \$200.</p>
 <p>If you order 100 books,</p>
 <ul class="simple">
-<li><p>The total cost is $450.</p></li>
-<li><p>You sell 80 books, again, so you make $800.</p></li>
-<li><p>But you have 20 books left over at the end, so you lose $40.</p></li>
+<li><p>The total cost is \$450.</p></li>
+<li><p>You sell 80 books, again, so you make \$800.</p></li>
+<li><p>But you have 20 books left over at the end, so you lose \$40.</p></li>
 </ul>
-<p>In total, your profit is $310.</p>
+<p>In total, your profit is \$310.</p>
 <p>Combining these costs with your predictive distribution, how many books should you order to maximize your expected profit?</p>
 <p>To get you started, the following functions compute profits and costs according to the specification of the problem:</p>
 <div class="cell tag_hide-cell docutils container">
@@ -1551,7 +1548,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 </div>
-<p>If you print 60 books, your net profit is $200, as in the example.</p>
+<p>If you print 60 books, your net profit is \$200, as in the example.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_profit</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="n">always_10</span><span class="p">)</span>
@@ -1564,7 +1561,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 </div>
-<p>If you print 100 books, your net profit is $310.</p>
+<p>If you print 100 books, your net profit is \$310.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_profit</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">always_10</span><span class="p">)</span>
@@ -1623,7 +1620,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9.22425
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9.2915
 </pre></div>
 </div>
 </div>
@@ -1638,11 +1635,11 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[12, 13,  9, 16, 25, 15, 15, 14],
-       [ 4,  6,  7,  9,  7,  5,  7,  1],
-       [ 7, 10,  6,  8,  7, 10, 10, 14],
-       [ 7,  3,  4,  8,  4,  6,  7,  7],
-       [21, 17, 17, 13,  8, 13, 21, 17]])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 8,  8,  6, 11,  9,  9,  9,  9],
+       [ 6,  4, 12, 12, 11, 12, 11, 11],
+       [ 9,  7, 12, 14,  9, 12, 12,  7],
+       [15,  9, 16, 11, 12, 10,  6, 10],
+       [14, 20, 16, 13, 11, 10,  9, 16]])
 </pre></div>
 </div>
 </div>
@@ -1672,7 +1669,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>196.064
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>190.54
 </pre></div>
 </div>
 </div>
@@ -1684,7 +1681,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>199.924
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>196.752
 </pre></div>
 </div>
 </div>
@@ -1696,7 +1693,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>179.118
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>178.972
 </pre></div>
 </div>
 </div>
@@ -1733,7 +1730,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(77, 201.118)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(78, 197.08)
 </pre></div>
 </div>
 </div>
@@ -1849,7 +1846,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9.984467654021303
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10.124528115288987
 </pre></div>
 </div>
 </div>
@@ -1866,11 +1863,11 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[10,  5,  6, 12, 11, 18,  5,  7],
-       [ 6, 11, 14, 10,  6, 13,  9, 13],
-       [13,  5, 10, 15,  7, 18, 11,  9],
-       [ 9,  8, 11, 14, 15,  6,  6, 11],
-       [19,  7, 12, 12,  7, 10, 13,  9]])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 3,  7,  8,  5,  8,  2, 10, 10],
+       [10,  6,  8,  6, 13, 12, 12,  9],
+       [ 9,  5,  3,  7,  3,  2,  6,  9],
+       [12, 12,  7, 10,  6, 10, 17,  5],
+       [15, 22, 16,  9, 15,  5, 11, 11]])
 </pre></div>
 </div>
 </div>
