@@ -175,7 +175,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap16.html">
-   Logistic regression
+   Logistic Regression
   </a>
  </li>
  <li class="toctree-l1">
@@ -370,7 +370,7 @@ To describe these “survival times”, we’ll use the Weibull distribution.</p
 <h2>The Weibull Distribution<a class="headerlink" href="#the-weibull-distribution" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference external" href="https://en.wikipedia.org/wiki/Weibull_distribution">Weibull distribution</a> is often used in survival analysis because it is a good model for the distribution of lifetimes for manufactured products, at least over some parts of the range.</p>
 <p>SciPy provides several versions of the Weibull distribution; the one we’ll use is called <code class="docutils literal notranslate"><span class="pre">weibull_min</span></code>.
-To make it easier to use, I’ll wrap it in a function that takes two parameters: <span class="math notranslate nohighlight">\(\lambda\)</span>, which mostly affects the location or “central tendency” of the distribution, and <span class="math notranslate nohighlight">\(k\)</span>, which affects the shape.</p>
+To make the interface consistent with our notation, I’ll wrap it in a function that takes as parameters <span class="math notranslate nohighlight">\(\lambda\)</span>, which mostly affects the location or “central tendency” of the distribution, and <span class="math notranslate nohighlight">\(k\)</span>, which affects the shape.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">weibull_min</span>
@@ -404,7 +404,9 @@ Here’s what the Weibull CDF looks like with those parameters.</p>
 <span class="n">cdf</span> <span class="o">=</span> <span class="n">Cdf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
 <span class="n">cdf</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Duration in time&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Duration in time&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;CDF of a Weibull distribution&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -812,7 +814,8 @@ But in this case it is hidden because we don’t know the future, not because so
             <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
             
     <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (weeks)&#39;</span><span class="p">,</span>
-             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Dog index&#39;</span><span class="p">)</span>
+             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Dog index&#39;</span><span class="p">,</span>
+             <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Lifelines showing censored and uncensored observations&#39;</span><span class="p">)</span>
 
     <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
 </pre></div>
@@ -903,8 +906,10 @@ At the end of the observation interval, we don’t know what the residence time 
     <span class="sd">&quot;&quot;&quot;Update the prior using incomplete data.&quot;&quot;&quot;</span>
     <span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">,</span> <span class="n">data_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
         <span class="n">prior</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-    <span class="n">densities</span> <span class="o">=</span> <span class="n">weibull_dist</span><span class="p">(</span><span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">)</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">data_mesh</span><span class="p">)</span>
-    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">densities</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    
+    <span class="c1"># evaluate the survival function</span>
+    <span class="n">probs</span> <span class="o">=</span> <span class="n">weibull_dist</span><span class="p">(</span><span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">)</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">data_mesh</span><span class="p">)</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">probs</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
     <span class="n">normalize</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
@@ -1128,7 +1133,7 @@ Again, I’ll start with uniform priors for <span class="math notranslate nohigh
 </div>
 </div>
 </div>
-<p>For this example, there are 51 values in the prior distribtion, rather than the usual 101.  That’s because we are going to use the posterior distributions to do some computationally-intensive calculations.
+<p>For this example, there are 51 values in the prior distribution, rather than the usual 101.  That’s because we are going to use the posterior distributions to do some computationally-intensive calculations.
 They will run faster with fewer values, but the results will be less precise.</p>
 <p>As usual, we can use <code class="docutils literal notranslate"><span class="pre">make_joint</span></code> to make the prior joint distribution.</p>
 <div class="cell docutils container">
@@ -1222,6 +1227,7 @@ We can use <code class="docutils literal notranslate"><span class="pre">np.repea
 </div>
 </div>
 </div>
+<p>Based on the posterior distribution, we think the mean lifetime is about 1413 hours.</p>
 <p>The following function encapsulates these steps:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">

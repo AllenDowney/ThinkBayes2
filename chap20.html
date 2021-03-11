@@ -174,7 +174,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap16.html">
-   Logistic regression
+   Logistic Regression
   </a>
  </li>
  <li class="toctree-l1">
@@ -641,8 +641,8 @@ For the maximum diameter I chose 20 cm.</p>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">simulate_growth</span></code> takes as a parameter a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the distribution of RDT.
 It initializes the age and volume of the tumor, then runs a loop that simulates one interval at a time.</p>
-<p>Each time through the loop, it checks the volume of the tumor and exits when it exceeds <code class="docutils literal notranslate"><span class="pre">vmax</span></code>.</p>
-<p>Then it chooses a value from <code class="docutils literal notranslate"><span class="pre">pmf_rdt</span></code> and updates <code class="docutils literal notranslate"><span class="pre">age</span></code> and <code class="docutils literal notranslate"><span class="pre">volume</span></code>.  Since <code class="docutils literal notranslate"><span class="pre">rdt</span></code> is in doublings per year, we multiply by <code class="docutils literal notranslate"><span class="pre">interval</span></code> to compute the number of doublings during each interval.</p>
+<p>Each time through the loop, it checks the volume of the tumor and exits if it exceeds <code class="docutils literal notranslate"><span class="pre">vmax</span></code>.</p>
+<p>Otherwise it chooses a value from <code class="docutils literal notranslate"><span class="pre">pmf_rdt</span></code> and updates <code class="docutils literal notranslate"><span class="pre">age</span></code> and <code class="docutils literal notranslate"><span class="pre">volume</span></code>.  Since <code class="docutils literal notranslate"><span class="pre">rdt</span></code> is in doublings per year, we multiply by <code class="docutils literal notranslate"><span class="pre">interval</span></code> to compute the number of doublings during each interval.</p>
 <p>At the end of the loop, <code class="docutils literal notranslate"><span class="pre">simulate_growth</span></code> puts the results in a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> and computes the diameter that corresponds to each volume.</p>
 <p>Here’s how we call this function:</p>
 <div class="cell docutils container">
@@ -780,7 +780,7 @@ It initializes the age and volume of the tumor, then runs a loop that simulates 
 
 <span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">sims</span><span class="p">:</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sim</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">],</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;diameter&#39;</span><span class="p">],</span>
-             <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+             <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
     
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Tumor age (years)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Diameter (cm, log scale)&#39;</span><span class="p">,</span>
@@ -825,13 +825,7 @@ The following function takes the results of the simulations and returns the age 
 
 <span class="n">ages</span> <span class="o">=</span> <span class="n">interpolate_ages</span><span class="p">(</span><span class="n">sims</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
 <span class="n">cdf</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">ages</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">cdf</span><span class="o">.</span><span class="n">median</span><span class="p">(),</span> <span class="n">cdf</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cdf</span><span class="o">.</span><span class="n">median</span><span class="p">(),</span> <span class="n">cdf</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -841,7 +835,8 @@ The following function takes the results of the simulations and returns the age 
 </div>
 </div>
 </div>
-<div class="cell tag_hide-cell docutils container">
+<p>For a tumor 15 cm in diameter, the median age is about 22 years, the 90% credible interval is between 13 and 34 years, and the probability that it formed less than 9 years ago is less than 1%.</p>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span> <span class="o">-</span> <span class="n">cdf</span><span class="p">(</span><span class="mf">9.0</span><span class="p">)</span>
 </pre></div>
@@ -853,7 +848,6 @@ The following function takes the results of the simulations and returns the age 
 </div>
 </div>
 </div>
-<p>For a tumor 15 cm in diameter, the median age is about 22 years; the 90% credible interval is between 13 and 34 years.  And the probability that it formed less than 9 years ago is less than 1%.</p>
 <p>But this result is based on two modeling decisions that are potentially problematic:</p>
 <ul class="simple">
 <li><p>In the simulations, growth rate during each interval is independent of previous growth rates. In reality it is plausible that tumors that have grown quickly in the past are likely to grow quickly in the future. In other words, there is probably a serial correlation in growth rate.</p></li>
@@ -865,7 +859,7 @@ Nevertheless, with moderate correlation (0.5), the probability that a 15 cm tumo
 If, as seems likely, a tumor this size is relatively flat, it might have the same volume as a 6 cm sphere.
 But even with this smaller volume and correlation 0.5, the probability that this tumor is less than 9 years old is about 5%.</p>
 <p>So even taking into account modeling errors, it is unlikely that such a large tumor could have formed after my correspondent retired from military service.</p>
-<p>The following figure shows the distribution of ages for tumors with diameters 4, 8, and 16 cm.</p>
+<p>The following figure shows the distribution of ages for tumors with diameters 4, 8, and 15 cm.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">diameter</span> <span class="ow">in</span> <span class="n">diameters</span><span class="p">:</span>
@@ -981,7 +975,7 @@ The following variables model these steps.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
-    <span class="n">dilution_shaker1</span> <span class="o">=</span> <span class="p">(</span><span class="n">yeast_slurry_vol</span>       <span class="o">/</span> 
+    <span class="n">dilution_shaker1</span> <span class="o">=</span> <span class="p">(</span><span class="n">yeast_slurry_vol</span> <span class="o">/</span> 
                         <span class="p">(</span><span class="n">yeast_slurry_vol</span> <span class="o">+</span> <span class="n">shaker1_vol</span><span class="p">))</span>
     <span class="n">dilution_shaker2</span> <span class="o">=</span> <span class="p">(</span><span class="n">shaker1_to_shaker2_vol</span> <span class="o">/</span> 
                         <span class="p">(</span><span class="n">shaker1_to_shaker2_vol</span> <span class="o">+</span> <span class="n">shaker2_vol</span><span class="p">))</span>
@@ -1023,9 +1017,9 @@ So the actual count follows a binomial distribution.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
     <span class="n">count</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Binomial</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> 
-        <span class="n">n</span><span class="o">=</span><span class="n">yeast_in_chamber</span><span class="p">,</span> 
-        <span class="n">p</span><span class="o">=</span><span class="n">squares_counted</span><span class="o">/</span><span class="n">total_squares</span><span class="p">,</span>
-        <span class="n">observed</span><span class="o">=</span><span class="n">yeast_counted</span><span class="p">)</span>
+                        <span class="n">n</span><span class="o">=</span><span class="n">yeast_in_chamber</span><span class="p">,</span> 
+                        <span class="n">p</span><span class="o">=</span><span class="n">squares_counted</span><span class="o">/</span><span class="n">total_squares</span><span class="p">,</span>
+                        <span class="n">observed</span><span class="o">=</span><span class="n">yeast_counted</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1043,7 +1037,7 @@ So the actual count follows a binomial distribution.</p>
 CompoundStep
 &gt;NUTS: [chamber_vol, shaker2 to shaker3, shaker1 to shaker2, yeast slurry vol, shaker3 vol, shaker2 vol, shaker1 vol, yeast conc]
 &gt;Metropolis: [yeast in chamber]
-Sampling 2 chains, 0 divergences: 100%|██████████| 3000/3000 [00:49&lt;00:00, 60.16draws/s]
+Sampling 2 chains, 0 divergences: 100%|██████████| 3000/3000 [00:46&lt;00:00, 65.10draws/s]
 The estimated number of effective samples is smaller than 200 for some parameters.
 </pre></div>
 </div>
@@ -1059,7 +1053,7 @@ The estimated number of effective samples is smaller than 200 for some parameter
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.2634970044296914 [1.8596755  2.66877785]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.2596760534184135 [1.83638282 2.66861364]
 </pre></div>
 </div>
 </div>
@@ -1090,7 +1084,7 @@ But it also provides an opportunity to demonstrate ABC.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>39.902
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>39.9522
 </pre></div>
 </div>
 </div>
@@ -1104,7 +1098,7 @@ But it also provides an opportunity to demonstrate ABC.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>238
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>250
 </pre></div>
 </div>
 </div>
@@ -1121,13 +1115,12 @@ But it also provides an opportunity to demonstrate ABC.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_abc</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">posterior_sample2</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">cdf_abc</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> 
-      <span class="n">cdf_abc</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cdf_abc</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">cdf_abc</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.295816844842803 [1.85005189 2.74822918]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.2721642364350445 [1.85445095 2.68238424]
 </pre></div>
 </div>
 </div>
@@ -1136,7 +1129,7 @@ But it also provides an opportunity to demonstrate ABC.</p>
 Here’s what the distributions look like.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_pymc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;MCMC&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_pymc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;MCMC&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
 <span class="n">cdf_abc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;ABC&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Yeast concentration (cells/mL)&#39;</span><span class="p">,</span>
@@ -1228,7 +1221,7 @@ But how close?  And how much credit?</p>
 <p>The following is a scatter plot of these likelihoods versus the expected counts.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="n">likelihood</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="n">likelihood</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Expected count (number of cells)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Likelihood&#39;</span><span class="p">)</span>
@@ -1264,7 +1257,7 @@ If we sort the quantities and normalize the probabilities, the result is an esti
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.272447704866729 [1.84537029 2.71759902]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.271394162053131 [1.85344564 2.71299385]
 </pre></div>
 </div>
 </div>
@@ -1273,7 +1266,7 @@ If we sort the quantities and normalize the probabilities, the result is an esti
 And here’s what the posterior distributions look like.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_pymc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;MCMC&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_pymc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;MCMC&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
 <span class="c1">#cdf_abc.plot(label=&#39;ABC&#39;)</span>
 <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;ABC2&#39;</span><span class="p">)</span>
 
@@ -1355,7 +1348,7 @@ In that case, each simulation might require substantial computation, and many si
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 4,  0,  6,  1,  2,  6,  7,  2, 10,  5,  8])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([12, 11,  2,  1,  4,  8,  8,  0,  1,  0,  7])
 </pre></div>
 </div>
 </div>
@@ -1370,7 +1363,7 @@ In that case, each simulation might require substantial computation, and many si
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 0,  1,  2,  4,  5,  6,  7,  8, 10])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 0,  1,  2,  4,  7,  8, 11, 12])
 </pre></div>
 </div>
 </div>
@@ -1384,7 +1377,7 @@ In that case, each simulation might require substantial computation, and many si
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([1, 1, 2, 1, 1, 2, 1, 1, 1])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([2, 2, 1, 1, 1, 2, 1, 1])
 </pre></div>
 </div>
 </div>
@@ -1401,7 +1394,7 @@ In that case, each simulation might require substantial computation, and many si
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(7, 2)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(5, 3)
 </pre></div>
 </div>
 </div>
@@ -1463,7 +1456,7 @@ In that case, each simulation might require substantial computation, and many si
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1156
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1157
 </pre></div>
 </div>
 </div>
@@ -1505,33 +1498,33 @@ In that case, each simulation might require substantial computation, and many si
   <tbody>
     <tr>
       <th>0</th>
-      <td>52</td>
+      <td>56</td>
       <td>25.0</td>
-      <td>2.0</td>
+      <td>6.0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>54</td>
-      <td>26.0</td>
-      <td>2.0</td>
+      <td>48</td>
+      <td>21.0</td>
+      <td>6.0</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>41</td>
-      <td>18.0</td>
-      <td>5.0</td>
+      <td>23</td>
+      <td>10.0</td>
+      <td>3.0</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>35</td>
-      <td>14.0</td>
-      <td>7.0</td>
+      <td>30</td>
+      <td>13.0</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>57</td>
-      <td>19.0</td>
-      <td>19.0</td>
+      <td>35</td>
+      <td>14.0</td>
+      <td>7.0</td>
     </tr>
   </tbody>
 </table>

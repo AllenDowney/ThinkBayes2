@@ -175,7 +175,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap16.html">
-   Logistic regression
+   Logistic Regression
   </a>
  </li>
  <li class="toctree-l1">
@@ -468,7 +468,9 @@ The <code class="docutils literal notranslate"><span class="pre">Response</span>
     <span class="n">cdf</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">cdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Score&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Score&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distributions of test scores&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -476,8 +478,8 @@ The <code class="docutils literal notranslate"><span class="pre">Response</span>
 <img alt="_images/chap13_14_0.png" src="_images/chap13_14_0.png" />
 </div>
 </div>
-<p>There is overlap between the distributions, but it looks like the scores are higher in the treated group.</p>
-<p>The distribution of scores is not exactly normal for either group, but it is close enough that the normal model is a reasonable choice.</p>
+<p>There is overlap between the distributions, but it looks like the scores are higher in the treated group.
+The distribution of scores is not exactly normal for either group, but it is close enough that the normal model is a reasonable choice.</p>
 <p>So I’ll assume that in the entire population of students (not just the ones in the experiment), the distribution of scores is well modeled by a normal distribution with unknown mean and standard deviation.
 I’ll use <code class="docutils literal notranslate"><span class="pre">mu</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma</span></code> to denote these unknown parameters,
 and we’ll do a Bayesian update to estimate what they are.</p>
@@ -673,7 +675,9 @@ I’ll do that by making a 3-dimensional grid with values of <code class="docuti
 <span class="n">cs</span> <span class="o">=</span> <span class="n">plot_contour</span><span class="p">(</span><span class="n">posterior_treated</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Oranges&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">57</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="s1">&#39;Treated&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Mean&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Mean (mu)&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation (sigma)&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Joint posterior distributions of mu and sigma&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -705,7 +709,7 @@ We can see these differences more clearly by looking at the marginal distributio
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_mean_control</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Control&#39;</span><span class="p">)</span>
 <span class="n">pmf_mean_treated</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Treated&#39;</span><span class="p">)</span>
 
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Population mean&#39;</span><span class="p">,</span> 
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Population mean (mu)&#39;</span><span class="p">,</span> 
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span> 
          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distributions of mu&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1063,7 +1067,6 @@ I’ll compute summary statistics for the two groups.</p>
 </div>
 </div>
 </div>
-<p>And here’s what the joint posterior distribution looks like for the control group.</p>
 <p>To compute the posterior distribution for the treatment group, I’ll put the previous steps in a function:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1101,12 +1104,14 @@ I’ll compute summary statistics for the two groups.</p>
 <span class="n">cs</span> <span class="o">=</span> <span class="n">plot_contour</span><span class="p">(</span><span class="n">posterior_treated2</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Oranges&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">57</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="s1">&#39;Treated&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
-<span class="n">decorate</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Mean (mu)&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation (sigma)&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Joint posterior distributions of mu and sigma&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_104_0.png" src="_images/chap13_104_0.png" />
+<img alt="_images/chap13_103_0.png" src="_images/chap13_103_0.png" />
 </div>
 </div>
 <p>Visually, these posterior joint distributions are similar to the ones we computed using the entire dataset, not just the summary statistics.
@@ -1128,11 +1133,9 @@ But they are not exactly the same, as we can see by comparing the marginal distr
 <p>And compare them to results we got using the entire dataset (the dashed lines).</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_mean_control</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;_nolegend&#39;</span><span class="p">,</span> 
-                      <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_mean_control</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
 <span class="n">pmf_mean_control2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Control&#39;</span><span class="p">)</span>
-<span class="n">pmf_mean_treated</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;_nolegend&#39;</span><span class="p">,</span> 
-                      <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+<span class="n">pmf_mean_treated</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
 <span class="n">pmf_mean_treated2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Treated&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Population mean&#39;</span><span class="p">,</span> 
@@ -1142,7 +1145,7 @@ But they are not exactly the same, as we can see by comparing the marginal distr
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_109_0.png" src="_images/chap13_109_0.png" />
+<img alt="_images/chap13_108_0.png" src="_images/chap13_108_0.png" />
 </div>
 </div>
 <p>The posterior distributions based on summary statistics are similar to the posteriors we computed using the entire dataset, but in both cases they are shorter and a little wider.</p>
@@ -1258,16 +1261,17 @@ I’ll use <code class="docutils literal notranslate"><span class="pre">kde_from
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_m</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Theoretical distribution&#39;</span><span class="p">,</span>
-           <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+           <span class="n">style</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 <span class="n">pmf_sample_means</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;KDE of sample means&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Mean score&#39;</span><span class="p">,</span>
-         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">)</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of the mean&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_127_0.png" src="_images/chap13_127_0.png" />
+<img alt="_images/chap13_126_0.png" src="_images/chap13_126_0.png" />
 </div>
 </div>
 <p>The theoretical distribution and the distribution of sample means are in accord.</p>
@@ -1332,17 +1336,18 @@ SciPy provides <code class="docutils literal notranslate"><span class="pre">chi2
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_s</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Theoretical distribution&#39;</span><span class="p">,</span>
-           <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+           <span class="n">style</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 <span class="n">pmf_sample_stds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;KDE of sample std&#39;</span><span class="p">,</span>
                      <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation of scores&#39;</span><span class="p">,</span>
-         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">)</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of standard deviation&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_140_0.png" src="_images/chap13_140_0.png" />
+<img alt="_images/chap13_139_0.png" src="_images/chap13_139_0.png" />
 </div>
 </div>
 <p>The distribution of transformed standard deviations agrees with the theoretical distribution.</p>
@@ -1354,7 +1359,7 @@ SciPy provides <code class="docutils literal notranslate"><span class="pre">chi2
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-0.02131902621728247
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.04831887151708398
 </pre></div>
 </div>
 </div>
@@ -1368,12 +1373,14 @@ SciPy provides <code class="docutils literal notranslate"><span class="pre">chi2
 
 <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">sample_means</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">sample_stds</span><span class="p">)</span>
 
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Mean&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Mean (mu)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation (sigma)&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Joint distribution of mu and sigma&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_145_0.png" src="_images/chap13_145_0.png" />
+<img alt="_images/chap13_144_0.png" src="_images/chap13_144_0.png" />
 </div>
 </div>
 <p>It looks like the axes of the ellipses are aligned with the axes, which indicates that the variables are independent.</p>
@@ -1416,7 +1423,7 @@ What is the probability that the standard deviation is higher in the control gro
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_151_0.png" src="_images/chap13_151_0.png" />
+<img alt="_images/chap13_150_0.png" src="_images/chap13_150_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1483,13 +1490,13 @@ What is the probability that the standard deviation is higher in the control gro
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_156_0.png" src="_images/chap13_156_0.png" />
+<img alt="_images/chap13_155_0.png" src="_images/chap13_155_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="exercise">
 <h2>Exercise<a class="headerlink" href="#exercise" title="Permalink to this headline">¶</a></h2>
-<p>An “<a class="reference external" href="http://en.wikipedia.org/wiki/Effect_size">effect size</a>” is a statistic intended to quantify the magnitude of a phenomenon.
+<p>An <a class="reference external" href="http://en.wikipedia.org/wiki/Effect_size">effect size</a> is a statistic intended to quantify the magnitude of a phenomenon.
 If the phenomenon is a difference in means between two groups, a common way to quantify it is Cohen’s effect size, denoted <span class="math notranslate nohighlight">\(d\)</span>.</p>
 <p>If the parameters for Group 1 are <span class="math notranslate nohighlight">\((\mu_1, \sigma_1)\)</span>, and the
 parameters for Group 2 are <span class="math notranslate nohighlight">\((\mu_2, \sigma_2)\)</span>, Cohen’s
@@ -1572,7 +1579,7 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.27096774193548406
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5426086956521737
 </pre></div>
 </div>
 </div>
@@ -1603,7 +1610,7 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_167_0.png" src="_images/chap13_167_0.png" />
+<img alt="_images/chap13_166_0.png" src="_images/chap13_166_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1615,7 +1622,7 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6763828239272031
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6584760385879059
 </pre></div>
 </div>
 </div>
@@ -1629,7 +1636,7 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.15238095, 1.17410072])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.15238095, 1.17165354])
 </pre></div>
 </div>
 </div>
@@ -1716,13 +1723,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 <span class="c1"># Here&#39;s the first posterior.</span>
 
 <span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation&#39;</span><span class="p">,</span>
-         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation (sigma)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution of sigma&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_175_0.png" src="_images/chap13_175_0.png" />
+<img alt="_images/chap13_174_0.png" src="_images/chap13_174_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1752,13 +1760,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hypos</span><span class="p">,</span> <span class="n">likelihood2</span><span class="p">)</span>
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation&#39;</span><span class="p">,</span>
-         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Likelihood&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation (sigma)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Likelihood&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Likelihood function&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_178_0.png" src="_images/chap13_178_0.png" />
+<img alt="_images/chap13_177_0.png" src="_images/chap13_177_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1787,13 +1796,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 <span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior 1&#39;</span><span class="p">)</span>
 <span class="n">posterior2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior 2&#39;</span><span class="p">)</span>
 
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation&#39;</span><span class="p">,</span>
-         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation (sigma)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution of sigma&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_180_0.png" src="_images/chap13_180_0.png" />
+<img alt="_images/chap13_179_0.png" src="_images/chap13_179_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1826,7 +1836,7 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </div>
 <p><strong>Exercise:</strong> I have a soft spot for crank science, so this exercise is about the <a class="reference external" href="http://en.wikipedia.org/wiki/Variability_hypothesis">Variability Hypothesis</a>, which</p>
 <blockquote>
-<div><p>“originated in the early nineteenth century with Johann Meckel, who argued that males have a greater range of ability than females, especially in intelligence. In other words, he believed that most geniuses and most mentally retarded people are men. Because he considered males to be the ’superior animal,’ Meckel concluded that females’ lack of variation was a sign of inferiority.”</p>
+<div><p>“originated in the early nineteenth century with Johann Meckel, who argued that males have a greater range of ability than females, especially in intelligence. In other words, he believed that most geniuses and most mentally retarded people are men. Because he considered males to be the ‘superior animal’, Meckel concluded that females’ lack of variation was a sign of inferiority.”</p>
 </div></blockquote>
 <p>I particularly like that last part because I suspect that if it turned out that women were <em>more</em> variable, Meckel would have taken that as a sign of inferiority, too.</p>
 <p>Nevertheless, the Variability Hypothesis suggests an exercise we can use to practice the methods in this chapter.  Let’s look at the distribution of heights for men and women in the U.S. and see who is more variable.</p>
@@ -1895,12 +1905,15 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 <span class="n">data</span> <span class="o">=</span> <span class="n">n</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span>
 <span class="n">posterior_male</span> <span class="o">=</span> <span class="n">update_norm_summary</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 <span class="n">plot_contour</span><span class="p">(</span><span class="n">posterior_male</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">)</span>
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Mean&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Mean (mu)&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Standard deviation (sigma)&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Joint distribution of mu and sigma&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_190_0.png" src="_images/chap13_190_0.png" />
+<img alt="_images/chap13_189_0.png" src="_images/chap13_189_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1940,7 +1953,7 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_193_0.png" src="_images/chap13_193_0.png" />
+<img alt="_images/chap13_192_0.png" src="_images/chap13_192_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1960,7 +1973,7 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13_194_0.png" src="_images/chap13_194_0.png" />
+<img alt="_images/chap13_193_0.png" src="_images/chap13_193_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">

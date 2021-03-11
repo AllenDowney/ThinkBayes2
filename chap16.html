@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Logistic regression &#8212; Think Bayes</title>
+    <title>Logistic Regression &#8212; Think Bayes</title>
     
   <link rel="stylesheet" href="_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
 
@@ -175,7 +175,7 @@
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Logistic regression
+   Logistic Regression
   </a>
  </li>
  <li class="toctree-l1">
@@ -365,7 +365,7 @@
               <div>
                 
   <div class="section" id="logistic-regression">
-<h1>Logistic regression<a class="headerlink" href="#logistic-regression" title="Permalink to this headline">¶</a></h1>
+<h1>Logistic Regression<a class="headerlink" href="#logistic-regression" title="Permalink to this headline">¶</a></h1>
 <p>This chapter introduces two related topics: log odds and logistic regression.</p>
 <p>In &lt;&lt;_BayessRule&gt;&gt;, we rewrote Bayes’s Theorem in terms of odds and derived Bayes’s Rule, which can be a convenient way to do a Bayesian update on paper or in your head.
 In this chapter, we’ll look at Bayes’s Rule on a logarithmic scale, which provides insight into how we accumulate evidence through successive updates.</p>
@@ -863,9 +863,9 @@ The change in log odds after each update is the logarithm of the likelihood rati
 </div>
 <p>The columns are:</p>
 <ul class="simple">
-<li><p>The date of launch,</p></li>
-<li><p>Outside temperature in Fahrenheit, and</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">1</span></code> if there was a damage incident and <code class="docutils literal notranslate"><span class="pre">0</span></code> otherwise.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Date</span></code>: The date of launch,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Temperature</span></code>: Outside temperature in Fahrenheit, and</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Damage</span></code>: <code class="docutils literal notranslate"><span class="pre">1</span></code> if there was a damage incident and <code class="docutils literal notranslate"><span class="pre">0</span></code> otherwise.</p></li>
 </ul>
 <p>There are 23 launches in the dataset, 7 with damage incidents.</p>
 <div class="cell tag_hide-cell docutils container">
@@ -920,19 +920,13 @@ For reasons I’ll explain soon, I’ll define <span class="math notranslate noh
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Temperature&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span>
 <span class="n">offset</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>70.0
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Temperature&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span>
 </pre></div>
 </div>
 </div>
@@ -1038,7 +1032,7 @@ Here’s the range:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_47_0.png" src="_images/chap16_47_0.png" />
+<img alt="_images/chap16_46_0.png" src="_images/chap16_46_0.png" />
 </div>
 </div>
 <p>At low temperatures, the probability of damage is high; at high temperatures, it drops off to near 0.</p>
@@ -1052,7 +1046,7 @@ Now we’ll do the Bayesian version.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_uniform</span>
 
-<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">61</span><span class="p">)</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
 <span class="n">prior_inter</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="s1">&#39;Intercept&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1060,7 +1054,7 @@ Now we’ll do the Bayesian version.</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">91</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
 <span class="n">prior_slope</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="s1">&#39;Slope&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1118,16 +1112,16 @@ Now we’ll do the Bayesian version.</p>
   <tbody>
     <tr>
       <th rowspan="3" valign="top">-0.8</th>
-      <th>-5.0</th>
-      <td>0.00018</td>
+      <th>-5.00</th>
+      <td>0.000098</td>
     </tr>
     <tr>
-      <th>-4.9</th>
-      <td>0.00018</td>
+      <th>-4.94</th>
+      <td>0.000098</td>
     </tr>
     <tr>
-      <th>-4.8</th>
-      <td>0.00018</td>
+      <th>-4.88</th>
+      <td>0.000098</td>
     </tr>
   </tbody>
 </table>
@@ -1204,7 +1198,8 @@ Now we’ll do the Bayesian version.</p>
 </table>
 </div></div></div>
 </div>
-<p>The result is a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with two columns: <code class="docutils literal notranslate"><span class="pre">count</span></code> is the number of launches at each temperature; <code class="docutils literal notranslate"><span class="pre">sum</span></code> is the number of damage incidents.</p>
+<p>The result is a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with two columns: <code class="docutils literal notranslate"><span class="pre">count</span></code> is the number of launches at each temperature; <code class="docutils literal notranslate"><span class="pre">sum</span></code> is the number of damage incidents.
+To be consistent with the parameters of the binomial distributions, I’ll assign them to variables named <code class="docutils literal notranslate"><span class="pre">ns</span></code> and <code class="docutils literal notranslate"><span class="pre">ks</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ns</span> <span class="o">=</span> <span class="n">grouped</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span>
@@ -1294,8 +1289,8 @@ Now we can compute the likelihood of the data for all possible pairs:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>slope   -0.23
-inter   -1.20
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>slope   -0.233
+inter   -1.220
 dtype: float64
 </pre></div>
 </div>
@@ -1329,13 +1324,13 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_78_0.png" src="_images/chap16_78_0.png" />
+<img alt="_images/chap16_77_0.png" src="_images/chap16_77_0.png" />
 </div>
 </div>
 <p>The ovals in the contour plot are aligned along a diagonal, which indicates that there is some correlation between <code class="docutils literal notranslate"><span class="pre">slope</span></code> and <code class="docutils literal notranslate"><span class="pre">inter</span></code> in the posterior distribution.</p>
 <p>But the correlation is weak, which is one of the reasons we subtracted off the mean launch temperature when we computed <code class="docutils literal notranslate"><span class="pre">x</span></code>; centering the data minimizes the correlation between the parameters.</p>
-<p><strong>Exercise:</strong> To see why this matters, go back and set <code class="docutils literal notranslate"><span class="pre">offset=60</span></code> and run the analysis again.</p>
-<p>The slope should be the same, but the intercept will be different.  And if you plot the joint distribution, the contours you get will be elongated, indicating stronger correlation between the estimated parameters.</p>
+<p><strong>Exercise:</strong> To see why this matters, go back and set <code class="docutils literal notranslate"><span class="pre">offset=60</span></code> and run the analysis again.
+The slope should be the same, but the intercept will be different.  And if you plot the joint distribution, the contours you get will be elongated, indicating stronger correlation between the estimated parameters.</p>
 <p>In theory, this correlation is not a problem, but in practice it is.  With uncentered data, the posterior distribution is more spread out, so it’s harder to cover with the joint prior distribution.
 Centering the data maximizes the precision of the estimates; with uncentered data, we have to do more computation to get the same precision.</p>
 </div>
@@ -1364,7 +1359,7 @@ Centering the data maximizes the precision of the estimates; with uncentered dat
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_84_0.png" src="_images/chap16_84_0.png" />
+<img alt="_images/chap16_83_0.png" src="_images/chap16_83_0.png" />
 </div>
 </div>
 <p>And here’s the posterior distribution of <code class="docutils literal notranslate"><span class="pre">slope</span></code>.</p>
@@ -1379,7 +1374,7 @@ Centering the data maximizes the precision of the estimates; with uncentered dat
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_86_0.png" src="_images/chap16_86_0.png" />
+<img alt="_images/chap16_85_0.png" src="_images/chap16_85_0.png" />
 </div>
 </div>
 <p>Here are the posterior means.</p>
@@ -1391,8 +1386,8 @@ Centering the data maximizes the precision of the estimates; with uncentered dat
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>inter   -1.376121
-slope   -0.289802
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>inter   -1.376107
+slope   -0.289795
 dtype: float64
 </pre></div>
 </div>
@@ -1458,7 +1453,7 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_99_0.png" src="_images/chap16_99_0.png" />
+<img alt="_images/chap16_97_0.png" src="_images/chap16_97_0.png" />
 </div>
 </div>
 <p>The mean of this distribution is about 22%, which is the probability of damage at 70 degrees F, according to the model.</p>
@@ -1470,7 +1465,7 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.2201926882950713
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.2201937884647988
 </pre></div>
 </div>
 </div>
@@ -1497,7 +1492,7 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_106_0.png" src="_images/chap16_106_0.png" />
+<img alt="_images/chap16_104_0.png" src="_images/chap16_104_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -1508,7 +1503,7 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7542876583763742
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7542914170110268
 </pre></div>
 </div>
 </div>
@@ -1529,7 +1524,7 @@ Here’s the posterior mean of <code class="docutils literal notranslate"><span 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.20163269259695302, 0.2201926882950713)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.2016349762400815, 0.2201937884647988)
 </pre></div>
 </div>
 </div>
@@ -1542,7 +1537,7 @@ Here’s the posterior mean of <code class="docutils literal notranslate"><span 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.74841208471986, 0.7542876583763742)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.7484167954660071, 0.7542914170110268)
 </pre></div>
 </div>
 </div>
@@ -1561,7 +1556,9 @@ As a general rule, transform first, then compute summary statistics.</p>
 </div>
 </div>
 </div>
-<p>The result is an array of 101 tuples, each representing a possible pair of parameters.</p>
+<p>The result is an array of 101 tuples, each representing a possible pair of parameters.
+I chose this sample size to make the computation fast.
+Increasing it would not change the results much, but they would be a little more precise.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">shape</span>
@@ -1623,14 +1620,14 @@ As a general rule, transform first, then compute summary statistics.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ps</span> <span class="ow">in</span> <span class="n">pred</span><span class="p">:</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">temps</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">temps</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
     
 <span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_128_0.png" src="_images/chap16_128_0.png" />
+<img alt="_images/chap16_126_0.png" src="_images/chap16_126_0.png" />
 </div>
 </div>
 <p>The overlapping lines in this figure give a sense of the most likely value at each temperature and the degree of uncertainty.</p>
@@ -1655,7 +1652,7 @@ As a general rule, transform first, then compute summary statistics.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_133_0.png" src="_images/chap16_133_0.png" />
+<img alt="_images/chap16_131_0.png" src="_images/chap16_131_0.png" />
 </div>
 </div>
 <p>According to these results, the probability of damage to the O-rings at 80 degrees F is near 2%, but there is some uncertainty about that prediction; the upper bound of the CI is around 10%.</p>
@@ -1678,7 +1675,7 @@ As a general rule, transform first, then compute summary statistics.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.01984030573407751 (0.0009110511944006454, 0.10909682119561298)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.016956535510200765 (0.000563939208692237, 0.1335417225332125)
 </pre></div>
 </div>
 </div>
@@ -1691,7 +1688,7 @@ As a general rule, transform first, then compute summary statistics.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7858349830425588 (0.4750208125210602, 0.973403006423134)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7738185742694538 (0.45512110762641983, 0.9654437697137236)
 </pre></div>
 </div>
 </div>
@@ -1704,7 +1701,7 @@ As a general rule, transform first, then compute summary statistics.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9998689761293231 (0.9746672967731284, 0.9999999872788518)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9998129598124814 (0.97280101769455, 0.999999987740933)
 </pre></div>
 </div>
 </div>
@@ -1840,9 +1837,9 @@ The notebook for this chapter provides the data and some suggestions for getting
 <p>And I’ll put it in a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with one row for each month and the diagnosis rate per 10,000.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">))</span>
-<span class="n">data</span><span class="p">[</span><span class="s1">&#39;rate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10000</span>
-<span class="n">data</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adhd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">))</span>
+<span class="n">adhd</span><span class="p">[</span><span class="s1">&#39;rate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adhd</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">adhd</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10000</span>
+<span class="n">adhd</span>
 </pre></div>
 </div>
 </div>
@@ -1963,8 +1960,8 @@ The notebook for this chapter provides the data and some suggestions for getting
 <p>Here’s what the diagnosis rates look like.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;rate&#39;</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> 
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_adhd</span><span class="p">(</span><span class="n">adhd</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">adhd</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">adhd</span><span class="p">[</span><span class="s1">&#39;rate&#39;</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> 
              <span class="n">label</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
     
     <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
@@ -1979,12 +1976,12 @@ The notebook for this chapter provides the data and some suggestions for getting
 </div>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_adhd</span><span class="p">(</span><span class="n">adhd</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_158_0.png" src="_images/chap16_158_0.png" />
+<img alt="_images/chap16_156_0.png" src="_images/chap16_156_0.png" />
 </div>
 </div>
 <p>For the first 9 months, from September to May, we see what we would expect if some of the excess diagnoses are due to “age-based variation in behavior”.  For each month of difference in age, we see an increase in the number of diagnoses.</p>
@@ -2274,9 +2271,9 @@ Start with the following prior distributions.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
 <span class="n">num_legit</span> <span class="o">=</span> <span class="mi">9</span>
-<span class="n">data1</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">num_legit</span><span class="p">]</span>
-<span class="n">data2</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">num_legit</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
-<span class="n">data1</span>
+<span class="n">adhd1</span> <span class="o">=</span> <span class="n">adhd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">num_legit</span><span class="p">]</span>
+<span class="n">adhd2</span> <span class="o">=</span> <span class="n">adhd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">num_legit</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+<span class="n">adhd1</span>
 </pre></div>
 </div>
 </div>
@@ -2384,7 +2381,7 @@ Start with the following prior distributions.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="n">data2</span>
+<span class="n">adhd2</span>
 </pre></div>
 </div>
 </div>
@@ -2440,9 +2437,9 @@ Start with the following prior distributions.</p>
 
 <span class="n">likelihood1</span> <span class="o">=</span> <span class="n">joint_pmf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-<span class="n">xs</span> <span class="o">=</span> <span class="n">data1</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
-<span class="n">ks</span> <span class="o">=</span> <span class="n">data1</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span>
-<span class="n">ns</span> <span class="o">=</span> <span class="n">data1</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">adhd1</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+<span class="n">ks</span> <span class="o">=</span> <span class="n">adhd1</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span>
+<span class="n">ns</span> <span class="o">=</span> <span class="n">adhd1</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">slope</span><span class="p">,</span> <span class="n">inter</span> <span class="ow">in</span> <span class="n">joint_pmf</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
     <span class="n">ps</span> <span class="o">=</span> <span class="n">expit</span><span class="p">(</span><span class="n">inter</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span><span class="p">)</span>
@@ -2468,9 +2465,9 @@ Start with the following prior distributions.</p>
 
 <span class="n">likelihood2</span> <span class="o">=</span> <span class="n">joint_pmf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-<span class="n">xs</span> <span class="o">=</span> <span class="n">data2</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
-<span class="n">ks</span> <span class="o">=</span> <span class="n">data2</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span>
-<span class="n">ns</span> <span class="o">=</span> <span class="n">data2</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">adhd2</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+<span class="n">ks</span> <span class="o">=</span> <span class="n">adhd2</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span>
+<span class="n">ns</span> <span class="o">=</span> <span class="n">adhd2</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">slope</span><span class="p">,</span> <span class="n">inter</span> <span class="ow">in</span> <span class="n">joint_pmf</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
     <span class="n">ps</span> <span class="o">=</span> <span class="n">expit</span><span class="p">(</span><span class="n">inter</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">xs</span><span class="p">)</span>
@@ -2557,7 +2554,7 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_173_0.png" src="_images/chap16_173_0.png" />
+<img alt="_images/chap16_171_0.png" src="_images/chap16_171_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2589,7 +2586,7 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_175_0.png" src="_images/chap16_175_0.png" />
+<img alt="_images/chap16_173_0.png" src="_images/chap16_173_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2605,7 +2602,7 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_176_0.png" src="_images/chap16_176_0.png" />
+<img alt="_images/chap16_174_0.png" src="_images/chap16_174_0.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
@@ -2613,7 +2610,7 @@ Start with the following prior distributions.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
 <span class="n">sample</span> <span class="o">=</span> <span class="n">posterior_pmf</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span>
-<span class="n">xs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">adhd</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
 <span class="n">ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)))</span>
 
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">slope</span><span class="p">,</span> <span class="n">inter</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
@@ -2656,12 +2653,12 @@ Start with the following prior distributions.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">median</span><span class="o">*</span><span class="mi">10000</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span>
          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
-<span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">plot_adhd</span><span class="p">(</span><span class="n">adhd</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_179_0.png" src="_images/chap16_179_0.png" />
+<img alt="_images/chap16_177_0.png" src="_images/chap16_177_0.png" />
 </div>
 </div>
 </div>
