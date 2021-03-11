@@ -115,7 +115,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="chap04.html">
-   Estimating proportions
+   Estimating Proportions
   </a>
  </li>
  <li class="toctree-l1">
@@ -300,7 +300,7 @@
             <ul class="nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#log-odds">
-   Log odds
+   Log Odds
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -367,40 +367,41 @@
   <div class="section" id="logistic-regression">
 <h1>Logistic regression<a class="headerlink" href="#logistic-regression" title="Permalink to this headline">¶</a></h1>
 <p>This chapter introduces two related topics: log odds and logistic regression.</p>
-<p>In Chapter 5, we rewrote Bayes’s Theorem in terms of odds and derived Bayes’s Rule, which can be a convenient way to do a Bayesian update on paper or in your head.
+<p>In &lt;&lt;_BayessRule&gt;&gt;, we rewrote Bayes’s Theorem in terms of odds and derived Bayes’s Rule, which can be a convenient way to do a Bayesian update on paper or in your head.
 In this chapter, we’ll look at Bayes’s Rule on a logarithmic scale, which provides insight into how we accumulate evidence through successive updates.</p>
 <p>That leads directly to logistic regression, which is based on a linear model of the relationship between evidence and the log odds of a hypothesis.
 As an example, we’ll use data from the Space Shuttle to explore the relationship between temperature and the probability of damage to the O-rings.</p>
 <p>As an exercise, you’ll have a chance to model the relationship between a child’s age when they start school and their probability of being diagnosed with Attention Deficit Hyperactivity Disorder (ADHD).</p>
 <div class="section" id="log-odds">
-<h2>Log odds<a class="headerlink" href="#log-odds" title="Permalink to this headline">¶</a></h2>
-<p>When I was in grad school, I signed up for a class on Theory of Computation.
+<h2>Log Odds<a class="headerlink" href="#log-odds" title="Permalink to this headline">¶</a></h2>
+<p>When I was in grad school, I signed up for a class on the Theory of Computation.
 On the first day of class, I was the first to arrive.
-A few minutes later, another student arrived.
-Because most students in the computer science program were male, I was mildly surprised that the other student was female.</p>
-<p>Another female student arrived a few minutes later, which was sufficiently surprising that I started to think I was in the wrong room.
-When third female student arrived, I was confident I was in the wrong place.
-As it turned out, I was.</p>
-<p>As each student arrived, I used the observed data to update my belief that I was in the right place. We can use Bayes’s Rule, which we saw in Chapter xxx, to quantify the calculation I was doing intuitively.</p>
-<p>I’ll use <span class="math notranslate nohighlight">\(H\)</span> to represent the hypothesis that I was in the right room, and <span class="math notranslate nohighlight">\(F\)</span> to represent the observation that the first other student was female. Bayes’s Rule gives us:</p>
+A few minutes later, another student arrived.</p>
+<p>At the time, about 83% of the students in the computer science program <a class="reference external" href="https://www.aps.org/programs/education/statistics/fraction-phd.cfm">were male</a>, so I was mildly surprised to note that the other student was female.</p>
+<p>When another female student arrived a few minutes later, I started to think I was in the wrong room.
+When third female student arrived, I was confident I was in the wrong room.
+And as it turned out, I was.</p>
+<p>I’ll use this anecdote to demonstrate Bayes’s Rule on a logarithmic scale and show how it relates to logistic regression.</p>
+<p>Using <span class="math notranslate nohighlight">\(H\)</span> to represent the hypothesis that I was in the right room, and <span class="math notranslate nohighlight">\(F\)</span> to represent the observation that the first other student was female, we can write Bayes’s Rule like this:</p>
 <div class="math notranslate nohighlight">
 \[O(H|F) = O(H) \frac{P(F|H)}{P(F|not H)}\]</div>
 <p>Before I saw the other students, I was confident I was in the right room, so I might assign prior odds of 10:1 in favor:</p>
 <div class="math notranslate nohighlight">
 \[O(H) = 10\]</div>
-<p>At the time, advanced computer science classes were about 90% male, so if I was in the right room, the likelihood of the first female student was only 10%.</p>
-<p>If I was not in the right room, the likelihood of the first female student was more like 50%, so the likelihood ratio is 1/5.  Applying Bayes’s Rule:</p>
+<p>If I was in the right room, the likelihood of the first female student was about 17%.
+If I was not in the right room, the likelihood of the first female student was more like 50%,</p>
 <div class="math notranslate nohighlight">
-\[O(H|F) = O(H) / 5 = 2\]</div>
-<p>After the first student, the posterior odds are 2:1 I was in the right room.<br />
-After two students:</p>
+\[\frac{P(F|H)}{P(F|not H)} = 17 / 50\]</div>
+<p>So the likelihood ratio is close to 1/3.  Applying Bayes’s Rule, the posterior odds were</p>
 <div class="math notranslate nohighlight">
-\[O(H|FF) = O(H) / 25 = 2/5\]</div>
-<p>The posterior odds were 2/5, and after three students:</p>
+\[O(H|F) = 10 / 3\]</div>
+<p>After two students, the posterior odds were</p>
 <div class="math notranslate nohighlight">
-\[O(H|FFF) = 2/25\]</div>
-<p>The posterior odds were 2/25.
-At that point, I was right to believe I was in the wrong room.</p>
+\[O(H|FF) = 10 / 9\]</div>
+<p>And after three students:</p>
+<div class="math notranslate nohighlight">
+\[O(H|FFF) = 10 / 27\]</div>
+<p>At that point, I was right to suspect I was in the wrong room.</p>
 <p>The following table shows the odds after each update, the corresponding probabilities, and the change in probability after each step, expressed in percentage points.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
@@ -417,10 +418,9 @@ At that point, I was right to believe I was in the wrong room.</p>
 <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="s1">&#39;1 student&#39;</span><span class="p">,</span> <span class="s1">&#39;2 students&#39;</span><span class="p">,</span> <span class="s1">&#39;3 students&#39;</span><span class="p">]</span>
 
 <span class="n">table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
-<span class="n">table</span><span class="p">[</span><span class="s1">&#39;odds&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">25</span><span class="p">]</span>
+<span class="n">table</span><span class="p">[</span><span class="s1">&#39;odds&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="o">/</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="o">/</span><span class="mi">27</span><span class="p">]</span>
 <span class="n">table</span><span class="p">[</span><span class="s1">&#39;prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prob</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;odds&#39;</span><span class="p">])</span>
 <span class="n">table</span><span class="p">[</span><span class="s1">&#39;prob diff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;prob&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
-
 <span class="n">table</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -452,36 +452,36 @@ At that point, I was right to believe I was in the wrong room.</p>
   <tbody>
     <tr>
       <th>prior</th>
-      <td>10.00</td>
+      <td>10.000000</td>
       <td>0.909091</td>
       <td>--</td>
     </tr>
     <tr>
       <th>1 student</th>
-      <td>2.00</td>
-      <td>0.666667</td>
-      <td>-24.242424</td>
+      <td>3.333333</td>
+      <td>0.769231</td>
+      <td>-13.986014</td>
     </tr>
     <tr>
       <th>2 students</th>
-      <td>0.40</td>
-      <td>0.285714</td>
-      <td>-38.095238</td>
+      <td>1.111111</td>
+      <td>0.526316</td>
+      <td>-24.291498</td>
     </tr>
     <tr>
       <th>3 students</th>
-      <td>0.08</td>
-      <td>0.074074</td>
-      <td>-21.164021</td>
+      <td>0.370370</td>
+      <td>0.270270</td>
+      <td>-25.604552</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<p>Each update uses the same likelihood, but the changes in probability are not the same.  The first update decreases the probability by about 24 percentage points, the second by 38, and the third by 21.</p>
-<p>That’s normal for this kind of update, and in fact it’s necessary; if the changes were the same size, we would quickly get into negative probabilities.</p>
-<p>The odds follow a more obvious pattern.  Because each update multiplies the odds by the same likelihood ratio, the odds form a geometric sequence.</p>
-<p>And that brings us to consider another way to represent uncertainty: <strong>log odds</strong>, which is the logarithm of odds, usually expressed using the natural log (base <span class="math notranslate nohighlight">\(e\)</span>).</p>
+<p>Each update uses the same likelihood, but the changes in probability are not the same.  The first update decreases the probability by about 14 percentage points, the second by 24, and the third by 26.
+That’s normal for this kind of update, and in fact it’s necessary; if the changes were the same size, we would quickly get into negative probabilities.</p>
+<p>The odds follow a more obvious pattern.  Because each update multiplies the odds by the same likelihood ratio, the odds form a geometric sequence.
+And that brings us to consider another way to represent uncertainty: <strong>log odds</strong>, which is the logarithm of odds, usually expressed using the natural log (base <span class="math notranslate nohighlight">\(e\)</span>).</p>
 <p>Adding log odds to the table:</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
@@ -489,7 +489,6 @@ At that point, I was right to believe I was in the wrong room.</p>
 
 <span class="n">table</span><span class="p">[</span><span class="s1">&#39;log odds&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;odds&#39;</span><span class="p">])</span>
 <span class="n">table</span><span class="p">[</span><span class="s1">&#39;log odds diff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;log odds&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
-
 <span class="n">table</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -523,7 +522,7 @@ At that point, I was right to believe I was in the wrong room.</p>
   <tbody>
     <tr>
       <th>prior</th>
-      <td>10.00</td>
+      <td>10.000000</td>
       <td>0.909091</td>
       <td>--</td>
       <td>2.302585</td>
@@ -531,27 +530,27 @@ At that point, I was right to believe I was in the wrong room.</p>
     </tr>
     <tr>
       <th>1 student</th>
-      <td>2.00</td>
-      <td>0.666667</td>
-      <td>-24.242424</td>
-      <td>0.693147</td>
-      <td>-1.609438</td>
+      <td>3.333333</td>
+      <td>0.769231</td>
+      <td>-13.986014</td>
+      <td>1.203973</td>
+      <td>-1.098612</td>
     </tr>
     <tr>
       <th>2 students</th>
-      <td>0.40</td>
-      <td>0.285714</td>
-      <td>-38.095238</td>
-      <td>-0.916291</td>
-      <td>-1.609438</td>
+      <td>1.111111</td>
+      <td>0.526316</td>
+      <td>-24.291498</td>
+      <td>0.105361</td>
+      <td>-1.098612</td>
     </tr>
     <tr>
       <th>3 students</th>
-      <td>0.08</td>
-      <td>0.074074</td>
-      <td>-21.164021</td>
-      <td>-2.525729</td>
-      <td>-1.609438</td>
+      <td>0.370370</td>
+      <td>0.270270</td>
+      <td>-25.604552</td>
+      <td>-0.993252</td>
+      <td>-1.098612</td>
     </tr>
   </tbody>
 </table>
@@ -566,12 +565,12 @@ At that point, I was right to believe I was in the wrong room.</p>
 The change in log odds after each update is the logarithm of the likelihood ratio.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-1.6094379124341003
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-1.0986122886681098
 </pre></div>
 </div>
 </div>
@@ -582,7 +581,7 @@ The change in log odds after each update is the logarithm of the likelihood rati
 <p>On a log odds scale, a Bayesian update is additive.  So if <span class="math notranslate nohighlight">\(F^x\)</span> means that <span class="math notranslate nohighlight">\(x\)</span> female students arrive while I am waiting, the posterior log odds that I am in the right room are:</p>
 <div class="math notranslate nohighlight">
 \[\log O(H|F^x) = \log O(H) + x \log \frac{P(F|H)}{P(F|not H)}\]</div>
-<p>This equation represents a linear relationship between the evidence and the posterior log odds.</p>
+<p>This equation represents a linear relationship between the log likelihood ratio and the posterior log odds.</p>
 <p>In this example the linear equation is exact, but even when it’s not, it is common to use a linear function to model the relationship between an explanatory variable, <span class="math notranslate nohighlight">\(x\)</span>, and a dependent variable expressed in log odds, like this:</p>
 <div class="math notranslate nohighlight">
 \[\log O(H | x) = \beta_0 + \beta_1 x\]</div>
@@ -610,7 +609,7 @@ The change in log odds after each update is the logarithm of the likelihood rati
 </div>
 </div>
 </div>
-<p>I’ll read the data and do a little cleaning.</p>
+<p>I’ll read the data and do some cleaning.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;challenger_data.csv&#39;</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -868,7 +867,7 @@ The change in log odds after each update is the logarithm of the likelihood rati
 <li><p>Outside temperature in Fahrenheit, and</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code> if there was a damage incident and <code class="docutils literal notranslate"><span class="pre">0</span></code> otherwise.</p></li>
 </ul>
-<p>There are 23 launches in the dataset; 7 with damage incidents.</p>
+<p>There are 23 launches in the dataset, 7 with damage incidents.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Damage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -916,8 +915,8 @@ The change in log odds after each update is the logarithm of the likelihood rati
 <p>Based on this figure, it seems plausible that the probability of damage is related to temperature.  If we assume this probability follows a logistic model, we can write:</p>
 <div class="math notranslate nohighlight">
 \[\log O(H | x) = \beta_0 + \beta_1 x\]</div>
-<p>where <span class="math notranslate nohighlight">\(H\)</span> is the hypothesis that the O-rings will be damaged, <span class="math notranslate nohighlight">\(x\)</span> is temperature, and <span class="math notranslate nohighlight">\(\beta_0\)</span> and <span class="math notranslate nohighlight">\(\beta_1\)</span> are the parameters we will estimate.</p>
-<p>For reasons I’ll explain soon, I’ll define <span class="math notranslate nohighlight">\(x\)</span> to be temperature shifted by an offset so its mean is 0.</p>
+<p>where <span class="math notranslate nohighlight">\(H\)</span> is the hypothesis that the O-rings will be damaged, <span class="math notranslate nohighlight">\(x\)</span> is temperature, and <span class="math notranslate nohighlight">\(\beta_0\)</span> and <span class="math notranslate nohighlight">\(\beta_1\)</span> are the parameters we will estimate.
+For reasons I’ll explain soon, I’ll define <span class="math notranslate nohighlight">\(x\)</span> to be temperature shifted by an offset so its mean is 0.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
@@ -1002,7 +1001,7 @@ Here’s the range:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.4155141126966854
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.4155141126966855
 </pre></div>
 </div>
 </div>
