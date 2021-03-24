@@ -489,7 +489,7 @@ I chose this notation so that</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">.</span>
 </pre></div>
 </div>
-<p>Given the distribution of <code class="docutils literal notranslate"><span class="pre">z</span></code>, we can compute the distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code>. I’ll start with a simple case and then generalize. Suppose the gap between trains is either 5 or 10 minutes with equal probability.</p>
+<p>Given the distribution of <code class="docutils literal notranslate"><span class="pre">z</span></code>, we can compute the distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code>. I’ll start with a simple case and then generalize. Suppose the gap between trains is either 5 or 10 minutes with equal probability.</p>
 <p>If we arrive at a random time, we arrive during a 5 minute gap with probability 1/3, or a 10 minute gap with probability 2/3.</p>
 <p>If we arrive during a 5 minute gap, <code class="docutils literal notranslate"><span class="pre">x</span></code> is uniform from 0 to 5 minutes. If we arrive during a 10 minute gap, <code class="docutils literal notranslate"><span class="pre">x</span></code> is uniform from 0 to 10.
 So the distribution of wait times is a weighted mixture of two uniform distributions.</p>
@@ -499,7 +499,7 @@ We’ll use the following function to make the uniform distributions.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
 
-<span class="k">def</span> <span class="nf">make_dist_wait</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">qs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">make_elapsed_dist</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">qs</span><span class="p">):</span>
     <span class="n">qs</span> <span class="o">=</span> <span class="n">qs</span><span class="p">[</span><span class="n">qs</span> <span class="o">&lt;=</span> <span class="n">gap</span><span class="p">]</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
@@ -507,13 +507,13 @@ We’ll use the following function to make the uniform distributions.</p>
 </div>
 </div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">make_dist_wait</span></code> takes a hypothetical gap and an array of wait times.
-It selects the wait times less than or equal to <code class="docutils literal notranslate"><span class="pre">gap</span></code> and puts them into a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents a uniform distribution.</p>
+<p><code class="docutils literal notranslate"><span class="pre">make_elapsed_dist</span></code> takes a hypothetical gap and an array of possible times.
+It selects the elapsed times less than or equal to <code class="docutils literal notranslate"><span class="pre">gap</span></code> and puts them into a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents a uniform distribution.</p>
 <p>I’ll use this function to make a sequence of <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects, one for each gap in <code class="docutils literal notranslate"><span class="pre">posterior_z</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">posterior_z</span><span class="o">.</span><span class="n">qs</span>
-<span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_dist_wait</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span> <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="n">qs</span><span class="p">]</span>
+<span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_elapsed_dist</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span> <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="n">qs</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -597,11 +597,11 @@ It selects the wait times less than or equal to <code class="docutils literal no
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_z</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior gap&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 <span class="n">posterior_z</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior gap&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
-<span class="n">pmf_x</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;wait time&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+<span class="n">pmf_x</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;elapsed time&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (min)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
-         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of gap and wait times&#39;</span><span class="p">)</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of gap and elapsed times&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -621,8 +621,8 @@ It selects the wait times less than or equal to <code class="docutils literal no
 </div>
 </div>
 </div>
-<p>The mean wait time is 4.4 minutes, half the posterior mean of <code class="docutils literal notranslate"><span class="pre">z</span></code>.
-And that makes sense, since we expect to wait half the duration of the gap, on average.</p>
+<p>The mean elapsed time is 4.4 minutes, half the posterior mean of <code class="docutils literal notranslate"><span class="pre">z</span></code>.
+And that makes sense, since we expect to arrive in the middle of the gap, on average.</p>
 </div>
 <div class="section" id="counting-passengers">
 <h2>Counting passengers<a class="headerlink" href="#counting-passengers" title="Permalink to this headline">¶</a></h2>
@@ -724,13 +724,13 @@ But we can remove them and renormalize, like this:</p>
 <p>Based on the information so far, here are the distributions for <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, and <code class="docutils literal notranslate"><span class="pre">z</span></code>, shown as CDFs.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_y</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior of y&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">)</span>
-<span class="n">posterior_x</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior of x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_x</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior of x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
+<span class="n">posterior_y</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior of y&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">)</span>
 <span class="n">posterior_z</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior of z&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (min)&#39;</span><span class="p">,</span>
          <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
-         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of time since last train&#39;</span><span class="p">)</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of elapsed time, wait time, gap&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -790,7 +790,7 @@ Then I’ll add in delays of 30, 40, and 50 minutes (the number of long delays I
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">augmented_posterior_z</span><span class="o">.</span><span class="n">qs</span>
-<span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_dist_wait</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span> <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="n">qs</span><span class="p">]</span>
+<span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_elapsed_dist</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span> <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="n">qs</span><span class="p">]</span>
 <span class="n">pmf_x</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">augmented_posterior_z</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
 <span class="n">lam</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">num_passengers</span> <span class="o">=</span> <span class="mi">10</span>
@@ -826,7 +826,7 @@ As an example, here’s the distribution of wait time if we see 10 passengers.</
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.858287809432188
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.774817797206827
 </pre></div>
 </div>
 </div>
@@ -838,7 +838,7 @@ As an example, here’s the distribution of wait time if we see 10 passengers.</
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.013776790629149716
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.014549512746375837
 </pre></div>
 </div>
 </div>
