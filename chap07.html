@@ -198,6 +198,11 @@
    Approximate Bayesian Computation
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="redline.html">
+   The Red Line Problem
+  </a>
+ </li>
 </ul>
 
 </nav> <!-- To handle the deprecated key -->
@@ -1707,157 +1712,6 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 </div>
 </div>
-<p><strong>Exercise:</strong>  Suppose I have two boxes of dice:</p>
-<ul class="simple">
-<li><p>One contains a 4-sided die and a 6-sided die.</p></li>
-<li><p>The other contains a 6-sided die and an 8-sided die.</p></li>
-</ul>
-<p>I choose a box at random, choose a die, and roll it 3 times.  If I get 2, 4, and 6, which box do you think I chose?</p>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="c1"># I&#39;ll make some objects to represent the dice.</span>
-
-<span class="n">d4</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">d6</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
-<span class="n">d8</span> <span class="o">=</span> <span class="n">make_die</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="c1"># Here&#39;s a mixture that represents the result of</span>
-<span class="c1"># rolling a die from the first box.</span>
-
-<span class="n">pmf1</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="n">mix1</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">pmf1</span><span class="p">,</span> <span class="p">[</span><span class="n">d4</span><span class="p">,</span> <span class="n">d6</span><span class="p">])</span>
-<span class="n">mix1</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap07_148_0.png" src="_images/chap07_148_0.png" />
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="c1"># Here&#39;s the distribution of outcomes from the second box.</span>
-
-<span class="n">pmf2</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
-<span class="n">mix2</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">pmf2</span><span class="p">,</span> <span class="p">[</span><span class="n">d6</span><span class="p">,</span> <span class="n">d8</span><span class="p">])</span>
-<span class="n">mix2</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/chap07_149_0.png" src="_images/chap07_149_0.png" />
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="c1"># Here are the likelihoods of getting the data from the first box</span>
-
-<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
-<span class="n">mix1</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.20833333, 0.20833333, 0.08333333])
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="c1"># And here are the likelihood from the second box</span>
-
-<span class="n">mix2</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.14583333, 0.14583333, 0.14583333])
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="c1"># The overall likelihood of the data is the product</span>
-<span class="c1"># of the likelihoods we just computed</span>
-
-<span class="n">likelihood</span> <span class="o">=</span> <span class="p">[</span><span class="n">mix1</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span> <span class="n">mix2</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">()]</span>
-<span class="n">likelihood</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.0036168981481481473, 0.003101490162037036]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
-
-<span class="c1"># Finally, we can do the update in the usual way</span>
-
-<span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Box 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Box 2&#39;</span><span class="p">])</span>
-<span class="n">posterior</span> <span class="o">=</span> <span class="p">(</span><span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span><span class="p">)</span>
-<span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
-<span class="n">posterior</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>probs</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Box 1</th>
-      <td>0.538358</td>
-    </tr>
-    <tr>
-      <th>Box 2</th>
-      <td>0.461642</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
 <p><strong>Exercise:</strong> Henri Poincaré was a French mathematician who taught at the Sorbonne around 1900. The following anecdote about him is probably fiction, but it makes an interesting probability problem.</p>
 <p>Supposedly Poincaré suspected that his local bakery was selling loaves of bread that were lighter than the advertised weight of 1 kg, so every day for a year he bought a loaf of bread, brought it home and weighed it. At the end of the year, he plotted the distribution of his measurements and showed that it fit a normal distribution with mean 950 g and standard deviation 50 g. He brought this evidence to the bread police, who gave the baker a warning.</p>
 <p>For the next year, Poincaré continued to weigh his bread every day. At the end of the year, he found that the average weight was 1000 g, just as it should be, but again he complained to the bread police, and this time they fined the baker.</p>
@@ -1918,7 +1772,7 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_158_0.png" src="_images/chap07_158_0.png" />
+<img alt="_images/chap07_150_0.png" src="_images/chap07_150_0.png" />
 </div>
 </div>
 </div>

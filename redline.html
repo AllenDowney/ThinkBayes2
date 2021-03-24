@@ -1,0 +1,969 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Red Line Problem &#8212; Think Bayes</title>
+    
+  <link rel="stylesheet" href="_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinx-book-theme.c441f2ba0852f4cabcb80105e3a46ae6.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.d3f166471bb80abb5163.js">
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Approximate Bayesian Computation" href="chap20.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">Think Bayes</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="index.html">
+   Think Bayes 2
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="preface.html">
+   Preface
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap01.html">
+   Probability
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap02.html">
+   Bayes’s Theorem
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap03.html">
+   Distributions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap04.html">
+   Estimating Proportions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap05.html">
+   Estimating Counts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap06.html">
+   Odds and Addends
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap07.html">
+   Minimum, Maximum, and Mixture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap08.html">
+   Poisson Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap09.html">
+   Decision Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap10.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap11.html">
+   Comparison
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap12.html">
+   Classification
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap13.html">
+   Inference
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap14.html">
+   Survival Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap15.html">
+   Mark and Recapture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap16.html">
+   Logistic Regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap17.html">
+   Regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap18.html">
+   Conjugate Priors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap19.html">
+   MCMC
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap20.html">
+   Approximate Bayesian Computation
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   The Red Line Problem
+  </a>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/redline.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/AllenDowney/ThinkBayes2"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                    title="Fullscreen mode"><i
+                        class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/redline.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i>
+            Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-update">
+   The Update
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#elapsed-time">
+   Elapsed time
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#counting-passengers">
+   Counting passengers
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wait-time">
+   Wait time
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#decision-analysis">
+   Decision analysis
+  </a>
+ </li>
+</ul>
+
+        </nav>
+        
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="the-red-line-problem">
+<h1>The Red Line Problem<a class="headerlink" href="#the-red-line-problem" title="Permalink to this headline">¶</a></h1>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get utils.py</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;utils.py&#39;</span><span class="p">):</span>
+    <span class="o">!</span>wget https://github.com/AllenDowney/ThinkBayes2/raw/master/soln/utils.py
+</pre></div>
+</div>
+</div>
+</div>
+<p>The Red Line is a subway that connects Cambridge and Boston, Massachusetts. When I was working in Cambridge I took the Red Line from Kendall Square to South Station and caught the commuter rail to Needham. During rush hour Red Line trains run every 7–8 minutes, on average.</p>
+<p>When I arrived at the station, I could estimate the time until the next train based on the number of passengers on the platform. If there were only a few people, I inferred that I just missed a train and expected to wait about 7 minutes. If there were more passengers, I expected the train to arrive sooner. But if there were a large number of passengers, I suspected that trains were not running on schedule, so I would go back to the street level and get a taxi.</p>
+<p>While I was waiting for trains, I thought about how Bayesian estimation could help predict my wait time and decide when I should give up and take a taxi. This chapter presents the analysis I came up with.</p>
+<p>This example is based on a project by Brendan Ritter and Kai Austin, who took a class with me at Olin College.
+It was a chapter in the first edition of <em>Think Bayes</em>, I cut it from the second edition.</p>
+<p>Before we get to the analysis, we have to make some modeling decisions. First, I will treat passenger arrivals as a Poisson process, which means I assume that passengers are equally likely to arrive at any time, and that they arrive at a rate, λ, measured in passengers per minute. Since I observe passengers during a short period of time, and at the same time every day, I assume that λ is constant.</p>
+<p>On the other hand, the arrival process for trains is not Poisson. Trains to Boston are supposed to leave from the end of the line (Alewife station) every 7–8 minutes during peak times, but by the time they get to Kendall Square, the time between trains varies between 3 and 12 minutes.</p>
+<p>To gather data on the time between trains, I wrote a script that downloads real-time data from the <a class="reference external" href="http://www.mbta.com/rider_tools/developers/">MBTA</a>, selects south-bound trains arriving at Kendall square, and records their arrival times in a database. I ran the script from 4 pm to 6 pm every weekday for 5 days, and recorded about 15 arrivals per day. Then I computed the time between consecutive arrivals.
+Here are the gap times I recorded, in seconds.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">observed_gap_times</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mf">428.0</span><span class="p">,</span> <span class="mf">705.0</span><span class="p">,</span> <span class="mf">407.0</span><span class="p">,</span> <span class="mf">465.0</span><span class="p">,</span> <span class="mf">433.0</span><span class="p">,</span> <span class="mf">425.0</span><span class="p">,</span> <span class="mf">204.0</span><span class="p">,</span> <span class="mf">506.0</span><span class="p">,</span> <span class="mf">143.0</span><span class="p">,</span> <span class="mf">351.0</span><span class="p">,</span> 
+    <span class="mf">450.0</span><span class="p">,</span> <span class="mf">598.0</span><span class="p">,</span> <span class="mf">464.0</span><span class="p">,</span> <span class="mf">749.0</span><span class="p">,</span> <span class="mf">341.0</span><span class="p">,</span> <span class="mf">586.0</span><span class="p">,</span> <span class="mf">754.0</span><span class="p">,</span> <span class="mf">256.0</span><span class="p">,</span> <span class="mf">378.0</span><span class="p">,</span> <span class="mf">435.0</span><span class="p">,</span> 
+    <span class="mf">176.0</span><span class="p">,</span> <span class="mf">405.0</span><span class="p">,</span> <span class="mf">360.0</span><span class="p">,</span> <span class="mf">519.0</span><span class="p">,</span> <span class="mf">648.0</span><span class="p">,</span> <span class="mf">374.0</span><span class="p">,</span> <span class="mf">483.0</span><span class="p">,</span> <span class="mf">537.0</span><span class="p">,</span> <span class="mf">578.0</span><span class="p">,</span> <span class="mf">534.0</span><span class="p">,</span> 
+    <span class="mf">577.0</span><span class="p">,</span> <span class="mf">619.0</span><span class="p">,</span> <span class="mf">538.0</span><span class="p">,</span> <span class="mf">331.0</span><span class="p">,</span> <span class="mf">186.0</span><span class="p">,</span> <span class="mf">629.0</span><span class="p">,</span> <span class="mf">193.0</span><span class="p">,</span> <span class="mf">360.0</span><span class="p">,</span> <span class="mf">660.0</span><span class="p">,</span> <span class="mf">484.0</span><span class="p">,</span> 
+    <span class="mf">512.0</span><span class="p">,</span> <span class="mf">315.0</span><span class="p">,</span> <span class="mf">457.0</span><span class="p">,</span> <span class="mf">404.0</span><span class="p">,</span> <span class="mf">740.0</span><span class="p">,</span> <span class="mf">388.0</span><span class="p">,</span> <span class="mf">357.0</span><span class="p">,</span> <span class="mf">485.0</span><span class="p">,</span> <span class="mf">567.0</span><span class="p">,</span> <span class="mf">160.0</span><span class="p">,</span> 
+    <span class="mf">428.0</span><span class="p">,</span> <span class="mf">387.0</span><span class="p">,</span> <span class="mf">901.0</span><span class="p">,</span> <span class="mf">187.0</span><span class="p">,</span> <span class="mf">622.0</span><span class="p">,</span> <span class="mf">616.0</span><span class="p">,</span> <span class="mf">585.0</span><span class="p">,</span> <span class="mf">474.0</span><span class="p">,</span> <span class="mf">442.0</span><span class="p">,</span> <span class="mf">499.0</span><span class="p">,</span> 
+    <span class="mf">437.0</span><span class="p">,</span> <span class="mf">620.0</span><span class="p">,</span> <span class="mf">351.0</span><span class="p">,</span> <span class="mf">286.0</span><span class="p">,</span> <span class="mf">373.0</span><span class="p">,</span> <span class="mf">232.0</span><span class="p">,</span> <span class="mf">393.0</span><span class="p">,</span> <span class="mf">745.0</span><span class="p">,</span> <span class="mf">636.0</span><span class="p">,</span> <span class="mf">758.0</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>I’ll convert them to minutes and use <code class="docutils literal notranslate"><span class="pre">kde_from_sample</span></code> to estimate the distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">zs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">observed_gap_times</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">kde_from_sample</span>
+
+<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">pmf_z</span> <span class="o">=</span> <span class="n">kde_from_sample</span><span class="p">(</span><span class="n">zs</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
+
+<span class="n">pmf_z</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (min)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of time between trains&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/redline_12_0.png" src="_images/redline_12_0.png" />
+</div>
+</div>
+<div class="section" id="the-update">
+<h2>The Update<a class="headerlink" href="#the-update" title="Permalink to this headline">¶</a></h2>
+<p>At this point we have an estimate for the distribution of time between trains.
+Now let’s suppose I arrive at the station and see 10 passengers on the platform.
+What distribution of wait times should I expect?</p>
+<p>We’ll answer this question in two steps.</p>
+<ul class="simple">
+<li><p>First, we’ll derive the distribution of gap times as observed by a random arrival (me).</p></li>
+<li><p>Then we’ll derive the distribution of wait times, conditioned on the number of passengers.</p></li>
+</ul>
+<p>When I arrive at the station, I am more likely to arrive during a long gap than a short one.
+In fact, the probability that I arrive during any interval is proportional to its duration.</p>
+<p>If we think of <code class="docutils literal notranslate"><span class="pre">pmf_z</span></code> as the prior distribution of gap time, we can do a Bayesian update to compute the posterior.
+The likelihood of my arrival during each gap is the duration of the gap:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">pmf_z</span><span class="o">.</span><span class="n">qs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>So here’s the first update.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_z</span> <span class="o">=</span> <span class="n">pmf_z</span> <span class="o">*</span> <span class="n">pmf_z</span><span class="o">.</span><span class="n">qs</span>
+<span class="n">posterior_z</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7.772927524715933
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what the posterior distribution looks like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_z</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+<span class="n">posterior_z</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (min)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of time between trains&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/redline_18_0.png" src="_images/redline_18_0.png" />
+</div>
+</div>
+<p>Because I am more likely to arrive during a longer gap, the distribution is shifted to the right.
+The prior mean is about 7.8 minutes; the posterior mean is about 8.9 minutes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_z</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior_z</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(7.772927524715933, 8.89677416786441)
+</pre></div>
+</div>
+</div>
+</div>
+<p>This shift is an example of the “inspection paradox”, which <a class="reference external" href="https://towardsdatascience.com/the-inspection-paradox-is-everywhere-2ef1c2e9d709">I wrote an article about</a>.</p>
+<p>As an aside, the Red Line schedule reports that trains run every 9 minutes during peak times. This is close to the posterior mean, but higher than the prior mean. I exchanged email with a representative of the MBTA, who confirmed that the reported time between trains is deliberately conservative in order to account for variability.</p>
+</div>
+<div class="section" id="elapsed-time">
+<h2>Elapsed time<a class="headerlink" href="#elapsed-time" title="Permalink to this headline">¶</a></h2>
+<p>Elapsed time, which I call <code class="docutils literal notranslate"><span class="pre">x</span></code>, is the time between the arrival of the previous train and the arrival of a passenger.
+Wait time, which I call <code class="docutils literal notranslate"><span class="pre">y</span></code>, is the time between the arrival of a passenger and the next arrival of a train.
+I chose this notation so that</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Given the distribution of <code class="docutils literal notranslate"><span class="pre">z</span></code>, we can compute the distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code>. I’ll start with a simple case and then generalize. Suppose the gap between trains is either 5 or 10 minutes with equal probability.</p>
+<p>If we arrive at a random time, we arrive during a 5 minute gap with probability 1/3, or a 10 minute gap with probability 2/3.</p>
+<p>If we arrive during a 5 minute gap, <code class="docutils literal notranslate"><span class="pre">x</span></code> is uniform from 0 to 5 minutes. If we arrive during a 10 minute gap, <code class="docutils literal notranslate"><span class="pre">x</span></code> is uniform from 0 to 10.
+So the distribution of wait times is a weighted mixture of two uniform distributions.</p>
+<p>More generally, if we have the posterior distribution of <code class="docutils literal notranslate"><span class="pre">z</span></code>, we can compute the distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code> by making a mixture of uniform distributions.
+We’ll use the following function to make the uniform distributions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+
+<span class="k">def</span> <span class="nf">make_dist_wait</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">qs</span><span class="p">):</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">qs</span><span class="p">[</span><span class="n">qs</span> <span class="o">&lt;=</span> <span class="n">gap</span><span class="p">]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">make_dist_wait</span></code> takes a hypothetical gap and an array of wait times.
+It selects the wait times less than or equal to <code class="docutils literal notranslate"><span class="pre">gap</span></code> and puts them into a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents a uniform distribution.</p>
+<p>I’ll use this function to make a sequence of <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects, one for each gap in <code class="docutils literal notranslate"><span class="pre">posterior_z</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">posterior_z</span><span class="o">.</span><span class="n">qs</span>
+<span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_dist_wait</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span> <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="n">qs</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s an example that represents a uniform distribution from 0 to 0.6 minutes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_seq</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.0</th>
+      <td>0.25</td>
+    </tr>
+    <tr>
+      <th>0.2</th>
+      <td>0.25</td>
+    </tr>
+    <tr>
+      <th>0.4</th>
+      <td>0.25</td>
+    </tr>
+    <tr>
+      <th>0.6</th>
+      <td>0.25</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The last element of the sequence is uniform from 0 to 20 minutes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_seq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (min)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of wait time in 20 min gap&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/redline_29_0.png" src="_images/redline_29_0.png" />
+</div>
+</div>
+<p>Now we can use <code class="docutils literal notranslate"><span class="pre">make_mixture</span></code> to make a weighted mixture of uniform distributions, where the weights are the probabilities from <code class="docutils literal notranslate"><span class="pre">posterior_z</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_mixture</span>
+
+<span class="n">pmf_x</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">posterior_z</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_z</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior gap&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
+<span class="n">posterior_z</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior gap&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
+<span class="n">pmf_x</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;wait time&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (min)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of gap and wait times&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/redline_32_0.png" src="_images/redline_32_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_z</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">pmf_x</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(8.89677416786441, 4.448387083932206)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The mean wait time is 4.4 minutes, half the posterior mean of <code class="docutils literal notranslate"><span class="pre">z</span></code>.
+And that makes sense, since we expect to wait half the duration of the gap, on average.</p>
+</div>
+<div class="section" id="counting-passengers">
+<h2>Counting passengers<a class="headerlink" href="#counting-passengers" title="Permalink to this headline">¶</a></h2>
+<p>Now let’s take into account the number of passengers waiting on the platform.
+Let’s assume that passengers are equally likely to arrive at any time, and that they arrive at a rate, <code class="docutils literal notranslate"><span class="pre">λ</span></code>, that is known to be 2 passengers per minute.</p>
+<p>Under those assumptions, the number of passengers who arrive in <code class="docutils literal notranslate"><span class="pre">x</span></code> minutes follows a Poisson distribution with parameter <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">x</span></code>
+So we can use the SciPy function <code class="docutils literal notranslate"><span class="pre">poisson</span></code> to compute the likelihood of 10 passengers for each possible value of <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
+
+<span class="n">lam</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">num_passengers</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">likelihood</span> <span class="o">=</span> <span class="n">poisson</span><span class="p">(</span><span class="n">lam</span> <span class="o">*</span> <span class="n">pmf_x</span><span class="o">.</span><span class="n">qs</span><span class="p">)</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">num_passengers</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>With this likelihood, we can compute the posterior distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_x</span> <span class="o">=</span> <span class="n">pmf_x</span> <span class="o">*</span> <span class="n">likelihood</span>
+<span class="n">posterior_x</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.04757676716097805
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_x</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+<span class="n">posterior_x</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (min)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of time since last train&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/redline_40_0.png" src="_images/redline_40_0.png" />
+</div>
+</div>
+<p>Based on the number of passengers, we think it has been about 5 minutes since the last train.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_x</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">posterior_x</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(4.448387083932206, 5.1439350761797495)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="wait-time">
+<h2>Wait time<a class="headerlink" href="#wait-time" title="Permalink to this headline">¶</a></h2>
+<p>Now how long do we think it will be until the next train?
+Based on what we know so far, the distribution of <code class="docutils literal notranslate"><span class="pre">z</span></code> is <code class="docutils literal notranslate"><span class="pre">posterior_z</span></code>, and the distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code> is <code class="docutils literal notranslate"><span class="pre">posterior_x</span></code>.
+Remember that we defined</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+</pre></div>
+</div>
+<p>If we know <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code>, we can compute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">z</span> <span class="o">-</span> <span class="n">x</span>
+</pre></div>
+</div>
+<p>So we can use <code class="docutils literal notranslate"><span class="pre">sub_dist</span></code> to compute the distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_y</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">sub_dist</span><span class="p">(</span><span class="n">posterior_z</span><span class="p">,</span> <span class="n">posterior_x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Well, almost.  That distribution contains some negative values, which are impossible.
+But we can remove them and renormalize, like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nonneg</span> <span class="o">=</span> <span class="p">(</span><span class="n">posterior_y</span><span class="o">.</span><span class="n">qs</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">posterior_y</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">posterior_y</span><span class="p">[</span><span class="n">nonneg</span><span class="p">])</span>
+<span class="n">posterior_y</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.8900343090047254
+</pre></div>
+</div>
+</div>
+</div>
+<p>Based on the information so far, here are the distributions for <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, and <code class="docutils literal notranslate"><span class="pre">z</span></code>, shown as CDFs.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_y</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior of y&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">)</span>
+<span class="n">posterior_x</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior of x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
+<span class="n">posterior_z</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;posterior of z&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (min)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of time since last train&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/redline_48_0.png" src="_images/redline_48_0.png" />
+</div>
+</div>
+<p>Because of rounding errors, <code class="docutils literal notranslate"><span class="pre">posterior_y</span></code> contains quantities that are not in <code class="docutils literal notranslate"><span class="pre">posterior_x</span></code> and <code class="docutils literal notranslate"><span class="pre">posterior_z</span></code>; that’s why I plotted it as a CDF, and why it appears jaggy.</p>
+</div>
+<div class="section" id="decision-analysis">
+<h2>Decision analysis<a class="headerlink" href="#decision-analysis" title="Permalink to this headline">¶</a></h2>
+<p>At this point we can use the number of passengers on the platform to predict the distribution of wait times. Now let’s get to the second part of the question: when should I stop waiting for the train and go catch a taxi?</p>
+<p>Remember that in the original scenario, I am trying to get to South Station to catch the commuter rail. Suppose I leave the office with enough time that I can wait 15 minutes and still make my connection at South Station.</p>
+<p>In that case I would like to know the probability that <code class="docutils literal notranslate"><span class="pre">y</span></code> exceeds 15 minutes as a function of <code class="docutils literal notranslate"><span class="pre">num_passengers</span></code>.
+To answer that question, we can run the analysis from the previous section with range of <code class="docutils literal notranslate"><span class="pre">num_passengers</span></code>.</p>
+<p>But there’s a problem. The analysis is sensitive to the frequency of long delays, and because long delays are rare, it is hard to estimate their frequency.</p>
+<p>I only have data from one week, and the longest delay I observed was 15 minutes. So I can’t estimate the frequency of longer delays accurately.</p>
+<p>However, I can use previous observations to make at least a coarse estimate. When I commuted by Red Line for a year, I saw three long delays caused by a signaling problem, a power outage, and “police activity” at another stop. So I estimate that there are about 3 major delays per year.</p>
+<p>But remember that my observations are biased. I am more likely to observe long delays because they affect a large number of passengers. So we should treat my observations as a sample of <code class="docutils literal notranslate"><span class="pre">posterior_z</span></code> rather than <code class="docutils literal notranslate"><span class="pre">pmf_z</span></code>.</p>
+<p>Here’s how we can augment the observed distribution of gap times with some assumptions about long delays.
+From <code class="docutils literal notranslate"><span class="pre">posterior_z</span></code>, I’ll draw a sample of 260 values (roughly the number of work days in a year).
+Then I’ll add in delays of 30, 40, and 50 minutes (the number of long delays I observed in a year).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span> <span class="o">=</span> <span class="n">posterior_z</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">260</span><span class="p">)</span>
+<span class="n">delays</span> <span class="o">=</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
+<span class="n">augmented_sample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">delays</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>I’ll use this augmented sample to make a new estimate for the posterior distribution of <code class="docutils literal notranslate"><span class="pre">z</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">augmented_posterior_z</span> <span class="o">=</span> <span class="n">kde_from_sample</span><span class="p">(</span><span class="n">augmented_sample</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">augmented_posterior_z</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;augmented posterior of z&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (min)&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of time between trains&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/redline_55_0.png" src="_images/redline_55_0.png" />
+</div>
+</div>
+<p>Now let’s take the analysis from the previous sections and wrap it in a function.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">augmented_posterior_z</span><span class="o">.</span><span class="n">qs</span>
+<span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_dist_wait</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span> <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="n">qs</span><span class="p">]</span>
+<span class="n">pmf_x</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">augmented_posterior_z</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">num_passengers</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="k">def</span> <span class="nf">compute_posterior_y</span><span class="p">(</span><span class="n">num_passengers</span><span class="p">):</span>   
+    <span class="sd">&quot;&quot;&quot;Distribution of wait time based on `num_passengers`.&quot;&quot;&quot;</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">poisson</span><span class="p">(</span><span class="n">lam</span> <span class="o">*</span> <span class="n">qs</span><span class="p">)</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">num_passengers</span><span class="p">)</span>
+    <span class="n">posterior_x</span> <span class="o">=</span> <span class="n">pmf_x</span> <span class="o">*</span> <span class="n">likelihood</span>
+    <span class="n">posterior_x</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+    <span class="n">posterior_y</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">sub_dist</span><span class="p">(</span><span class="n">augmented_posterior_z</span><span class="p">,</span> <span class="n">posterior_x</span><span class="p">)</span>
+    <span class="n">nonneg</span> <span class="o">=</span> <span class="p">(</span><span class="n">posterior_y</span><span class="o">.</span><span class="n">qs</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">posterior_y</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">posterior_y</span><span class="p">[</span><span class="n">nonneg</span><span class="p">])</span>
+    <span class="n">posterior_y</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">posterior_y</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Given the number of passengers when we arrive at the station, it computes the posterior distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code>.
+As an example, here’s the distribution of wait time if we see 10 passengers.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_y</span> <span class="o">=</span> <span class="n">compute_posterior_y</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can use it to compute the mean wait time and the probability of waiting more than 15 minutes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_y</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.858287809432188
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span> <span class="o">-</span> <span class="n">posterior_y</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()(</span><span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.013776790629149716
+</pre></div>
+</div>
+</div>
+</div>
+<p>If we see 10 passengers, we expect to wait a little less than 5 minutes, and the chance of waiting more than 15 minutes is about 1%.</p>
+<p>Let’s see what happens if we sweep through a range of values for <code class="docutils literal notranslate"><span class="pre">num_passengers</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">posteriors</span> <span class="o">=</span> <span class="p">[</span><span class="n">compute_posterior_y</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">nums</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s the mean wait as a function of the number of passengers.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean_wait</span> <span class="o">=</span> <span class="p">[</span><span class="n">posterior_y</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+             <span class="k">for</span> <span class="n">posterior_y</span> <span class="ow">in</span> <span class="n">posteriors</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span> <span class="n">mean_wait</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of passengers&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Expected time until next train&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Expected wait time based on number of passengers&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/redline_67_0.png" src="_images/redline_67_0.png" />
+</div>
+</div>
+<p>If there are no passengers on the platform when I arrive, I infer that I just missed a train; in that case, the expected wait time is the mean of <code class="docutils literal notranslate"><span class="pre">augmented_posterior_z</span></code>.</p>
+<p>The more passengers I see, the longer I think it has been since the last train, and the more likely a train arrives soon.</p>
+<p>But only up to a point.  If there are more than 30 passengers on the platform, that suggests that there is a long delay, and the expected wait time starts to increase.</p>
+<p>Now here’s the probability that wait time exceeds 15 minutes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prob_late</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">posterior_y</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()(</span><span class="mi">15</span><span class="p">)</span> 
+             <span class="k">for</span> <span class="n">posterior_y</span> <span class="ow">in</span> <span class="n">posteriors</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span> <span class="n">prob_late</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of passengers&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Probability of being late&#39;</span><span class="p">,</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Probability of being late based on number of passengers&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/redline_70_0.png" src="_images/redline_70_0.png" />
+</div>
+</div>
+<p>When the number of passengers is less than 20, we infer that the system is operating normally, so the probability of a long delay is small. If there are 30 passengers, we suspect that something is wrong and expect longer delays.</p>
+<p>If we are willing to accept a 5% chance of missing the connection at South Station, we should stay and wait as long as there are fewer than 30 passengers, and take a taxi if there are more.</p>
+<p>Or, to take this analysis one step further, we could quantify the cost of missing the connection and the cost of taking a taxi, then choose the threshold that minimizes expected cost.</p>
+<p>This analysis is based on the assumption that the arrival rate, <code class="docutils literal notranslate"><span class="pre">lam</span></code>, is known.
+If it is not know precisely, but is estimated from data, we could represent our uncertainty about <code class="docutils literal notranslate"><span class="pre">lam</span></code> with a distribution, compute the distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code> for each value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>, and make a mixture to represent the distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code>.
+I did that in the version of this problem in the first edition of <em>Think Bayes</em>; I left it out here because it is not the focus of the problem.</p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+    <a class='left-prev' id="prev-link" href="chap20.html" title="previous page">Approximate Bayesian Computation</a>
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Allen B. Downey<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="_static/js/index.d3f166471bb80abb5163.js"></script>
+
+
+    
+  </body>
+</html>
