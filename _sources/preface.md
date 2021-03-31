@@ -17,8 +17,26 @@ modeling decisions, we can choose the most appropriate model without
 worrying too much about whether the model lends itself to mathematical
 analysis.
 
-Also, it provides a smooth development path from simple examples to
-real-world problems.
+Also, it provides a smooth path from simple examples to real-world problems.
+
+## Who is this book for?
+
+To start this book, you should be comfortable with Python.
+If you are familiar with NumPy and Pandas, that will help, but I'll
+explain what you need as we go.
+You don't need to know calculus or linear algebra.
+You don't need any prior knowledge of statistics.  
+
+In Chapter 1, I define probability and introduce conditional probability, which is the foundation of Bayes's Theorem.
+Chapter 3 introduces the probability distribution, which is the
+foundation of Bayesian statistics.
+
+In later chapters, we use a variety of discrete and continuous distributions,
+including the binomial, exponential, Poisson, beta, gamma, and normal
+distributions.
+I will explain each distribution when it is introduced, and we will use
+SciPy to compute them, so you don't need to know about their
+mathematical properties.
 
 ## Modeling
 
@@ -28,20 +46,11 @@ methods (or any other analysis), we have to make decisions about which
 parts of the real-world system to include in the model and which
 details we can abstract away.
 
-For example, in Chapter xxx, the motivating problem is to
+For example, in Chapter 8, the motivating problem is to
 predict the winner of a soccer (football) game.  I model goal-scoring as a
 Poisson process, which implies that a goal is equally likely at any
 point in the game.  That is not exactly true, but it is probably a
 good enough model for most purposes.
-
-In Chapter xxx the motivating problem is interpreting SAT
-scores (the SAT is a standardized test used for college admissions in
-the United States).  I start with a simple model that assumes that all
-SAT questions are equally difficult, but in fact the designers of the
-SAT deliberately include some questions that are relatively easy and
-some that are relatively hard.  I present a second model that accounts
-for this aspect of the design, and show that it doesn't have a big
-effect on the results after all.
 
 I think it is important to include modeling as an explicit part
 of problem solving because it reminds us to think about modeling
@@ -56,29 +65,6 @@ smaller than modeling errors.
 Furthermore, the discrete approach often allows better modeling
 decisions, and I would rather have an approximate solution
 to a good model than an exact solution to a bad model.
-
-## Who is this book for?
-
-To start this book, you should be comfortable with Python.
-If you are familiar with NumPy and Pandas, that will help, but I'll
-explain what you need as we go.
-
-You don't need to know calculus or linear algebra.
-You don't need any prior knowledge of statistics.  
-
-In Chapter 1, I define
-probability and introduce the idea of conditional probability, which is the
-foundation of Bayes's Theorem.
-Chapter 3 introduces the idea of a probability distribution, which is the
-foundation of Bayesian statistics.
-
-Along the way, we will use a variety of discrete and continuous distributions,
-including the binomial, exponential, Poisson, beta, gamma, and normal
-distributions.
-I will explain each distribution when it is introduced, and we will use
-SciPy to compute them, so you don't need to know anything about their
-mathematical properties.
-
 
 ## Working with the code
 
@@ -95,8 +81,8 @@ There are several ways to run the notebooks:
     and run them on your computer.
 
 * If you don't have a programming environment where you can run
-    Jupyter notebooks, you can run them
-    on Colab, which lets you run Jupyter notebooks in a browser without
+    Jupyter notebooks, you can use
+    Colab, which lets you run Jupyter notebooks in a browser without
     installing anything.
 
 To run the notebooks on Colab, start from [this landing page](http://allendowney.github.io/ThinkBayes2/index.html),
@@ -116,17 +102,18 @@ By default it installs files in your home
 directory, so you don't need administrator privileges. You can download
 Anaconda from [this site](https://www.anaconda.com/products/individual).
 
-By default Anaconda installs most of the packages you need to
+Anaconda includes most of the packages you need to
 run the code in this book.
 But there are a few additional packages you need to install.
 
 To make sure you have everything you need
 (and the right versions), the best option is to create a Conda
 environment.
+[Download this Conda environment file](https://github.com/AllenDowney/ThinkBayes2/raw/master/environment.yml) and run the following commands to create and activate an environment called `ThinkBayes2.`
 
 ```
-        conda env create -f environment.yml
-        conda activate ThinkBayes2
+conda env create -f environment.yml
+conda activate ThinkBayes2
 ```
 
 If you don't want to create an environment just for this book, you can
@@ -134,8 +121,8 @@ install what you need using Conda. The following commands should get
 everything you need:
 
 ```
-    conda install python jupyter pandas scipy matplotlib
-    pip install empiricaldist
+conda install python jupyter pandas scipy matplotlib
+pip install empiricaldist
 ```
 
 If you don't want to use Anaconda, you will need the following packages:
@@ -158,10 +145,7 @@ environments. If you have trouble installing them, I recommend using
 Anaconda or one of the other Python distributions that include these
 packages.
 
-
-
-
-### Contributor List
+## Contributor List
 
 If you have a suggestion or correction, please send email to
 *downey\@allendowney.com*. If I make a change based on your feedback, I
@@ -176,9 +160,13 @@ but not as easy to work with. Thanks!
     where I first came to understand Bayesian methods. With his
     permission, I use several problems from his book as examples.
 
+-   Several examples and exercises in the second edition are borrowed, with permission, from Cameron Davidson-Pilon and one exercise from Rasmus Bååth.
+
 -   This book also benefited from my interactions with Sanjoy Mahajan,
     especially in Fall 2012, when I audited his class on Bayesian
     Inference at Olin College.
+
+-   Many examples in this book were developed in collaboration with students in my Bayesian Statistics classes at Olin College.  In particular, the Red Line example started as a class project by Brendan Ritter and Kai Austin.
 
 -   I wrote parts of this book during project nights with the Boston
     Python User Group, so I would like to thank them for their company
@@ -191,7 +179,13 @@ but not as easy to work with. Thanks!
 
 -   Tomasz Miasko sent many excellent corrections and suggestions.
 
-Other people who spotted typos and small errors include
+-   For the second edition, I want to thank Michele Cronin and Kristen Brown at
+    O'Reilly Media and the technical reviewers Ravin Kumar, Thomas Nield, Josh
+    Starmer, and Junpeng Lao.
+
+-   I am grateful to the developers and contributors of the software libraries this book is based on, especially Jupyter, NumPy, SciPy, Pandas, PyMC, ArviZ, and Matplotlib.
+
+Other people who spotted typos and errors include
 Greg Marra,
 Matt Aasted,
 Marcus Ogren,
@@ -203,4 +197,10 @@ Olivier Yiptong,
 Yuriy Pasichnyk,
 Kristopher Overholt,
 Max Hailperin,
-Markus Dobler
+Markus Dobler,
+Brad Minch,
+Allen Minch,
+Nathan Yee,
+Michael Mera,
+Chris Krenn,
+Daniel Vianna.

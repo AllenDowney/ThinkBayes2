@@ -340,23 +340,11 @@
                 
   <div class="section" id="the-red-line-problem">
 <h1>The Red Line Problem<a class="headerlink" href="#the-red-line-problem" title="Permalink to this headline">¶</a></h1>
-<div class="cell tag_hide-cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get utils.py</span>
-
-<span class="kn">import</span> <span class="nn">os</span>
-
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;utils.py&#39;</span><span class="p">):</span>
-    <span class="o">!</span>wget https://github.com/AllenDowney/ThinkBayes2/raw/master/soln/utils.py
-</pre></div>
-</div>
-</div>
-</div>
 <p>The Red Line is a subway that connects Cambridge and Boston, Massachusetts. When I was working in Cambridge I took the Red Line from Kendall Square to South Station and caught the commuter rail to Needham. During rush hour Red Line trains run every 7–8 minutes, on average.</p>
-<p>When I arrived at the station, I could estimate the time until the next train based on the number of passengers on the platform. If there were only a few people, I inferred that I just missed a train and expected to wait about 7 minutes. If there were more passengers, I expected the train to arrive sooner. But if there were a large number of passengers, I suspected that trains were not running on schedule, so I would go back to the street level and get a taxi.</p>
+<p>When I arrived at the subway stop, I could estimate the time until the next train based on the number of passengers on the platform. If there were only a few people, I inferred that I just missed a train and expected to wait about 7 minutes. If there were more passengers, I expected the train to arrive sooner. But if there were a large number of passengers, I suspected that trains were not running on schedule, so I would leave the subway stop and get a taxi.</p>
 <p>While I was waiting for trains, I thought about how Bayesian estimation could help predict my wait time and decide when I should give up and take a taxi. This chapter presents the analysis I came up with.</p>
-<p>This example is based on a project by Brendan Ritter and Kai Austin, who took a class with me at Olin College.
-It was a chapter in the first edition of <em>Think Bayes</em>, I cut it from the second edition.</p>
+<p>This example is based on a project by Brendan Ritter and Kai Austin, who took a class with me at Olin College.</p>
+<p><a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/notebooks/redline.ipynb">Click here to run this notebook on Colab</a></p>
 <p>Before we get to the analysis, we have to make some modeling decisions. First, I will treat passenger arrivals as a Poisson process, which means I assume that passengers are equally likely to arrive at any time, and that they arrive at a rate, λ, measured in passengers per minute. Since I observe passengers during a short period of time, and at the same time every day, I assume that λ is constant.</p>
 <p>On the other hand, the arrival process for trains is not Poisson. Trains to Boston are supposed to leave from the end of the line (Alewife station) every 7–8 minutes during peak times, but by the time they get to Kendall Square, the time between trains varies between 3 and 12 minutes.</p>
 <p>To gather data on the time between trains, I wrote a script that downloads real-time data from the <a class="reference external" href="http://www.mbta.com/rider_tools/developers/">MBTA</a>, selects south-bound trains arriving at Kendall square, and records their arrival times in a database. I ran the script from 4 pm to 6 pm every weekday for 5 days, and recorded about 15 arrivals per day. Then I computed the time between consecutive arrivals.
@@ -908,7 +896,7 @@ As an example, here’s the distribution of wait time if we see 10 passengers.</
 <p>If we are willing to accept a 5% chance of missing the connection at South Station, we should stay and wait as long as there are fewer than 30 passengers, and take a taxi if there are more.</p>
 <p>Or, to take this analysis one step further, we could quantify the cost of missing the connection and the cost of taking a taxi, then choose the threshold that minimizes expected cost.</p>
 <p>This analysis is based on the assumption that the arrival rate, <code class="docutils literal notranslate"><span class="pre">lam</span></code>, is known.
-If it is not know precisely, but is estimated from data, we could represent our uncertainty about <code class="docutils literal notranslate"><span class="pre">lam</span></code> with a distribution, compute the distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code> for each value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>, and make a mixture to represent the distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code>.
+If it is not known precisely, but is estimated from data, we could represent our uncertainty about <code class="docutils literal notranslate"><span class="pre">lam</span></code> with a distribution, compute the distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code> for each value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>, and make a mixture to represent the distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code>.
 I did that in the version of this problem in the first edition of <em>Think Bayes</em>; I left it out here because it is not the focus of the problem.</p>
 </div>
 </div>
