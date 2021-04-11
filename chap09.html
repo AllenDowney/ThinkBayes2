@@ -1440,10 +1440,9 @@ In general, frequentist estimation provides little guidance for decision-making.
 <p>The details of this story are unique, but the general problem is something almost every retailer has to figure out.  Based on past sales, how do you predict future sales?  And based on those predictions, how do you decide how much to order and when?</p>
 <p>Often the cost of a bad decision is complicated.  If you place a lot of small orders rather than one big one, your costs are likely to be higher.  If you run out of inventory, you might lose customers.  And if you order too much, you have to pay the various costs of holding inventory.</p>
 <p>So, let’s solve a version of the problem I faced.  It will take some work to set up the problem; the details are in the notebook for this chapter.</p>
-<p>Suppose you start selling books online.  During the first week you sell 12 copies (and let’s assume that none of the customers are your mother).  During the second week you sell 8 copies.</p>
-<p>Assuming that the arrival of orders is a Poisson process, we can think of the weekly orders as samples from a Poisson distribution with an unknown rate.</p>
-<p>Choose a prior you think is appropriate and use the data to compute the posterior distribution of the order rate.
-Then generate a posterior predictive distribution for the number of copies you expect during the next 8 weeks.</p>
+<p>Suppose you start selling books online.  During the first week you sell 10 copies (and let’s assume that none of the customers are your mother).  During the second week you sell 9 copies.</p>
+<p>Assuming that the arrival of orders is a Poisson process, we can think of the weekly orders as samples from a Poisson distribution with an unknown rate.
+We can use orders from past weeks to estimate the parameter of this distribution, generate a predictive distribution for future weeks, and compute the order size that maximized expected profit.</p>
 <ul class="simple">
 <li><p>Suppose the cost of printing the book is \$5 per copy,</p></li>
 <li><p>But if you order 100 or more, it’s \$4.50 per copy.</p></li>
@@ -1451,8 +1450,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 <li><p>But if you run out of books before the end of 8 weeks, you lose \$50 in future sales for every week you are out of stock.</p></li>
 <li><p>If you have books left over at the end of 8 weeks, you lose \$2 in inventory costs per extra book.</p></li>
 </ul>
-<p>For example, suppose you get orders for 10 books per week, every week.</p>
-<p>If you order 60 books,</p>
+<p>For example, suppose you get orders for 10 books per week, every week. If you order 60 books,</p>
 <ul class="simple">
 <li><p>The total cost is \$300.</p></li>
 <li><p>You sell all 60 books, so you make \$600.</p></li>
@@ -1548,7 +1546,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 </div>
-<p>To test these function, suppose we get exactly 10 orders per week for eight weeks:</p>
+<p>To test these functions, suppose we get exactly 10 orders per week for eight weeks:</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">always_10</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">*</span> <span class="mi">8</span>
@@ -1589,13 +1587,13 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <p>Of course, in the context of the problem you don’t know how many books will be ordered in any given week.  You don’t even know the average rate of orders.  However, given the data and some assumptions about the prior, you can compute the distribution of the rate of orders.</p>
-<p>You’ll have a chance to do that, but to demonstrate the decision analysis part of the problem, I’ll start with the arbitrary assumption that order rates come from a gamma distribution with mean 10.</p>
+<p>You’ll have a chance to do that, but to demonstrate the decision analysis part of the problem, I’ll start with the arbitrary assumption that order rates come from a gamma distribution with mean 9.</p>
 <p>Here’s a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents this distribution.</p>
 <div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gamma</span>
 
-<span class="n">alpha</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mi">9</span>
 <span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
 <span class="n">ps</span> <span class="o">=</span> <span class="n">gamma</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
 <span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
@@ -1605,7 +1603,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9.996616662114423
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.998788382371902
 </pre></div>
 </div>
 </div>
@@ -1634,7 +1632,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10.13875
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.89675
 </pre></div>
 </div>
 </div>
@@ -1649,11 +1647,11 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[11, 13, 11, 15, 13,  8, 17, 17],
-       [ 6,  8,  2,  5,  4,  8,  9, 13],
-       [ 7,  9, 11, 11,  6,  9, 10,  9],
-       [12,  3,  9, 10, 11, 12, 13, 15],
-       [ 7, 11, 10,  5,  5,  1,  7,  4]])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 6,  8, 13,  7,  4, 10,  7,  2],
+       [ 4,  4,  3,  9,  9,  8, 12,  5],
+       [ 8,  3,  9,  7,  6, 11,  9, 10],
+       [ 5,  5,  5,  5,  7,  8,  6,  4],
+       [ 7, 10, 12, 11, 11, 12,  8, 13]])
 </pre></div>
 </div>
 </div>
@@ -1683,7 +1681,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>206.378
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>182.416
 </pre></div>
 </div>
 </div>
@@ -1695,7 +1693,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>228.424
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>179.518
 </pre></div>
 </div>
 </div>
@@ -1707,7 +1705,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>226.654
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>156.734
 </pre></div>
 </div>
 </div>
@@ -1744,7 +1742,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(100, 252.264)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(74, 183.828)
 </pre></div>
 </div>
 </div>
@@ -1817,7 +1815,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 <span class="c1"># Here&#39;s the update after week 1.</span>
 
 <span class="n">posterior1</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">update_book</span><span class="p">(</span><span class="n">posterior1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">update_book</span><span class="p">(</span><span class="n">posterior1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1829,7 +1827,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 <span class="c1"># And the update after week 2.</span>
 
 <span class="n">posterior2</span> <span class="o">=</span> <span class="n">posterior1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">update_book</span><span class="p">(</span><span class="n">posterior2</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">update_book</span><span class="p">(</span><span class="n">posterior2</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1843,7 +1841,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(21.78849107458653, 12.000000007076508, 10.000000000000375)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(21.78849107458653, 10.000000817984526, 9.500000000003652)
 </pre></div>
 </div>
 </div>
@@ -1860,7 +1858,7 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10.013808737491251
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9.373109021648657
 </pre></div>
 </div>
 </div>
@@ -1877,11 +1875,11 @@ Then generate a posterior predictive distribution for the number of copies you e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 7,  5, 11,  6,  7, 18,  3, 15],
-       [ 8, 10,  9, 14,  4, 16,  7, 10],
-       [ 6, 12,  9,  9,  6, 19, 10, 14],
-       [11,  7,  5, 14, 12, 15, 13,  8],
-       [18, 10, 14, 14, 20, 16, 16, 11]])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 8, 13,  8, 10,  6, 12,  6,  8],
+       [ 6,  6,  7,  8, 13, 13, 13, 10],
+       [17, 12,  6, 10, 13, 11, 12, 10],
+       [ 8,  8,  8,  8, 15,  9, 12, 10],
+       [11,  7,  7, 10, 10, 10,  9,  7]])
 </pre></div>
 </div>
 </div>
@@ -1921,14 +1919,14 @@ Then generate a posterior predictive distribution for the number of copies you e
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="c1"># Here&#39;s the optimal order</span>
+<span class="c1"># Here&#39;s the optimal order.</span>
 
 <span class="n">expected_profits</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>77
 </pre></div>
 </div>
 </div>
