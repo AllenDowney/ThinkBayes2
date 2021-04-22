@@ -601,7 +601,7 @@ The change in log odds after each update is the logarithm of the likelihood rati
 </div>
 <div class="section" id="the-space-shuttle-problem">
 <h2>The Space Shuttle Problem<a class="headerlink" href="#the-space-shuttle-problem" title="Permalink to this headline">¶</a></h2>
-<p>As an example of logistic regression, I’ll solve a problem from Cameron Davidson-Pilon’s book, <a class="reference external" href="http://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter2_MorePyMC/Ch2_MorePyMC_PyMC2.ipynb">Bayesian Methods for Hackers</a>.  He writes:</p>
+<p>As an example of logistic regression, I’ll solve a problem from Cameron Davidson-Pilon’s book, <a class="reference external" href="http://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter2_MorePyMC/Ch2_MorePyMC_PyMC2.ipynb"><em>Bayesian Methods for Hackers</em></a>.  He writes:</p>
 <blockquote>
 <div><p>“On January 28, 1986, the twenty-fifth flight of the U.S. space shuttle program ended in disaster when one of the rocket boosters of the Shuttle Challenger exploded shortly after lift-off, killing all seven crew members. The presidential commission on the accident concluded that it was caused by the failure of an O-ring in a field joint on the rocket booster, and that this failure was due to a faulty design that made the O-ring unacceptably sensitive to a number of factors including outside temperature. Of the previous 24 flights, data were available on failures of O-rings on 23 (one was lost at sea), and these data were discussed on the evening preceding the Challenger launch, but unfortunately only the data corresponding to the 7 flights on which there was a damage incident were considered important and these were thought to show no obvious trend.”</p>
 </div></blockquote>
@@ -946,7 +946,7 @@ For reasons I’ll explain soon, I’ll define <span class="math notranslate noh
 </div>
 </div>
 </div>
-<p>Before doing a Bayesian update, I’ll use StatsModels to run a conventional (non-Bayesian) logistic regression.</p>
+<p>Before doing a Bayesian update, I’ll use <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> to run a conventional (non-Bayesian) logistic regression.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
@@ -1002,7 +1002,7 @@ Here’s the range:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.4155141126966855
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.4155141126966854
 </pre></div>
 </div>
 </div>
@@ -1077,8 +1077,8 @@ Now we’ll do the Bayesian version.</p>
 </div>
 </div>
 </div>
-<p>The values of <code class="docutils literal notranslate"><span class="pre">intercept</span></code> run across the columns, the values of <code class="docutils literal notranslate"><span class="pre">slope</span></code> run down the rows;</p>
-<p>For this problem, it will be convenient to “stack” the prior so the parameters are levels in a <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code>.</p>
+<p>The values of <code class="docutils literal notranslate"><span class="pre">intercept</span></code> run across the columns, the values of <code class="docutils literal notranslate"><span class="pre">slope</span></code> run down the rows.</p>
+<p>For this problem, it will be convenient to “stack” the prior so the parameters are levels in a <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code>, and put the result in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
@@ -1134,7 +1134,7 @@ Now we’ll do the Bayesian version.</p>
 </table>
 </div></div></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">joint_pmf</span></code> is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with two levels in the index, one for each parameter.  That makes it easy to loop through possible pairs of parameters, as in the following function.</p>
+<p><code class="docutils literal notranslate"><span class="pre">joint_pmf</span></code> is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with two levels in the index, one for each parameter.  That makes it easy to loop through possible pairs of parameters, as we’ll see in the next section.</p>
 </div>
 <div class="section" id="likelihood">
 <h2>Likelihood<a class="headerlink" href="#likelihood" title="Permalink to this headline">¶</a></h2>
@@ -1731,7 +1731,7 @@ This optimization doesn’t affect the results, so it doesn’t “double-count�
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>So far we have seen three ways to represent degrees of confidence in a hypothesis: probability, odds, and log odds.
 When we write Bayes’s Rule in terms of log odds, a Bayesian update is the sum of the prior and the likelihood; in this sense, Bayesian statistics is the arithmetic of hypotheses and evidence.</p>
-<p>This form of Bayes Theorem is also the foundation of logistic regression, which we used to infer parameters and make predictions.  In the Space Shuttle problem, we modeled the relationship between temperature and the probability of damage, and showed that the Challenger disaster might have been predictable.  But this example is also a warning about the hazards of using a model to extrapolate far beyond the data.</p>
+<p>This form of Bayes’s Theorem is also the foundation of logistic regression, which we used to infer parameters and make predictions.  In the Space Shuttle problem, we modeled the relationship between temperature and the probability of damage, and showed that the Challenger disaster might have been predictable.  But this example is also a warning about the hazards of using a model to extrapolate far beyond the data.</p>
 <p>In the exercises below you’ll have a chance to practice the material in this chapter, using log odds to evaluate a political pundit and using logistic regression to model diagnosis rates for Attention Deficit Hyperactivity Disorder (ADHD).</p>
 <p>In the next chapter we’ll move from logistic regression to linear regression, which we will use to model changes over time in temperature, snowfall, and the marathon world record.</p>
 </div>
@@ -1749,7 +1749,7 @@ With that kind of prediction, it can be hard to say whether it is right or wrong
 <p>If the pundit says Alice has a 70% chance of winning, and she loses, that’s evidence against <code class="docutils literal notranslate"><span class="pre">H</span></code> with a likelihood ratio of 50/30.</p>
 <p>Suppose we start with some confidence in the algorithm, so the prior odds are 4 to 1.  And suppose the pundit generates predictions for three elections:</p>
 <ul class="simple">
-<li><p>In the first election, the pundit says Alice has a 70% of winning and she does.</p></li>
+<li><p>In the first election, the pundit says Alice has a 70% chance of winning and she does.</p></li>
 <li><p>In the second election, the pundit says Bob has a 30% chance of winning and he does.</p></li>
 <li><p>In the third election, the pundit says Carol has an 90% chance of winning and she does.</p></li>
 </ul>
@@ -1807,7 +1807,7 @@ With that kind of prediction, it can be hard to say whether it is right or wrong
 </div>
 </div>
 </div>
-<p><strong>Exercise:</strong>  An article in the New England Journal of Medicine reports results from a study that looked at the diagnosis rate of Attention Deficit Hyperactivity Disorder (ADHD) as a function of birth month: <a class="reference external" href="https://www.nejm.org/doi/10.1056/NEJMoa1806828">“Attention Deficit–Hyperactivity Disorder and Month of School Enrollment”</a>.</p>
+<p><strong>Exercise:</strong>  An article in the <em>New England Journal of Medicine</em> reports results from a study that looked at the diagnosis rate of Attention Deficit Hyperactivity Disorder (ADHD) as a function of birth month: <a class="reference external" href="https://www.nejm.org/doi/10.1056/NEJMoa1806828">“Attention Deficit–Hyperactivity Disorder and Month of School Enrollment”</a>.</p>
 <p>They found that children born in June, July, and August were substantially more likely to be diagnosed with ADHD, compared to children born in September, but only in states that use a September cutoff for children to enter kindergarten.  In these states, children born in August start school almost a year younger than children born in September.  The authors of the study suggest that the cause is “age-based variation in behavior that may be attributed to ADHD rather than to the younger age of the children”.</p>
 <p>Use the methods in this chapter to estimate the probability of diagnosis as a function of birth month.
 The notebook for this chapter provides the data and some suggestions for getting started.</p>
