@@ -377,17 +377,17 @@
 <p><em>If you like this article, you might also like the second edition of <a class="reference external" href="https://greenteapress.com/wp/think-bayes/"><em>Think Bayes</em></a>.</em></p>
 <p><a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/usb.ipynb">Click here to run this article on Colab</a></p>
 <p>I am not the first person to observe that it sometimes takes several tries to plug in a USB connector (specifically the rectangular <a class="reference external" href="https://en.wikipedia.org/wiki/USB">Type A connector</a>, which is not reversible).
-On Quora alone,
+There are <a class="reference external" href="https://knowyourmeme.com/memes/usb-insertion-issues">memes about it</a>, there are <a class="reference external" href="https://www.smbc-comics.com/?id=2388">cartoons about it</a>, and on Quora alone,
 <a class="reference external" href="https://www.quora.com/Why-do-you-always-have-to-flip-a-USB-twice-when-trying-to-plug-it-in-Shouldn-t-it-have-gone-in-the-first-time-when-you-had-it-the-right-way">people</a>
 <a class="reference external" href="https://www.quora.com/There-is-a-50-chance-of-plugging-in-a-USB-cable-the-right-way-on-the-first-try-Why-does-it-only-happen-20-of-the-time-when-I-do-it">have</a>
 <a class="reference external" href="https://www.quora.com/Why-doesnt-the-USB-go-in-the-first-time-but-does-after-youve-turn-it-a-few-times">asked</a>
 <a class="reference external" href="https://www.quora.com/People-that-can-plug-the-USB-in-on-their-first-try-How">about</a>
 <a class="reference external" href="https://www.quora.com/Why-cant-we-plug-in-USB-devices-correctly-the-first-time">it</a> more than once.</p>
-<p>But I might be the first to figure out the optimal strategy for plugging in a USB connector. Specifically, I have worked out how long you should try on the first side before flipping, and how long you should try on the second side before flipping again.</p>
+<p>But I might be the first to use Bayesian decision analysis to figure out the optimal strategy for plugging in a USB connector. Specifically, I have worked out how long you should try on the first side before flipping, how long you should try on the second side before flipping again, how long you should try on the third side, and so on.</p>
 <p>Of course, my analysis is based on some modeling assumptions:</p>
 <ol class="simple">
 <li><p>Initially, the probability is 0.5 that the connector is in the right orientation.</p></li>
-<li><p>If it is, the time it takes to succeed follows an exponential distribution with rate parameter 1.1, which means that it takes 0.91 seconds on average.</p></li>
+<li><p>If it is, the time it takes to succeed follows an exponential distribution with a mean of 1.1 seconds.</p></li>
 <li><p>Flipping the connector takes 0.1 seconds.</p></li>
 </ol>
 <p>With that, we are ready to get started.</p>
@@ -429,22 +429,24 @@ What is the likelihood that you would have to try so long?</p>
 </div>
 </div>
 </div>
-<p>We can use this function to compute the likelihood of trying for 0.9 seconds or more, given <span class="math notranslate nohighlight">\(\lambda=1.1\)</span>.</p>
+<p>We can use this function to compute the likelihood of trying for 0.9 seconds or more, given an exponential distribution with mean 1.1.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="mf">0.9</span>
-<span class="n">lam</span> <span class="o">=</span> <span class="mf">1.1</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="mf">1.1</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">mu</span>
 
 <span class="n">expo_sf</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">lam</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.37157669102204566
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.441233167759984
 </pre></div>
 </div>
 </div>
 </div>
+<p>The result is the likelihood of the data, given that the orientation of the connector is correct.</p>
 <p>Now let’s make a Bayes table with two hypotheses – the connector is either the right way or the wrong way – with equal prior probabilities.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -498,22 +500,22 @@ What is the likelihood that you would have to try so long?</p>
     <tr>
       <th>Right way</th>
       <td>0.5</td>
-      <td>0.371577</td>
-      <td>0.185788</td>
-      <td>0.270912</td>
+      <td>0.441233</td>
+      <td>0.220617</td>
+      <td>0.30615</td>
     </tr>
     <tr>
       <th>Wrong way</th>
       <td>0.5</td>
       <td>1.000000</td>
       <td>0.500000</td>
-      <td>0.729088</td>
+      <td>0.69385</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<p>After 0.9 seconds, the probability is about 73% that the orientation of the connector is wrong, so you might want to think about trying the other side.</p>
+<p>After 0.9 seconds, the probability is about 69% that the orientation of the connector is wrong, so you might want to think about trying the other side.</p>
 <p>But if it takes 0.1 seconds to flip, maybe you should keep trying a little longer. To figure out when to flip, let’s do the same analysis again for general values of <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(t\)</span>.</p>
 </div>
 <div class="section" id="generalization">
@@ -624,10 +626,10 @@ What is the likelihood that you would have to try so long?</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">ts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="n">ps</span> <span class="o">=</span> <span class="n">logistic</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">ts</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">logistic</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">ts</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ps</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;How long you&#39;ve been trying (s)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;How long you&#39;ve been trying (seconds)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Probability the orientation is right&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -685,11 +687,11 @@ What is the likelihood that you would have to try so long?</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
-<span class="n">ts</span> <span class="o">=</span> <span class="n">wait_time</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">rs</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">wait_time</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">rs</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rs</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rs</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Probability the orientation is right&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;How long to keep trying (s)&quot;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;How long to keep trying (seconds)&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -735,12 +737,12 @@ We’ll use this function in the next section to simulate the strategy.</p>
 <p>Here’s a test run, starting on the correct side.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">simulate</span><span class="p">(</span><span class="n">correct</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="p">[])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">simulate</span><span class="p">(</span><span class="n">correct</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="p">[])</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.48602719926750154]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.4848681401568184]
 </pre></div>
 </div>
 </div>
@@ -748,12 +750,12 @@ We’ll use this function in the next section to simulate the strategy.</p>
 <p>And here’s a run where we start on the wrong side.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">simulate</span><span class="p">(</span><span class="n">correct</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="p">[])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">simulate</span><span class="p">(</span><span class="n">correct</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="p">[])</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.2602676010180822, 0.1, 0.5625173576253926]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.5249237972318797, 0.1, 0.6611794154770219]
 </pre></div>
 </div>
 </div>
@@ -777,13 +779,13 @@ We’ll use this function in the next section to simulate the strategy.</p>
 <p>Here’s the average total duration with threshold probability <code class="docutils literal notranslate"><span class="pre">r=0.25</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lengths</span><span class="p">,</span> <span class="n">totals</span> <span class="o">=</span> <span class="n">run_simulations</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lengths</span><span class="p">,</span> <span class="n">totals</span> <span class="o">=</span> <span class="n">run_simulations</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">totals</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.008325460038306
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.420075272368324
 </pre></div>
 </div>
 </div>
@@ -814,7 +816,7 @@ We’ll use this function in the next section to simulate the strategy.</p>
 
 <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rs</span><span class="p">:</span>
-    <span class="n">lengths</span><span class="p">,</span> <span class="n">totals</span> <span class="o">=</span> <span class="n">run_simulations</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">lengths</span><span class="p">,</span> <span class="n">totals</span> <span class="o">=</span> <span class="n">run_simulations</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
     <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">totals</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
 </pre></div>
 </div>
@@ -874,31 +876,30 @@ We’ll use this function in the next section to simulate the strategy.</p>
 <img alt="_images/usb_56_0.png" src="_images/usb_56_0.png" />
 </div>
 </div>
-<p>The optimal value of <code class="docutils literal notranslate"><span class="pre">r</span></code> is close to <code class="docutils literal notranslate"><span class="pre">0.3</span></code>, maybe <code class="docutils literal notranslate"><span class="pre">0.29</span></code>.</p>
-<p>With that threshold we can see how long we should try on the first side, starting with prior probability <code class="docutils literal notranslate"><span class="pre">p=0.5</span></code>.</p>
+<p>The optimal value of <code class="docutils literal notranslate"><span class="pre">r</span></code> is close to <code class="docutils literal notranslate"><span class="pre">0.3</span></code>. With that threshold we can see how long we should try on the first side, starting with prior probability <code class="docutils literal notranslate"><span class="pre">p=0.5</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r_opt</span> <span class="o">=</span> <span class="mf">0.29</span>
-<span class="n">wait_time</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r_opt</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r_opt</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">wait_time</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r_opt</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.813985497322583
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9320276464259238
 </pre></div>
 </div>
 </div>
 </div>
-<p>With the given values of <code class="docutils literal notranslate"><span class="pre">lam</span></code> and <code class="docutils literal notranslate"><span class="pre">flip</span></code>, it turns out the optimal time to wait is about <code class="docutils literal notranslate"><span class="pre">0.8</span></code> seconds.</p>
+<p>With the given values of <code class="docutils literal notranslate"><span class="pre">lam</span></code> and <code class="docutils literal notranslate"><span class="pre">flip</span></code>, it turns out the optimal time to wait is about <code class="docutils literal notranslate"><span class="pre">0.9</span></code> seconds.</p>
 <p>If we have to flip, the prior probability for the second side is <code class="docutils literal notranslate"><span class="pre">p=1-r</span></code>, so we have to wait twice as long for the posterior probability to get down to <code class="docutils literal notranslate"><span class="pre">r</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wait_time</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">r_opt</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r_opt</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wait_time</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">r_opt</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r_opt</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.627970994645166
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.864055292851848
 </pre></div>
 </div>
 </div>
@@ -909,12 +910,22 @@ We’ll use this function in the next section to simulate the strategy.</p>
 <p>Now let’s run the simulations with the optimal value of <code class="docutils literal notranslate"><span class="pre">r</span></code> and see what the distributions look like for the total time and the number of flips.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lengths</span><span class="p">,</span> <span class="n">totals</span> <span class="o">=</span> <span class="n">run_simulations</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r_opt</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lengths</span><span class="p">,</span> <span class="n">totals</span> <span class="o">=</span> <span class="n">run_simulations</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r_opt</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <p>Here’s the distribution of total time, represented as a CDF.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">empiricaldist</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="o">!</span>pip install empiricaldist
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
@@ -928,7 +939,7 @@ We’ll use this function in the next section to simulate the strategy.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/usb_64_0.png" src="_images/usb_64_0.png" />
+<img alt="_images/usb_65_0.png" src="_images/usb_65_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -938,19 +949,19 @@ We’ll use this function in the next section to simulate the strategy.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.0228610633673836
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.4184656263942617
 </pre></div>
 </div>
 </div>
 </div>
-<p>The average is 2 seconds, but occasionally it takes much longer!</p>
+<p>The average is about 2.4 seconds, but occasionally it takes much longer!</p>
 <p>And here’s the distribution for the total number of flips.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
 
 <span class="n">flips</span> <span class="o">=</span> <span class="p">(</span><span class="n">lengths</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
-<span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">flips</span><span class="p">)</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">flips</span><span class="p">)</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;How many times you have to flip&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
@@ -959,11 +970,64 @@ We’ll use this function in the next section to simulate the strategy.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/usb_67_0.png" src="_images/usb_67_0.png" />
+<img alt="_images/usb_68_0.png" src="_images/usb_68_0.png" />
 </div>
 </div>
-<p>The probability of getting it right on the first try is only about 30%. That might seem low, because the chance of starting in the right orientation is 50%, but remember that we have a substantial chance of flipping even if we start in the right orientation (and in that case, we have to flip at least twice).</p>
-<p>The most common outcome is that we have to flip once, about 40% of the time. And the probability of the notorious double flip is 15-20%.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">flips</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.0</th>
+      <td>0.28320</td>
+    </tr>
+    <tr>
+      <th>1.0</th>
+      <td>0.40465</td>
+    </tr>
+    <tr>
+      <th>2.0</th>
+      <td>0.17675</td>
+    </tr>
+    <tr>
+      <th>3.0</th>
+      <td>0.07735</td>
+    </tr>
+    <tr>
+      <th>4.0</th>
+      <td>0.03220</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The probability of getting it right on the first try is only about 28%. That might seem low, because the chance of starting in the right orientation is 50%, but remember that we have a substantial chance of flipping even if we start in the right orientation (and in that case, we have to flip at least twice).</p>
+<p>The most common outcome is that we have to flip once, about 40% of the time. And the probability of the notorious double flip is about 18%.</p>
 <p>Fortunately, it is rare to flip three or more times.</p>
 </div>
 <div class="section" id="summary">
