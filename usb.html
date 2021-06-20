@@ -742,7 +742,7 @@ We’ll use this function in the next section to simulate the strategy.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.4848681401568184]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.5249237972318797, 0.1, 3.0498475944637597, 0.1, 0.22920261920526902]
 </pre></div>
 </div>
 </div>
@@ -755,7 +755,7 @@ We’ll use this function in the next section to simulate the strategy.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.5249237972318797, 0.1, 0.6611794154770219]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.5249237972318797, 0.1, 0.8744612650971085]
 </pre></div>
 </div>
 </div>
@@ -764,10 +764,10 @@ We’ll use this function in the next section to simulate the strategy.</p>
 <p>It returns two arrays, containing the length of the trace and the total duration for each simulation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_simulations</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">flip</span><span class="p">,</span> <span class="n">iters</span><span class="o">=</span><span class="mi">20000</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_simulations</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">flip</span><span class="p">,</span> <span class="n">iters</span><span class="o">=</span><span class="mi">20000</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iters</span><span class="p">):</span>
-        <span class="n">correct</span> <span class="o">=</span> <span class="n">i</span><span class="o">%</span><span class="k">2</span>
+        <span class="n">correct</span> <span class="o">=</span> <span class="n">i</span><span class="o">%</span><span class="k">2</span> if flag is None else flag
         <span class="n">trace</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">correct</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">lam</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">flip</span><span class="p">,</span> <span class="p">[])</span>
         <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">),</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trace</span><span class="p">)))</span>
         
@@ -785,7 +785,7 @@ We’ll use this function in the next section to simulate the strategy.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.420075272368324
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.403304555631497
 </pre></div>
 </div>
 </div>
@@ -910,7 +910,8 @@ We’ll use this function in the next section to simulate the strategy.</p>
 <p>Now let’s run the simulations with the optimal value of <code class="docutils literal notranslate"><span class="pre">r</span></code> and see what the distributions look like for the total time and the number of flips.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lengths</span><span class="p">,</span> <span class="n">totals</span> <span class="o">=</span> <span class="n">run_simulations</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r_opt</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lengths1</span><span class="p">,</span> <span class="n">totals1</span> <span class="o">=</span> <span class="n">run_simulations</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r_opt</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">lengths2</span><span class="p">,</span> <span class="n">totals2</span> <span class="o">=</span> <span class="n">run_simulations</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r_opt</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -930,11 +931,13 @@ We’ll use this function in the next section to simulate the strategy.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
 
-<span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">totals</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">totals1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Right the first time&#39;</span><span class="p">)</span>
+<span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">totals2</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Wrong the first time&#39;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Total time to connect (seconds)&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of total time to connect&#39;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of total time to connect&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
 </pre></div>
 </div>
 </div>
@@ -944,12 +947,24 @@ We’ll use this function in the next section to simulate the strategy.</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">totals</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">totals1</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">totals2</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.4184656263942617
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(2.2006236558767154, 2.616228241925388)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">totals1</span><span class="p">,</span> <span class="n">totals2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.4084259489010518
 </pre></div>
 </div>
 </div>
@@ -960,22 +975,30 @@ We’ll use this function in the next section to simulate the strategy.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
 
-<span class="n">flips</span> <span class="o">=</span> <span class="p">(</span><span class="n">lengths</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
-<span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">flips</span><span class="p">)</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
+<span class="n">flips1</span> <span class="o">=</span> <span class="p">(</span><span class="n">lengths1</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+<span class="n">pmf1</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">flips1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">pmf1</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Right the first time&#39;</span><span class="p">)</span>
+
+<span class="n">flips2</span> <span class="o">=</span> <span class="p">(</span><span class="n">lengths2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+<span class="n">pmf2</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">flips2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">pmf2</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Right the second time&#39;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;How many times you have to flip&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of number of flips&#39;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of number of flips&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/usb_68_0.png" src="_images/usb_68_0.png" />
+<img alt="_images/usb_69_0.png" src="_images/usb_69_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">flips</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lengths1</span><span class="p">,</span> <span class="n">lengths2</span><span class="p">)</span>
+<span class="n">flips</span> <span class="o">=</span> <span class="p">(</span><span class="n">lengths</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+<span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">flips</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1004,23 +1027,23 @@ We’ll use this function in the next section to simulate the strategy.</p>
   <tbody>
     <tr>
       <th>0.0</th>
-      <td>0.28320</td>
+      <td>0.282925</td>
     </tr>
     <tr>
       <th>1.0</th>
-      <td>0.40465</td>
+      <td>0.407050</td>
     </tr>
     <tr>
       <th>2.0</th>
-      <td>0.17675</td>
+      <td>0.177200</td>
     </tr>
     <tr>
       <th>3.0</th>
-      <td>0.07735</td>
+      <td>0.075200</td>
     </tr>
     <tr>
       <th>4.0</th>
-      <td>0.03220</td>
+      <td>0.032575</td>
     </tr>
   </tbody>
 </table>
