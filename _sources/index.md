@@ -8,6 +8,9 @@ by Allen B. Downey
 
 Other Free Books by Allen Downey are available from [Green Tea Press](https://greenteapress.com/wp/).
 
+Print and electronic versions of this book are available from [Amazon](https://amzn.to/334eqGo)
+and [O'Reilly Media](https://shop.aer.io/oreilly/p/think-bayes-2nd/9781492089469-9149).
+
 **Run the notebooks**
 
 [Download the notebooks as a Zip file](https://github.com/AllenDowney/ThinkBayes2/raw/master/ThinkBayes2Notebooks.zip)
