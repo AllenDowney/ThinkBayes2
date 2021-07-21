@@ -461,6 +461,6 @@ color_list = [Bl30, Or70, Gr50, Re60, Pu20, Gray70, Re80, Gray50,
 color_cycle = cycler(color=color_list)
 
 def set_pyplot_params():
-    #plt.rcParams['figure.dpi'] = 300
+    # plt.rcParams['figure.dpi'] = 300
     plt.rcParams['axes.prop_cycle'] = color_cycle
     plt.rcParams['lines.linewidth'] = 3
