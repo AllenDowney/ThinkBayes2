@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Radiation &#8212; Think Bayes</title>
+    <title>The Emitter-Detector Problem &#8212; Think Bayes</title>
     
   <link rel="stylesheet" href="_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
 
@@ -236,7 +236,7 @@
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Radiation
+   The Emitter-Detector Problem
   </a>
  </li>
 </ul>
@@ -351,8 +351,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#jeffreys-s-prior">
-   Jeffreys’s prior
+  <a class="reference internal nav-link" href="#jeffreys-prior">
+   Jeffreys prior
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -382,8 +382,8 @@
         
               <div>
                 
-  <div class="section" id="radiation">
-<h1>Radiation<a class="headerlink" href="#radiation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="the-emitter-detector-problem">
+<h1>The Emitter-Detector Problem<a class="headerlink" href="#the-emitter-detector-problem" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/radiation.ipynb">Click here to run this notebook on Colab</a></p>
 <div class="section" id="modeling-a-radiation-sensor">
 <h2>Modeling a radiation sensor<a class="headerlink" href="#modeling-a-radiation-sensor" title="Permalink to this headline">¶</a></h2>
@@ -395,10 +395,10 @@ what can we say about the strength of the source?</p>
 <p>I presented a <a class="reference external" href="https://www.greenteapress.com/thinkbayes/html/thinkbayes015.html#sec130">version of this problem</a> in the first edition of <em>Think Bayes</em>, but I don’t think I explained it well, and my solution was a bit of a mess.
 In the second edition, I use more NumPy and SciPy, which makes it possible to express the solution more clearly and concisely, so let me give it another try.</p>
 <p>As a model of the radioactive source, Jaynes suggests we imagine “<span class="math notranslate nohighlight">\(N\)</span> nuclei, each of which has independently the probability <span class="math notranslate nohighlight">\(r\)</span> of sending a particle through our counter in any one second”.
-If <span class="math notranslate nohighlight">\(N\)</span> is large and <span class="math notranslate nohighlight">\(r\)</span> is small, the number or particles in a given second is well modeled by a Poisson distribution with parameter <span class="math notranslate nohighlight">\(s = N r\)</span>, where <span class="math notranslate nohighlight">\(s\)</span> is the strength of the source.</p>
+If <span class="math notranslate nohighlight">\(N\)</span> is large and <span class="math notranslate nohighlight">\(r\)</span> is small, the number or particles emitted in a given second is well modeled by a Poisson distribution with parameter <span class="math notranslate nohighlight">\(s = N r\)</span>, where <span class="math notranslate nohighlight">\(s\)</span> is the strength of the source.</p>
 <p>As a model of the sensor, we’ll assume that “each particle passing through the counter
 has independently the probability <span class="math notranslate nohighlight">\(\phi\)</span> of making a count”.
-So if we know the actual number of particles, <span class="math notranslate nohighlight">\(n\)</span>, and the efficiency of the sensor, <span class="math notranslate nohighlight">\(\phi\)</span>, the distribution of the count is binomial.</p>
+So if we know the actual number of particles, <span class="math notranslate nohighlight">\(n\)</span>, and the efficiency of the sensor, <span class="math notranslate nohighlight">\(\phi\)</span>, the distribution of the count is <span class="math notranslate nohighlight">\(\mathrm{Binomial}(n, \phi)\)</span>.</p>
 <p>With that, we are ready to solve the problem, but first, an aside: I am not sure why Jaynes states the problem in terms of <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(\theta\)</span>, and then solves it in terms of <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(\phi\)</span>.
 It might have been an oversight, or there might be subtle distinction he intended to draw the reader’s attention to.
 The book is full of dire warnings about distinctions like this, but in this case I don’t see an explanation.</p>
@@ -692,7 +692,7 @@ The following function encapsulates this computation and puts the result in a Pa
 </div></div></div>
 </div>
 <p>Now we’re ready to compute the likelihood of the data.
-In this problem, it depends only on <span class="math notranslate nohighlight">\(n\)</span>, regardless of <span class="math notranslate nohighlight">\(s\)</span>, so we only have to compute it once.</p>
+In this problem, it depends only on <span class="math notranslate nohighlight">\(n\)</span>, regardless of <span class="math notranslate nohighlight">\(s\)</span>, so we only have to compute it once for each value of <span class="math notranslate nohighlight">\(n\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
@@ -930,7 +930,7 @@ We can do that using the <code class="docutils literal notranslate"><span class=
 </div>
 <div class="section" id="first-update">
 <h2>First update<a class="headerlink" href="#first-update" title="Permalink to this headline">¶</a></h2>
-<p>Let’s test the update function with the first example, on page 178:</p>
+<p>Let’s test the update function with the first example, on page 178 of <em>Probability Theory</em>:</p>
 <blockquote>
 <div><p>During the first second, <code class="docutils literal notranslate"><span class="pre">c1</span> <span class="pre">=</span> <span class="pre">10</span></code> counts are registered. What can [we] say about the number <code class="docutils literal notranslate"><span class="pre">n1</span></code> of particles?</p>
 </div></blockquote>
@@ -1137,7 +1137,7 @@ We can do that using the <code class="docutils literal notranslate"><span class=
 </div></div></div>
 </div>
 <p>The following figures is a contour plot of the joint posterior distribution.
-As you might expect, <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(n\)</span> are highly correlated; that is, if we believe <span class="math notranslate nohighlight">\(s\)</span> is low, we should believe that <span class="math notranslate nohighlight">\(n\)</span> is low, and likewise if <span class="math notranslate nohighlight">\(s\)</span> is high.</p>
+As you might expect, <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(n\)</span> are highly correlated; that is, if we believe <span class="math notranslate nohighlight">\(s\)</span> is low, we should believe that <span class="math notranslate nohighlight">\(n\)</span> is low, and contrariwise if <span class="math notranslate nohighlight">\(s\)</span> is high.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">plot_contour</span>
@@ -1211,8 +1211,8 @@ It looks like the posterior probabilities for 99 and 100 are the same, but the f
 </div>
 </div>
 </div>
-<div class="section" id="jeffreys-s-prior">
-<h2>Jeffreys’s prior<a class="headerlink" href="#jeffreys-s-prior" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="jeffreys-prior">
+<h2>Jeffreys prior<a class="headerlink" href="#jeffreys-prior" title="Permalink to this headline">¶</a></h2>
 <p>Instead of a uniform prior for <span class="math notranslate nohighlight">\(s\)</span>, we can use a Jeffreys prior, in which the prior probability for each value of <span class="math notranslate nohighlight">\(s\)</span> is proportional to <span class="math notranslate nohighlight">\(1/s\)</span>.
 This has the advantage of “invariance under certain changes of parameters”, which is “the only correct way to express complete ignorance of a scale parameter.”
 However, Jaynes suggests that it is not clear “whether <span class="math notranslate nohighlight">\(s\)</span> can properly be regarded as a scale parameter in this problem.”</p>
@@ -1411,7 +1411,7 @@ But again, there are two values with the same probability except for floating-po
 <p>We can do that by imagining we did the experiments in the opposite order, so</p>
 <ol class="simple">
 <li><p>We’ll start again with a joint prior based on a uniform distribution for <span class="math notranslate nohighlight">\(s\)</span>,</p></li>
-<li><p>Update it based on <code class="docutils literal notranslate"><span class="pre">n2</span></code>,</p></li>
+<li><p>Update it based on <code class="docutils literal notranslate"><span class="pre">c2</span></code>,</p></li>
 <li><p>Use the posterior distribution of <span class="math notranslate nohighlight">\(s\)</span> to form a new joint prior,</p></li>
 <li><p>Update it based on <code class="docutils literal notranslate"><span class="pre">c1</span></code>, and</p></li>
 <li><p>Extract the marginal posterior for <code class="docutils literal notranslate"><span class="pre">n1</span></code>.</p></li>
@@ -1488,7 +1488,7 @@ And the MAP is 126, which is one less than the result in Equation 6.132, again d
 
 <span class="n">posterior_n</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Model A&#39;</span><span class="p">)</span>
 <span class="n">posterior_n2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Model B&#39;</span><span class="p">)</span>
-<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distributions of n under different models&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distributions of n1 under different models&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1503,10 +1503,10 @@ And the MAP is 126, which is one less than the result in Equation 6.132, again d
 </ul>
 <p>This is one of several examples Jaynes uses to distinguish between “logical and causal dependence.” In this example, causal dependence only goes in the forward direction: “<span class="math notranslate nohighlight">\(s\)</span> is the physical cause which partially determines <span class="math notranslate nohighlight">\(n\)</span>; and then <span class="math notranslate nohighlight">\(n\)</span> in turn is the physical cause which partially determines <span class="math notranslate nohighlight">\(c\)</span>”.</p>
 <p>Therefore, <code class="docutils literal notranslate"><span class="pre">c1</span></code> and <code class="docutils literal notranslate"><span class="pre">c2</span></code> are causally independent: if the number of particles counted in one interval is unusually high (or low), that does not cause the number of particles during any other interval to be higher or lower.</p>
-<p>But if <span class="math notranslate nohighlight">\(s\)</span> is unknown, they are not <em>logically</em> independent. For example, if <code class="docutils literal notranslate"><span class="pre">c1</span></code> is lower than expected, based on the prior distribution of <span class="math notranslate nohighlight">\(s\)</span>, that implies that lower values of <span class="math notranslate nohighlight">\(s\)</span> are more likely, which implies that lower values of <code class="docutils literal notranslate"><span class="pre">n2</span></code> are more likely, which implies that lower values of <code class="docutils literal notranslate"><span class="pre">c2</span></code> are more likely.</p>
+<p>But if <span class="math notranslate nohighlight">\(s\)</span> is unknown, they are not <em>logically</em> independent. For example, if <code class="docutils literal notranslate"><span class="pre">c1</span></code> is lower than expected, that implies that lower values of <span class="math notranslate nohighlight">\(s\)</span> are more likely, which implies that lower values of <code class="docutils literal notranslate"><span class="pre">n2</span></code> are more likely, which implies that lower values of <code class="docutils literal notranslate"><span class="pre">c2</span></code> are more likely.</p>
 <p>And, as we’ve seen, it works the other way, too.
 For example, if <code class="docutils literal notranslate"><span class="pre">c2</span></code> is higher than expected, that implies that higher values of <span class="math notranslate nohighlight">\(s\)</span>, <code class="docutils literal notranslate"><span class="pre">n1</span></code>, and <code class="docutils literal notranslate"><span class="pre">c1</span></code> are more likely.</p>
-<p>If you find the second result more surprising – that is, if you think it’s weird that <code class="docutils literal notranslate"><span class="pre">c2</span></code> changes what we believe about <code class="docutils literal notranslate"><span class="pre">n1</span></code> and <code class="docutils literal notranslate"><span class="pre">c1</span></code> – that implies that you are not (yet) distinguishing logical and causal dependence.</p>
+<p>If you find the second result more surprising – that is, if you think it’s weird that <code class="docutils literal notranslate"><span class="pre">c2</span></code> changes what we believe about <code class="docutils literal notranslate"><span class="pre">n1</span></code> – that implies that you are not (yet) distinguishing between logical and causal dependence.</p>
 </div>
 </div>
 
