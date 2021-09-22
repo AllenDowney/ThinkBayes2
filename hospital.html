@@ -1,0 +1,1590 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid algorithms for hierarchical models &#8212; Think Bayes</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet" />
+  <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinx-book-theme.e8f53015daec13862f6db5e763c41738.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="The Emitter-Detector Problem" href="radiation.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      <h1 class="site-logo" id="site-title">Think Bayes</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="index.html">
+   Think Bayes 2
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Chapters
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="preface.html">
+   Preface
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap01.html">
+   Probability
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap02.html">
+   Bayes’s Theorem
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap03.html">
+   Distributions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap04.html">
+   Estimating Proportions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap05.html">
+   Estimating Counts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap06.html">
+   Odds and Addends
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap07.html">
+   Minimum, Maximum, and Mixture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap08.html">
+   Poisson Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap09.html">
+   Decision Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap10.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap11.html">
+   Comparison
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap12.html">
+   Classification
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap13.html">
+   Inference
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap14.html">
+   Survival Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap15.html">
+   Mark and Recapture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap16.html">
+   Logistic Regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap17.html">
+   Regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap18.html">
+   Conjugate Priors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap19.html">
+   MCMC
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="chap20.html">
+   Approximate Bayesian Computation
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Examples
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="redline.html">
+   The Red Line Problem
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="vaccine2.html">
+   Estimating vaccine efficacy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="usb.html">
+   Flipping USB Connectors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="sister.html">
+   The Left Handed Sister Problem
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="bayes_dice.html">
+   Bayesian Dice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="radiation.html">
+   The Emitter-Detector Problem
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Grid algorithms for hierarchical models
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/hospital.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/AllenDowney/ThinkBayes2"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/hospital.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#heart-attack-data">
+   Heart Attack Data
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solution-with-pymc">
+   Solution with PyMC
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-grid-priors">
+   The grid priors
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-joint-distribution-of-hyperparameters">
+   The joint distribution of hyperparameters
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#joint-prior-of-hyperparameters-and-x">
+   Joint prior of hyperparameters and x
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-update">
+   The Update
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#serial-updates">
+   Serial updates
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parallel-updates">
+   Parallel updates
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#compute-all-marginals">
+   Compute all marginals
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="grid-algorithms-for-hierarchical-models">
+<h1>Grid algorithms for hierarchical models<a class="headerlink" href="#grid-algorithms-for-hierarchical-models" title="Permalink to this headline">¶</a></h1>
+<p>Copyright 2021 Allen B. Downey</p>
+<p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
+<p>It is widely believed that grid algorithms are only practical for models with 1-3 parameters, or maybe 4-5 if you are careful.
+<a class="reference external" href="https://allendowney.github.io/ThinkBayes2/chap19.html">I’ve said so myself</a>.</p>
+<p>But recently I used a grid algorithm to solve the <a class="reference external" href="https://www.allendowney.com/blog/2021/09/05/emitter-detector-redux/">emitter-detector problem</a>, and along the way I noticed something about the structure of the problem: although the model has two parameters, the data only depend on one of them.
+That makes it possible to evaluate the likelihood function and update the model very efficiently.</p>
+<p>Many hierarchical models have a similar structure: the data depend on a small number of parameters, which depend on a small number of hyperparameters.
+I wondered whether the same method would generalize to more complex models, and it does.</p>
+<p>As an example, in this notebook I’ll use a logitnormal-binomial hierarchical model to solve a problem with two hyperparameters and 13 parameters.
+The grid algorithm is not just practical; it’s substantially faster than MCMC.</p>
+<p>The following are some utility functions I’ll use.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">legend</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a legend only if there are labels.&quot;&quot;&quot;</span>
+    <span class="n">handles</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
+
+<span class="k">def</span> <span class="nf">compare_cdf</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;grid&#39;</span><span class="p">)</span>
+    <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;mcmc&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">pmf</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">sample</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+    <span class="n">decorate</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+
+<span class="k">def</span> <span class="nf">make_pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+    <span class="n">pmf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="k">return</span> <span class="n">pmf</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="heart-attack-data">
+<h2>Heart Attack Data<a class="headerlink" href="#heart-attack-data" title="Permalink to this headline">¶</a></h2>
+<p>The problem I’ll solve is based on <a class="reference external" href="https://bayesball.github.io/BOOK/bayesian-hierarchical-modeling.html#example-deaths-after-heart-attack">Chapter 10 of <em>Probability and Bayesian Modeling</em></a>; it uses data on death rates due to heart attack for patients treated at various hospitals in New York City.</p>
+<p>We can use Pandas to read the data into a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;DeathHeartAttackManhattan.csv&#39;</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="o">!</span>wget https://github.com/AllenDowney/BayesianInferencePyMC/raw/main/DeathHeartAttackManhattan.csv
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Hospital</th>
+      <th>Cases</th>
+      <th>Deaths</th>
+      <th>Death %</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Bellevue Hospital Center</td>
+      <td>129</td>
+      <td>4</td>
+      <td>3.101</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Harlem Hospital Center</td>
+      <td>35</td>
+      <td>1</td>
+      <td>2.857</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Lenox Hill Hospital</td>
+      <td>228</td>
+      <td>18</td>
+      <td>7.894</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Metropolitan Hospital Center</td>
+      <td>84</td>
+      <td>7</td>
+      <td>8.333</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Mount Sinai Beth Israel</td>
+      <td>291</td>
+      <td>24</td>
+      <td>8.247</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Mount Sinai Hospital</td>
+      <td>270</td>
+      <td>16</td>
+      <td>5.926</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Mount Sinai Roosevelt</td>
+      <td>46</td>
+      <td>6</td>
+      <td>13.043</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Mount Sinai St. Luke’s</td>
+      <td>293</td>
+      <td>19</td>
+      <td>6.485</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>NYU Hospitals Center</td>
+      <td>241</td>
+      <td>15</td>
+      <td>6.224</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>NYP Hospital - Allen Hospital</td>
+      <td>105</td>
+      <td>13</td>
+      <td>12.381</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>NYP Hospital - Columbia Presbyterian Center</td>
+      <td>353</td>
+      <td>25</td>
+      <td>7.082</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>NYP Hospital - New York Weill Cornell Center</td>
+      <td>250</td>
+      <td>11</td>
+      <td>4.400</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>NYP/Lower Manhattan Hospital</td>
+      <td>41</td>
+      <td>4</td>
+      <td>9.756</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The columns we need are <code class="docutils literal notranslate"><span class="pre">Cases</span></code>, which is the number of patients treated at each hospital, and <code class="docutils literal notranslate"><span class="pre">Deaths</span></code>, which is the number of those patients who died.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_ns</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Cases&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">data_ks</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Deaths&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="solution-with-pymc">
+<h2>Solution with PyMC<a class="headerlink" href="#solution-with-pymc" title="Permalink to this headline">¶</a></h2>
+<p>Here’s a hierarchical model that estimates the death rate for each hospital and simultaneously estimates the distribution of rates across hospitals.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymc3</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="k">def</span> <span class="nf">make_model</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">HalfNormal</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">xs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">LogitNormal</span><span class="p">(</span><span class="s1">&#39;xs&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data_ns</span><span class="p">))</span>
+        <span class="n">ks</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Binomial</span><span class="p">(</span><span class="s1">&#39;ks&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">data_ns</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">data_ks</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">time</span> model = make_model()
+<span class="n">pm</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 875 ms, sys: 51.7 ms, total: 927 ms
+Wall time: 2.22 s
+</pre></div>
+</div>
+<img alt="_images/hospital_17_1.svg" src="_images/hospital_17_1.svg" /></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_prior_predictive</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="o">%</span><span class="k">time</span> trace = pm.sample(500, target_accept=0.97)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [xs, sigma, mu]
+</pre></div>
+</div>
+<div class="output text_html">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='6000' class='' max='6000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [6000/6000 00:07<00:00 Sampling 4 chains, 10 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 8 seconds.
+There were 2 divergences after tuning. Increase `target_accept` or reparameterize.
+The acceptance probability does not match the target. It is 0.9060171753417431, but should be close to 0.97. Try to increase the number of tuning steps.
+There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
+There were 7 divergences after tuning. Increase `target_accept` or reparameterize.
+The acceptance probability does not match the target. It is 0.9337619072936738, but should be close to 0.97. Try to increase the number of tuning steps.
+The estimated number of effective samples is smaller than 200 for some parameters.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 5.12 s, sys: 153 ms, total: 5.27 s
+Wall time: 12.3 s
+</pre></div>
+</div>
+</div>
+</div>
+<p>To be fair, PyMC doesn’t like this parameterization much (although I’m not sure why). One most runs, there are a moderate number of divergences. Even so, the results are good enough.</p>
+<p>Here are the posterior distributions of the hyperparameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">arviz</span> <span class="k">as</span> <span class="nn">az</span>
+
+<span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/hospital_20_0.png" src="_images/hospital_20_0.png" />
+</div>
+</div>
+<p>And we can extract the posterior distributions of the xs.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trace_xs</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;xs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+<span class="n">trace_xs</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(13, 2000)
+</pre></div>
+</div>
+</div>
+</div>
+<p>As an example, here’s the posterior distribution of x for the first hospital.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace_xs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/hospital_24_0.png" src="_images/hospital_24_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="the-grid-priors">
+<h2>The grid priors<a class="headerlink" href="#the-grid-priors" title="Permalink to this headline">¶</a></h2>
+<p>Now let’s solve the same problem using a grid algorithm.
+I’ll use the same priors for the hyperparameters, approximated by a grid with about 100 elements in each dimension.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+
+<span class="n">mus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">mus</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">prior_mu</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">mus</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">)</span>
+
+<span class="n">prior_mu</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior distribution of mu&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/hospital_26_0.png" src="_images/hospital_26_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">logistic</span>
+
+<span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.03</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">sigmas</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">prior_sigma</span> <span class="o">=</span> <span class="n">make_pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">)</span>
+
+<span class="n">prior_sigma</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior distribution of sigma&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/hospital_27_0.png" src="_images/hospital_27_0.png" />
+</div>
+</div>
+<p>The following cells confirm that these priors are consistent with the prior samples from PyMC.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compare_cdf</span><span class="p">(</span><span class="n">prior_mu</span><span class="p">,</span> <span class="n">pred</span><span class="p">[</span><span class="s1">&#39;mu&#39;</span><span class="p">])</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior distribution of mu&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.6020852139652106e-18 -0.06372282505953483
+</pre></div>
+</div>
+<img alt="_images/hospital_29_1.png" src="_images/hospital_29_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compare_cdf</span><span class="p">(</span><span class="n">prior_sigma</span><span class="p">,</span> <span class="n">pred</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">])</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior distribution of sigma&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.8033718951689776 0.8244605687886865
+</pre></div>
+</div>
+<img alt="_images/hospital_30_1.png" src="_images/hospital_30_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="the-joint-distribution-of-hyperparameters">
+<h2>The joint distribution of hyperparameters<a class="headerlink" href="#the-joint-distribution-of-hyperparameters" title="Permalink to this headline">¶</a></h2>
+<p>I’ll use <code class="docutils literal notranslate"><span class="pre">make_joint</span></code> to make an array that represents the joint prior distribution of the hyperparameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_joint</span><span class="p">(</span><span class="n">prior_x</span><span class="p">,</span> <span class="n">prior_y</span><span class="p">):</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">prior_x</span><span class="o">.</span><span class="n">ps</span><span class="p">,</span> <span class="n">prior_y</span><span class="o">.</span><span class="n">ps</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+    <span class="n">hyper</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">Y</span>
+    <span class="k">return</span> <span class="n">hyper</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_hyper</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">prior_mu</span><span class="p">,</span> <span class="n">prior_sigma</span><span class="p">)</span>
+<span class="n">prior_hyper</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(101, 90)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">plot_contour</span>
+
+<span class="n">plot_contour</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">prior_hyper</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">mus</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">sigmas</span><span class="p">))</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Joint prior of mu and sigma&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/hospital_35_0.png" src="_images/hospital_35_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="joint-prior-of-hyperparameters-and-x">
+<h2>Joint prior of hyperparameters and x<a class="headerlink" href="#joint-prior-of-hyperparameters-and-x" title="Permalink to this headline">¶</a></h2>
+<p>Now we’re ready to lay out the grid for x, which is the proportion we’ll estimate for each hospital.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="mi">295</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For each pair of hyperparameters, we’ll compute the distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">logit</span>
+
+<span class="n">M</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">mus</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+<span class="n">LO</span> <span class="o">=</span> <span class="n">logit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">LO</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-6.440927791118156e-10
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+
+<span class="o">%</span><span class="k">time</span> normpdf = norm.pdf(LO, M, S)
+<span class="n">normpdf</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 69.6 ms, sys: 16.5 ms, total: 86.1 ms
+Wall time: 84.9 ms
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>214125.5678798693
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can speed this up by computing skipping the terms that don’t depend on x</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">LO</span><span class="o">-</span><span class="n">M</span><span class="p">)</span> <span class="o">/</span> <span class="n">S</span>
+<span class="n">normpdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 26 ms, sys: 10.6 ms, total: 36.6 ms
+Wall time: 35.1 ms
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a 3-D array with axes for mu, sigma, and x.</p>
+<p>Now we need to normalize each distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">totals</span> <span class="o">=</span> <span class="n">normpdf</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">totals</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(101, 90)
+</pre></div>
+</div>
+</div>
+</div>
+<p>To normalize, we have to use a safe version of <code class="docutils literal notranslate"><span class="pre">divide</span></code> where <code class="docutils literal notranslate"><span class="pre">0/0</span></code> is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">divide</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">y</span><span class="o">!=</span><span class="mi">0</span><span class="p">))</span>    
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shape</span> <span class="o">=</span> <span class="n">totals</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
+<span class="n">normpdf</span> <span class="o">=</span> <span class="n">divide</span><span class="p">(</span><span class="n">normpdf</span><span class="p">,</span> <span class="n">totals</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span>
+<span class="n">normpdf</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(101, 90, 295)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is an array that contains the distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code> for each pair of hyperparameters.</p>
+<p>Now, to get the prior distribution, we multiply through by the joint distribution of the hyperparameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_prior</span><span class="p">(</span><span class="n">hyper</span><span class="p">):</span>
+
+    <span class="c1"># reshape hyper so we can multiply along axis 0</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">hyper</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
+    <span class="n">prior</span> <span class="o">=</span> <span class="n">normpdf</span> <span class="o">*</span> <span class="n">hyper</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">prior</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">time</span> prior = make_prior(prior_hyper)
+<span class="n">prior</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 5.57 ms, sys: 0 ns, total: 5.57 ms
+Wall time: 4.87 ms
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.999937781278039
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a 3-D array that represents the joint prior distribution of <code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">sigma</span></code>, and <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<p>To check that it is correct, I’ll extract the marginal distributions and compare them to the priors.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">marginal</span><span class="p">(</span><span class="n">joint</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">axis</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">joint</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_mu</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">marginal_mu</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">marginal</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">mus</span><span class="p">)</span>
+<span class="n">marginal_mu</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Checking the marginal distribution of mu&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/hospital_53_0.png" src="_images/hospital_53_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_sigma</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">marginal_sigma</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">marginal</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">sigmas</span><span class="p">)</span>
+<span class="n">marginal_sigma</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Checking the marginal distribution of sigma&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/hospital_54_0.png" src="_images/hospital_54_0.png" />
+</div>
+</div>
+<p>We didn’t compute the prior distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code> explicitly; it follows from the distribution of the hyperparameters. But we can extract the prior marginal of <code class="docutils literal notranslate"><span class="pre">x</span></code> from the joint prior.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_x</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">marginal</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">xs</span><span class="p">)</span>
+<span class="n">marginal_x</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Checking the marginal distribution of x&#39;</span><span class="p">,</span>
+         <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">marginal_x</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.05</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/hospital_56_0.png" src="_images/hospital_56_0.png" />
+</div>
+</div>
+<p>And compare it to the prior sample from PyMC.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pred_xs</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="s1">&#39;xs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+<span class="n">pred_xs</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(13, 1000)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compare_cdf</span><span class="p">(</span><span class="n">marginal_x</span><span class="p">,</span> <span class="n">pred_xs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior distribution of x&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.49996889063901967 0.4879934000104224
+</pre></div>
+</div>
+<img alt="_images/hospital_59_1.png" src="_images/hospital_59_1.png" />
+</div>
+</div>
+<p>The prior distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code> I get from the grid is a bit different from what I get from PyMC. I’m not sure why, but it doesn’t seem to affect the results much.</p>
+<p>In addition to the marginals, we’ll also find it useful to extract the joint marginal distribution of the hyperparameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_hyper</span><span class="p">(</span><span class="n">joint</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">joint</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hyper</span> <span class="o">=</span> <span class="n">get_hyper</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_contour</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">hyper</span><span class="p">,</span> 
+                          <span class="n">index</span><span class="o">=</span><span class="n">mus</span><span class="p">,</span> 
+                          <span class="n">columns</span><span class="o">=</span><span class="n">sigmas</span><span class="p">))</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Joint prior of mu and sigma&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/hospital_63_0.png" src="_images/hospital_63_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="the-update">
+<h2>The Update<a class="headerlink" href="#the-update" title="Permalink to this headline">¶</a></h2>
+<p>The likelihood of the data only depends on <code class="docutils literal notranslate"><span class="pre">x</span></code>, so we can compute it like this.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
+
+<span class="n">data_k</span> <span class="o">=</span> <span class="n">data_ks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">data_n</span> <span class="o">=</span> <span class="n">data_ns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">like_x</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">data_k</span><span class="p">,</span> <span class="n">data_n</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+<span class="n">like_x</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(295,)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">like_x</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Likelihood of the data&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/hospital_66_0.png" src="_images/hospital_66_0.png" />
+</div>
+</div>
+<p>And here’s the update.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="n">like_x</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">like_x</span>
+    <span class="n">posterior</span> <span class="o">/=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">data_n</span><span class="p">,</span> <span class="n">data_k</span>
+<span class="o">%</span><span class="k">time</span> posterior = update(prior, data)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 11.6 ms, sys: 11.9 ms, total: 23.5 ms
+Wall time: 7.66 ms
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="serial-updates">
+<h2>Serial updates<a class="headerlink" href="#serial-updates" title="Permalink to this headline">¶</a></h2>
+<p>At this point we can do an update based on a single hospital, but how do we update based on all of the hospitals?</p>
+<p>As a step toward the right answer, I’ll start with a wrong answer, which is to do the updates one at a time.</p>
+<p>After each update, we extract the posterior distribution of the hyperparameters and use it to create the prior for the next update.</p>
+<p>At the end, the posterior distribution of hyperparameters is correct, and the marginal posterior of <code class="docutils literal notranslate"><span class="pre">x</span></code> for the <em>last</em> hospital is correct, but the other marginals are wrong because they do not take into account data from subsequent hospitals.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">multiple_updates</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">ks</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ks</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">posterior</span> <span class="o">=</span> <span class="n">update</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="n">hyper</span> <span class="o">=</span> <span class="n">get_hyper</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+        <span class="n">prior</span> <span class="o">=</span> <span class="n">make_prior</span><span class="p">(</span><span class="n">hyper</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">time</span> posterior = multiple_updates(prior, data_ns, data_ks)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(129, 4)
+(35, 1)
+(228, 18)
+(84, 7)
+(291, 24)
+(270, 16)
+(46, 6)
+(293, 19)
+(241, 15)
+(105, 13)
+(353, 25)
+(250, 11)
+(41, 4)
+CPU times: user 185 ms, sys: 35.4 ms, total: 220 ms
+Wall time: 172 ms
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here are the posterior distributions of the hyperparameters, compared to the results from PyMC.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_mu</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">mus</span><span class="p">)</span>
+<span class="n">compare_cdf</span><span class="p">(</span><span class="n">marginal_mu</span><span class="p">,</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;mu&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2.6478808810110768 -2.5956645549514694
+</pre></div>
+</div>
+<img alt="_images/hospital_74_1.png" src="_images/hospital_74_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_sigma</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">sigmas</span><span class="p">)</span>
+<span class="n">compare_cdf</span><span class="p">(</span><span class="n">marginal_sigma</span><span class="p">,</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.19272226451430116 0.18501785022543282
+</pre></div>
+</div>
+<img alt="_images/hospital_75_1.png" src="_images/hospital_75_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_x</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">xs</span><span class="p">)</span>
+<span class="n">compare_cdf</span><span class="p">(</span><span class="n">marginal_x</span><span class="p">,</span> <span class="n">trace_xs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.07330826956150183 0.07297933578329886
+</pre></div>
+</div>
+<img alt="_images/hospital_76_1.png" src="_images/hospital_76_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="parallel-updates">
+<h2>Parallel updates<a class="headerlink" href="#parallel-updates" title="Permalink to this headline">¶</a></h2>
+<p>Doing updates one at time is not quite right, but it gives us an insight.</p>
+<p>Suppose we start with a uniform distribution for the hyperparameters and do an update with data from one hospital. If we extract the posterior joint distribution of the hyperparameters, what we get is the likelihood function associated with one dataset.</p>
+<p>The following function computes these likelihood functions and saves them in an array called <code class="docutils literal notranslate"><span class="pre">hyper_likelihood</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_hyper_likelihood</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ks</span><span class="p">):</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="n">mus</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="n">sigmas</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">hyper_likelihood</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ks</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">like_x</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+        <span class="n">posterior</span> <span class="o">=</span> <span class="n">normpdf</span> <span class="o">*</span> <span class="n">like_x</span>
+        <span class="n">hyper_likelihood</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_hyper</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hyper_likelihood</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">time</span> hyper_likelihood = compute_hyper_likelihood(data_ns, data_ks)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(129, 4)
+(35, 1)
+(228, 18)
+(84, 7)
+(291, 24)
+(270, 16)
+(46, 6)
+(293, 19)
+(241, 15)
+(105, 13)
+(353, 25)
+(250, 11)
+(41, 4)
+CPU times: user 82 ms, sys: 55.2 ms, total: 137 ms
+Wall time: 75.5 ms
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can multiply this out to get the product of the likelihoods.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">time</span> hyper_likelihood_all = hyper_likelihood.prod(axis=0)
+<span class="n">hyper_likelihood_all</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 279 µs, sys: 0 ns, total: 279 µs
+Wall time: 158 µs
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.685854062633571e-14
+</pre></div>
+</div>
+</div>
+</div>
+<p>This is useful because it provides an efficient way to compute the marginal posterior distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code> for any hospital.
+Here’s an example.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data_ns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">data_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(84, 7)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Suppose we did the updates serially and saved this hospital for last.
+The prior distribution for the final update would reflect the updates from all previous hospitals, which we can compute by dividing out <code class="docutils literal notranslate"><span class="pre">hyper_likelihood[i]</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">time</span> hyper_i = divide(prior_hyper * hyper_likelihood_all, hyper_likelihood[i])
+<span class="n">hyper_i</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 310 µs, sys: 147 µs, total: 457 µs
+Wall time: 342 µs
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.3344287278716945e-17
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">hyper_i</span></code> to make the prior for the last update.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_i</span> <span class="o">=</span> <span class="n">make_prior</span><span class="p">(</span><span class="n">hyper_i</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<p>And then do the update.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_i</span> <span class="o">=</span> <span class="n">update</span><span class="p">(</span><span class="n">prior_i</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can confirm that the results are similar to the results from PyMC.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_mu</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">marginal</span><span class="p">(</span><span class="n">posterior_i</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">mus</span><span class="p">)</span>
+<span class="n">marginal_sigma</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">marginal</span><span class="p">(</span><span class="n">posterior_i</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">sigmas</span><span class="p">)</span>
+<span class="n">marginal_x</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">marginal</span><span class="p">(</span><span class="n">posterior_i</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">xs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compare_cdf</span><span class="p">(</span><span class="n">marginal_mu</span><span class="p">,</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;mu&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2.647880881011078 -2.5956645549514694
+</pre></div>
+</div>
+<img alt="_images/hospital_92_1.png" src="_images/hospital_92_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compare_cdf</span><span class="p">(</span><span class="n">marginal_sigma</span><span class="p">,</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.19272226451430124 0.18501785022543282
+</pre></div>
+</div>
+<img alt="_images/hospital_93_1.png" src="_images/hospital_93_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compare_cdf</span><span class="p">(</span><span class="n">marginal_x</span><span class="p">,</span> <span class="n">trace_xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.07245354421667904 0.07224440565018131
+</pre></div>
+</div>
+<img alt="_images/hospital_94_1.png" src="_images/hospital_94_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="compute-all-marginals">
+<h2>Compute all marginals<a class="headerlink" href="#compute-all-marginals" title="Permalink to this headline">¶</a></h2>
+<p>The following function computes the marginals for all hospitals and stores the results in an array.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_all_marginals</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ks</span><span class="p">):</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+    <span class="n">marginal_xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">numerator</span> <span class="o">=</span> <span class="n">prior_hyper</span> <span class="o">*</span> <span class="n">hyper_likelihood_all</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ks</span><span class="p">)):</span>
+        <span class="n">hyper_i</span> <span class="o">=</span> <span class="n">divide</span><span class="p">(</span><span class="n">numerator</span><span class="p">,</span> <span class="n">hyper_likelihood</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">prior_i</span> <span class="o">=</span> <span class="n">make_prior</span><span class="p">(</span><span class="n">hyper_i</span><span class="p">)</span> 
+        <span class="n">posterior_i</span> <span class="o">=</span> <span class="n">update</span><span class="p">(</span><span class="n">prior_i</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="n">marginal_xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior_i</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">marginal_xs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">time</span> marginal_xs = compute_all_marginals(data_ns, data_ks)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 184 ms, sys: 49.8 ms, total: 234 ms
+Wall time: 173 ms
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what the results look like, compared to the results from PyMC.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ps</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">marginal_xs</span><span class="p">):</span>
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">compare_cdf</span><span class="p">(</span><span class="n">pmf</span><span class="p">,</span> <span class="n">trace_xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Posterior marginal of x for Hospital </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+             <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Death rate&#39;</span><span class="p">,</span>
+             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">,</span>
+             <span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="n">trace_xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">trace_xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.06123636407822421 0.0617519291444324
+0.06653003152551518 0.06643868288267936
+0.07267383211481376 0.07250041300148316
+0.07245354421667904 0.07224440565018131
+0.07430385699796423 0.07433369435815212
+0.06606326919655045 0.06646020352443961
+0.07774639529896528 0.07776805141855801
+0.06788483681522386 0.06807113157490664
+0.06723306224279789 0.06735326167909643
+0.08183332535205982 0.08115900598539395
+0.07003760661997555 0.0704088595242495
+0.06136130741477605 0.06159674913422137
+0.07330826956150185 0.07297933578329886
+</pre></div>
+</div>
+<img alt="_images/hospital_99_1.png" src="_images/hospital_99_1.png" />
+<img alt="_images/hospital_99_2.png" src="_images/hospital_99_2.png" />
+<img alt="_images/hospital_99_3.png" src="_images/hospital_99_3.png" />
+<img alt="_images/hospital_99_4.png" src="_images/hospital_99_4.png" />
+<img alt="_images/hospital_99_5.png" src="_images/hospital_99_5.png" />
+<img alt="_images/hospital_99_6.png" src="_images/hospital_99_6.png" />
+<img alt="_images/hospital_99_7.png" src="_images/hospital_99_7.png" />
+<img alt="_images/hospital_99_8.png" src="_images/hospital_99_8.png" />
+<img alt="_images/hospital_99_9.png" src="_images/hospital_99_9.png" />
+<img alt="_images/hospital_99_10.png" src="_images/hospital_99_10.png" />
+<img alt="_images/hospital_99_11.png" src="_images/hospital_99_11.png" />
+<img alt="_images/hospital_99_12.png" src="_images/hospital_99_12.png" />
+<img alt="_images/hospital_99_13.png" src="_images/hospital_99_13.png" />
+</div>
+</div>
+<p>And here are the percentage differences between the results from the grid algorithm and PyMC. Most of them are less than 1%.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ps</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">marginal_xs</span><span class="p">):</span>
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pmf</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">trace_xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="n">pmf</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">diff</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.841926319383687
+0.13730437329010417
+0.23862662568368032
+0.28865194761527047
+0.04015586995533174
+0.6008396688759207
+0.027854821447936134
+0.274427646029194
+0.17878024931315142
+0.8240155997142278
+0.5300765148763152
+0.38369736461746806
+0.44869941709241024
+</pre></div>
+</div>
+</div>
+</div>
+<p>The total time to do all of these computations is about 300 ms, compared to more than 10 seconds to make and run the PyMC model. And PyMC used 4 cores; I only used one.</p>
+<p>The grid algorithm is easy to parallelize, and it’s incremental. If you get data from a new hospital, or new data for an existing one, you can:</p>
+<ol class="simple">
+<li><p>Compute the posterior distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code> for the updated hospital, using existing <code class="docutils literal notranslate"><span class="pre">hyper_likelihoods</span></code> for the other hospitals.</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">hyper_likelihoods</span></code> for the other hospitals, and run their updates again.</p></li>
+</ol>
+<p>The total time would be about half of what it takes to start from scratch, and it’s easy to parallelize.</p>
+<p>One drawback of the grid algorithm is that it generates marginal distributions for each hospital rather than a sample from the joint distribution of all of them. So it’s less easy to see the correlations among them.</p>
+<p>The other drawback, in general, is that it takes more work to set up the grid algorithm. If we switch to another parameterization, it’s easier to change the PyMC model.</p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+            
+
+
+
+<div class='prev-next-bottom'>
+    
+    <div id="prev">
+        <a class="left-prev" href="radiation.html" title="previous page">
+            <i class="prevnext-label fas fa-angle-left"></i>
+            <div class="prevnext-info">
+                <p class="prevnext-label">previous</p>
+                <p class="prevnext-title">The Emitter-Detector Problem</p>
+            </div>
+        </a>
+    </div>
+
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Allen B. Downey<br/>
+        
+            &copy; Copyright 2021.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>
