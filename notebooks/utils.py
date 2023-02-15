@@ -395,7 +395,7 @@ def joint_plot(joint, **options):
 
     # make a JointGrid with minimal data
     data = pd.DataFrame({x:[0], y:[0]})
-    g = JointGrid(x, y, data, **options)
+    g = JointGrid(x=x, y=y, data=data, **options)
 
     # replace the contour plot
     g.ax_joint.contour(joint.columns,
