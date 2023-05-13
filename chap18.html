@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Conjugate Priors &#8212; Think Bayes</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,58 +61,87 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chap18';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="MCMC" href="chap19.html" />
     <link rel="prev" title="Regression" href="chap17.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">Think Bayes</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -110,454 +150,223 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Chapters
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="preface.html">
-   Preface
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap01.html">
-   Probability
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap02.html">
-   Bayes’s Theorem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap03.html">
-   Distributions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap04.html">
-   Estimating Proportions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap05.html">
-   Estimating Counts
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap06.html">
-   Odds and Addends
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap07.html">
-   Minimum, Maximum, and Mixture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap08.html">
-   Poisson Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap09.html">
-   Decision Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap10.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap11.html">
-   Comparison
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap12.html">
-   Classification
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap13.html">
-   Inference
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap14.html">
-   Survival Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap15.html">
-   Mark and Recapture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap16.html">
-   Logistic Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap17.html">
-   Regression
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Conjugate Priors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap19.html">
-   MCMC
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap20.html">
-   Approximate Bayesian Computation
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">Regression</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19.html">MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">Approximate Bayesian Computation</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Examples
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="redline.html">
-   The Red Line Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="vaccine2.html">
-   Estimating vaccine efficacy
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="usb.html">
-   Flipping USB Connectors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="sister.html">
-   The Left Handed Sister Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="bayes_dice.html">
-   Bayesian Dice
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="radiation.html">
-   The Emitter-Detector Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital.html">
-   Grid algorithms for hierarchical models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital_birth_rate.html">
-   Comparing birth rates
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="ok.html">
-   How Many Typos?
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/chap18.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
-</div>
+  
+  <div id="rtd-footer-container"></div>
 
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-<a href="https://github.com/AllenDowney/ThinkBayes2"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="bottom"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fab fa-github"></i>
   </span>
 
 </a>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/chap18.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chap18.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.ipynb</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
-
-      </li>
+</li>
+      
+      
+      
       
       <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file-pdf"></i>
   </span>
-<span class="headerbtn__text-container">.pdf</span>
+<span class="btn__text-container">.pdf</span>
 </button>
-
-      </li>
+</li>
       
-    </ul>
-  </div>
+  </ul>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
   </span>
 
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-world-cup-problem-revisited">
-   The World Cup Problem Revisited
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-conjugate-prior">
-   The Conjugate Prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-the-actual">
-   What the Actual?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#binomial-likelihood">
-   Binomial Likelihood
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#lions-and-tigers-and-bears">
-   Lions and Tigers and Bears
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-dirichlet-distribution">
-   The Dirichlet Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Conjugate Priors</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-world-cup-problem-revisited">
-   The World Cup Problem Revisited
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-conjugate-prior">
-   The Conjugate Prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-the-actual">
-   What the Actual?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#binomial-likelihood">
-   Binomial Likelihood
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#lions-and-tigers-and-bears">
-   Lions and Tigers and Bears
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-dirichlet-distribution">
-   The Dirichlet Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Conjugate Priors</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-world-cup-problem-revisited">The World Cup Problem Revisited</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-conjugate-prior">The Conjugate Prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-actual">What the Actual?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#binomial-likelihood">Binomial Likelihood</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lions-and-tigers-and-bears">Lions and Tigers and Bears</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-dirichlet-distribution">The Dirichlet Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
-  <section class="tex2jax_ignore mathjax_ignore" id="conjugate-priors">
-<h1>Conjugate Priors<a class="headerlink" href="#conjugate-priors" title="Permalink to this headline">#</a></h1>
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="conjugate-priors">
+<h1>Conjugate Priors<a class="headerlink" href="#conjugate-priors" title="Permalink to this heading">#</a></h1>
 <p>In the previous chapters we have used grid approximations to solve a variety of problems.
 One of my goals has been to show that this approach is sufficient to solve many real-world problems.
 And I think it’s a good place to start because it shows clearly how the methods work.</p>
@@ -565,16 +374,16 @@ And I think it’s a good place to start because it shows clearly how the method
 As we increase the number of parameters, the number of points in the grid grows (literally) exponentially.
 With more than 3-4 parameters, grid methods become impractical.</p>
 <p>So, in the remaining three chapters, I will present three alternatives:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>In this chapter we’ll use <strong>conjugate priors</strong> to speed up some of the computations we’ve already done.</p></li>
 <li><p>In the next chapter, I’ll present Markov chain Monte Carlo (MCMC) methods, which can solve problems with tens of parameters, or even hundreds, in a reasonable amount of time.</p></li>
 <li><p>And in the last chapter we’ll use Approximate Bayesian Computation (ABC) for problems that are hard to model with simple distributions.</p></li>
 </ol>
 <p>We’ll start with the World Cup problem.</p>
 <section id="the-world-cup-problem-revisited">
-<h2>The World Cup Problem Revisited<a class="headerlink" href="#the-world-cup-problem-revisited" title="Permalink to this headline">#</a></h2>
+<h2>The World Cup Problem Revisited<a class="headerlink" href="#the-world-cup-problem-revisited" title="Permalink to this heading">#</a></h2>
 <p>In &lt;&lt;_PoissonProcesses&gt;&gt;, we solved the World Cup problem using a Poisson process to model goals in a soccer game as random events that are equally likely to occur at any point during a game.</p>
-<p>We used a gamma distribution to represent the prior distribution of <span class="math notranslate nohighlight">\(\lambda\)</span>, the goal-scoring rate.  And we used a Poisson distribution to compute the probability of <span class="math notranslate nohighlight">\(k\)</span>, the number of goals scored.</p>
+<p>We used a gamma distribution to represent the prior distribution of $\lambda$, the goal-scoring rate.  And we used a Poisson distribution to compute the probability of $k$, the number of goals scored.</p>
 <p>Here’s a gamma object that represents the prior distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -627,7 +436,7 @@ With more than 3-4 parameters, grid methods become impractical.</p>
 Now we’ll solve the same problem using the conjugate prior.</p>
 </section>
 <section id="the-conjugate-prior">
-<h2>The Conjugate Prior<a class="headerlink" href="#the-conjugate-prior" title="Permalink to this headline">#</a></h2>
+<h2>The Conjugate Prior<a class="headerlink" href="#the-conjugate-prior" title="Permalink to this heading">#</a></h2>
 <p>In &lt;&lt;_TheGammaDistribution&gt;&gt;, I presented three reasons to use a gamma distribution for the prior and said there was a fourth reason I would reveal later.
 Well, now is the time.</p>
 <p>The other reason I chose the gamma distribution is that it is the “conjugate prior” of the Poisson distribution, so-called because the two distributions are connected or coupled, which is what “conjugate” means.</p>
@@ -697,6 +506,11 @@ So let’s confirm that it works.</p>
 </div>
 <p>The following figure shows the result along with the posterior we computed using the grid algorithm.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
 
@@ -707,8 +521,14 @@ So let’s confirm that it works.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;grid posterior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 <span class="n">posterior_conjugate</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;conjugate posterior&#39;</span><span class="p">,</span> 
@@ -718,12 +538,18 @@ So let’s confirm that it works.</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_27_0.png" src="_images/chap18_27_0.png" />
+<img alt="_images/39ff697e7662f79c15a8ae461ced3925ebe82de05318674e35232f7e65030af6.png" src="_images/39ff697e7662f79c15a8ae461ced3925ebe82de05318674e35232f7e65030af6.png" />
 </div>
 </div>
 <p>They are the same other than small differences due to floating-point approximations.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">posterior_conjugate</span><span class="p">)</span>
 </pre></div>
@@ -734,30 +560,28 @@ So let’s confirm that it works.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 <section id="what-the-actual">
-<h2>What the Actual?<a class="headerlink" href="#what-the-actual" title="Permalink to this headline">#</a></h2>
+<h2>What the Actual?<a class="headerlink" href="#what-the-actual" title="Permalink to this heading">#</a></h2>
 <p>To understand how that works, we’ll write the PDF of the gamma prior and the PMF of the Poisson likelihood, then multiply them together, because that’s what the Bayesian update does.
 We’ll see that the result is a gamma distribution, and we’ll derive its parameters.</p>
-<p>Here’s the PDF of the gamma prior, which is the probability density for each value of <span class="math notranslate nohighlight">\(\lambda\)</span>, given parameters <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[\lambda^{\alpha-1} e^{-\lambda \beta}\]</div>
+<p>Here’s the PDF of the gamma prior, which is the probability density for each value of $\lambda$, given parameters $\alpha$ and $\beta$:</p>
+<p>$$\lambda^{\alpha-1} e^{-\lambda \beta}$$</p>
 <p>I have omitted the normalizing factor; since we are planning to normalize the posterior distribution anyway, we don’t really need it.</p>
-<p>Now suppose a team scores <span class="math notranslate nohighlight">\(k\)</span> goals in <span class="math notranslate nohighlight">\(t\)</span> games.
-The probability of this data is given by the PMF of the Poisson distribution, which is a function of <span class="math notranslate nohighlight">\(k\)</span> with <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(t\)</span> as parameters.</p>
-<div class="math notranslate nohighlight">
-\[\lambda^k e^{-\lambda t}\]</div>
+<p>Now suppose a team scores $k$ goals in $t$ games.
+The probability of this data is given by the PMF of the Poisson distribution, which is a function of $k$ with $\lambda$ and $t$ as parameters.</p>
+<p>$$\lambda^k e^{-\lambda t}$$</p>
 <p>Again, I have omitted the normalizing factor, which makes it clearer that the gamma and Poisson distributions have the same functional form.
 When we multiply them together, we can pair up the factors and add up the exponents.
 The result is the unnormalized posterior distribution,</p>
-<div class="math notranslate nohighlight">
-\[\lambda^{\alpha-1+k} e^{-\lambda(\beta + t)}\]</div>
-<p>which we can recognize as an unnormalized gamma distribution with parameters <span class="math notranslate nohighlight">\(\alpha + k\)</span> and <span class="math notranslate nohighlight">\(\beta + t\)</span>.</p>
-<p>This derivation provides insight into what the parameters of the posterior distribution mean: <span class="math notranslate nohighlight">\(\alpha\)</span> reflects the number of events that have occurred; <span class="math notranslate nohighlight">\(\beta\)</span> reflects the elapsed time.</p>
+<p>$$\lambda^{\alpha-1+k} e^{-\lambda(\beta + t)}$$</p>
+<p>which we can recognize as an unnormalized gamma distribution with parameters $\alpha + k$ and $\beta + t$.</p>
+<p>This derivation provides insight into what the parameters of the posterior distribution mean: $\alpha$ reflects the number of events that have occurred; $\beta$ reflects the elapsed time.</p>
 </section>
 <section id="binomial-likelihood">
-<h2>Binomial Likelihood<a class="headerlink" href="#binomial-likelihood" title="Permalink to this headline">#</a></h2>
+<h2>Binomial Likelihood<a class="headerlink" href="#binomial-likelihood" title="Permalink to this heading">#</a></h2>
 <p>As a second example, let’s look again at the Euro problem.
 When we solved it with a grid algorithm, we started with a uniform prior:</p>
 <div class="cell docutils container">
@@ -784,17 +608,23 @@ When we solved it with a grid algorithm, we started with a uniform prior:</p>
 </div>
 <p>Then we computed the posterior distribution in the usual way.</p>
 <div class="cell tag_hide-output docutils container">
-<div class="cell_input docutils container">
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">uniform</span> <span class="o">*</span> <span class="n">likelihood</span>
 <span class="n">posterior</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.003944617569326651
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>We can solve this problem more efficiently using the conjugate prior of the binomial distribution, which is the beta distribution.</p>
 <p>The beta distribution is bounded between 0 and 1, so it works well for representing the distribution of a probability like <code class="docutils literal notranslate"><span class="pre">x</span></code>.
@@ -828,18 +658,15 @@ So we can make a <code class="docutils literal notranslate"><span class="pre">be
 </div>
 </div>
 <p>Now let’s figure out how to do the update.  As in the previous example, we’ll write the PDF of the prior distribution and the PMF of the likelihood function, and multiply them together.  We’ll see that the product has the same form as the prior, and we’ll derive its parameters.</p>
-<p>Here is the PDF of the beta distribution, which is a function of <span class="math notranslate nohighlight">\(x\)</span> with <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> as parameters.</p>
-<div class="math notranslate nohighlight">
-\[x^{\alpha-1} (1-x)^{\beta-1}\]</div>
+<p>Here is the PDF of the beta distribution, which is a function of $x$ with $\alpha$ and $\beta$ as parameters.</p>
+<p>$$x^{\alpha-1} (1-x)^{\beta-1}$$</p>
 <p>Again, I have omitted the normalizing factor, which we don’t need because we are going to normalize the distribution after the update.</p>
-<p>And here’s the PMF of the binomial distribution, which is a function of <span class="math notranslate nohighlight">\(k\)</span> with <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(x\)</span> as parameters.</p>
-<div class="math notranslate nohighlight">
-\[x^{k} (1-x)^{n-k}\]</div>
+<p>And here’s the PMF of the binomial distribution, which is a function of $k$ with $n$ and $x$ as parameters.</p>
+<p>$$x^{k} (1-x)^{n-k}$$</p>
 <p>Again, I have omitted the normalizing factor.
 Now when we multiply the beta prior and the binomial likelihood, the result is</p>
-<div class="math notranslate nohighlight">
-\[x^{\alpha-1+k} (1-x)^{\beta-1+n-k}\]</div>
-<p>which we recognize as an unnormalized beta distribution with parameters <span class="math notranslate nohighlight">\(\alpha+k\)</span> and <span class="math notranslate nohighlight">\(\beta+n-k\)</span>.</p>
+<p>$$x^{\alpha-1+k} (1-x)^{\beta-1+n-k}$$</p>
+<p>which we recognize as an unnormalized beta distribution with parameters $\alpha+k$ and $\beta+n-k$.</p>
 <p>So if we observe <code class="docutils literal notranslate"><span class="pre">k</span></code> successes in <code class="docutils literal notranslate"><span class="pre">n</span></code> trials, we can do the update by making a beta distribution with parameters <code class="docutils literal notranslate"><span class="pre">alpha+k</span></code> and <code class="docutils literal notranslate"><span class="pre">beta+n-k</span></code>.
 That’s what this function does:</p>
 <div class="cell docutils container">
@@ -854,7 +681,7 @@ That’s what this function does:</p>
 </div>
 </div>
 </div>
-<p>Again, the conjugate prior gives us insight into the meaning of the parameters; <span class="math notranslate nohighlight">\(\alpha\)</span> is related to the number of observed successes; <span class="math notranslate nohighlight">\(\beta\)</span> is related to the number of failures.</p>
+<p>Again, the conjugate prior gives us insight into the meaning of the parameters; $\alpha$ is related to the number of observed successes; $\beta$ is related to the number of failures.</p>
 <p>Here’s how we do the update with the observed data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -874,6 +701,11 @@ That’s what this function does:</p>
 </div>
 <p>And we can compare the posterior distribution we just computed with the results from the grid algorithm.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate_euro</span><span class="p">(</span><span class="n">title</span><span class="p">):</span>
     <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Proportion of heads (x)&#39;</span><span class="p">,</span>
@@ -882,8 +714,14 @@ That’s what this function does:</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;grid posterior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 <span class="n">posterior_conjugate</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;conjugate posterior&#39;</span><span class="p">,</span>
@@ -893,13 +731,19 @@ That’s what this function does:</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_49_0.png" src="_images/chap18_49_0.png" />
+<img alt="_images/6690cfacd465eb40d9ec441a2922b3fdf2f2f9656494ba5973edb6e05280cb97.png" src="_images/6690cfacd465eb40d9ec441a2922b3fdf2f2f9656494ba5973edb6e05280cb97.png" />
 </div>
 </div>
 <p>They are the same other than small differences due to floating-point approximations.</p>
 <p>The examples so far are problems we have already solved, so let’s try something new.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">posterior_conjugate</span><span class="p">)</span>
 </pre></div>
@@ -910,10 +754,11 @@ That’s what this function does:</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 <section id="lions-and-tigers-and-bears">
-<h2>Lions and Tigers and Bears<a class="headerlink" href="#lions-and-tigers-and-bears" title="Permalink to this headline">#</a></h2>
+<h2>Lions and Tigers and Bears<a class="headerlink" href="#lions-and-tigers-and-bears" title="Permalink to this heading">#</a></h2>
 <p>Suppose we visit a wild animal preserve where we know that the only animals are lions and tigers and bears, but we don’t know how many of each there are.
 During the tour, we see 3 lions, 2 tigers, and one bear. Assuming that every animal had an equal chance to appear in our sample, what is the probability that the next animal we see is a bear?</p>
 <p>To answer this question, we’ll use the data to estimate the prevalence of each species, that is, what fraction of the animals belong to each species.
@@ -942,12 +787,12 @@ For example, suppose we know that the fraction of lions, tigers, and bears is 0.
 <p>But there’s an easier way, because the multinomial distribution has a conjugate prior: the Dirichlet distribution.</p>
 </section>
 <section id="the-dirichlet-distribution">
-<h2>The Dirichlet Distribution<a class="headerlink" href="#the-dirichlet-distribution" title="Permalink to this headline">#</a></h2>
+<h2>The Dirichlet Distribution<a class="headerlink" href="#the-dirichlet-distribution" title="Permalink to this heading">#</a></h2>
 <p>The Dirichlet distribution is a multivariate distribution, like the multivariate normal distribution we used in &lt;&lt;_MultivariateNormalDistribution&gt;&gt; to describe the distribution of penguin measurements.</p>
 <p>In that example, the quantities in the distribution are pairs of flipper length and culmen length, and the parameters of the distribution are a vector of means and a matrix of covariances.</p>
-<p>In a Dirichlet distribution, the quantities are vectors of probabilities, <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>, and the parameter is a vector, <span class="math notranslate nohighlight">\(\mathbf{\alpha}\)</span>.</p>
+<p>In a Dirichlet distribution, the quantities are vectors of probabilities, $\mathbf{x}$, and the parameter is a vector, $\mathbf{\alpha}$.</p>
 <p>An example will make that clearer.  SciPy provides a <code class="docutils literal notranslate"><span class="pre">dirichlet</span></code> object that represents a Dirichlet distribution.
-Here’s an instance with <span class="math notranslate nohighlight">\(\mathbf{\alpha} = 1, 2, 3\)</span>.</p>
+Here’s an instance with $\mathbf{\alpha} = 1, 2, 3$.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">dirichlet</span>
@@ -973,6 +818,11 @@ If we draw a random value from this distribution, like this:</p>
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
@@ -983,6 +833,7 @@ If we draw a random value from this distribution, like this:</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>The result is an array of three values.
 They are bounded between 0 and 1, and they always add up to 1, so they can be interpreted as the probabilities of a set of outcomes that are mutually exclusive and collectively exhaustive.</p>
@@ -995,6 +846,11 @@ They are bounded between 0 and 1, and they always add up to 1, so they can be in
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
@@ -1005,6 +861,7 @@ They are bounded between 0 and 1, and they always add up to 1, so they can be in
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>The result is an array with 1000 rows and three columns.  I’ll compute the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> of the values in each column.</p>
 <div class="cell docutils container">
@@ -1019,6 +876,11 @@ They are bounded between 0 and 1, and they always add up to 1, so they can be in
 </div>
 <p>The result is a list of <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> objects that represent the marginal distributions of the three variables.  Here’s what they look like.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cdf</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cdfs</span><span class="p">):</span>
     <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Column </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -1028,8 +890,9 @@ They are bounded between 0 and 1, and they always add up to 1, so they can be in
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_66_0.png" src="_images/chap18_66_0.png" />
+<img alt="_images/38e3455314147946835c8800653dfd01a9f1c97c9b568a01c8e33c8802a29287.png" src="_images/38e3455314147946835c8800653dfd01a9f1c97c9b568a01c8e33c8802a29287.png" />
 </div>
 </div>
 <p>Column 0, which corresponds to the lowest parameter, contains the lowest probabilities.
@@ -1057,6 +920,11 @@ The following function takes a sequence of parameters, <code class="docutils lit
 </div>
 <p>The following plot shows the CDF of these distributions as gray lines and compares them to the CDFs of the samples.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
 
@@ -1073,8 +941,9 @@ The following function takes a sequence of parameters, <code class="docutils lit
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_72_0.png" src="_images/chap18_72_0.png" />
+<img alt="_images/d2b045b7f54a65ceb60914590d7732e667f5f95b187400fa17363aed09dfab01.png" src="_images/d2b045b7f54a65ceb60914590d7732e667f5f95b187400fa17363aed09dfab01.png" />
 </div>
 </div>
 <p>This confirms that the marginals of the Dirichlet distribution are beta distributions.
@@ -1083,24 +952,28 @@ And that’s useful because the Dirichlet distribution is the conjugate prior fo
 <p>As an exercise at the end of this chapter, you can use this method to solve the Lions and Tigers and Bears problem.</p>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
 <p>After reading this chapter, if you feel like you’ve been tricked, I understand.  It turns out that many of the problems in this book can be solved with just a few arithmetic operations.  So why did we go to all the trouble of using grid algorithms?</p>
 <p>Sadly, there are only a few problems we can solve with conjugate priors; in fact, this chapter includes most of the ones that are useful in practice.</p>
 <p>For the vast majority of problems, there is no conjugate prior and no shortcut to compute the posterior distribution.
 That’s why we need grid algorithms and the methods in the next two chapters, Approximate Bayesian Computation (ABC) and Markov chain Monte Carlo methods (MCMC).</p>
 </section>
 <section id="exercises">
-<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">#</a></h2>
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
 <p><strong>Exercise:</strong> In the second version of the World Cup problem, the data we use for the update is not the number of goals in a game, but the time until the first goal.
 So the probability of the data is given by the exponential distribution rather than the Poisson distribution.</p>
 <p>But it turns out that the gamma distribution is <em>also</em> the conjugate prior of the exponential distribution, so there is a simple way to compute this update, too.
-The PDF of the exponential distribution is a function of <span class="math notranslate nohighlight">\(t\)</span> with <span class="math notranslate nohighlight">\(\lambda\)</span> as a parameter.</p>
-<div class="math notranslate nohighlight">
-\[\lambda e^{-\lambda t}\]</div>
+The PDF of the exponential distribution is a function of $t$ with $\lambda$ as a parameter.</p>
+<p>$$\lambda e^{-\lambda t}$$</p>
 <p>Multiply the PDF of the gamma prior by this likelihood, confirm that the result is an unnormalized gamma distribution, and see if you can derive its parameters.</p>
 <p>Write a few lines of code to update <code class="docutils literal notranslate"><span class="pre">prior_gamma</span></code> with the data from this version of the problem, which was a first goal after 11 minutes and a second goal after an additional 12 minutes.</p>
 <p>Remember to express these quantities in units of games, which are approximately 90 minutes.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1121,8 +994,14 @@ The PDF of the exponential distribution is a function of <span class="math notra
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1133,8 +1012,14 @@ The PDF of the exponential distribution is a function of <span class="math notra
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1147,8 +1032,14 @@ The PDF of the exponential distribution is a function of <span class="math notra
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1163,8 +1054,9 @@ The PDF of the exponential distribution is a function of <span class="math notra
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_80_0.png" src="_images/chap18_80_0.png" />
+<img alt="_images/4b02d1d83de1cd604d399109a433c3edb273cfc7a8407045a8aade575d235c6e.png" src="_images/4b02d1d83de1cd604d399109a433c3edb273cfc7a8407045a8aade575d235c6e.png" />
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> For problems like the Euro problem where the likelihood function is binomial, we can do a Bayesian update with just a few arithmetic operations, but only if the prior is a beta distribution.</p>
 <p>If we want a uniform prior, we can use a beta distribution with <code class="docutils literal notranslate"><span class="pre">alpha=1</span></code> and <code class="docutils literal notranslate"><span class="pre">beta=1</span></code>.
@@ -1175,6 +1067,11 @@ See if you can find a beta distribution that fits the triangle prior, then updat
 <p>Use <code class="docutils literal notranslate"><span class="pre">pmf_from_dist</span></code> to make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that approximates the posterior distribution and compare it to the posterior we just computed using a grid algorithm.  How big is the largest difference between them?</p>
 <p>Here’s the triangle prior again.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
 
@@ -1194,9 +1091,15 @@ See if you can find a beta distribution that fits the triangle prior, then updat
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>And here’s the update.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">250</span>
 <span class="n">likelihood</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
@@ -1211,9 +1114,15 @@ See if you can find a beta distribution that fits the triangle prior, then updat
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>To get you started, here’s the beta distribution that we used as a uniform prior.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1228,9 +1137,15 @@ See if you can find a beta distribution that fits the triangle prior, then updat
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>And here’s what it looks like compared to the triangle prior.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">prior_beta</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
 
@@ -1242,11 +1157,17 @@ See if you can find a beta distribution that fits the triangle prior, then updat
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_89_0.png" src="_images/chap18_89_0.png" />
+<img alt="_images/8a092622087a81b63220299ed339ad33e748615fdf8b8c669f8a3a99a5c416f1.png" src="_images/8a092622087a81b63220299ed339ad33e748615fdf8b8c669f8a3a99a5c416f1.png" />
 </div>
+</details>
 </div>
 <p>Now you take it from there.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1261,8 +1182,14 @@ See if you can find a beta distribution that fits the triangle prior, then updat
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1270,8 +1197,14 @@ See if you can find a beta distribution that fits the triangle prior, then updat
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1285,10 +1218,16 @@ See if you can find a beta distribution that fits the triangle prior, then updat
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_93_0.png" src="_images/chap18_93_0.png" />
+<img alt="_images/c876c409c11dd54ba4da7d89608ab9129059f96d92b73aa846a81dcf77d3d82c.png" src="_images/c876c409c11dd54ba4da7d89608ab9129059f96d92b73aa846a81dcf77d3d82c.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1303,6 +1242,7 @@ See if you can find a beta distribution that fits the triangle prior, then updat
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong>  <a class="reference external" href="https://en.wikipedia.org/wiki/3Blue1Brown">3Blue1Brown</a> is a YouTube channel about math; if you are not already aware of it, I recommend it highly.
 In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A7Q">this video</a> the narrator presents this problem:</p>
@@ -1313,7 +1253,7 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 <p>Let’s think about how to model this scenario.  Suppose each seller has some unknown probability, <code class="docutils literal notranslate"><span class="pre">x</span></code>, of providing satisfactory service and getting a positive rating, and we want to choose the seller with the highest value of <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <p>This is not the only model for this scenario, and it is not necessarily the best.  An alternative would be something like item response theory, where sellers have varying ability to provide satisfactory service and customers have varying difficulty of being satisfied.</p>
 <p>But the first model has the virtue of simplicity, so let’s see where it gets us.</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>As a prior, I suggest a beta distribution with <code class="docutils literal notranslate"><span class="pre">alpha=8</span></code> and <code class="docutils literal notranslate"><span class="pre">beta=2</span></code>.  What does this prior look like and what does it imply about sellers?</p></li>
 <li><p>Use the data to update the prior for the three sellers and plot the posterior distributions.  Which seller has the highest posterior mean?</p></li>
 <li><p>How confident should we be about our choice?  That is, what is the probability that the seller with the highest posterior mean actually has the highest value of <code class="docutils literal notranslate"><span class="pre">x</span></code>?</p></li>
@@ -1322,6 +1262,11 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </ol>
 <p>Note: When you evaluate the beta distribution, you should restrict the range of <code class="docutils literal notranslate"><span class="pre">xs</span></code> so it does not include 0 and 1.  When the parameters of the beta distribution are less than 1, the probability density goes to infinity at 0 and 1.  From a mathematical point of view, that’s not a problem; it is still a proper probability distribution.  But from a computational point of view, it means we have to avoid evaluating the PDF at 0 and 1.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1340,10 +1285,16 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_97_0.png" src="_images/chap18_97_0.png" />
+<img alt="_images/10f1e732645ad625d44851743d4fe343a94841acc5b05777fdb17545b3e088be.png" src="_images/10f1e732645ad625d44851743d4fe343a94841acc5b05777fdb17545b3e088be.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1353,8 +1304,14 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1364,8 +1321,14 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1375,8 +1338,14 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1391,10 +1360,16 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap18_101_0.png" src="_images/chap18_101_0.png" />
+<img alt="_images/287d7bc9e8018421486a23dfd8721014d0c702fff0d03d83edec1951ee90458a.png" src="_images/287d7bc9e8018421486a23dfd8721014d0c702fff0d03d83edec1951ee90458a.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1407,8 +1382,14 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1421,8 +1402,14 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1471,6 +1458,7 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <p><strong>Exercise:</strong> Use a Dirichlet prior with parameter vector <code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">=</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1]</span></code> to solve the Lions and Tigers and Bears problem:</p>
 <blockquote>
@@ -1479,6 +1467,11 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 <p>What is the probability that the next animal we see is a bear?</p>
 </div></blockquote>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1487,8 +1480,14 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1496,8 +1495,14 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1511,8 +1516,14 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1520,8 +1531,14 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1570,6 +1587,7 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 </section>
 </section>
@@ -1594,50 +1612,112 @@ In <a class="reference external" href="https://www.youtube.com/watch?v=8idr1WZ1A
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="chap17.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Regression</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chap17.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Regression</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="chap19.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="chap19.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">MCMC</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Allen B. Downey<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-world-cup-problem-revisited">The World Cup Problem Revisited</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-conjugate-prior">The Conjugate Prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-actual">What the Actual?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#binomial-likelihood">Binomial Likelihood</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lions-and-tigers-and-bears">Lions and Tigers and Bears</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-dirichlet-distribution">The Dirichlet Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

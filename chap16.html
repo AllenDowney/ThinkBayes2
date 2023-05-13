@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Logistic Regression &#8212; Think Bayes</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,58 +61,87 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chap16';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Regression" href="chap17.html" />
     <link rel="prev" title="Mark and Recapture" href="chap15.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">Think Bayes</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -110,484 +150,226 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Chapters
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="preface.html">
-   Preface
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap01.html">
-   Probability
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap02.html">
-   Bayes’s Theorem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap03.html">
-   Distributions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap04.html">
-   Estimating Proportions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap05.html">
-   Estimating Counts
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap06.html">
-   Odds and Addends
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap07.html">
-   Minimum, Maximum, and Mixture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap08.html">
-   Poisson Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap09.html">
-   Decision Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap10.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap11.html">
-   Comparison
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap12.html">
-   Classification
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap13.html">
-   Inference
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap14.html">
-   Survival Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap15.html">
-   Mark and Recapture
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Logistic Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap17.html">
-   Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap18.html">
-   Conjugate Priors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap19.html">
-   MCMC
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap20.html">
-   Approximate Bayesian Computation
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">Mark and Recapture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19.html">MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">Approximate Bayesian Computation</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Examples
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="redline.html">
-   The Red Line Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="vaccine2.html">
-   Estimating vaccine efficacy
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="usb.html">
-   Flipping USB Connectors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="sister.html">
-   The Left Handed Sister Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="bayes_dice.html">
-   Bayesian Dice
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="radiation.html">
-   The Emitter-Detector Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital.html">
-   Grid algorithms for hierarchical models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital_birth_rate.html">
-   Comparing birth rates
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="ok.html">
-   How Many Typos?
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/chap16.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
-</div>
+  
+  <div id="rtd-footer-container"></div>
 
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-<a href="https://github.com/AllenDowney/ThinkBayes2"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="bottom"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fab fa-github"></i>
   </span>
 
 </a>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/chap16.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chap16.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.ipynb</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
-
-      </li>
+</li>
+      
+      
+      
       
       <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file-pdf"></i>
   </span>
-<span class="headerbtn__text-container">.pdf</span>
+<span class="btn__text-container">.pdf</span>
 </button>
-
-      </li>
+</li>
       
-    </ul>
-  </div>
+  </ul>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
   </span>
 
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#log-odds">
-   Log Odds
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-space-shuttle-problem">
-   The Space Shuttle Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#prior-distribution">
-   Prior Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#likelihood">
-   Likelihood
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-update">
-   The Update
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#marginal-distributions">
-   Marginal Distributions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#transforming-distributions">
-   Transforming Distributions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#predictive-distributions">
-   Predictive Distributions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#empirical-bayes">
-   Empirical Bayes
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Logistic Regression</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#log-odds">
-   Log Odds
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-space-shuttle-problem">
-   The Space Shuttle Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#prior-distribution">
-   Prior Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#likelihood">
-   Likelihood
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-update">
-   The Update
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#marginal-distributions">
-   Marginal Distributions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#transforming-distributions">
-   Transforming Distributions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#predictive-distributions">
-   Predictive Distributions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#empirical-bayes">
-   Empirical Bayes
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Logistic Regression</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-odds">Log Odds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-space-shuttle-problem">The Space Shuttle Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prior-distribution">Prior Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#likelihood">Likelihood</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-update">The Update</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#marginal-distributions">Marginal Distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transforming-distributions">Transforming Distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#predictive-distributions">Predictive Distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#empirical-bayes">Empirical Bayes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
-  <section class="tex2jax_ignore mathjax_ignore" id="logistic-regression">
-<h1>Logistic Regression<a class="headerlink" href="#logistic-regression" title="Permalink to this headline">#</a></h1>
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="logistic-regression">
+<h1>Logistic Regression<a class="headerlink" href="#logistic-regression" title="Permalink to this heading">#</a></h1>
 <p>This chapter introduces two related topics: log odds and logistic regression.</p>
 <p>In &lt;&lt;_BayessRule&gt;&gt;, we rewrote Bayes’s Theorem in terms of odds and derived Bayes’s Rule, which can be a convenient way to do a Bayesian update on paper or in your head.
 In this chapter, we’ll look at Bayes’s Rule on a logarithmic scale, which provides insight into how we accumulate evidence through successive updates.</p>
@@ -595,7 +377,7 @@ In this chapter, we’ll look at Bayes’s Rule on a logarithmic scale, which pr
 As an example, we’ll use data from the Space Shuttle to explore the relationship between temperature and the probability of damage to the O-rings.</p>
 <p>As an exercise, you’ll have a chance to model the relationship between a child’s age when they start school and their probability of being diagnosed with Attention Deficit Hyperactivity Disorder (ADHD).</p>
 <section id="log-odds">
-<h2>Log Odds<a class="headerlink" href="#log-odds" title="Permalink to this headline">#</a></h2>
+<h2>Log Odds<a class="headerlink" href="#log-odds" title="Permalink to this heading">#</a></h2>
 <p>When I was in grad school, I signed up for a class on the Theory of Computation.
 On the first day of class, I was the first to arrive.
 A few minutes later, another student arrived.</p>
@@ -604,36 +386,41 @@ A few minutes later, another student arrived.</p>
 When third female student arrived, I was confident I was in the wrong room.
 And as it turned out, I was.</p>
 <p>I’ll use this anecdote to demonstrate Bayes’s Rule on a logarithmic scale and show how it relates to logistic regression.</p>
-<p>Using <span class="math notranslate nohighlight">\(H\)</span> to represent the hypothesis that I was in the right room, and <span class="math notranslate nohighlight">\(F\)</span> to represent the observation that the first other student was female, we can write Bayes’s Rule like this:</p>
-<div class="math notranslate nohighlight">
-\[O(H|F) = O(H) \frac{P(F|H)}{P(F|not H)}\]</div>
+<p>Using $H$ to represent the hypothesis that I was in the right room, and $F$ to represent the observation that the first other student was female, we can write Bayes’s Rule like this:</p>
+<p>$$O(H|F) = O(H) \frac{P(F|H)}{P(F|not H)}$$</p>
 <p>Before I saw the other students, I was confident I was in the right room, so I might assign prior odds of 10:1 in favor:</p>
-<div class="math notranslate nohighlight">
-\[O(H) = 10\]</div>
+<p>$$O(H) = 10$$</p>
 <p>If I was in the right room, the likelihood of the first female student was about 17%.
 If I was not in the right room, the likelihood of the first female student was more like 50%,</p>
-<div class="math notranslate nohighlight">
-\[\frac{P(F|H)}{P(F|not H)} = 17 / 50\]</div>
+<p>$$\frac{P(F|H)}{P(F|not H)} = 17 / 50$$</p>
 <p>So the likelihood ratio is close to 1/3.  Applying Bayes’s Rule, the posterior odds were</p>
-<div class="math notranslate nohighlight">
-\[O(H|F) = 10 / 3\]</div>
+<p>$$O(H|F) = 10 / 3$$</p>
 <p>After two students, the posterior odds were</p>
-<div class="math notranslate nohighlight">
-\[O(H|FF) = 10 / 9\]</div>
+<p>$$O(H|FF) = 10 / 9$$</p>
 <p>And after three students:</p>
-<div class="math notranslate nohighlight">
-\[O(H|FFF) = 10 / 27\]</div>
+<p>$$O(H|FFF) = 10 / 27$$</p>
 <p>At that point, I was right to suspect I was in the wrong room.</p>
 <p>The following table shows the odds after each update, the corresponding probabilities, and the change in probability after each step, expressed in percentage points.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prob</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">o</span> <span class="o">/</span> <span class="p">(</span><span class="n">o</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
@@ -647,6 +434,7 @@ If I was not in the right room, the likelihood of the first female student was m
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
 <style scoped>
@@ -703,9 +491,14 @@ If I was not in the right room, the likelihood of the first female student was m
 <p>Each update uses the same likelihood, but the changes in probability are not the same.  The first update decreases the probability by about 14 percentage points, the second by 24, and the third by 26.
 That’s normal for this kind of update, and in fact it’s necessary; if the changes were the same size, we would quickly get into negative probabilities.</p>
 <p>The odds follow a more obvious pattern.  Because each update multiplies the odds by the same likelihood ratio, the odds form a geometric sequence.
-And that brings us to consider another way to represent uncertainty: <strong>log odds</strong>, which is the logarithm of odds, usually expressed using the natural log (base <span class="math notranslate nohighlight">\(e\)</span>).</p>
+And that brings us to consider another way to represent uncertainty: <strong>log odds</strong>, which is the logarithm of odds, usually expressed using the natural log (base $e$).</p>
 <p>Adding log odds to the table:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -715,6 +508,7 @@ And that brings us to consider another way to represent uncertainty: <strong>log
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
 <style scoped>
@@ -798,38 +592,46 @@ The change in log odds after each update is the logarithm of the likelihood rati
 </div>
 </div>
 <p>That’s true in this example, and we can show that it’s true in general by taking the log of both sides of Bayes’s Rule.</p>
-<div class="math notranslate nohighlight">
-\[\log O(H|F) = \log O(H) + \log \frac{P(F|H)}{P(F|not H)}\]</div>
-<p>On a log odds scale, a Bayesian update is additive.  So if <span class="math notranslate nohighlight">\(F^x\)</span> means that <span class="math notranslate nohighlight">\(x\)</span> female students arrive while I am waiting, the posterior log odds that I am in the right room are:</p>
-<div class="math notranslate nohighlight">
-\[\log O(H|F^x) = \log O(H) + x \log \frac{P(F|H)}{P(F|not H)}\]</div>
+<p>$$\log O(H|F) = \log O(H) + \log \frac{P(F|H)}{P(F|not H)}$$</p>
+<p>On a log odds scale, a Bayesian update is additive.  So if $F^x$ means that $x$ female students arrive while I am waiting, the posterior log odds that I am in the right room are:</p>
+<p>$$\log O(H|F^x) = \log O(H) + x \log \frac{P(F|H)}{P(F|not H)}$$</p>
 <p>This equation represents a linear relationship between the log likelihood ratio and the posterior log odds.</p>
-<p>In this example the linear equation is exact, but even when it’s not, it is common to use a linear function to model the relationship between an explanatory variable, <span class="math notranslate nohighlight">\(x\)</span>, and a dependent variable expressed in log odds, like this:</p>
-<div class="math notranslate nohighlight">
-\[\log O(H | x) = \beta_0 + \beta_1 x\]</div>
-<p>where <span class="math notranslate nohighlight">\(\beta_0\)</span> and <span class="math notranslate nohighlight">\(\beta_1\)</span> are unknown parameters:</p>
+<p>In this example the linear equation is exact, but even when it’s not, it is common to use a linear function to model the relationship between an explanatory variable, $x$, and a dependent variable expressed in log odds, like this:</p>
+<p>$$\log O(H | x) = \beta_0 + \beta_1 x$$</p>
+<p>where $\beta_0$ and $\beta_1$ are unknown parameters:</p>
 <ul class="simple">
-<li><p>The intercept, <span class="math notranslate nohighlight">\(\beta_0\)</span>, is the log odds of the hypothesis when <span class="math notranslate nohighlight">\(x\)</span> is 0.</p></li>
-<li><p>The slope, <span class="math notranslate nohighlight">\(\beta_1\)</span>, is the log of the likelihood ratio.</p></li>
+<li><p>The intercept, $\beta_0$, is the log odds of the hypothesis when $x$ is 0.</p></li>
+<li><p>The slope, $\beta_1$, is the log of the likelihood ratio.</p></li>
 </ul>
 <p>This equation is the basis of logistic regression.</p>
 </section>
 <section id="the-space-shuttle-problem">
-<h2>The Space Shuttle Problem<a class="headerlink" href="#the-space-shuttle-problem" title="Permalink to this headline">#</a></h2>
+<h2>The Space Shuttle Problem<a class="headerlink" href="#the-space-shuttle-problem" title="Permalink to this heading">#</a></h2>
 <p>As an example of logistic regression, I’ll solve a problem from Cameron Davidson-Pilon’s book, <a class="reference external" href="http://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter2_MorePyMC/Ch2_MorePyMC_PyMC2.ipynb"><em>Bayesian Methods for Hackers</em></a>.  He writes:</p>
 <blockquote>
 <div><p>“On January 28, 1986, the twenty-fifth flight of the U.S. space shuttle program ended in disaster when one of the rocket boosters of the Shuttle Challenger exploded shortly after lift-off, killing all seven crew members. The presidential commission on the accident concluded that it was caused by the failure of an O-ring in a field joint on the rocket booster, and that this failure was due to a faulty design that made the O-ring unacceptably sensitive to a number of factors including outside temperature. Of the previous 24 flights, data were available on failures of O-rings on 23 (one was lost at sea), and these data were discussed on the evening preceding the Challenger launch, but unfortunately only the data corresponding to the 7 flights on which there was a damage incident were considered important and these were thought to show no obvious trend.”</p>
 </div></blockquote>
 <p>The dataset is originally from <a class="reference external" href="https://amstat.tandfonline.com/doi/abs/10.1080/01621459.1989.10478858">this paper</a>, but also available from <a class="reference external" href="https://raw.githubusercontent.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/master/Chapter2_MorePyMC/data/challenger_data.csv">Davidson-Pilon</a>.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/master/Chapter2_MorePyMC/data/challenger_data.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>I’ll read the data and do some cleaning.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;challenger_data.csv&#39;</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
@@ -1013,14 +815,21 @@ The change in log odds after each update is the logarithm of the likelihood rati
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <p>Here are the first few rows:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
 <style scoped>
@@ -1088,6 +897,11 @@ The change in log odds after each update is the logarithm of the likelihood rati
 </ul>
 <p>There are 23 launches in the dataset, 7 with damage incidents.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Damage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
@@ -1098,9 +912,15 @@ The change in log odds after each update is the logarithm of the likelihood rati
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>The following figure shows the relationship between damage and temperature.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
@@ -1119,23 +939,29 @@ The change in log odds after each update is the logarithm of the likelihood rati
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_28_0.png" src="_images/chap16_28_0.png" />
+<img alt="_images/9c176560b9752003e2f6e6e100518c13a4375e65aa388ab988866eb61c444569.png" src="_images/9c176560b9752003e2f6e6e100518c13a4375e65aa388ab988866eb61c444569.png" />
 </div>
 </div>
 <p>When the outside temperature was below 65 degrees, there was always damage to the O-rings.  When the temperature was above 65 degrees, there was usually no damage.</p>
 <p>Based on this figure, it seems plausible that the probability of damage is related to temperature.  If we assume this probability follows a logistic model, we can write:</p>
-<div class="math notranslate nohighlight">
-\[\log O(H | x) = \beta_0 + \beta_1 x\]</div>
-<p>where <span class="math notranslate nohighlight">\(H\)</span> is the hypothesis that the O-rings will be damaged, <span class="math notranslate nohighlight">\(x\)</span> is temperature, and <span class="math notranslate nohighlight">\(\beta_0\)</span> and <span class="math notranslate nohighlight">\(\beta_1\)</span> are the parameters we will estimate.
-For reasons I’ll explain soon, I’ll define <span class="math notranslate nohighlight">\(x\)</span> to be temperature shifted by an offset so its mean is 0.</p>
+<p>$$\log O(H | x) = \beta_0 + \beta_1 x$$</p>
+<p>where $H$ is the hypothesis that the O-rings will be damaged, $x$ is temperature, and $\beta_0$ and $\beta_1$ are the parameters we will estimate.
+For reasons I’ll explain soon, I’ll define $x$ to be temperature shifted by an offset so its mean is 0.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
@@ -1208,6 +1034,11 @@ Here’s the range:</p>
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ps</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
@@ -1218,6 +1049,7 @@ Here’s the range:</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Converting log odds to probabilities is a common enough operation that it has a name, <code class="docutils literal notranslate"><span class="pre">expit</span></code>, and SciPy provides a function that computes it.</p>
 <div class="cell docutils container">
@@ -1230,6 +1062,11 @@ Here’s the range:</p>
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ps</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
@@ -1240,9 +1077,15 @@ Here’s the range:</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Here’s what the logistic model looks like with these estimated parameters.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="o">+</span><span class="n">offset</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
@@ -1250,8 +1093,9 @@ Here’s the range:</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_46_0.png" src="_images/chap16_46_0.png" />
+<img alt="_images/184359ae741869c825727d898cd709c7876cb15a30627a4ac069ec7a766dda27.png" src="_images/184359ae741869c825727d898cd709c7876cb15a30627a4ac069ec7a766dda27.png" />
 </div>
 </div>
 <p>At low temperatures, the probability of damage is high; at high temperatures, it drops off to near 0.</p>
@@ -1259,7 +1103,7 @@ Here’s the range:</p>
 Now we’ll do the Bayesian version.</p>
 </section>
 <section id="prior-distribution">
-<h2>Prior Distribution<a class="headerlink" href="#prior-distribution" title="Permalink to this headline">#</a></h2>
+<h2>Prior Distribution<a class="headerlink" href="#prior-distribution" title="Permalink to this heading">#</a></h2>
 <p>I’ll use uniform distributions for both parameters, using the point estimates from the previous section to help me choose the upper and lower bounds.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1349,7 +1193,7 @@ Now we’ll do the Bayesian version.</p>
 <p><code class="docutils literal notranslate"><span class="pre">joint_pmf</span></code> is a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> with two levels in the index, one for each parameter.  That makes it easy to loop through possible pairs of parameters, as we’ll see in the next section.</p>
 </section>
 <section id="likelihood">
-<h2>Likelihood<a class="headerlink" href="#likelihood" title="Permalink to this headline">#</a></h2>
+<h2>Likelihood<a class="headerlink" href="#likelihood" title="Permalink to this heading">#</a></h2>
 <p>To do the update, we have to compute the likelihood of the data for each possible pair of parameters.</p>
 <p>To make that easier, I’m going to group the data by temperature, <code class="docutils literal notranslate"><span class="pre">x</span></code>, and count the number of launches and damage incidents at each temperature.</p>
 <div class="cell docutils container">
@@ -1489,7 +1333,7 @@ Now we can compute the likelihood of the data for all possible pairs:</p>
 <p>The loop iterates through the parameters.  For each possible pair, it uses the logistic model to compute <code class="docutils literal notranslate"><span class="pre">ps</span></code>, computes the likelihood of the data, and assigns the result to a row in <code class="docutils literal notranslate"><span class="pre">likelihood</span></code>.</p>
 </section>
 <section id="the-update">
-<h2>The Update<a class="headerlink" href="#the-update" title="Permalink to this headline">#</a></h2>
+<h2>The Update<a class="headerlink" href="#the-update" title="Permalink to this heading">#</a></h2>
 <p>Now we can compute the posterior distribution in the usual way.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
@@ -1501,6 +1345,11 @@ Now we can compute the likelihood of the data for all possible pairs:</p>
 </div>
 <p>Because we used a uniform prior, the parameter pair with the highest likelihood is also the pair with maximum posterior probability:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">posterior_pmf</span><span class="o">.</span><span class="n">max_prob</span><span class="p">(),</span>
           <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="s1">&#39;inter&#39;</span><span class="p">])</span>
@@ -1514,9 +1363,15 @@ dtype: float64
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>So we can confirm that the results of the Bayesian update are consistent with the maximum likelihood estimate computed by StatsModels:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="o">.</span><span class="n">params</span>
 </pre></div>
@@ -1529,6 +1384,7 @@ dtype: float64
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>They are approximately the same, within the precision of the grid we’re using.</p>
 <p>If we unstack the posterior <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> we can make a contour plot of the joint posterior distribution.</p>
@@ -1543,7 +1399,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_77_0.png" src="_images/chap16_77_0.png" />
+<img alt="_images/6fa00d5595996c520a41b3e76de338d79c39c384f930bc01ba19b7604f32c850.png" src="_images/6fa00d5595996c520a41b3e76de338d79c39c384f930bc01ba19b7604f32c850.png" />
 </div>
 </div>
 <p>The ovals in the contour plot are aligned along a diagonal, which indicates that there is some correlation between <code class="docutils literal notranslate"><span class="pre">slope</span></code> and <code class="docutils literal notranslate"><span class="pre">inter</span></code> in the posterior distribution.</p>
@@ -1554,7 +1410,7 @@ The slope should be the same, but the intercept will be different.  And if you p
 Centering the data maximizes the precision of the estimates; with uncentered data, we have to do more computation to get the same precision.</p>
 </section>
 <section id="marginal-distributions">
-<h2>Marginal Distributions<a class="headerlink" href="#marginal-distributions" title="Permalink to this headline">#</a></h2>
+<h2>Marginal Distributions<a class="headerlink" href="#marginal-distributions" title="Permalink to this heading">#</a></h2>
 <p>Finally, we can extract the marginal distributions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1568,6 +1424,11 @@ Centering the data maximizes the precision of the estimates; with uncentered dat
 </div>
 <p>Here’s the posterior distribution of <code class="docutils literal notranslate"><span class="pre">inter</span></code>.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_inter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;intercept&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
 
@@ -1577,12 +1438,18 @@ Centering the data maximizes the precision of the estimates; with uncentered dat
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_83_0.png" src="_images/chap16_83_0.png" />
+<img alt="_images/b06adb0eb4e2bec88511c82b4d847ba57ba32ad397ab1b2c6a8c77dad4aba9f0.png" src="_images/b06adb0eb4e2bec88511c82b4d847ba57ba32ad397ab1b2c6a8c77dad4aba9f0.png" />
 </div>
 </div>
 <p>And here’s the posterior distribution of <code class="docutils literal notranslate"><span class="pre">slope</span></code>.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_slope</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
 
@@ -1592,12 +1459,18 @@ Centering the data maximizes the precision of the estimates; with uncentered dat
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_85_0.png" src="_images/chap16_85_0.png" />
+<img alt="_images/282201b1bee504c51b0c181166c0dedfe417f37e44ca3fad23e76f8a5865a3ef.png" src="_images/282201b1bee504c51b0c181166c0dedfe417f37e44ca3fad23e76f8a5865a3ef.png" />
 </div>
 </div>
 <p>Here are the posterior means.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">marginal_inter</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">marginal_slope</span><span class="o">.</span><span class="n">mean</span><span class="p">()],</span>
           <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;inter&#39;</span><span class="p">,</span> <span class="s1">&#39;slope&#39;</span><span class="p">])</span>
@@ -1611,9 +1484,15 @@ dtype: float64
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Both marginal distributions are moderately skewed, so the posterior means are somewhat different from the point estimates.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="o">.</span><span class="n">params</span>
 </pre></div>
@@ -1626,11 +1505,12 @@ dtype: float64
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 <section id="transforming-distributions">
-<h2>Transforming Distributions<a class="headerlink" href="#transforming-distributions" title="Permalink to this headline">#</a></h2>
-<p>Let’s interpret these parameters.  Recall that the intercept is the log odds of the hypothesis when <span class="math notranslate nohighlight">\(x\)</span> is 0, which is when temperature is about 70 degrees F (the value of <code class="docutils literal notranslate"><span class="pre">offset</span></code>).
+<h2>Transforming Distributions<a class="headerlink" href="#transforming-distributions" title="Permalink to this heading">#</a></h2>
+<p>Let’s interpret these parameters.  Recall that the intercept is the log odds of the hypothesis when $x$ is 0, which is when temperature is about 70 degrees F (the value of <code class="docutils literal notranslate"><span class="pre">offset</span></code>).
 So we can interpret the quantities in <code class="docutils literal notranslate"><span class="pre">marginal_inter</span></code> as log odds.</p>
 <p>To convert them to probabilities, I’ll use the following function, which transforms the quantities in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> by applying a given function:</p>
 <div class="cell docutils container">
@@ -1662,6 +1542,11 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </div>
 <p>Here’s the posterior distribution for the probability of damage at 70 degrees F.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_probs</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
@@ -1671,12 +1556,18 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_97_0.png" src="_images/chap16_97_0.png" />
+<img alt="_images/d4a0ba125f94c8d8a1007b700d5bdd5bab05c13b7e0b00f8e94c59eb068ef384.png" src="_images/d4a0ba125f94c8d8a1007b700d5bdd5bab05c13b7e0b00f8e94c59eb068ef384.png" />
 </div>
 </div>
 <p>The mean of this distribution is about 22%, which is the probability of damage at 70 degrees F, according to the model.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean_prob</span> <span class="o">=</span> <span class="n">marginal_probs</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="n">mean_prob</span>
@@ -1688,9 +1579,10 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>This result shows the second reason I defined <code class="docutils literal notranslate"><span class="pre">x</span></code> to be zero when temperature is 70 degrees F; this way, the intercept corresponds to the probability of damage at a relevant temperature, rather than 0 degrees F.</p>
-<p>Now let’s look more closely at the estimated slope.  In the logistic model, the parameter <span class="math notranslate nohighlight">\(\beta_1\)</span> is the log of the likelihood ratio.</p>
+<p>Now let’s look more closely at the estimated slope.  In the logistic model, the parameter $\beta_1$ is the log of the likelihood ratio.</p>
 <p>So we can interpret the quantities in <code class="docutils literal notranslate"><span class="pre">marginal_slope</span></code> as log likelihood ratios, and we can use <code class="docutils literal notranslate"><span class="pre">exp</span></code> to transform them to likelihood ratios (also known as Bayes factors).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1701,6 +1593,11 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </div>
 <p>The result is the posterior distribution of likelihood ratios; here’s what it looks like.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_lr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">)</span>
 
@@ -1710,11 +1607,17 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_104_0.png" src="_images/chap16_104_0.png" />
+<img alt="_images/027bce9b65abb343c2f6a22dba21f4090f49d688afdcf61bf519088cf5b30dc8.png" src="_images/027bce9b65abb343c2f6a22dba21f4090f49d688afdcf61bf519088cf5b30dc8.png" />
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean_lr</span> <span class="o">=</span> <span class="n">marginal_lr</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="n">mean_lr</span>
@@ -1726,6 +1629,7 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>The mean of this distribution is about 0.75, which means that each additional degree Fahrenheit provides evidence against the possibility of damage, with a likelihood ratio (Bayes factor) of 0.75.</p>
 <p>Notice:</p>
@@ -1737,6 +1641,11 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 <p>To see the difference, let’s compute both values the other way around.
 Here’s the posterior mean of <code class="docutils literal notranslate"><span class="pre">marginal_inter</span></code>, transformed to a probability, compared to the mean of <code class="docutils literal notranslate"><span class="pre">marginal_probs</span></code>.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expit</span><span class="p">(</span><span class="n">marginal_inter</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span> <span class="n">marginal_probs</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
@@ -1747,9 +1656,15 @@ Here’s the posterior mean of <code class="docutils literal notranslate"><span 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>And here’s the posterior mean of <code class="docutils literal notranslate"><span class="pre">marginal_slope</span></code>, transformed to a likelihood ratio, compared to the mean <code class="docutils literal notranslate"><span class="pre">marginal_lr</span></code>.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">marginal_slope</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span> <span class="n">marginal_lr</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
@@ -1760,12 +1675,13 @@ Here’s the posterior mean of <code class="docutils literal notranslate"><span 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>In this example, the differences are not huge, but they can be.
 As a general rule, transform first, then compute summary statistics.</p>
 </section>
 <section id="predictive-distributions">
-<h2>Predictive Distributions<a class="headerlink" href="#predictive-distributions" title="Permalink to this headline">#</a></h2>
+<h2>Predictive Distributions<a class="headerlink" href="#predictive-distributions" title="Permalink to this heading">#</a></h2>
 <p>In the logistic model, the parameters are interpretable, at least after transformation.  But often what we care about are predictions, not parameters.  In the Space Shuttle problem, the most important prediction is, “What is the probability of O-ring damage if the outside temperature is 31 degrees F?”</p>
 <p>To make that prediction, I’ll draw a sample of parameter pairs from the posterior distribution.</p>
 <div class="cell docutils container">
@@ -1779,6 +1695,11 @@ As a general rule, transform first, then compute summary statistics.</p>
 I chose this sample size to make the computation fast.
 Increasing it would not change the results much, but they would be a little more precise.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
@@ -1789,8 +1710,14 @@ Increasing it would not change the results much, but they would be a little more
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">dtype</span>
 </pre></div>
@@ -1801,8 +1728,14 @@ Increasing it would not change the results much, but they would be a little more
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
@@ -1813,6 +1746,7 @@ Increasing it would not change the results much, but they would be a little more
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>To generate predictions, I’ll use a range of temperatures from 31 degrees F (the temperature when the Challenger launched) to 82 degrees F (the highest observed temperature).</p>
 <div class="cell docutils container">
@@ -1837,6 +1771,11 @@ Increasing it would not change the results much, but they would be a little more
 <p>The result has one column for each value in <code class="docutils literal notranslate"><span class="pre">xs</span></code> and one row for each element of <code class="docutils literal notranslate"><span class="pre">sample</span></code>.</p>
 <p>To get a quick sense of what the predictions look like, we can loop through the rows and plot them.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ps</span> <span class="ow">in</span> <span class="n">pred</span><span class="p">:</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">temps</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
@@ -1846,8 +1785,9 @@ Increasing it would not change the results much, but they would be a little more
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_126_0.png" src="_images/chap16_126_0.png" />
+<img alt="_images/21874fcd51b6d4d7c1877c9f9dd8744832e07b62154132a31ee4e2c8f92428f7.png" src="_images/21874fcd51b6d4d7c1877c9f9dd8744832e07b62154132a31ee4e2c8f92428f7.png" />
 </div>
+</details>
 </div>
 <p>The overlapping lines in this figure give a sense of the most likely value at each temperature and the degree of uncertainty.</p>
 <p>In each column, I’ll compute the median to quantify the central tendency and a 90% credible interval to quantify the uncertainty.</p>
@@ -1862,6 +1802,11 @@ Increasing it would not change the results much, but they would be a little more
 <p>The results are arrays containing predicted probabilities for the lower bound of the 90% CI, the median, and the upper bound of the CI.</p>
 <p>Here’s what they look like:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">temps</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">temps</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;logistic model&#39;</span><span class="p">)</span>
@@ -1870,14 +1815,20 @@ Increasing it would not change the results much, but they would be a little more
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_131_0.png" src="_images/chap16_131_0.png" />
+<img alt="_images/d6ed2327e5042d3ea7f9418465186f43a7bc1122f9fce65442c9b565564a6cfc.png" src="_images/d6ed2327e5042d3ea7f9418465186f43a7bc1122f9fce65442c9b565564a6cfc.png" />
 </div>
 </div>
 <p>According to these results, the probability of damage to the O-rings at 80 degrees F is near 2%, but there is some uncertainty about that prediction; the upper bound of the CI is around 10%.</p>
 <p>At 60 degrees, the probability of damage is near 80%, but the CI is even wider, from 48% to 97%.</p>
 <p>But the primary goal of the model is to predict the probability of damage at 31 degrees F, and the answer is at least 97%, and more likely to be more than 99.9%.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">low</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">temps</span><span class="p">)</span>
 <span class="n">median</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">median</span><span class="p">,</span> <span class="n">temps</span><span class="p">)</span>
@@ -1885,8 +1836,14 @@ Increasing it would not change the results much, but they would be a little more
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="mi">80</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">median</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="p">(</span><span class="n">low</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">high</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span>
@@ -1898,8 +1855,14 @@ Increasing it would not change the results much, but they would be a little more
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="mi">60</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">median</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="p">(</span><span class="n">low</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">high</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span>
@@ -1911,8 +1874,14 @@ Increasing it would not change the results much, but they would be a little more
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="mi">31</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">median</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="p">(</span><span class="n">low</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">high</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span>
@@ -1924,13 +1893,14 @@ Increasing it would not change the results much, but they would be a little more
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>One conclusion we might draw is this:  If the people responsible for the Challenger launch had taken into account all of the data, and not just the seven damage incidents, they could have predicted that the probability of damage at 31 degrees F was nearly certain.  If they had, it seems likely they would have postponed the launch.</p>
 <p>At the same time, if they considered the previous figure, they might have realized that the model makes predictions that extend far beyond the data.  When we extrapolate like that, we have to remember not just the uncertainty quantified by the model, which we expressed as a credible interval; we also have to consider the possibility that the model itself is unreliable.</p>
 <p>This example is based on a logistic model, which assumes that each additional degree of temperature contributes the same amount of evidence in favor of (or against) the possibility of damage.  Within a narrow range of temperatures, that might be a reasonable assumption, especially if it is supported by data.  But over a wider range, and beyond the bounds of the data, reality has no obligation to stick to the model.</p>
 </section>
 <section id="empirical-bayes">
-<h2>Empirical Bayes<a class="headerlink" href="#empirical-bayes" title="Permalink to this headline">#</a></h2>
+<h2>Empirical Bayes<a class="headerlink" href="#empirical-bayes" title="Permalink to this heading">#</a></h2>
 <p>In this chapter I used StatsModels to compute the parameters that maximize the probability of the data, and then used those estimates to choose the bounds of the uniform prior distributions.
 It might have occurred to you that this process uses the data twice, once to choose the priors and again to do the update.  If that bothers you, you are not alone.
 The process I used is an example of what’s called the <a class="reference external" href="https://en.wikipedia.org/wiki/Empirical_Bayes_method">Empirical Bayes method</a>, although I don’t think that’s a particularly good name for it.</p>
@@ -1940,7 +1910,7 @@ In that case, the results would be the same; the only difference is that I would
 This optimization doesn’t affect the results, so it doesn’t “double-count” the data.</p>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
 <p>So far we have seen three ways to represent degrees of confidence in a hypothesis: probability, odds, and log odds.
 When we write Bayes’s Rule in terms of log odds, a Bayesian update is the sum of the prior and the likelihood; in this sense, Bayesian statistics is the arithmetic of hypotheses and evidence.</p>
 <p>This form of Bayes’s Theorem is also the foundation of logistic regression, which we used to infer parameters and make predictions.  In the Space Shuttle problem, we modeled the relationship between temperature and the probability of damage, and showed that the Challenger disaster might have been predictable.  But this example is also a warning about the hazards of using a model to extrapolate far beyond the data.</p>
@@ -1948,7 +1918,7 @@ When we write Bayes’s Rule in terms of log odds, a Bayesian update is the sum 
 <p>In the next chapter we’ll move from logistic regression to linear regression, which we will use to model changes over time in temperature, snowfall, and the marathon world record.</p>
 </section>
 <section id="exercises">
-<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">#</a></h2>
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
 <p><strong>Exercise:</strong> Suppose a political pundit claims to be able to predict the outcome of elections, but instead of picking a winner, they give each candidate a probability of winning.
 With that kind of prediction, it can be hard to say whether it is right or wrong.</p>
 <p>For example, suppose the pundit says that Alice has a 70% chance of beating Bob, and then Bob wins the election.  Does that mean the pundit was wrong?</p>
@@ -1968,6 +1938,11 @@ With that kind of prediction, it can be hard to say whether it is right or wrong
 <p>What is the log likelihood ratio for each of these outcomes?  Use the log-odds form of Bayes’s Rule to compute the posterior log odds for <code class="docutils literal notranslate"><span class="pre">H</span></code> after these outcomes.  In total, do these outcomes increase or decrease your confidence in the pundit?</p>
 <p>If you are interested in this topic, you can <a class="reference external" href="http://allendowney.blogspot.com/2016/11/why-are-we-so-surprised.html">read more about it in this blog post</a>.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1981,8 +1956,14 @@ With that kind of prediction, it can be hard to say whether it is right or wrong
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1999,8 +1980,14 @@ With that kind of prediction, it can be hard to say whether it is right or wrong
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2018,6 +2005,7 @@ With that kind of prediction, it can be hard to say whether it is right or wrong
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong>  An article in the <em>New England Journal of Medicine</em> reports results from a study that looked at the diagnosis rate of Attention Deficit Hyperactivity Disorder (ADHD) as a function of birth month: <a class="reference external" href="https://www.nejm.org/doi/10.1056/NEJMoa1806828">“Attention Deficit–Hyperactivity Disorder and Month of School Enrollment”</a>.</p>
 <p>They found that children born in June, July, and August were substantially more likely to be diagnosed with ADHD, compared to children born in September, but only in states that use a September cutoff for children to enter kindergarten.  In these states, children born in August start school almost a year younger than children born in September.  The authors of the study suggest that the cause is “age-based variation in behavior that may be attributed to ADHD rather than to the younger age of the children”.</p>
@@ -2033,6 +2021,11 @@ The notebook for this chapter provides the data and some suggestions for getting
 </div></blockquote>
 <p>So here is the corrected data, where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of children born in each month, starting with January, and <code class="docutils literal notranslate"><span class="pre">k</span></code> is the number of children diagnosed with ADHD.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">32690</span><span class="p">,</span> <span class="mi">31238</span><span class="p">,</span> <span class="mi">34405</span><span class="p">,</span> <span class="mi">34565</span><span class="p">,</span> <span class="mi">34977</span><span class="p">,</span> <span class="mi">34415</span><span class="p">,</span> 
                    <span class="mi">36577</span><span class="p">,</span> <span class="mi">36319</span><span class="p">,</span> <span class="mi">35353</span><span class="p">,</span> <span class="mi">34405</span><span class="p">,</span> <span class="mi">31285</span><span class="p">,</span> <span class="mi">31617</span><span class="p">])</span>
@@ -2042,9 +2035,15 @@ The notebook for this chapter provides the data and some suggestions for getting
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>First, I’m going to “roll” the data so it starts in September rather than January.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
 <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">)</span>
@@ -2052,9 +2051,15 @@ The notebook for this chapter provides the data and some suggestions for getting
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>And I’ll put it in a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with one row for each month and the diagnosis rate per 10,000.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adhd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">))</span>
 <span class="n">adhd</span><span class="p">[</span><span class="s1">&#39;rate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adhd</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">adhd</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10000</span>
@@ -2175,9 +2180,15 @@ The notebook for this chapter provides the data and some suggestions for getting
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <p>Here’s what the diagnosis rates look like.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_adhd</span><span class="p">(</span><span class="n">adhd</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">adhd</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">adhd</span><span class="p">[</span><span class="s1">&#39;rate&#39;</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> 
@@ -2192,16 +2203,23 @@ The notebook for this chapter provides the data and some suggestions for getting
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_adhd</span><span class="p">(</span><span class="n">adhd</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_156_0.png" src="_images/chap16_156_0.png" />
+<img alt="_images/f7fcadfc675c91a1017eeedc3aceabe80e38f562484fb583b6ae2dc2712a8110.png" src="_images/f7fcadfc675c91a1017eeedc3aceabe80e38f562484fb583b6ae2dc2712a8110.png" />
 </div>
+</details>
 </div>
 <p>For the first 9 months, from September to May, we see what we would expect if some of the excess diagnoses are due to “age-based variation in behavior”.  For each month of difference in age, we see an increase in the number of diagnoses.</p>
 <p>This pattern breaks down for the last three months, June, July, and August.  This might be explained by random variation, but it also might be due to parental manipulation; if some parents hold back children born near the deadline, the observations for these month would include a mixture of children who are relatively old for their grade and therefore less likely to be diagnosed.</p>
@@ -2209,27 +2227,44 @@ The notebook for this chapter provides the data and some suggestions for getting
 <p>Use the methods in this chapter to estimate the probability of diagnosis as a function of birth month.
 Start with the following prior distributions.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">5.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.6</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">51</span><span class="p">)</span>
 <span class="n">prior_inter</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="s1">&#39;Intercept&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">51</span><span class="p">)</span>
 <span class="n">prior_slope</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="s1">&#39;Slope&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Make a joint prior distribution and update it using the data for the first nine months.</p></li>
 <li><p>Then draw a sample from the posterior distribution and use it to compute the median probability of diagnosis for each month and a 90% credible interval.</p></li>
 <li><p>As a bonus exercise, do a second update using the data from the last three months, but treating the observed number of diagnoses as a lower bound on the number of diagnoses there would be if no children were kept back.</p></li>
 </ol>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2429,8 +2464,14 @@ Start with the following prior distributions.</p>
 </table>
 <p>5 rows × 51 columns</p>
 </div></div></div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2484,8 +2525,14 @@ Start with the following prior distributions.</p>
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2588,8 +2635,14 @@ Start with the following prior distributions.</p>
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2647,8 +2700,14 @@ Start with the following prior distributions.</p>
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2674,8 +2733,14 @@ Start with the following prior distributions.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2702,8 +2767,14 @@ Start with the following prior distributions.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2717,8 +2788,14 @@ Start with the following prior distributions.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2731,8 +2808,14 @@ Start with the following prior distributions.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2746,8 +2829,14 @@ Start with the following prior distributions.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2760,8 +2849,14 @@ Start with the following prior distributions.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2773,10 +2868,16 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_171_0.png" src="_images/chap16_171_0.png" />
+<img alt="_images/8d4f98743b92db5422c7fe2b019ad6b7803f2191347c176038fa4c9c488d08f3.png" src="_images/8d4f98743b92db5422c7fe2b019ad6b7803f2191347c176038fa4c9c488d08f3.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2792,8 +2893,14 @@ Start with the following prior distributions.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2805,10 +2912,16 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_173_0.png" src="_images/chap16_173_0.png" />
+<img alt="_images/b337e10727df99215bb86fa06d97261ab7c199eae928d7a36397babd31f2df3d.png" src="_images/b337e10727df99215bb86fa06d97261ab7c199eae928d7a36397babd31f2df3d.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2821,10 +2934,16 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_174_0.png" src="_images/chap16_174_0.png" />
+<img alt="_images/516901f5e13958d8a6c10717e88d32e21a505a54720c437b42eb3f97fdebb5b8.png" src="_images/516901f5e13958d8a6c10717e88d32e21a505a54720c437b42eb3f97fdebb5b8.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2844,8 +2963,14 @@ Start with the following prior distributions.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2861,8 +2986,14 @@ Start with the following prior distributions.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2877,8 +3008,9 @@ Start with the following prior distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap16_177_0.png" src="_images/chap16_177_0.png" />
+<img alt="_images/168f84e18b3338f4328e277a388b22e3d4da7f79745b6dcaa9369aeaadfde554.png" src="_images/168f84e18b3338f4328e277a388b22e3d4da7f79745b6dcaa9369aeaadfde554.png" />
 </div>
+</details>
 </div>
 </section>
 </section>
@@ -2903,50 +3035,115 @@ Start with the following prior distributions.</p>
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="chap15.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Mark and Recapture</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chap15.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Mark and Recapture</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="chap17.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="chap17.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Regression</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Allen B. Downey<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-odds">Log Odds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-space-shuttle-problem">The Space Shuttle Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prior-distribution">Prior Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#likelihood">Likelihood</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-update">The Update</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#marginal-distributions">Marginal Distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transforming-distributions">Transforming Distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#predictive-distributions">Predictive Distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#empirical-bayes">Empirical Bayes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

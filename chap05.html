@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Estimating Counts &#8212; Think Bayes</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,58 +61,87 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chap05';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Odds and Addends" href="chap06.html" />
     <link rel="prev" title="Estimating Proportions" href="chap04.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">Think Bayes</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -110,461 +150,230 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Chapters
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="preface.html">
-   Preface
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap01.html">
-   Probability
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap02.html">
-   Bayes’s Theorem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap03.html">
-   Distributions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap04.html">
-   Estimating Proportions
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Estimating Counts
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap06.html">
-   Odds and Addends
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap07.html">
-   Minimum, Maximum, and Mixture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap08.html">
-   Poisson Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap09.html">
-   Decision Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap10.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap11.html">
-   Comparison
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap12.html">
-   Classification
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap13.html">
-   Inference
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap14.html">
-   Survival Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap15.html">
-   Mark and Recapture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap16.html">
-   Logistic Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap17.html">
-   Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap18.html">
-   Conjugate Priors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap19.html">
-   MCMC
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap20.html">
-   Approximate Bayesian Computation
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">Estimating Proportions</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19.html">MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">Approximate Bayesian Computation</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Examples
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="redline.html">
-   The Red Line Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="vaccine2.html">
-   Estimating vaccine efficacy
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="usb.html">
-   Flipping USB Connectors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="sister.html">
-   The Left Handed Sister Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="bayes_dice.html">
-   Bayesian Dice
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="radiation.html">
-   The Emitter-Detector Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital.html">
-   Grid algorithms for hierarchical models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital_birth_rate.html">
-   Comparing birth rates
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="ok.html">
-   How Many Typos?
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/chap05.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
-</div>
+  
+  <div id="rtd-footer-container"></div>
 
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-<a href="https://github.com/AllenDowney/ThinkBayes2"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="bottom"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fab fa-github"></i>
   </span>
 
 </a>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/chap05.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chap05.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.ipynb</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
-
-      </li>
+</li>
+      
+      
+      
       
       <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file-pdf"></i>
   </span>
-<span class="headerbtn__text-container">.pdf</span>
+<span class="btn__text-container">.pdf</span>
 </button>
-
-      </li>
+</li>
       
-    </ul>
-  </div>
+  </ul>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
   </span>
 
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-train-problem">
-   The Train Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#sensitivity-to-the-prior">
-   Sensitivity to the Prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#power-law-prior">
-   Power Law Prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#credible-intervals">
-   Credible Intervals
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-german-tank-problem">
-   The German Tank Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#informative-priors">
-   Informative Priors
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Estimating Counts</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-train-problem">
-   The Train Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#sensitivity-to-the-prior">
-   Sensitivity to the Prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#power-law-prior">
-   Power Law Prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#credible-intervals">
-   Credible Intervals
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-german-tank-problem">
-   The German Tank Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#informative-priors">
-   Informative Priors
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Estimating Counts</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-train-problem">The Train Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sensitivity-to-the-prior">Sensitivity to the Prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#power-law-prior">Power Law Prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#credible-intervals">Credible Intervals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-german-tank-problem">The German Tank Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informative-priors">Informative Priors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
-  <section class="tex2jax_ignore mathjax_ignore" id="estimating-counts">
-<h1>Estimating Counts<a class="headerlink" href="#estimating-counts" title="Permalink to this headline">#</a></h1>
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="estimating-counts">
+<h1>Estimating Counts<a class="headerlink" href="#estimating-counts" title="Permalink to this heading">#</a></h1>
 <p>In the previous chapter we solved problems that involve estimating proportions.
 In the Euro problem, we estimated the probability that a coin lands heads up, and in the exercises, you estimated a batting average, the fraction of people who cheat on their taxes, and the chance of shooting down an invading alien.</p>
 <p>Clearly, some of these problems are more realistic than others, and some are more useful than others.</p>
 <p>In this chapter, we’ll work on problems related to counting, or estimating the size of a population.
 Again, some of the examples will seem silly, but some of them, like the German Tank problem, have real applications, sometimes in life and death situations.</p>
 <section id="the-train-problem">
-<h2>The Train Problem<a class="headerlink" href="#the-train-problem" title="Permalink to this headline">#</a></h2>
+<h2>The Train Problem<a class="headerlink" href="#the-train-problem" title="Permalink to this heading">#</a></h2>
 <p>I found the train problem
 in Frederick Mosteller’s, <a class="reference external" href="https://store.doverpublications.com/0486653552.html"><em>Fifty Challenging Problems in
 Probability with Solutions</em></a>:</p>
@@ -575,14 +384,14 @@ Probability with Solutions</em></a>:</p>
 locomotives.  But how many more?  To apply Bayesian reasoning, we
 can break this problem into two steps:</p>
 <ul class="simple">
-<li><p>What did we know about <span class="math notranslate nohighlight">\(N\)</span> before we saw the data?</p></li>
-<li><p>For any given value of <span class="math notranslate nohighlight">\(N\)</span>, what is the likelihood of seeing the data (a locomotive with number 60)?</p></li>
+<li><p>What did we know about $N$ before we saw the data?</p></li>
+<li><p>For any given value of $N$, what is the likelihood of seeing the data (a locomotive with number 60)?</p></li>
 </ul>
 <p>The answer to the first question is the prior.  The answer to the
 second is the likelihood.</p>
 <p>We don’t have much basis to choose a prior, so we’ll start with
 something simple and then consider alternatives.
-Let’s assume that <span class="math notranslate nohighlight">\(N\)</span> is equally likely to be any value from 1 to 1000.</p>
+Let’s assume that $N$ is equally likely to be any value from 1 to 1000.</p>
 <p>Here’s the prior distribution:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -596,8 +405,8 @@ Let’s assume that <span class="math notranslate nohighlight">\(N\)</span> is e
 </div>
 </div>
 <p>Now let’s figure out the likelihood of the data.
-In a hypothetical fleet of <span class="math notranslate nohighlight">\(N\)</span> locomotives, what is the probability that we would see number 60?
-If we assume that we are equally likely to see any locomotive, the chance of seeing any particular one is <span class="math notranslate nohighlight">\(1/N\)</span>.</p>
+In a hypothetical fleet of $N$ locomotives, what is the probability that we would see number 60?
+If we assume that we are equally likely to see any locomotive, the chance of seeing any particular one is $1/N$.</p>
 <p>Here’s the function that does the update:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -627,6 +436,11 @@ In terms of likelihood, the train problem is the same as the dice problem.</p>
 </div>
 <p>Here’s what the posterior looks like:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
 
@@ -637,11 +451,12 @@ In terms of likelihood, the train problem is the same as the dice problem.</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_13_0.png" src="_images/chap05_13_0.png" />
+<img alt="_images/3fd4516774234abdc207c2e19bea0991f19f2b933e638bd40ce82c44782249c5.png" src="_images/3fd4516774234abdc207c2e19bea0991f19f2b933e638bd40ce82c44782249c5.png" />
 </div>
 </div>
-<p>Not surprisingly, all values of <span class="math notranslate nohighlight">\(N\)</span> below 60 have been eliminated.</p>
+<p>Not surprisingly, all values of $N$ below 60 have been eliminated.</p>
 <p>The most likely value, if you had to guess, is 60.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -660,9 +475,8 @@ Nevertheless, if you want to maximize the chance of getting
 the answer exactly right, you should guess 60.</p>
 <p>But maybe that’s not the right goal.
 An alternative is to compute the mean of the posterior distribution.
-Given a set of possible quantities, <span class="math notranslate nohighlight">\(q_i\)</span>, and their probabilities, <span class="math notranslate nohighlight">\(p_i\)</span>, the mean of the distribution is:</p>
-<div class="math notranslate nohighlight">
-\[\mathrm{mean} = \sum_i p_i q_i\]</div>
+Given a set of possible quantities, $q_i$, and their probabilities, $p_i$, the mean of the distribution is:</p>
+<p>$$\mathrm{mean} = \sum_i p_i q_i$$</p>
 <p>Which we can compute like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -693,12 +507,17 @@ Given a set of possible quantities, <span class="math notranslate nohighlight">\
 If you played this guessing game over and over, using the mean of the posterior as your estimate would minimize the <a class="reference external" href="http://en.wikipedia.org/wiki/Minimum_mean_square_error">mean squared error</a> over the long run.</p>
 </section>
 <section id="sensitivity-to-the-prior">
-<h2>Sensitivity to the Prior<a class="headerlink" href="#sensitivity-to-the-prior" title="Permalink to this headline">#</a></h2>
+<h2>Sensitivity to the Prior<a class="headerlink" href="#sensitivity-to-the-prior" title="Permalink to this heading">#</a></h2>
 <p>The prior I used in the previous section is uniform from 1 to 1000, but I offered no justification for choosing a uniform distribution or that particular upper bound.
 We might wonder whether the posterior distribution is sensitive to the prior.
 With so little data—only one observation—it is.</p>
 <p>This table shows what happens as we vary the upper bound:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
@@ -715,6 +534,7 @@ With so little data—only one observation—it is.</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
 <style scoped>
@@ -769,6 +589,11 @@ So that’s bad.</p>
 For example, suppose that in addition to train 60 we also see trains 30 and 90.</p>
 <p>Here’s how the posterior means depend on the upper bound of the prior, when we observe three trains:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Posterior mean&#39;</span><span class="p">])</span>
 <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Upper bound&#39;</span>
@@ -786,6 +611,7 @@ For example, suppose that in addition to train 60 we also see trains 30 and 90.<
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
 <style scoped>
@@ -832,7 +658,7 @@ For example, suppose that in addition to train 60 we also see trains 30 and 90.<
 <p>The differences are smaller, but apparently three trains are not enough for the posteriors to converge.</p>
 </section>
 <section id="power-law-prior">
-<h2>Power Law Prior<a class="headerlink" href="#power-law-prior" title="Permalink to this headline">#</a></h2>
+<h2>Power Law Prior<a class="headerlink" href="#power-law-prior" title="Permalink to this heading">#</a></h2>
 <p>If more data are not available, another option is to improve the
 priors by gathering more background information.
 It is probably not reasonable to assume that a train-operating company with 1000 locomotives is just as likely as a company with only 1.</p>
@@ -846,10 +672,10 @@ In most fields, there are many small companies, fewer medium-sized companies, an
 <p>This law suggests that if there are 1000 companies with fewer than
 10 locomotives, there might be 100 companies with 100 locomotives,
 10 companies with 1000, and possibly one company with 10,000 locomotives.</p>
-<p>Mathematically, a power law means that the number of companies with a given size, <span class="math notranslate nohighlight">\(N\)</span>, is proportional to <span class="math notranslate nohighlight">\((1/N)^{\alpha}\)</span>, where <span class="math notranslate nohighlight">\(\alpha\)</span> is a parameter that is often near 1.</p>
+<p>Mathematically, a power law means that the number of companies with a given size, $N$, is proportional to $(1/N)^{\alpha}$, where $\alpha$ is a parameter that is often near 1.</p>
 <p>We can construct a power law prior like this:</p>
 <div class="cell tag_hide-output docutils container">
-<div class="cell_input docutils container">
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">ps</span> <span class="o">=</span> <span class="n">hypos</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span>
 <span class="n">power</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">hypos</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;power law&#39;</span><span class="p">)</span>
@@ -857,11 +683,17 @@ In most fields, there are many small companies, fewer medium-sized companies, an
 </pre></div>
 </div>
 </div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.178368103610282
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>For comparison, here’s the uniform prior again.</p>
 <div class="cell docutils container">
@@ -880,6 +712,11 @@ In most fields, there are many small companies, fewer medium-sized companies, an
 </div>
 <p>Here’s what a power law prior looks like, compared to the uniform prior:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">uniform</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
 <span class="n">power</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
@@ -890,8 +727,9 @@ In most fields, there are many small companies, fewer medium-sized companies, an
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_31_0.png" src="_images/chap05_31_0.png" />
+<img alt="_images/1540e9adc2d63655ca44e42defbf777d454d6ae8554df5ec7344b6a0105b19ae.png" src="_images/1540e9adc2d63655ca44e42defbf777d454d6ae8554df5ec7344b6a0105b19ae.png" />
 </div>
 </div>
 <p>Here’s the update for both priors.</p>
@@ -906,6 +744,11 @@ In most fields, there are many small companies, fewer medium-sized companies, an
 </div>
 <p>And here are the posterior distributions.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">uniform</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
 <span class="n">power</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
@@ -916,13 +759,19 @@ In most fields, there are many small companies, fewer medium-sized companies, an
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_35_0.png" src="_images/chap05_35_0.png" />
+<img alt="_images/39081a966b6588f813b7a938dd08689cf7e276519770fc9afa2e8681ab159173.png" src="_images/39081a966b6588f813b7a938dd08689cf7e276519770fc9afa2e8681ab159173.png" />
 </div>
 </div>
 <p>The power law gives less prior probability to high values, which yields lower posterior means, and less sensitivity to the upper bound.</p>
 <p>Here’s how the posterior means depend on the upper bound when we use a power law prior and observe three trains:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Posterior mean&#39;</span><span class="p">])</span>
 <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Upper bound&#39;</span>
@@ -942,6 +791,7 @@ In most fields, there are many small companies, fewer medium-sized companies, an
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
 <style scoped>
@@ -991,7 +841,7 @@ with an arbitrarily large upper bound, the mean converges on 134.</p>
 general information about the size of companies, and it behaves better in practice.</p>
 </section>
 <section id="credible-intervals">
-<h2>Credible Intervals<a class="headerlink" href="#credible-intervals" title="Permalink to this headline">#</a></h2>
+<h2>Credible Intervals<a class="headerlink" href="#credible-intervals" title="Permalink to this heading">#</a></h2>
 <p>So far we have seen two ways to summarize a posterior distribution: the value with the highest posterior probability (the MAP) and the posterior mean.
 These are both <strong>point estimates</strong>, that is, single values that estimate the quantity we are interested in.</p>
 <p>Another way to summarize a posterior distribution is with percentiles.
@@ -1088,7 +938,7 @@ For this reason, this interval is called a 90% <strong>credible interval</strong
 </div>
 </section>
 <section id="the-german-tank-problem">
-<h2>The German Tank Problem<a class="headerlink" href="#the-german-tank-problem" title="Permalink to this headline">#</a></h2>
+<h2>The German Tank Problem<a class="headerlink" href="#the-german-tank-problem" title="Permalink to this heading">#</a></h2>
 <p>During World War II, the Economic Warfare Division of the American
 Embassy in London used statistical analysis to estimate German
 production of tanks and other equipment.</p>
@@ -1112,7 +962,7 @@ example of real-world application of statistical estimation.</p>
 <p>For more on this problem, see <a class="reference external" href="https://en.wikipedia.org/wiki/German_tank_problem">this Wikipedia page</a> and Ruggles and Brodie, “An Empirical Approach to Economic Intelligence in World War II”, <em>Journal of the American Statistical Association</em>, March 1947, <a class="reference external" href="https://web.archive.org/web/20170123132042/https://www.cia.gov/library/readingroom/docs/CIA-RDP79R01001A001300010013-3.pdf">available here</a>.</p>
 </section>
 <section id="informative-priors">
-<h2>Informative Priors<a class="headerlink" href="#informative-priors" title="Permalink to this headline">#</a></h2>
+<h2>Informative Priors<a class="headerlink" href="#informative-priors" title="Permalink to this heading">#</a></h2>
 <p>Among Bayesians, there are two approaches to choosing prior
 distributions.  Some recommend choosing the prior that best represents
 background information about the problem; in that case the prior
@@ -1140,7 +990,7 @@ information at your disposal, rather than maintaining the illusion of
 objectivity by pretending to know less than you do.</p>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
 <p>This chapter introduces the train problem, which turns out to have the same likelihood function as the dice problem, and which can be applied to the German Tank problem.
 In all of these examples, the goal is to estimate a count, or the size of a population.</p>
 <p>In the next chapter, I’ll introduce “odds” as an alternative to probabilities, and Bayes’s Rule as an alternative form of Bayes’s Theorem.
@@ -1148,7 +998,7 @@ We’ll compute distributions of sums and products, and use them to estimate the
 <p>But first, you might want to work on these exercises.</p>
 </section>
 <section id="exercises">
-<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">#</a></h2>
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
 <p><strong>Exercise:</strong> Suppose you are giving a talk in a large lecture hall and the fire marshal interrupts because they think the audience exceeds 1200 people, which is the safe capacity of the room.</p>
 <p>You think there are fewer then 1200 people, and you offer to prove it.
 It would take too long to count, so you try an experiment:</p>
@@ -1160,6 +1010,11 @@ It would take too long to count, so you try an experiment:</p>
 <p>How many people are in the audience?  What is the probability that there are more than 1200 people.
 Hint: Remember the binomial distribution.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1178,8 +1033,14 @@ Hint: Remember the binomial distribution.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1194,8 +1055,14 @@ Hint: Remember the binomial distribution.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1211,8 +1078,14 @@ Hint: Remember the binomial distribution.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1225,10 +1098,16 @@ Hint: Remember the binomial distribution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_57_0.png" src="_images/chap05_57_0.png" />
+<img alt="_images/e88d06c8d69defdc14f80513a529c748ae82947f1d46597958f1e5294d141b84.png" src="_images/e88d06c8d69defdc14f80513a529c748ae82947f1d46597958f1e5294d141b84.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1244,8 +1123,14 @@ Hint: Remember the binomial distribution.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1263,6 +1148,7 @@ Hint: Remember the binomial distribution.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> I often see <a class="reference external" href="https://en.wikipedia.org/wiki/Eastern_cottontail">rabbits</a> in the garden behind my house, but it’s not easy to tell them apart, so I don’t really know how many there are.</p>
 <p>Suppose I deploy a motion-sensing <a class="reference external" href="https://en.wikipedia.org/wiki/Camera_trap">camera trap</a> that takes a picture of the first rabbit it sees each day.  After three days, I compare the pictures and conclude that two of them are the same rabbit and the other is different.</p>
@@ -1273,6 +1159,11 @@ Hint: Remember the binomial distribution.</p>
 <li><p>To keep things simple, let’s assume that all rabbits who visit my garden are equally likely to be caught by the camera trap in a given day.  Let’s also assume it is guaranteed that the camera trap gets a picture every day.</p></li>
 </ul>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1281,8 +1172,14 @@ Hint: Remember the binomial distribution.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1294,8 +1191,14 @@ Hint: Remember the binomial distribution.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1310,11 +1213,17 @@ Hint: Remember the binomial distribution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_63_0.png" src="_images/chap05_63_0.png" />
+<img alt="_images/fae1b64345d5eccfc5958883cb7a5da6c375cfdd3dc7f01e3f83f721ab0ee87c.png" src="_images/fae1b64345d5eccfc5958883cb7a5da6c375cfdd3dc7f01e3f83f721ab0ee87c.png" />
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> Suppose that in the criminal justice system, all prison sentences are either 1, 2, or 3 years, with an equal number of each.  One day, you visit a prison and choose a prisoner at random.  What is the probability that they are serving a 3-year sentence?  What is the average remaining sentence of the prisoners you observe?</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1364,8 +1273,14 @@ Hint: Remember the binomial distribution.</p>
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1418,8 +1333,14 @@ Hint: Remember the binomial distribution.</p>
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1435,11 +1356,17 @@ Hint: Remember the binomial distribution.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> If I chose a random adult in the U.S., what is the probability that they have a sibling?  To be precise, what is the probability that their mother has had at least one other child.</p>
 <p><a class="reference external" href="https://www.pewsocialtrends.org/2015/05/07/family-size-among-mothers/">This article from the Pew Research Center</a> provides some relevant data.</p>
 <p>From it, I extracted the following distribution of family size for mothers in the U.S. who were 40-44 years old in 2014:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -1455,11 +1382,17 @@ Hint: Remember the binomial distribution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap05_70_0.png" src="_images/chap05_70_0.png" />
+<img alt="_images/aab4093f29e589364a6225822e5476df7fa0e3902c8c5e1cf5f5455a41f5741e.png" src="_images/aab4093f29e589364a6225822e5476df7fa0e3902c8c5e1cf5f5455a41f5741e.png" />
 </div>
+</details>
 </div>
 <p>For simplicity, let’s assume that all families in the 4+ category have exactly 4 children.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1516,8 +1449,14 @@ Hint: Remember the binomial distribution.</p>
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1533,8 +1472,14 @@ Hint: Remember the binomial distribution.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1549,6 +1494,7 @@ Hint: Remember the binomial distribution.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> The <a class="reference external" href="https://en.wikipedia.org/wiki/Doomsday_argument">Doomsday argument</a> is “a probabilistic argument that claims to predict the number of future members of the human species given an estimate of the total number of humans born so far.”</p>
 <p>Suppose there are only two kinds of intelligent civilizations that can happen in the universe.  The “short-lived” kind go exinct after only 200 billion individuals are born.  The “long-lived” kind survive until 2,000 billion individuals are born.
@@ -1557,10 +1503,15 @@ Which kind of civilization do you think we live in?</p>
 <p>The Doomsday argument says we can use the total number of humans born so far as data.
 According to the <a class="reference external" href="https://www.prb.org/howmanypeoplehaveeverlivedonearth/">Population Reference Bureau</a>, the total number of people who have ever lived is about 108 billion.</p>
 <p>Since you were born quite recently, let’s assume that you are, in fact, human being number 108 billion.
-If <span class="math notranslate nohighlight">\(N\)</span> is the total number who will ever live and we consider you to be a randomly-chosen person, it is equally likely that you could have been person 1, or <span class="math notranslate nohighlight">\(N\)</span>, or any number in between.
+If $N$ is the total number who will ever live and we consider you to be a randomly-chosen person, it is equally likely that you could have been person 1, or $N$, or any number in between.
 So what is the probability that you would be number 108 billion?</p>
 <p>Given this data and dubious prior, what is the probability that our civilization will be short-lived?</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1569,8 +1520,14 @@ So what is the probability that you would be number 108 billion?</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1615,8 +1572,14 @@ So what is the probability that you would be number 108 billion?</p>
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1632,6 +1595,7 @@ So what is the probability that you would be number 108 billion?</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 </section>
@@ -1656,50 +1620,112 @@ So what is the probability that you would be number 108 billion?</p>
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="chap04.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Estimating Proportions</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chap04.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Estimating Proportions</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="chap06.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="chap06.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Odds and Addends</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Allen B. Downey<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-train-problem">The Train Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sensitivity-to-the-prior">Sensitivity to the Prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#power-law-prior">Power Law Prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#credible-intervals">Credible Intervals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-german-tank-problem">The German Tank Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informative-priors">Informative Priors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

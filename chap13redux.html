@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Inference &#8212; Think Bayes</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,56 +61,85 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chap13redux';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">Think Bayes</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -108,504 +148,228 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Chapters
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="preface.html">
-   Preface
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap01.html">
-   Probability
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap02.html">
-   Bayes’s Theorem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap03.html">
-   Distributions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap04.html">
-   Estimating Proportions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap05.html">
-   Estimating Counts
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap06.html">
-   Odds and Addends
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap07.html">
-   Minimum, Maximum, and Mixture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap08.html">
-   Poisson Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap09.html">
-   Decision Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap10.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap11.html">
-   Comparison
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap12.html">
-   Classification
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap13.html">
-   Inference
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap14.html">
-   Survival Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap15.html">
-   Mark and Recapture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap16.html">
-   Logistic Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap17.html">
-   Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap18.html">
-   Conjugate Priors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap19.html">
-   MCMC
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap20.html">
-   Approximate Bayesian Computation
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19.html">MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">Approximate Bayesian Computation</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Examples
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="redline.html">
-   The Red Line Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="vaccine2.html">
-   Estimating vaccine efficacy
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="usb.html">
-   Flipping USB Connectors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="sister.html">
-   The Left Handed Sister Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="bayes_dice.html">
-   Bayesian Dice
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="radiation.html">
-   The Emitter-Detector Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital.html">
-   Grid algorithms for hierarchical models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital_birth_rate.html">
-   Comparing birth rates
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="ok.html">
-   How Many Typos?
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/chap13redux.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
-</div>
+  
+  <div id="rtd-footer-container"></div>
 
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-<a href="https://github.com/AllenDowney/ThinkBayes2"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="bottom"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fab fa-github"></i>
   </span>
 
 </a>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/chap13redux.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chap13redux.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.ipynb</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
-
-      </li>
+</li>
+      
+      
+      
       
       <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file-pdf"></i>
   </span>
-<span class="headerbtn__text-container">.pdf</span>
+<span class="btn__text-container">.pdf</span>
 </button>
-
-      </li>
+</li>
       
-    </ul>
-  </div>
+  </ul>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
   </span>
 
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#improving-reading-ability">
-   Improving Reading Ability
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#estimating-parameters">
-   Estimating Parameters
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#likelihood">
-   Likelihood
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#posterior-marginal-distributions">
-   Posterior Marginal Distributions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#distribution-of-differences">
-   Distribution of Differences
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#using-summary-statistics">
-   Using Summary Statistics
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#checking">
-   Checking
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#update-with-summary-statistics">
-   Update with Summary Statistics
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#comparing-marginals">
-   Comparing Marginals
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#proof-by-simulation">
-   Proof By Simulation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#checking-standard-deviation">
-   Checking Standard Deviation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Inference</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#improving-reading-ability">
-   Improving Reading Ability
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#estimating-parameters">
-   Estimating Parameters
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#likelihood">
-   Likelihood
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#posterior-marginal-distributions">
-   Posterior Marginal Distributions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#distribution-of-differences">
-   Distribution of Differences
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#using-summary-statistics">
-   Using Summary Statistics
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#checking">
-   Checking
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#update-with-summary-statistics">
-   Update with Summary Statistics
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#comparing-marginals">
-   Comparing Marginals
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#proof-by-simulation">
-   Proof By Simulation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#checking-standard-deviation">
-   Checking Standard Deviation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Inference</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#improving-reading-ability">Improving Reading Ability</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estimating-parameters">Estimating Parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#likelihood">Likelihood</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-marginal-distributions">Posterior Marginal Distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-differences">Distribution of Differences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-summary-statistics">Using Summary Statistics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking">Checking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update-with-summary-statistics">Update with Summary Statistics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-marginals">Comparing Marginals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proof-by-simulation">Proof By Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-standard-deviation">Checking Standard Deviation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
-  <section class="tex2jax_ignore mathjax_ignore" id="inference">
-<h1>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">#</a></h1>
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="inference">
+<h1>Inference<a class="headerlink" href="#inference" title="Permalink to this heading">#</a></h1>
 <p>Whenever people compare Bayesian inference with conventional approaches, one of the questions that comes up most often is something like, “What about p-values?”
 And one of the most common examples is the comparison of two groups to see if there is a difference in their means.</p>
 <p>In classical statistical inference, the usual tool for this scenario is a <a class="reference external" href="https://en.wikipedia.org/wiki/Student%27s_t-test">Student’s <em>t</em>-test</a>, and the result is a <a class="reference external" href="https://en.wikipedia.org/wiki/P-value">p-value</a>.
@@ -614,7 +378,7 @@ This process is an example of <a class="reference external" href="https://en.wik
 Then we can use that distribution to answer whatever questions we are interested in, including the most likely size of the difference, a credible interval that’s likely to contain the true difference, the probability of superiority, or the probability that the difference exceeds some threshold.</p>
 <p>To demonstrate this process, I’ll solve a problem borrowed from a statistical textbook: evaluating the effect of an educational “treatment” compared to a control.</p>
 <section id="improving-reading-ability">
-<h2>Improving Reading Ability<a class="headerlink" href="#improving-reading-ability" title="Permalink to this headline">#</a></h2>
+<h2>Improving Reading Ability<a class="headerlink" href="#improving-reading-ability" title="Permalink to this heading">#</a></h2>
 <p>We’ll use data from a <a class="reference external" href="https://docs.lib.purdue.edu/dissertations/AAI8807671/">Ph.D. dissertation in educational psychology</a> written in 1987, which was used as an example in a <a class="reference external" href="https://books.google.com/books/about/Introduction_to_the_practice_of_statisti.html?id=pGBNhajABlUC">statistics textbook</a> from 1989 and published on <a class="reference external" href="https://web.archive.org/web/20000603124754/http://lib.stat.cmu.edu/DASL/Datafiles/DRPScores.html">DASL</a>, a web page that collects data stories.</p>
 <p>Here’s the description from DASL:</p>
 <blockquote>
@@ -705,7 +469,7 @@ The <code class="docutils literal notranslate"><span class="pre">Response</span>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_14_0.png" src="_images/chap13redux_14_0.png" />
+<img alt="_images/149833a0108760aab5bcaa7e9c77e10101d8bb65af2e6d65c3bb397bc75eab3d.png" src="_images/149833a0108760aab5bcaa7e9c77e10101d8bb65af2e6d65c3bb397bc75eab3d.png" />
 </div>
 </div>
 <p>There is overlap between the distributions, but it looks like the scores are higher in the treated group.
@@ -715,7 +479,7 @@ I’ll use <code class="docutils literal notranslate"><span class="pre">mu</span
 and we’ll do a Bayesian update to estimate what they are.</p>
 </section>
 <section id="estimating-parameters">
-<h2>Estimating Parameters<a class="headerlink" href="#estimating-parameters" title="Permalink to this headline">#</a></h2>
+<h2>Estimating Parameters<a class="headerlink" href="#estimating-parameters" title="Permalink to this heading">#</a></h2>
 <p>As always, we need a prior distribution for the parameters.
 Since there are two parameters, it will be a joint distribution.
 I’ll construct it by choosing marginal distributions for each parameter and computing their outer product.</p>
@@ -790,7 +554,7 @@ I’ll explain how when we look at the posterior distribution.</p>
 <p>In the next section we’ll compute the likelihood of this data for each pair of parameters in the prior distribution.</p>
 </section>
 <section id="likelihood">
-<h2>Likelihood<a class="headerlink" href="#likelihood" title="Permalink to this headline">#</a></h2>
+<h2>Likelihood<a class="headerlink" href="#likelihood" title="Permalink to this heading">#</a></h2>
 <p>We would like to know the probability of each score in the dataset for each hypothetical pair of values, <code class="docutils literal notranslate"><span class="pre">mu</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.
 I’ll do that by making a 3-dimensional grid with values of <code class="docutils literal notranslate"><span class="pre">mu</span></code> on the first axis, values of <code class="docutils literal notranslate"><span class="pre">sigma</span></code> on the second axis, and the scores from the dataset on the third axis.</p>
 <div class="cell docutils container">
@@ -895,6 +659,11 @@ I’ll do that by making a 3-dimensional grid with values of <code class="docuti
 </div>
 <p>And here’s what they look like:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">plot_contour</span>
@@ -911,17 +680,18 @@ I’ll do that by making a 3-dimensional grid with values of <code class="docuti
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_41_0.png" src="_images/chap13redux_41_0.png" />
+<img alt="_images/d5941a19e0075ab3606aba2ad8a9e6ad6bcd4267911ff5a2f4a0e761a0dde4c4.png" src="_images/d5941a19e0075ab3606aba2ad8a9e6ad6bcd4267911ff5a2f4a0e761a0dde4c4.png" />
 </div>
 </div>
-<p>Along the <span class="math notranslate nohighlight">\(x\)</span>-axis, it looks like the mean score for the treated group is higher.
-Along the <span class="math notranslate nohighlight">\(y\)</span>-axis, it looks like the standard deviation for the treated group is lower.</p>
+<p>Along the $x$-axis, it looks like the mean score for the treated group is higher.
+Along the $y$-axis, it looks like the standard deviation for the treated group is lower.</p>
 <p>If we think the treatment causes these differences, the data suggest that the treatment increases the mean of the scores and decreases their spread.
 We can see these differences more clearly by looking at the marginal distributions for <code class="docutils literal notranslate"><span class="pre">mu</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
 </section>
 <section id="posterior-marginal-distributions">
-<h2>Posterior Marginal Distributions<a class="headerlink" href="#posterior-marginal-distributions" title="Permalink to this headline">#</a></h2>
+<h2>Posterior Marginal Distributions<a class="headerlink" href="#posterior-marginal-distributions" title="Permalink to this heading">#</a></h2>
 <p>I’ll use <code class="docutils literal notranslate"><span class="pre">marginal</span></code>, which we saw in &lt;&lt;_MarginalDistributions&gt;&gt;, to extract the posterior marginal distributions for the population means.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -946,7 +716,7 @@ We can see these differences more clearly by looking at the marginal distributio
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_46_0.png" src="_images/chap13redux_46_0.png" />
+<img alt="_images/5aeb77e0a53a7b14553d0afcad34fa373a40d5241c572662281ab2d6d802d044.png" src="_images/5aeb77e0a53a7b14553d0afcad34fa373a40d5241c572662281ab2d6d802d044.png" />
 </div>
 </div>
 <p>In both cases the posterior probabilities at the ends of the range are near zero, which means that the bounds we chose for the prior distribution are wide enough.</p>
@@ -967,7 +737,7 @@ We can use <code class="docutils literal notranslate"><span class="pre">prob_gt<
 <p>There is a 98% chance that the mean in the treated group is higher.</p>
 </section>
 <section id="distribution-of-differences">
-<h2>Distribution of Differences<a class="headerlink" href="#distribution-of-differences" title="Permalink to this headline">#</a></h2>
+<h2>Distribution of Differences<a class="headerlink" href="#distribution-of-differences" title="Permalink to this heading">#</a></h2>
 <p>To quantify the magnitude of the difference between groups, we can use <code class="docutils literal notranslate"><span class="pre">sub_dist</span></code> to compute the distribution of the difference.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -995,6 +765,11 @@ In this example, the original distributions have the same quantities, so the siz
 <p>The other thing to be careful about is plotting the <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.
 In this example, if we plot the distribution of differences, the result is pretty noisy.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_diff</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
@@ -1004,8 +779,9 @@ In this example, if we plot the distribution of differences, the result is prett
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_55_0.png" src="_images/chap13redux_55_0.png" />
+<img alt="_images/ecd7d7c9581baed7a042d91470ec697e11beb37ef2906915f631d0f2b1e6305a.png" src="_images/ecd7d7c9581baed7a042d91470ec697e11beb37ef2906915f631d0f2b1e6305a.png" />
 </div>
 </div>
 <p>There are two ways to work around that limitation.  One is to plot the CDF, which smooths out the noise:</p>
@@ -1017,6 +793,11 @@ In this example, if we plot the distribution of differences, the result is prett
 </div>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_diff</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
@@ -1026,8 +807,9 @@ In this example, if we plot the distribution of differences, the result is prett
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_58_0.png" src="_images/chap13redux_58_0.png" />
+<img alt="_images/4f29cc21afc0f589e6d1b36b471a3ab9113e5979d3483e8f5de5e2907bbbdca3.png" src="_images/4f29cc21afc0f589e6d1b36b471a3ab9113e5979d3483e8f5de5e2907bbbdca3.png" />
 </div>
 </div>
 <p>The other option is to use kernel density estimation (KDE) to make a smooth approximation of the PDF on an equally-spaced grid, which is what this function does:</p>
@@ -1059,6 +841,11 @@ This makes the estimated densities higher where the probabilities in the <code c
 </div>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kde_diff</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
@@ -1068,8 +855,9 @@ This makes the estimated densities higher where the probabilities in the <code c
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_63_0.png" src="_images/chap13redux_63_0.png" />
+<img alt="_images/98e656959e924e090e8f250a313b4d7f10f9cb774f61cfd18696d717306393b8.png" src="_images/98e656959e924e090e8f250a313b4d7f10f9cb774f61cfd18696d717306393b8.png" />
 </div>
 </div>
 <p>The mean of this distribution is almost 10 points on a test where the mean is around 45, so the effect of the treatment seems to be substantial.</p>
@@ -1101,14 +889,14 @@ This makes the estimated densities higher where the probabilities in the <code c
 <p>Based on this interval, we are pretty sure the treatment improves test scores by 2 to 17 points.</p>
 </section>
 <section id="using-summary-statistics">
-<h2>Using Summary Statistics<a class="headerlink" href="#using-summary-statistics" title="Permalink to this headline">#</a></h2>
+<h2>Using Summary Statistics<a class="headerlink" href="#using-summary-statistics" title="Permalink to this heading">#</a></h2>
 <p>In this example the dataset is not very big, so it doesn’t take too long to compute the probability of every score under every hypothesis.
 But the result is a 3-D array; for larger datasets, it might be too big to compute practically.</p>
 <p>Also, with larger datasets the likelihoods get very small, sometimes so small that we can’t compute them with floating-point arithmetic.
 That’s because we are computing the probability of a particular dataset; the number of possible datasets is astronomically big, so the probability of any of them is very small.</p>
 <p>An alternative is to compute a summary of the dataset and compute the likelihood of the summary.
 For example, if we compute the mean and standard deviation of the data, we can compute the likelihood of those summary statistics under each hypothesis.</p>
-<p>As an example, suppose we know that the actual mean of the population, <span class="math notranslate nohighlight">\(\mu\)</span>,  is 42 and the actual standard deviation, <span class="math notranslate nohighlight">\(\sigma\)</span>, is 17.</p>
+<p>As an example, suppose we know that the actual mean of the population, $\mu$,  is 42 and the actual standard deviation, $\sigma$, is 17.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu</span> <span class="o">=</span> <span class="mi">42</span>
@@ -1128,14 +916,14 @@ For example, if we compute the mean and standard deviation of the data, we can c
 </div>
 </div>
 </div>
-<p>The summary statistics, <code class="docutils literal notranslate"><span class="pre">m</span></code> and <code class="docutils literal notranslate"><span class="pre">s</span></code>, are not too far from the parameters <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span>, so it seems like they are not too unlikely.</p>
+<p>The summary statistics, <code class="docutils literal notranslate"><span class="pre">m</span></code> and <code class="docutils literal notranslate"><span class="pre">s</span></code>, are not too far from the parameters $\mu$ and $\sigma$, so it seems like they are not too unlikely.</p>
 <p>To compute their likelihood, we will take advantage of three results from mathematical statistics:</p>
 <ul class="simple">
-<li><p>Given <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span>, the distribution of <code class="docutils literal notranslate"><span class="pre">m</span></code> is normal with parameters <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma/\sqrt{n}\)</span>;</p></li>
-<li><p>The distribution of <span class="math notranslate nohighlight">\(s\)</span> is more complicated, but if we compute the transform <span class="math notranslate nohighlight">\(t = n s^2 / \sigma^2\)</span>, the distribution of <span class="math notranslate nohighlight">\(t\)</span> is chi-squared with parameter <span class="math notranslate nohighlight">\(n-1\)</span>; and</p></li>
+<li><p>Given $\mu$ and $\sigma$, the distribution of <code class="docutils literal notranslate"><span class="pre">m</span></code> is normal with parameters $\mu$ and $\sigma/\sqrt{n}$;</p></li>
+<li><p>The distribution of $s$ is more complicated, but if we compute the transform $t = n s^2 / \sigma^2$, the distribution of $t$ is chi-squared with parameter $n-1$; and</p></li>
 <li><p>According to <a class="reference external" href="https://en.wikipedia.org/wiki/Basu%27s_theorem">Basu’s theorem</a>, <code class="docutils literal notranslate"><span class="pre">m</span></code> and <code class="docutils literal notranslate"><span class="pre">s</span></code> are independent.</p></li>
 </ul>
-<p>So let’s compute the likelihood of <code class="docutils literal notranslate"><span class="pre">m</span></code> and <code class="docutils literal notranslate"><span class="pre">s</span></code> given <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
+<p>So let’s compute the likelihood of <code class="docutils literal notranslate"><span class="pre">m</span></code> and <code class="docutils literal notranslate"><span class="pre">s</span></code> given $\mu$ and $\sigma$.</p>
 <p>First I’ll create a <code class="docutils literal notranslate"><span class="pre">norm</span></code> object that represents the distribution of <code class="docutils literal notranslate"><span class="pre">m</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1212,10 +1000,10 @@ First, we compute the transformed value <code class="docutils literal notranslat
 </div>
 </div>
 </div>
-<p>Now we can compute the likelihood of the data for any values of <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span>, which we’ll use in the next section to do the update.</p>
+<p>Now we can compute the likelihood of the data for any values of $\mu$ and $\sigma$, which we’ll use in the next section to do the update.</p>
 </section>
 <section id="checking">
-<h2>Checking<a class="headerlink" href="#checking" title="Permalink to this headline">#</a></h2>
+<h2>Checking<a class="headerlink" href="#checking" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span><span class="o">.</span><span class="n">rvs</span><span class="p">((</span><span class="mi">100000</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
@@ -1265,12 +1053,12 @@ First, we compute the transformed value <code class="docutils literal notranslat
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:&gt;
 </pre></div>
 </div>
-<img alt="_images/chap13redux_90_1.png" src="_images/chap13redux_90_1.png" />
+<img alt="_images/3a4166f1475704e5353004cda1ccf38ba369089901bc7a7db0240ca5667c2a2a.png" src="_images/3a4166f1475704e5353004cda1ccf38ba369089901bc7a7db0240ca5667c2a2a.png" />
 </div>
 </div>
 </section>
 <section id="update-with-summary-statistics">
-<h2>Update with Summary Statistics<a class="headerlink" href="#update-with-summary-statistics" title="Permalink to this headline">#</a></h2>
+<h2>Update with Summary Statistics<a class="headerlink" href="#update-with-summary-statistics" title="Permalink to this heading">#</a></h2>
 <p>Now we’re ready to do an update.
 I’ll compute summary statistics for the two groups.</p>
 <div class="cell docutils container">
@@ -1382,6 +1170,11 @@ I’ll compute summary statistics for the two groups.</p>
 </div>
 <p>And here are the results.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_contour</span><span class="p">(</span><span class="n">posterior_control2</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">49.5</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="s1">&#39;Control&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">)</span>
@@ -1395,15 +1188,16 @@ I’ll compute summary statistics for the two groups.</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_108_0.png" src="_images/chap13redux_108_0.png" />
+<img alt="_images/63f6a7e90359ee2c0f0478f3e06b3c7f054463000a262dde8196d68880e570bf.png" src="_images/63f6a7e90359ee2c0f0478f3e06b3c7f054463000a262dde8196d68880e570bf.png" />
 </div>
 </div>
 <p>Visually, these posterior joint distributions are similar to the ones we computed using the entire dataset, not just the summary statistics.
 But they are not exactly the same, as we can see by comparing the marginal distributions.</p>
 </section>
 <section id="comparing-marginals">
-<h2>Comparing Marginals<a class="headerlink" href="#comparing-marginals" title="Permalink to this headline">#</a></h2>
+<h2>Comparing Marginals<a class="headerlink" href="#comparing-marginals" title="Permalink to this heading">#</a></h2>
 <p>Again, let’s extract the marginal posterior distributions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1417,6 +1211,11 @@ But they are not exactly the same, as we can see by comparing the marginal distr
 </div>
 <p>And compare them to results we got using the entire dataset (the dashed lines).</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_mean_control</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
 <span class="n">pmf_mean_control2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Control&#39;</span><span class="p">)</span>
@@ -1429,8 +1228,9 @@ But they are not exactly the same, as we can see by comparing the marginal distr
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_113_0.png" src="_images/chap13redux_113_0.png" />
+<img alt="_images/20b2b0861d035f6267e83cc21c0a7a7b3712ebc86e142418488d2907ecbf781b.png" src="_images/20b2b0861d035f6267e83cc21c0a7a7b3712ebc86e142418488d2907ecbf781b.png" />
 </div>
 </div>
 <p>The posterior distributions based on summary statistics are similar to the posteriors we computed using the entire dataset, but in both cases they are shorter and a little wider.</p>
@@ -1439,7 +1239,7 @@ But it’s not; as a result, when we replace the dataset with the summary statis
 With less information, we are less certain about the parameters.</p>
 </section>
 <section id="proof-by-simulation">
-<h2>Proof By Simulation<a class="headerlink" href="#proof-by-simulation" title="Permalink to this headline">#</a></h2>
+<h2>Proof By Simulation<a class="headerlink" href="#proof-by-simulation" title="Permalink to this heading">#</a></h2>
 <p>The update with summary statistics is based on theoretical distributions, and it seems to work, but I think it is useful to test theories like this, for a few reasons:</p>
 <ul class="simple">
 <li><p>It confirms that our understanding of the theory is correct,</p></li>
@@ -1450,24 +1250,41 @@ With less information, we are less certain about the parameters.</p>
 But if you want to take my word for it, you can skip this section and the next.</p>
 <p>Let’s suppose that we know the actual mean and standard deviation of the population:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu</span> <span class="o">=</span> <span class="mi">42</span>
 <span class="n">sigma</span> <span class="o">=</span> <span class="mi">17</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>I’ll create a <code class="docutils literal notranslate"><span class="pre">norm</span></code> object to represent this distribution.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dist</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">norm</span></code> provides <code class="docutils literal notranslate"><span class="pre">rvs</span></code>, which generates random values from the distribution.
 We can use it to simulate 1000 samples, each with sample size <code class="docutils literal notranslate"><span class="pre">n=20</span></code>.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">samples</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">((</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
@@ -1480,10 +1297,16 @@ We can use it to simulate 1000 samples, each with sample size <code class="docut
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>The result is an array with 1000 rows, each containing a sample or 20 simulated test scores.</p>
 <p>If we compute the mean of each row, the result is an array that contains 1000 sample means; that is, each value is the mean of a sample with <code class="docutils literal notranslate"><span class="pre">n=20</span></code>.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_means</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">sample_means</span><span class="o">.</span><span class="n">shape</span>
@@ -1495,10 +1318,16 @@ We can use it to simulate 1000 samples, each with sample size <code class="docut
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Now, let’s compare the distribution of these means to <code class="docutils literal notranslate"><span class="pre">dist_m</span></code>.
 I’ll use <code class="docutils literal notranslate"><span class="pre">pmf_from_dist</span></code> to make a discrete approximation of <code class="docutils literal notranslate"><span class="pre">dist_m</span></code>:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pmf_from_dist</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Make a discrete approximation of a continuous distribution.</span>
@@ -1517,10 +1346,16 @@ I’ll use <code class="docutils literal notranslate"><span class="pre">pmf_from
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">pmf_from_dist</span></code> takes an object representing a continuous distribution, evaluates its probability density function at equally space points between <code class="docutils literal notranslate"><span class="pre">low</span></code> and <code class="docutils literal notranslate"><span class="pre">high</span></code>, and returns a normalized <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that approximates the distribution.</p>
 <p>I’ll use it to evaluate <code class="docutils literal notranslate"><span class="pre">dist_m</span></code> over a range of six standard deviations.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">low</span> <span class="o">=</span> <span class="n">dist_m</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">dist_m</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">*</span> <span class="mi">3</span>
 <span class="n">high</span> <span class="o">=</span> <span class="n">dist_m</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">+</span> <span class="n">dist_m</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">*</span> <span class="mi">3</span>
@@ -1529,10 +1364,16 @@ I’ll use <code class="docutils literal notranslate"><span class="pre">pmf_from
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Now let’s compare this theoretical distribution to the means of the samples.
 I’ll use <code class="docutils literal notranslate"><span class="pre">kde_from_sample</span></code> to estimate their distribution and evaluate it in the same locations as <code class="docutils literal notranslate"><span class="pre">pmf_m</span></code>.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">kde_from_sample</span>
 
@@ -1541,9 +1382,15 @@ I’ll use <code class="docutils literal notranslate"><span class="pre">kde_from
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>The following figure shows the two distributions.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_m</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Theoretical distribution&#39;</span><span class="p">,</span>
            <span class="n">style</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
@@ -1556,16 +1403,22 @@ I’ll use <code class="docutils literal notranslate"><span class="pre">kde_from
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_131_0.png" src="_images/chap13redux_131_0.png" />
+<img alt="_images/a6d399b79b01598334adcd5fd0e187d329389a7aa8c5f6b9050c1339aa6fdb4a.png" src="_images/a6d399b79b01598334adcd5fd0e187d329389a7aa8c5f6b9050c1339aa6fdb4a.png" />
 </div>
+</details>
 </div>
 <p>The theoretical distribution and the distribution of sample means are in accord.</p>
 </section>
 <section id="checking-standard-deviation">
-<h2>Checking Standard Deviation<a class="headerlink" href="#checking-standard-deviation" title="Permalink to this headline">#</a></h2>
+<h2>Checking Standard Deviation<a class="headerlink" href="#checking-standard-deviation" title="Permalink to this heading">#</a></h2>
 <p>Let’s also check that the standard deviations follow the distribution we expect.
 First I’ll compute the standard deviation for each of the 1000 samples.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_stds</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">sample_stds</span><span class="o">.</span><span class="n">shape</span>
@@ -1577,18 +1430,30 @@ First I’ll compute the standard deviation for each of the 1000 samples.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
-<p>Now we’ll compute the transformed values, <span class="math notranslate nohighlight">\(t = n s^2 / \sigma^2\)</span>.</p>
+<p>Now we’ll compute the transformed values, $t = n s^2 / \sigma^2$.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">transformed</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">sample_stds</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
-<p>We expect the transformed values to follow a chi-square distribution with parameter <span class="math notranslate nohighlight">\(n-1\)</span>.
+<p>We expect the transformed values to follow a chi-square distribution with parameter $n-1$.
 SciPy provides <code class="docutils literal notranslate"><span class="pre">chi2</span></code>, which we can use to represent this distribution.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">chi2</span>
 
@@ -1596,9 +1461,15 @@ SciPy provides <code class="docutils literal notranslate"><span class="pre">chi2
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>We can use <code class="docutils literal notranslate"><span class="pre">pmf_from_dist</span></code> again to make a discrete approximation.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">low</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">high</span> <span class="o">=</span> <span class="n">dist_s</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">+</span> <span class="n">dist_s</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">*</span> <span class="mi">4</span>
@@ -1607,18 +1478,30 @@ SciPy provides <code class="docutils literal notranslate"><span class="pre">chi2
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>And we’ll use <code class="docutils literal notranslate"><span class="pre">kde_from_sample</span></code> to estimate the distribution of the sample standard deviations.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs</span> <span class="o">=</span> <span class="n">pmf_s</span><span class="o">.</span><span class="n">qs</span>
 <span class="n">pmf_sample_stds</span> <span class="o">=</span> <span class="n">kde_from_sample</span><span class="p">(</span><span class="n">transformed</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Now we can compare the theoretical distribution to the distribution of the standard deviations.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_s</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Theoretical distribution&#39;</span><span class="p">,</span>
            <span class="n">style</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
@@ -1632,12 +1515,18 @@ SciPy provides <code class="docutils literal notranslate"><span class="pre">chi2
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_144_0.png" src="_images/chap13redux_144_0.png" />
+<img alt="_images/fbed90f1e2bc7826a723e716a35f92ae6407ec1d234c038adf67b2105c2df626.png" src="_images/fbed90f1e2bc7826a723e716a35f92ae6407ec1d234c038adf67b2105c2df626.png" />
 </div>
+</details>
 </div>
 <p>The distribution of transformed standard deviations agrees with the theoretical distribution.</p>
 <p>Finally, to confirm that the sample means and standard deviations are independent, I’ll compute their coefficient of correlation:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">sample_means</span><span class="p">,</span> <span class="n">sample_stds</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
@@ -1648,11 +1537,17 @@ SciPy provides <code class="docutils literal notranslate"><span class="pre">chi2
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Their correlation is near zero, which is consistent with their being independent.</p>
 <p>So the simulations confirm the theoretical results we used to do the update with summary statistics.</p>
 <p>We can also use <code class="docutils literal notranslate"><span class="pre">kdeplot</span></code> from Seaborn to see what their joint distribution looks like.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 
@@ -1665,26 +1560,32 @@ SciPy provides <code class="docutils literal notranslate"><span class="pre">chi2
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_149_0.png" src="_images/chap13redux_149_0.png" />
+<img alt="_images/a188493eef96c23f5022fb500a757d1647464770ae748cfe5be42fe5c981fba8.png" src="_images/a188493eef96c23f5022fb500a757d1647464770ae748cfe5be42fe5c981fba8.png" />
 </div>
+</details>
 </div>
 <p>It looks like the axes of the ellipses are aligned with the axes, which indicates that the variables are independent.</p>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
 <p>In this chapter we used a joint distribution to represent prior probabilities for the parameters of a normal distribution, <code class="docutils literal notranslate"><span class="pre">mu</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.
 And we updated that distribution two ways: first using the entire dataset and the normal PDF; then using summary statistics, the normal PDF, and the chi-square PDF.
 Using summary statistics is computationally more efficient, but it loses some information in the process.</p>
 <p>Normal distributions appear in many domains, so the methods in this chapter are broadly applicable.  The exercises at the end of the chapter will give you a chance to apply them.</p>
 </section>
 <section id="exercises">
-<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">#</a></h2>
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
 <p><strong>Exercise:</strong> Looking again at the posterior joint distribution of <code class="docutils literal notranslate"><span class="pre">mu</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma</span></code>, it seems like the standard deviation of the treated group might be lower; if so, that would suggest that the treatment is more effective for students with lower scores.</p>
 <p>But before we speculate too much, we should estimate the size of the difference and see whether it might actually be 0.</p>
 <p>Extract the marginal posterior distributions of <code class="docutils literal notranslate"><span class="pre">sigma</span></code> for the two groups.
 What is the probability that the standard deviation is higher in the control group?</p>
 <p>Compute the distribution of the difference in <code class="docutils literal notranslate"><span class="pre">sigma</span></code> between the two groups.  What is the mean of this difference?  What is the 90% credible interval?</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1693,8 +1594,14 @@ What is the probability that the standard deviation is higher in the control gro
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1708,10 +1615,16 @@ What is the probability that the standard deviation is higher in the control gro
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_155_0.png" src="_images/chap13redux_155_0.png" />
+<img alt="_images/b5a531ce198cdaf9f80cd9af66b1364d9a47455b3c6cbd9a6655821a7336e5aa.png" src="_images/b5a531ce198cdaf9f80cd9af66b1364d9a47455b3c6cbd9a6655821a7336e5aa.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1724,8 +1637,14 @@ What is the probability that the standard deviation is higher in the control gro
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1733,8 +1652,14 @@ What is the probability that the standard deviation is higher in the control gro
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1747,8 +1672,14 @@ What is the probability that the standard deviation is higher in the control gro
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1761,8 +1692,14 @@ What is the probability that the standard deviation is higher in the control gro
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1775,22 +1712,27 @@ What is the probability that the standard deviation is higher in the control gro
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_160_0.png" src="_images/chap13redux_160_0.png" />
+<img alt="_images/ad6375b4a87efacf6c48abffe87ca8f7d9806e09f35a24230e776ee4a9876560.png" src="_images/ad6375b4a87efacf6c48abffe87ca8f7d9806e09f35a24230e776ee4a9876560.png" />
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> An <a class="reference external" href="http://en.wikipedia.org/wiki/Effect_size">effect size</a> is a statistic intended to quantify the magnitude of a phenomenon.
-If the phenomenon is a difference in means between two groups, a common way to quantify it is Cohen’s effect size, denoted <span class="math notranslate nohighlight">\(d\)</span>.</p>
-<p>If the parameters for Group 1 are <span class="math notranslate nohighlight">\((\mu_1, \sigma_1)\)</span>, and the
-parameters for Group 2 are <span class="math notranslate nohighlight">\((\mu_2, \sigma_2)\)</span>, Cohen’s
+If the phenomenon is a difference in means between two groups, a common way to quantify it is Cohen’s effect size, denoted $d$.</p>
+<p>If the parameters for Group 1 are $(\mu_1, \sigma_1)$, and the
+parameters for Group 2 are $(\mu_2, \sigma_2)$, Cohen’s
 effect size is</p>
-<div class="math notranslate nohighlight">
-\[ d = \frac{\mu_1 - \mu_2}{(\sigma_1 + \sigma_2)/2} \]</div>
+<p>$$ d = \frac{\mu_1 - \mu_2}{(\sigma_1 + \sigma_2)/2} $$</p>
 <p>Use the joint posterior distributions for the two groups to compute the posterior distribution for Cohen’s effect size.</p>
 <p>If we try enumerate all pairs from the two distributions, it takes too
 long so we’ll use random sampling.</p>
 <p>The following function takes a joint posterior distribution and returns a sample of pairs.
 It uses some features we have not seen yet, but you can ignore the details for now.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sample_joint</span><span class="p">(</span><span class="n">joint</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Draw a sample from a joint distribution.</span>
@@ -1803,9 +1745,15 @@ It uses some features we have not seen yet, but you can ignore the details for n
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Here’s how we can use it to sample pairs from the posterior distributions for the two groups.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_treated</span> <span class="o">=</span> <span class="n">sample_joint</span><span class="p">(</span><span class="n">posterior_treated</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">sample_treated</span><span class="o">.</span><span class="n">shape</span>
@@ -1817,8 +1765,14 @@ It uses some features we have not seen yet, but you can ignore the details for n
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_control</span> <span class="o">=</span> <span class="n">sample_joint</span><span class="p">(</span><span class="n">posterior_control</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">sample_control</span><span class="o">.</span><span class="n">shape</span>
@@ -1830,10 +1784,16 @@ It uses some features we have not seen yet, but you can ignore the details for n
 </pre></div>
 </div>
 </div>
+</details>
 </div>
-<p>The result is an array of tuples, where each tuple contains a possible pair of values for <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span>.
+<p>The result is an array of tuples, where each tuple contains a possible pair of values for $\mu$ and $\sigma$.
 Now you can loop through the samples, compute the Cohen effect size for each, and estimate the distribution of effect sizes.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1852,8 +1812,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1866,8 +1832,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1878,8 +1850,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1893,10 +1871,16 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_171_0.png" src="_images/chap13redux_171_0.png" />
+<img alt="_images/7065d318f254469d122b44bed0fe529b51aae00b6985d975b9d55a705bb1352d.png" src="_images/7065d318f254469d122b44bed0fe529b51aae00b6985d975b9d55a705bb1352d.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1909,8 +1893,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1923,6 +1913,7 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> This exercise is inspired by <a class="reference external" href="https://www.reddit.com/r/statistics/comments/hcvl2j/q_reverse_empirical_distribution_rule_question/">a question that appeared on Reddit</a>.</p>
 <p>An instructor announces the results of an exam like this, “The average score on this exam was 81.  Out of 25 students, 5 got more than 90, and I am happy to report that no one failed (got less than 60).”</p>
@@ -1930,6 +1921,11 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 <p>You can assume that the distribution of scores is approximately normal.  And let’s assume that the sample mean, 81, is actually the population mean, so we only have to estimate <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
 <p>Hint: To compute the probability of a score greater than 90, you can use <code class="docutils literal notranslate"><span class="pre">norm.sf</span></code>, which computes the survival function, also known as the complementary CDF, or <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">cdf(x)</span></code>.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1940,8 +1936,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1960,8 +1962,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1980,8 +1988,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1998,8 +2012,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2013,10 +2033,16 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_179_0.png" src="_images/chap13redux_179_0.png" />
+<img alt="_images/687be7885dbfe14e89c9374536650fb4d611f6d13985b394300580cb0e5d945d.png" src="_images/687be7885dbfe14e89c9374536650fb4d611f6d13985b394300580cb0e5d945d.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2026,8 +2052,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2037,8 +2069,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2050,10 +2088,16 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_182_0.png" src="_images/chap13redux_182_0.png" />
+<img alt="_images/0e06594f19deefbaed448b8004bb691fe90fa3b327a40de56cb78e0ecbd9b6fd.png" src="_images/0e06594f19deefbaed448b8004bb691fe90fa3b327a40de56cb78e0ecbd9b6fd.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2071,8 +2115,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2086,10 +2136,16 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_184_0.png" src="_images/chap13redux_184_0.png" />
+<img alt="_images/3a6ba1f1e4d4cd0d7d9ad2ad17e8db8acd8d7f430f314a241454a9e57d5951d3.png" src="_images/3a6ba1f1e4d4cd0d7d9ad2ad17e8db8acd8d7f430f314a241454a9e57d5951d3.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2102,8 +2158,14 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2116,6 +2178,7 @@ Now you can loop through the samples, compute the Cohen effect size for each, an
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> The <a class="reference external" href="http://en.wikipedia.org/wiki/Variability_hypothesis">Variability Hypothesis</a> is the observation that many physical traits are more variable among males than among females, in many species.</p>
 <p>It has been a subject of controversy since the early 1800s, which suggests an exercise we can use to practice the methods in this chapter.  Let’s look at the distribution of heights for men and women in the U.S. and see who is more variable.</p>
@@ -2135,6 +2198,11 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 <p>Hint: Use different prior distributions for the two groups, and chose them so they cover all parameters with non-negligible probability.</p>
 <p>Also, you might find this function helpful:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_posterior_cv</span><span class="p">(</span><span class="n">joint</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the posterior distribution of CV.</span>
@@ -2150,8 +2218,14 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2161,8 +2235,14 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2176,8 +2256,14 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2192,10 +2278,16 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_194_0.png" src="_images/chap13redux_194_0.png" />
+<img alt="_images/982855ac31973a8a080076812fd150906f5495c81e8295a0668f350949348fee.png" src="_images/982855ac31973a8a080076812fd150906f5495c81e8295a0668f350949348fee.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2205,8 +2297,14 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2220,8 +2318,14 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2232,10 +2336,16 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_197_0.png" src="_images/chap13redux_197_0.png" />
+<img alt="_images/246aa6d7b03c5dadf4169ccb9b3eb3b8aa12b11ea9b4ecea675870a1579749cb.png" src="_images/246aa6d7b03c5dadf4169ccb9b3eb3b8aa12b11ea9b4ecea675870a1579749cb.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2252,10 +2362,16 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap13redux_198_0.png" src="_images/chap13redux_198_0.png" />
+<img alt="_images/1fefdff5fbba9592b7aa1fcfbe1ed8c96928de8dcbfb081eec7898b100501520.png" src="_images/1fefdff5fbba9592b7aa1fcfbe1ed8c96928de8dcbfb081eec7898b100501520.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2269,8 +2385,14 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2283,6 +2405,7 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 </section>
@@ -2307,36 +2430,99 @@ What is the most likely ratio of the CVs and what is the 90% credible interval f
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
 </div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#improving-reading-ability">Improving Reading Ability</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estimating-parameters">Estimating Parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#likelihood">Likelihood</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-marginal-distributions">Posterior Marginal Distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-differences">Distribution of Differences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-summary-statistics">Using Summary Statistics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking">Checking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update-with-summary-statistics">Update with Summary Statistics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-marginals">Comparing Marginals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proof-by-simulation">Proof By Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-standard-deviation">Checking Standard Deviation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
   
-    By Allen B. Downey<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
+  <div class="footer-item">
     
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
 </div>
+          </footer>
+        
 
-
-      </div>
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

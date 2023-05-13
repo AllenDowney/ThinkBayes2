@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Minimum, Maximum, and Mixture &#8212; Think Bayes</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,58 +61,87 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chap07';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Poisson Processes" href="chap08.html" />
     <link rel="prev" title="Odds and Addends" href="chap06.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">Think Bayes</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -110,455 +150,229 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Chapters
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="preface.html">
-   Preface
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap01.html">
-   Probability
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap02.html">
-   Bayes’s Theorem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap03.html">
-   Distributions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap04.html">
-   Estimating Proportions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap05.html">
-   Estimating Counts
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap06.html">
-   Odds and Addends
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Minimum, Maximum, and Mixture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap08.html">
-   Poisson Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap09.html">
-   Decision Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap10.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap11.html">
-   Comparison
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap12.html">
-   Classification
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap13.html">
-   Inference
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap14.html">
-   Survival Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap15.html">
-   Mark and Recapture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap16.html">
-   Logistic Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap17.html">
-   Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap18.html">
-   Conjugate Priors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap19.html">
-   MCMC
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap20.html">
-   Approximate Bayesian Computation
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">Odds and Addends</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19.html">MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">Approximate Bayesian Computation</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Examples
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="redline.html">
-   The Red Line Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="vaccine2.html">
-   Estimating vaccine efficacy
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="usb.html">
-   Flipping USB Connectors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="sister.html">
-   The Left Handed Sister Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="bayes_dice.html">
-   Bayesian Dice
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="radiation.html">
-   The Emitter-Detector Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital.html">
-   Grid algorithms for hierarchical models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital_birth_rate.html">
-   Comparing birth rates
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="ok.html">
-   How Many Typos?
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/chap07.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
-</div>
+  
+  <div id="rtd-footer-container"></div>
 
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-<a href="https://github.com/AllenDowney/ThinkBayes2"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="bottom"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fab fa-github"></i>
   </span>
 
 </a>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/chap07.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chap07.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.ipynb</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
-
-      </li>
+</li>
+      
+      
+      
       
       <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file-pdf"></i>
   </span>
-<span class="headerbtn__text-container">.pdf</span>
+<span class="btn__text-container">.pdf</span>
 </button>
-
-      </li>
+</li>
       
-    </ul>
-  </div>
+  </ul>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
   </span>
 
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#cumulative-distribution-functions">
-   Cumulative Distribution Functions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#best-three-of-four">
-   Best Three of Four
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#maximum">
-   Maximum
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#minimum">
-   Minimum
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#mixture">
-   Mixture
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#general-mixtures">
-   General Mixtures
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Minimum, Maximum, and Mixture</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#cumulative-distribution-functions">
-   Cumulative Distribution Functions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#best-three-of-four">
-   Best Three of Four
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#maximum">
-   Maximum
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#minimum">
-   Minimum
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#mixture">
-   Mixture
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#general-mixtures">
-   General Mixtures
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Minimum, Maximum, and Mixture</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cumulative-distribution-functions">Cumulative Distribution Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-three-of-four">Best Three of Four</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum">Maximum</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimum">Minimum</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mixture">Mixture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-mixtures">General Mixtures</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
-  <section class="tex2jax_ignore mathjax_ignore" id="minimum-maximum-and-mixture">
-<h1>Minimum, Maximum, and Mixture<a class="headerlink" href="#minimum-maximum-and-mixture" title="Permalink to this headline">#</a></h1>
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="minimum-maximum-and-mixture">
+<h1>Minimum, Maximum, and Mixture<a class="headerlink" href="#minimum-maximum-and-mixture" title="Permalink to this heading">#</a></h1>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get utils.py</span>
 
@@ -575,13 +389,14 @@ title="Print to PDF"
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>In the previous chapter we computed distributions of sums.
 In this chapter, we’ll compute distributions of minimums and maximums, and use them to solve both forward and inverse problems.</p>
 <p>Then we’ll look at distributions that are mixtures of other distributions, which will turn out to be particularly useful for making predictions.</p>
 <p>But we’ll start with a powerful tool for working with distributions, the cumulative distribution function.</p>
 <section id="cumulative-distribution-functions">
-<h2>Cumulative Distribution Functions<a class="headerlink" href="#cumulative-distribution-functions" title="Permalink to this headline">#</a></h2>
+<h2>Cumulative Distribution Functions<a class="headerlink" href="#cumulative-distribution-functions" title="Permalink to this heading">#</a></h2>
 <p>So far we have been using probability mass functions to represent distributions.
 A useful alternative is the <strong>cumulative distribution function</strong>, or CDF.</p>
 <p>As an example, I’ll use the posterior distribution from the Euro problem, which we computed in &lt;&lt;_BayesianEstimation&gt;&gt;.</p>
@@ -631,6 +446,11 @@ A useful alternative is the <strong>cumulative distribution function</strong>, o
 </div>
 <p>Here’s what it looks like, along with the PMF.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
 
@@ -641,8 +461,14 @@ A useful alternative is the <strong>cumulative distribution function</strong>, o
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cumulative</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
 <span class="n">pmf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
@@ -650,8 +476,9 @@ A useful alternative is the <strong>cumulative distribution function</strong>, o
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_15_0.png" src="_images/chap07_15_0.png" />
+<img alt="_images/5c45a9af712ec2288ce03ce1aa193619f0c49f4ea04ea44c86a7be39fa4344bf.png" src="_images/5c45a9af712ec2288ce03ce1aa193619f0c49f4ea04ea44c86a7be39fa4344bf.png" />
 </div>
 </div>
 <p>The range of the CDF is always from 0 to 1, in contrast with the PMF, where the maximum can be any probability.</p>
@@ -714,6 +541,11 @@ Given a <code class="docutils literal notranslate"><span class="pre">Pmf</span><
 </div>
 <p>But if you look up a quantity that’s not in the distribution, you get a <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">cdf</span><span class="p">[</span><span class="mf">0.615</span><span class="p">]</span>
@@ -727,6 +559,7 @@ Given a <code class="docutils literal notranslate"><span class="pre">Pmf</span><
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>To avoid this problem, you can call a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> as a function, using parentheses.
 If the argument does not appear in the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code>, it interpolates between quantities.</p>
@@ -784,7 +617,7 @@ Given a <code class="docutils literal notranslate"><span class="pre">Cdf</span><
 Another is that they make it easy to compute the distribution of a maximum or minimum, as we’ll see in the next section.</p>
 </section>
 <section id="best-three-of-four">
-<h2>Best Three of Four<a class="headerlink" href="#best-three-of-four" title="Permalink to this headline">#</a></h2>
+<h2>Best Three of Four<a class="headerlink" href="#best-three-of-four" title="Permalink to this heading">#</a></h2>
 <p>In <em>Dungeons &amp; Dragons</em>, each character has six attributes: strength, intelligence, wisdom, dexterity, constitution, and charisma.</p>
 <p>To generate a new character, players roll four 6-sided dice for each attribute and add up the best three.
 For example, if I roll for strength and get 1, 2, 3, 4 on the dice, my character’s strength would be the sum of 2, 3, and 4, which is 9.</p>
@@ -814,6 +647,11 @@ Then, for each character, we’ll figure out the distribution of their best attr
 </div>
 <p>Here’s what it looks like:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate_dice</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
     <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Outcome&#39;</span><span class="p">,</span>
@@ -822,16 +660,23 @@ Then, for each character, we’ll figure out the distribution of their best attr
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_3d6</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Distribution of attributes&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_41_0.png" src="_images/chap07_41_0.png" />
+<img alt="_images/b1f86dac2103398c34f875294d89187fb8c4a3b6a4264c52388783f7e9a22047.png" src="_images/b1f86dac2103398c34f875294d89187fb8c4a3b6a4264c52388783f7e9a22047.png" />
 </div>
 </div>
 <p>If we roll four dice and add up the best three, computing the distribution of the sum is a bit more complicated.
@@ -872,6 +717,11 @@ We can compute the PMF of the values in <code class="docutils literal notranslat
 </div>
 <p>The following figure shows the distribution of the sum of three dice, <code class="docutils literal notranslate"><span class="pre">pmf_3d6</span></code>, and the distribution of the best three out of four, <code class="docutils literal notranslate"><span class="pre">pmf_best3</span></code>.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_3d6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;sum of 3 dice&#39;</span><span class="p">)</span>
 <span class="n">pmf_best3</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;best 3 of 4&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
@@ -880,15 +730,16 @@ We can compute the PMF of the values in <code class="docutils literal notranslat
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_51_0.png" src="_images/chap07_51_0.png" />
+<img alt="_images/c81d2ebe685be4da1dee4a97864b19e76444c6511d3b1bd703324cdefcd580de.png" src="_images/c81d2ebe685be4da1dee4a97864b19e76444c6511d3b1bd703324cdefcd580de.png" />
 </div>
 </div>
 <p>As you might expect, choosing the best three out of four tends to yield higher values.</p>
 <p>Next we’ll find the distribution for the maximum of six attributes, each the sum of the best three of four dice.</p>
 </section>
 <section id="maximum">
-<h2>Maximum<a class="headerlink" href="#maximum" title="Permalink to this headline">#</a></h2>
+<h2>Maximum<a class="headerlink" href="#maximum" title="Permalink to this heading">#</a></h2>
 <p>To compute the distribution of a maximum or minimum, we can make good use of the cumulative distribution function.
 First, I’ll compute the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> of the best three of four distribution:</p>
 <div class="cell docutils container">
@@ -903,11 +754,16 @@ Equivalently, it is the probability that a random value chosen from the distribu
 <p>Now suppose I draw 6 values from this distribution.
 The probability that all 6 of them are less than or equal to <code class="docutils literal notranslate"><span class="pre">x</span></code> is <code class="docutils literal notranslate"><span class="pre">Cdf(x)</span></code> raised to the 6th power, which we can compute like this:</p>
 <div class="cell tag_hide-output docutils container">
-<div class="cell_input docutils container">
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_best3</span><span class="o">**</span><span class="mi">6</span>
 </pre></div>
 </div>
 </div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3     4.665600e-20
 4     5.948233e-16
@@ -929,6 +785,7 @@ dtype: float64
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>If all 6 values are less than or equal to <code class="docutils literal notranslate"><span class="pre">x</span></code>, that means that their maximum is less than or equal to <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 So the result is the CDF of their maximum.
@@ -944,14 +801,25 @@ We can convert it to a <code class="docutils literal notranslate"><span class="p
 </div>
 <p>And compute the equivalent <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> like this:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_max6</span> <span class="o">=</span> <span class="n">cdf_max6</span><span class="o">.</span><span class="n">make_pmf</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>The following figure shows the result.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_max6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;max of 6 attributes&#39;</span><span class="p">)</span>
 
@@ -960,12 +828,18 @@ We can convert it to a <code class="docutils literal notranslate"><span class="p
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_62_0.png" src="_images/chap07_62_0.png" />
+<img alt="_images/b6f154ac59d6ddc728ef1c9bc3fe3dfb59a7fbdf969b5313f9b9b2b18bec2104.png" src="_images/b6f154ac59d6ddc728ef1c9bc3fe3dfb59a7fbdf969b5313f9b9b2b18bec2104.png" />
 </div>
+</details>
 </div>
 <p>Most characters have at least one attribute greater than 12; almost 10% of them have an 18.</p>
 <p>The following figure shows the CDFs for the three distributions we have computed.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -982,8 +856,9 @@ We can convert it to a <code class="docutils literal notranslate"><span class="p
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_65_0.png" src="_images/chap07_65_0.png" />
+<img alt="_images/13e587f63e6680fb43f73d51162d1c4f7e58eac8c77031130d8f60990cd4cf3d.png" src="_images/13e587f63e6680fb43f73d51162d1c4f7e58eac8c77031130d8f60990cd4cf3d.png" />
 </div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">Cdf</span></code> provides <code class="docutils literal notranslate"><span class="pre">max_dist</span></code>, which does the same computation, so we can also compute the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> of the maximum like this:</p>
@@ -999,7 +874,7 @@ The process is similar, but a little more complicated.
 See if you can figure it out before you go on.</p>
 </section>
 <section id="minimum">
-<h2>Minimum<a class="headerlink" href="#minimum" title="Permalink to this headline">#</a></h2>
+<h2>Minimum<a class="headerlink" href="#minimum" title="Permalink to this heading">#</a></h2>
 <p>In the previous section we computed the distribution of a character’s best attribute.
 Now let’s compute the distribution of the worst.</p>
 <p>To compute the distribution of the minimum, we’ll use the <strong>complementary CDF</strong>, which we can compute like this:</p>
@@ -1038,6 +913,11 @@ And that means we can compute the CDF of the minimum like this:</p>
 </div>
 <p>Here’s what it looks like, along with the distribution of the maximum.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_min6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;minimum of 6&#39;</span><span class="p">)</span>
 <span class="n">cdf_max6</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;maximum of 6&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
@@ -1046,8 +926,9 @@ And that means we can compute the CDF of the minimum like this:</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_80_0.png" src="_images/chap07_80_0.png" />
+<img alt="_images/14d14772b16b978755119cdf3244a50fcd4ecc0f3b27d903f70eed78bc9724ed.png" src="_images/14d14772b16b978755119cdf3244a50fcd4ecc0f3b27d903f70eed78bc9724ed.png" />
 </div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">Cdf</span></code> provides <code class="docutils literal notranslate"><span class="pre">min_dist</span></code>, which does the same computation, so we can also compute the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> of the minimum like this:</p>
@@ -1075,7 +956,7 @@ And that means we can compute the CDF of the minimum like this:</p>
 But first we’ll see what happens when we mix distributions.</p>
 </section>
 <section id="mixture">
-<h2>Mixture<a class="headerlink" href="#mixture" title="Permalink to this headline">#</a></h2>
+<h2>Mixture<a class="headerlink" href="#mixture" title="Permalink to this heading">#</a></h2>
 <p>In this section I’ll show how we can compute a distribution which is a mixture of other distributions.
 I’ll explain what that means with some simple examples;
 then, more usefully, we’ll see how these mixtures are used to make predictions.</p>
@@ -1139,14 +1020,20 @@ then, more usefully, we’ll see how these mixtures are used to make predictions
 </div>
 <p>Here’s what the mixture of these distributions looks like.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mix1</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
 <span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Mixture of one 4-sided and one 6-sided die&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_95_0.png" src="_images/chap07_95_0.png" />
+<img alt="_images/8b9a1606de2696f9eb941323b7a4be46212549d4fdb795c058aaec06b86cbd3f.png" src="_images/8b9a1606de2696f9eb941323b7a4be46212549d4fdb795c058aaec06b86cbd3f.png" />
 </div>
 </div>
 <p>Now suppose you are fighting three monsters:</p>
@@ -1167,14 +1054,20 @@ To find the distribution of the damage they inflict, we can compute a weighted a
 <p>This distribution is a mixture of one 4-sided die and two 6-sided dice.
 Here’s what it looks like.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mix2</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
 <span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Mixture of one 4-sided and two 6-sided die&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_99_0.png" src="_images/chap07_99_0.png" />
+<img alt="_images/f60dbbf72b2cde8995df0cfb2c309eecf89fcb9825a5732787fa643e88135f47.png" src="_images/f60dbbf72b2cde8995df0cfb2c309eecf89fcb9825a5732787fa643e88135f47.png" />
 </div>
 </div>
 <p>In this section we used the <code class="docutils literal notranslate"><span class="pre">+</span></code> operator, which adds the probabilities in the distributions, not to be confused with <code class="docutils literal notranslate"><span class="pre">Pmf.add_dist</span></code>, which computes the distribution of the sum of the distributions.</p>
@@ -1195,12 +1088,12 @@ Here’s what it looks like.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_103_0.png" src="_images/chap07_103_0.png" />
+<img alt="_images/6cceb610ad3888a89dfb4a009a3ba37adb57e3f14e404a9ae1d00ef8d6792131.png" src="_images/6cceb610ad3888a89dfb4a009a3ba37adb57e3f14e404a9ae1d00ef8d6792131.png" />
 </div>
 </div>
 </section>
 <section id="general-mixtures">
-<h2>General Mixtures<a class="headerlink" href="#general-mixtures" title="Permalink to this headline">#</a></h2>
+<h2>General Mixtures<a class="headerlink" href="#general-mixtures" title="Permalink to this heading">#</a></h2>
 <p>In the previous section we computed mixtures in an <em>ad hoc</em> way.
 Now we’ll see a more general solution.
 In future chapters, we’ll use this solution to generate predictions for real-world problems, not just role-playing games.
@@ -1263,7 +1156,7 @@ Still, only one monster attacks per round, chosen at random, so the damage they 
 </div></div></div>
 </div>
 <p>This distribution represents the number of sides on the die we’ll roll and the probability of rolling each one.
-For example, one of the six monsters has a dagger, so the probability is <span class="math notranslate nohighlight">\(1/6\)</span> that we roll a 4-sided die.</p>
+For example, one of the six monsters has a dagger, so the probability is $1/6$ that we roll a 4-sided die.</p>
 <p>Next I’ll make a sequence of <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects to represent the dice:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1361,6 +1254,11 @@ We can use <code class="docutils literal notranslate"><span class="pre">fillna</
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span>
 </pre></div>
@@ -1442,6 +1340,7 @@ We can use <code class="docutils literal notranslate"><span class="pre">fillna</
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <p>Now we can multiply by the probabilities in <code class="docutils literal notranslate"><span class="pre">pmf_dice</span></code>:</p>
 <div class="cell docutils container">
@@ -1536,11 +1435,16 @@ We can use <code class="docutils literal notranslate"><span class="pre">fillna</
 </div>
 <p>And add up the weighted distributions:</p>
 <div class="cell tag_hide-output docutils container">
-<div class="cell_input docutils container">
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1    0.159722
 2    0.159722
@@ -1554,6 +1458,7 @@ dtype: float64
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>The argument <code class="docutils literal notranslate"><span class="pre">axis=1</span></code> means we want to sum across the rows.
 The result is a Pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code>.</p>
@@ -1582,21 +1487,27 @@ We can call it like this:</p>
 </div>
 <p>And here’s what it looks like.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mix</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;mixture&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
 <span class="n">decorate_dice</span><span class="p">(</span><span class="s1">&#39;Distribution of damage with three different weapons&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_125_0.png" src="_images/chap07_125_0.png" />
+<img alt="_images/d1fd9f0edbd24a8c55e791574bac33f0b435f9d025cd1150a1bd483616ed0728.png" src="_images/d1fd9f0edbd24a8c55e791574bac33f0b435f9d025cd1150a1bd483616ed0728.png" />
 </div>
 </div>
 <p>In this section I used Pandas so that <code class="docutils literal notranslate"><span class="pre">make_mixture</span></code> is concise, efficient, and hopefully not too hard to understand.
 In the exercises at the end of the chapter, you’ll have a chance to practice with mixtures, and we will use <code class="docutils literal notranslate"><span class="pre">make_mixture</span></code> again in the next chapter.</p>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
 <p>This chapter introduces the <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> object, which represents the cumulative distribution function (CDF).</p>
 <p>A <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> and the corresponding <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> are equivalent in the sense that they contain the same information, so you can convert from one to the other.<br />
 The primary difference between them is performance: some operations are faster and easier with a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>; others are faster with a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code>.</p>
@@ -1606,7 +1517,7 @@ We also computed mixtures of distributions, which we will use in the next chapte
 <p>But first you might want to work on these exercises.</p>
 </section>
 <section id="exercises">
-<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">#</a></h2>
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
 <p><strong>Exercise:</strong> When you generate a D&amp;D character, instead of rolling dice, you can use the “standard array” of attributes, which is 15, 14, 13, 12, 10, and 8.
 Do you think you are better off using the standard array or (literally) rolling the dice?</p>
 <p>Compare the distribution of the values in the standard array to the distribution we computed for the best three out of four:</p>
@@ -1618,15 +1529,26 @@ Do you think you are better off using the standard array or (literally) rolling 
 </ul>
 <p>To get you started, here’s a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> that represents the distribution of attributes in the standard array:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">standard</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span>
 <span class="n">cdf_standard</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">standard</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>We can compare it to the distribution of attributes you get by rolling four dice at adding up the best three.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_best3</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;best 3 of 4&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
 <span class="n">cdf_standard</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;standard set&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C7&#39;</span><span class="p">)</span>
@@ -1637,11 +1559,17 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_133_0.png" src="_images/chap07_133_0.png" />
+<img alt="_images/3b22f1492c17d517017af56424e1abf8d3eaa73a10290cac1682da19a5d0ef68.png" src="_images/3b22f1492c17d517017af56424e1abf8d3eaa73a10290cac1682da19a5d0ef68.png" />
 </div>
+</details>
 </div>
 <p>I plotted <code class="docutils literal notranslate"><span class="pre">cdf_standard</span></code> as a step function to show more clearly that it contains only a few quantities.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1655,8 +1583,14 @@ Do you think you are better off using the standard array or (literally) rolling 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1670,8 +1604,14 @@ Do you think you are better off using the standard array or (literally) rolling 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1685,8 +1625,14 @@ Do you think you are better off using the standard array or (literally) rolling 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1700,8 +1646,14 @@ Do you think you are better off using the standard array or (literally) rolling 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1716,8 +1668,14 @@ Do you think you are better off using the standard array or (literally) rolling 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1732,6 +1690,7 @@ Do you think you are better off using the standard array or (literally) rolling 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> Suppose you are fighting three monsters:</p>
 <ul class="simple">
@@ -1744,6 +1703,11 @@ Do you think you are better off using the standard array or (literally) rolling 
 <p>If the same monster attacks you again, what is the probability that you suffer 6 points of damage?</p>
 <p>Hint: Compute a posterior distribution as we have done before and pass it as one of the arguments to <code class="docutils literal notranslate"><span class="pre">make_mixture</span></code>.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1796,8 +1760,14 @@ Do you think you are better off using the standard array or (literally) rolling 
   </tbody>
 </table>
 </div></div></div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1811,8 +1781,14 @@ Do you think you are better off using the standard array or (literally) rolling 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1825,10 +1801,16 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_144_0.png" src="_images/chap07_144_0.png" />
+<img alt="_images/3231b49676e5e552b7acffd5e5afd5d9c65961bec5ee73f35ab02ea8cbc004e6.png" src="_images/3231b49676e5e552b7acffd5e5afd5d9c65961bec5ee73f35ab02ea8cbc004e6.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1844,6 +1826,7 @@ Do you think you are better off using the standard array or (literally) rolling 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> Henri Poincaré was a French mathematician who taught at the Sorbonne around 1900. The following anecdote about him is probably fiction, but it makes an interesting probability problem.</p>
 <p>Supposedly Poincaré suspected that his local bakery was selling loaves of bread that were lighter than the advertised weight of 1 kg, so every day for a year he bought a loaf of bread, brought it home and weighed it. At the end of the year, he plotted the distribution of his measurements and showed that it fit a normal distribution with mean 950 g and standard deviation 50 g. He brought this evidence to the bread police, who gave the baker a warning.</p>
@@ -1852,6 +1835,11 @@ Do you think you are better off using the standard array or (literally) rolling 
 <p>To see whether this anecdote is plausible, let’s suppose that when the baker sees Poincaré coming, he hefts <code class="docutils literal notranslate"><span class="pre">n</span></code> loaves of bread and gives Poincaré the heaviest one.  How many loaves would the baker have to heft to make the average of the maximum 1000 g?</p>
 <p>To get you started, I’ll generate a year’s worth of data from a normal distribution with the given parameters.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean</span> <span class="o">=</span> <span class="mi">950</span>
 <span class="n">std</span> <span class="o">=</span> <span class="mi">50</span>
@@ -1861,8 +1849,14 @@ Do you think you are better off using the standard array or (literally) rolling 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1885,8 +1879,14 @@ Do you think you are better off using the standard array or (literally) rolling 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1905,8 +1905,9 @@ Do you think you are better off using the standard array or (literally) rolling 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap07_150_0.png" src="_images/chap07_150_0.png" />
+<img alt="_images/57c85f62be8c20d60381e7e6da0fa30582fd9c72ffe89769e158ad5a12426644.png" src="_images/57c85f62be8c20d60381e7e6da0fa30582fd9c72ffe89769e158ad5a12426644.png" />
 </div>
+</details>
 </div>
 </section>
 </section>
@@ -1931,50 +1932,112 @@ Do you think you are better off using the standard array or (literally) rolling 
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="chap06.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Odds and Addends</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chap06.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Odds and Addends</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="chap08.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="chap08.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Poisson Processes</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Allen B. Downey<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cumulative-distribution-functions">Cumulative Distribution Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-three-of-four">Best Three of Four</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum">Maximum</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimum">Minimum</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mixture">Mixture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-mixtures">General Mixtures</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

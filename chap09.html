@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Decision Analysis &#8212; Think Bayes</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,58 +61,87 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chap09';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Testing" href="chap10.html" />
     <link rel="prev" title="Poisson Processes" href="chap08.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">Think Bayes</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -110,491 +150,233 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Chapters
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="preface.html">
-   Preface
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap01.html">
-   Probability
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap02.html">
-   Bayes’s Theorem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap03.html">
-   Distributions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap04.html">
-   Estimating Proportions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap05.html">
-   Estimating Counts
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap06.html">
-   Odds and Addends
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap07.html">
-   Minimum, Maximum, and Mixture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap08.html">
-   Poisson Processes
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Decision Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap10.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap11.html">
-   Comparison
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap12.html">
-   Classification
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap13.html">
-   Inference
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap14.html">
-   Survival Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap15.html">
-   Mark and Recapture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap16.html">
-   Logistic Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap17.html">
-   Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap18.html">
-   Conjugate Priors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap19.html">
-   MCMC
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap20.html">
-   Approximate Bayesian Computation
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">Poisson Processes</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19.html">MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">Approximate Bayesian Computation</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Examples
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="redline.html">
-   The Red Line Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="vaccine2.html">
-   Estimating vaccine efficacy
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="usb.html">
-   Flipping USB Connectors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="sister.html">
-   The Left Handed Sister Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="bayes_dice.html">
-   Bayesian Dice
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="radiation.html">
-   The Emitter-Detector Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital.html">
-   Grid algorithms for hierarchical models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital_birth_rate.html">
-   Comparing birth rates
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="ok.html">
-   How Many Typos?
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/chap09.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
-</div>
+  
+  <div id="rtd-footer-container"></div>
 
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-<a href="https://github.com/AllenDowney/ThinkBayes2"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="bottom"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fab fa-github"></i>
   </span>
 
 </a>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/chap09.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chap09.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.ipynb</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
-
-      </li>
+</li>
+      
+      
+      
       
       <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file-pdf"></i>
   </span>
-<span class="headerbtn__text-container">.pdf</span>
+<span class="btn__text-container">.pdf</span>
 </button>
-
-      </li>
+</li>
       
-    </ul>
-  </div>
+  </ul>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
   </span>
 
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-price-is-right-problem">
-   The Price Is Right Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-prior">
-   The Prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#kernel-density-estimation">
-   Kernel Density Estimation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#distribution-of-error">
-   Distribution of Error
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#update">
-   Update
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#probability-of-winning">
-   Probability of Winning
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id1">
-   Decision Analysis
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#maximizing-expected-gain">
-   Maximizing Expected Gain
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#discussion">
-   Discussion
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Decision Analysis</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-price-is-right-problem">
-   The Price Is Right Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-prior">
-   The Prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#kernel-density-estimation">
-   Kernel Density Estimation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#distribution-of-error">
-   Distribution of Error
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#update">
-   Update
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#probability-of-winning">
-   Probability of Winning
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id1">
-   Decision Analysis
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#maximizing-expected-gain">
-   Maximizing Expected Gain
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#discussion">
-   Discussion
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Decision Analysis</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-price-is-right-problem">The Price Is Right Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-prior">The Prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-density-estimation">Kernel Density Estimation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-error">Distribution of Error</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update">Update</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#probability-of-winning">Probability of Winning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Decision Analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#maximizing-expected-gain">Maximizing Expected Gain</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#discussion">Discussion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
-  <section class="tex2jax_ignore mathjax_ignore" id="decision-analysis">
-<h1>Decision Analysis<a class="headerlink" href="#decision-analysis" title="Permalink to this headline">#</a></h1>
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="decision-analysis">
+<h1>Decision Analysis<a class="headerlink" href="#decision-analysis" title="Permalink to this heading">#</a></h1>
 <p>This chapter presents a problem inspired by the game show <em>The Price is Right</em>.
 It is a silly example, but it demonstrates a useful process called Bayesian <a class="reference external" href="https://en.wikipedia.org/wiki/Decision_analysis">decision analysis</a>.</p>
 <p>As in previous examples, we’ll use data and prior distribution to compute a posterior distribution; then we’ll use the posterior distribution to choose an optimal strategy in a game that involves bidding.</p>
 <p>As part of the solution, we will use kernel density estimation (KDE) to estimate the prior distribution, and a normal distribution to compute the likelihood of the data.</p>
 <p>And at the end of the chapter, I pose a related problem you can solve as an exercise.</p>
 <section id="the-price-is-right-problem">
-<h2>The Price Is Right Problem<a class="headerlink" href="#the-price-is-right-problem" title="Permalink to this headline">#</a></h2>
+<h2>The Price Is Right Problem<a class="headerlink" href="#the-price-is-right-problem" title="Permalink to this heading">#</a></h2>
 <p>On November 1, 2007, contestants named Letia and Nathaniel appeared on <em>The Price is Right</em>, an American television game show. They competed in a game called “The Showcase”, where the objective is to guess the price of a collection of prizes. The contestant who comes closest to the actual price, without going over, wins the prizes.</p>
 <p>Nathaniel went first. His showcase included a dishwasher, a wine cabinet, a laptop computer, and a car. He bid \$26,000.</p>
 <p>Letia’s showcase included a pinball machine, a video arcade game, a pool table, and a cruise of the Bahamas. She bid \$21,500.</p>
@@ -602,7 +384,7 @@ It is a silly example, but it demonstrates a useful process called Bayesian <a c
 <p>The actual price of Letia’s showcase was \$21,578.</p>
 <p>She was only off by \$78, so she won her showcase and, because her bid was off by less than 250, she also won Nathaniel’s showcase.</p>
 <p>For a Bayesian thinker, this scenario suggests several questions:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Before seeing the prizes, what prior beliefs should the contestants have about the price of the showcase?</p></li>
 <li><p>After seeing the prizes, how should the contestants update those beliefs?</p></li>
 <li><p>Based on the posterior distribution, what should the contestants bid?</p></li>
@@ -611,7 +393,7 @@ It is a silly example, but it demonstrates a useful process called Bayesian <a c
 <p>This problem is inspired by <a class="reference external" href="https://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter5_LossFunctions/Ch5_LossFunctions_PyMC3.ipynb">an example</a> in Cameron Davidson-Pilon’s book, <a class="reference external" href="http://camdavidsonpilon.github.io/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers"><em>Probablistic Programming and Bayesian Methods for Hackers</em></a>.</p>
 </section>
 <section id="the-prior">
-<h2>The Prior<a class="headerlink" href="#the-prior" title="Permalink to this headline">#</a></h2>
+<h2>The Prior<a class="headerlink" href="#the-prior" title="Permalink to this heading">#</a></h2>
 <p>To choose a prior distribution of prices, we can take advantage of data from previous episodes. Fortunately, <a class="reference external" href="https://web.archive.org/web/20121107204942/http://www.tpirsummaries.8m.com/">fans of the show keep detailed records</a>.</p>
 <p>For this example, I downloaded files containing the price of each showcase from the 2011 and 2012 seasons and the bids offered by the contestants.</p>
 <p>The following function reads the data and cleans it up a little.</p>
@@ -639,6 +421,11 @@ It is a silly example, but it demonstrates a useful process called Bayesian <a c
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df2011</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">df2012</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
@@ -649,6 +436,7 @@ It is a silly example, but it demonstrates a useful process called Bayesian <a c
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Here’s what the dataset looks like:</p>
 <div class="cell docutils container">
@@ -721,7 +509,7 @@ The next two columns are the bids the contestants made.
 The last two columns are the differences between the actual values and the bids.</p>
 </section>
 <section id="kernel-density-estimation">
-<h2>Kernel Density Estimation<a class="headerlink" href="#kernel-density-estimation" title="Permalink to this headline">#</a></h2>
+<h2>Kernel Density Estimation<a class="headerlink" href="#kernel-density-estimation" title="Permalink to this heading">#</a></h2>
 <p>This dataset contains the prices for 313 previous showcases, which we can think of as a sample from the population of possible prices.</p>
 <p>We can use this sample to estimate the prior distribution of showcase prices.  One way to do that is kernel density estimation (KDE), which uses the sample to estimate a smooth distribution.  If you are not familiar with KDE, you can <a class="reference external" href="https://mathisonian.github.io/kde">read about it here</a>.</p>
 <p>SciPy provides <code class="docutils literal notranslate"><span class="pre">gaussian_kde</span></code>, which takes a sample and returns an object that represents the estimated distribution.</p>
@@ -755,6 +543,11 @@ The last two columns are the differences between the actual values and the bids.
 </div>
 <p>Here’s what it looks like:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
 
@@ -765,20 +558,32 @@ The last two columns are the differences between the actual values and the bids.
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior 1&#39;</span><span class="p">)</span>
 <span class="n">decorate_value</span><span class="p">(</span><span class="s1">&#39;Prior distribution of showcase value&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_25_0.png" src="_images/chap09_25_0.png" />
+<img alt="_images/ebaa0745d09379dd23ab450b3c00d28fbc9fb9cd3e2cf44daeb54add4c0dd6b3.png" src="_images/ebaa0745d09379dd23ab450b3c00d28fbc9fb9cd3e2cf44daeb54add4c0dd6b3.png" />
 </div>
 </div>
 <p><strong>Exercise:</strong> Use this function to make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents the prior distribution for Showcase 2, and plot it.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -787,8 +592,14 @@ The last two columns are the differences between the actual values and the bids.
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -800,12 +611,13 @@ The last two columns are the differences between the actual values and the bids.
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_28_0.png" src="_images/chap09_28_0.png" />
+<img alt="_images/03e7a17b911a5c8515491255fd219d0d4ad520f22f431b7f9edd96263ac92665.png" src="_images/03e7a17b911a5c8515491255fd219d0d4ad520f22f431b7f9edd96263ac92665.png" />
 </div>
+</details>
 </div>
 </section>
 <section id="distribution-of-error">
-<h2>Distribution of Error<a class="headerlink" href="#distribution-of-error" title="Permalink to this headline">#</a></h2>
+<h2>Distribution of Error<a class="headerlink" href="#distribution-of-error" title="Permalink to this heading">#</a></h2>
 <p>To update these priors, we have to answer these questions:</p>
 <ul class="simple">
 <li><p>What data should we consider and how should we quantify it?</p></li>
@@ -838,6 +650,11 @@ For each showcase in the dataset, let’s look at the difference between the con
 </div>
 <p>Here’s what these distributions look like:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kde_diff1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Diff 1&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C8&#39;</span><span class="p">)</span>
 <span class="n">kde_diff2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Diff 2&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
@@ -848,12 +665,13 @@ For each showcase in the dataset, let’s look at the difference between the con
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_34_0.png" src="_images/chap09_34_0.png" />
+<img alt="_images/38edf57e021b3d3e8ce3a2ddc1a30895a9ccc1658bd4a943befbe2c2bbd9b82e.png" src="_images/38edf57e021b3d3e8ce3a2ddc1a30895a9ccc1658bd4a943befbe2c2bbd9b82e.png" />
 </div>
 </div>
 <p>It looks like the bids are too low more often than too high, which makes sense.  Remember that under the rules of the game, you lose if you overbid, so contestants probably underbid to some degree deliberately.</p>
-<p>For example, if they guess that the value of the showcase is \<span class="math notranslate nohighlight">\(40,000, they might bid \\\)</span>36,000 to avoid going over.</p>
+<p>For example, if they guess that the value of the showcase is \$40,000, they might bid \$36,000 to avoid going over.</p>
 <p>It looks like these distributions are well modeled by a normal distribution, so we can summarize them with their mean and standard deviation.</p>
 <p>For example, here is the mean and standard deviation of <code class="docutils literal notranslate"><span class="pre">Diff</span></code> for Player 1.</p>
 <div class="cell docutils container">
@@ -907,7 +725,7 @@ This step is a little tricky because we don’t actually know the contestant’s
 <p>By itself, this number doesn’t mean very much, because probability densities are not probabilities. But they are proportional to probabilities, so we can use them as likelihoods in a Bayesian update, as we’ll see in the next section.</p>
 </section>
 <section id="update">
-<h2>Update<a class="headerlink" href="#update" title="Permalink to this headline">#</a></h2>
+<h2>Update<a class="headerlink" href="#update" title="Permalink to this heading">#</a></h2>
 <p>Suppose you are Player 1.  You see the prizes in your showcase and your guess for the total price is \$23,000.</p>
 <p>From your guess I will subtract away each hypothetical price in the prior distribution; the result is your error under each hypothesis.</p>
 <div class="cell docutils container">
@@ -929,20 +747,31 @@ Under that assumption we can compute the likelihood of your error under each hyp
 </div>
 <p>The result is an array of likelihoods, which we can use to update the prior.</p>
 <div class="cell tag_hide-output docutils container">
-<div class="cell_input docutils container">
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior1</span> <span class="o">=</span> <span class="n">prior1</span> <span class="o">*</span> <span class="n">likelihood1</span>
 <span class="n">posterior1</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.3889812097254624e-05
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Here’s what the posterior distribution looks like:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior 1&#39;</span><span class="p">)</span>
 <span class="n">posterior1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior 1&#39;</span><span class="p">)</span>
@@ -951,8 +780,9 @@ Under that assumption we can compute the likelihood of your error under each hyp
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_50_0.png" src="_images/chap09_50_0.png" />
+<img alt="_images/aa8da72d19e4cc2f8250daffba23cacc37f51d434598893c89d0b11c900ab63c.png" src="_images/aa8da72d19e4cc2f8250daffba23cacc37f51d434598893c89d0b11c900ab63c.png" />
 </div>
 </div>
 <p>Because your initial guess is in the lower end of the range, the posterior distribution has shifted to the left.  We can compute the posterior mean to see by how much.</p>
@@ -968,14 +798,19 @@ Under that assumption we can compute the likelihood of your error under each hyp
 </div>
 </div>
 </div>
-<p>Before you saw the prizes, you expected to see a showcase with a value close to \<span class="math notranslate nohighlight">\(30,000.
-After making a guess of \\\)</span>23,000, you updated the prior distribution.
+<p>Before you saw the prizes, you expected to see a showcase with a value close to \$30,000.
+After making a guess of \$23,000, you updated the prior distribution.
 Based on the combination of the prior and your guess, you now expect the actual price to be about \$26,000.</p>
 <p><strong>Exercise:</strong> Now suppose you are Player 2.  When you see your showcase, you guess that the total price is \$38,000.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">diff2</span></code> to construct a normal distribution that represents the distribution of your estimation errors.</p>
 <p>Compute the likelihood of your guess for each actual price and use it to update <code class="docutils literal notranslate"><span class="pre">prior2</span></code>.</p>
 <p>Plot the posterior distribution and compute the posterior mean.  Based on the prior and your guess, what do you expect the actual price of the showcase to be?</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -991,8 +826,14 @@ Based on the combination of the prior and your guess, you now expect the actual 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1000,8 +841,14 @@ Based on the combination of the prior and your guess, you now expect the actual 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1012,8 +859,14 @@ Based on the combination of the prior and your guess, you now expect the actual 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1027,8 +880,14 @@ Based on the combination of the prior and your guess, you now expect the actual 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1040,10 +899,16 @@ Based on the combination of the prior and your guess, you now expect the actual 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_59_0.png" src="_images/chap09_59_0.png" />
+<img alt="_images/ddaebf298f67138cb1ad06d9864e123abfa90d2dcfc18d188d40247fa118ee0a.png" src="_images/ddaebf298f67138cb1ad06d9864e123abfa90d2dcfc18d188d40247fa118ee0a.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1056,10 +921,11 @@ Based on the combination of the prior and your guess, you now expect the actual 
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 <section id="probability-of-winning">
-<h2>Probability of Winning<a class="headerlink" href="#probability-of-winning" title="Permalink to this headline">#</a></h2>
+<h2>Probability of Winning<a class="headerlink" href="#probability-of-winning" title="Permalink to this heading">#</a></h2>
 <p>Now that we have a posterior distribution for each player, let’s think about strategy.</p>
 <p>First, from the point of view of Player 1, let’s compute the probability that Player 2 overbids.  To keep it simple, I’ll use only the performance of past players, ignoring the value of the showcase.</p>
 <p>The following function takes a sequence of past bids and returns the fraction that overbid.</p>
@@ -1169,6 +1035,11 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 <p>Here’s what it looks like:</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -1180,21 +1051,27 @@ What is the probability that Player 2 underbids by more?</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_78_0.png" src="_images/chap09_78_0.png" />
+<img alt="_images/95b1f75c55a42262fae0f50426c1ad7109acb4485c645d8df064158bda3be190.png" src="_images/95b1f75c55a42262fae0f50426c1ad7109acb4485c645d8df064158bda3be190.png" />
 </div>
 </div>
 <p>If you underbid by \$30,000, the chance of winning is about 30%, which is mostly the chance your opponent overbids.</p>
 <p>As your bids gets closer to the actual price, your chance of winning approaches 1.</p>
 <p>And, of course, if you overbid, you lose (even if your opponent also overbids).</p>
 <p><strong>Exercise:</strong> Run the same analysis from the point of view of Player 2.  Using the sample of differences from Player 1, compute:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>The probability that Player 1 overbids.</p></li>
 <li><p>The probability that Player 1 underbids by more than \$5000.</p></li>
 <li><p>The probability that Player 2 wins, given that they underbid by \$5000.</p></li>
 </ol>
 <p>Then plot the probability that Player 2 wins for a range of possible differences between their bid and the actual price.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1207,8 +1084,14 @@ What is the probability that Player 2 underbids by more?</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1221,8 +1104,14 @@ What is the probability that Player 2 underbids by more?</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1235,8 +1124,14 @@ What is the probability that Player 2 underbids by more?</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1245,8 +1140,14 @@ What is the probability that Player 2 underbids by more?</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1259,18 +1160,19 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_85_0.png" src="_images/chap09_85_0.png" />
+<img alt="_images/6a0fdd6202e5213fa2c54cc2554bb11ee21096e795e3c9e8c7418d6fd3e5cbbf.png" src="_images/6a0fdd6202e5213fa2c54cc2554bb11ee21096e795e3c9e8c7418d6fd3e5cbbf.png" />
 </div>
+</details>
 </div>
 </section>
 <section id="id1">
-<h2>Decision Analysis<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
+<h2>Decision Analysis<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <p>In the previous section we computed the probability of winning, given that we have underbid by a particular amount.</p>
 <p>In reality the contestants don’t know how much they have underbid by, because they don’t know the actual price.</p>
 <p>But they do have a posterior distribution that represents their beliefs about the actual price, and they can use that to estimate their probability of winning with a given bid.</p>
 <p>The following function takes a possible bid, a posterior distribution of actual prices, and a sample of differences for the opponent.</p>
 <p>It loops through the hypothetical prices in the posterior distribution and, for each price,</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Computes the difference between the bid and the hypothetical price,</p></li>
 <li><p>Computes the probability that the player wins, given that difference, and</p></li>
 <li><p>Adds up the weighted sum of the probabilities, where the weights are the probabilities in the posterior distribution.</p></li>
@@ -1296,8 +1198,7 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 </div>
 <p>This loop implements the law of total probability:</p>
-<div class="math notranslate nohighlight">
-\[P(win) = \sum_{price} P(price) ~ P(win ~|~ price)\]</div>
+<p>$$P(win) = \sum_{price} P(price) ~ P(win ~|~ price)$$</p>
 <p>Here’s the probability that Player 1 wins, based on a bid of \$25,000 and the posterior distribution <code class="docutils literal notranslate"><span class="pre">posterior1</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1326,6 +1227,11 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 <p>Here are the results.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prob_win_series</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Player 1&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 
@@ -1335,8 +1241,9 @@ What is the probability that Player 2 underbids by more?</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_93_0.png" src="_images/chap09_93_0.png" />
+<img alt="_images/a118051eb20c1b1e1fa32532dac88b183989c32465dd2c54b09fee90ac644590.png" src="_images/a118051eb20c1b1e1fa32532dac88b183989c32465dd2c54b09fee90ac644590.png" />
 </div>
 </div>
 <p>And here’s the bid that maximizes Player 1’s chance of winning.</p>
@@ -1364,11 +1271,16 @@ What is the probability that Player 2 underbids by more?</p>
 </div>
 </div>
 </div>
-<p>Recall that your guess was \<span class="math notranslate nohighlight">\(23,000.
-Using your guess to compute the posterior distribution, the posterior mean is about \\\)</span>26,000.
+<p>Recall that your guess was \$23,000.
+Using your guess to compute the posterior distribution, the posterior mean is about \$26,000.
 But the bid that maximizes your chance of winning is \$21,000.</p>
 <p><strong>Exercise:</strong> Do the same analysis for Player 2.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1381,8 +1293,14 @@ But the bid that maximizes your chance of winning is \$21,000.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1395,10 +1313,16 @@ But the bid that maximizes your chance of winning is \$21,000.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_100_0.png" src="_images/chap09_100_0.png" />
+<img alt="_images/c0a1356834ee3205a1df9657db18fef0a9c80ffdd65b4072b09881b624a09e95.png" src="_images/c0a1356834ee3205a1df9657db18fef0a9c80ffdd65b4072b09881b624a09e95.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1411,8 +1335,14 @@ But the bid that maximizes your chance of winning is \$21,000.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1425,10 +1355,11 @@ But the bid that maximizes your chance of winning is \$21,000.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 <section id="maximizing-expected-gain">
-<h2>Maximizing Expected Gain<a class="headerlink" href="#maximizing-expected-gain" title="Permalink to this headline">#</a></h2>
+<h2>Maximizing Expected Gain<a class="headerlink" href="#maximizing-expected-gain" title="Permalink to this heading">#</a></h2>
 <p>In the previous section we computed the bid that maximizes your chance of winning.
 And if that’s your goal, the bid we computed is optimal.</p>
 <p>But winning isn’t everything.
@@ -1452,8 +1383,8 @@ The following function computes how much you will win, on average, given your bi
 </div>
 </div>
 </div>
-<p>For example, if the actual price is \<span class="math notranslate nohighlight">\(35000 
-and you bid \\\)</span>30000,
+<p>For example, if the actual price is \$35000
+and you bid \$30000,
 you will win about \$23,600 worth of prizes on average, taking into account your probability of losing, winning one showcase, or winning both.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1482,7 +1413,7 @@ By averaging over the prices and probabilities in the posterior distribution, we
 </div>
 </div>
 </div>
-<p>For the posterior we computed earlier, based on a guess of \<span class="math notranslate nohighlight">\(23,000, the expected gain for a bid of \\\)</span>21,000 is about \$16,900.</p>
+<p>For the posterior we computed earlier, based on a guess of \$23,000, the expected gain for a bid of \$21,000 is about \$16,900.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expected_gain</span><span class="p">(</span><span class="mi">21000</span><span class="p">,</span> <span class="n">posterior1</span><span class="p">,</span> <span class="n">sample_diff2</span><span class="p">)</span>
@@ -1510,6 +1441,11 @@ By averaging over the prices and probabilities in the posterior distribution, we
 </div>
 <p>Here are the results.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expected_gain_series</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Player 1&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">)</span>
 
@@ -1519,8 +1455,9 @@ By averaging over the prices and probabilities in the posterior distribution, we
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_114_0.png" src="_images/chap09_114_0.png" />
+<img alt="_images/5af6f2ee1d12a94b053bbcda95332bfc6757bf389b2ebf6eb448cbc759aa423b.png" src="_images/5af6f2ee1d12a94b053bbcda95332bfc6757bf389b2ebf6eb448cbc759aa423b.png" />
 </div>
 </div>
 <p>Here is the optimal bid.</p>
@@ -1549,11 +1486,16 @@ By averaging over the prices and probabilities in the posterior distribution, we
 </div>
 </div>
 </div>
-<p>Recall that your initial guess was \<span class="math notranslate nohighlight">\(23,000.
-The bid that maximizes the chance of winning is \\\)</span>21,000.
+<p>Recall that your initial guess was \$23,000.
+The bid that maximizes the chance of winning is \$21,000.
 And the bid that maximizes your expected gain is \$22,000.</p>
 <p><strong>Exercise:</strong> Do the same analysis for Player 2.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1565,8 +1507,14 @@ And the bid that maximizes your expected gain is \$22,000.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1579,10 +1527,16 @@ And the bid that maximizes your expected gain is \$22,000.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_122_0.png" src="_images/chap09_122_0.png" />
+<img alt="_images/fa3190e06341295c604af81707aff93d8ee047523308df3bba4a68565008857a.png" src="_images/fa3190e06341295c604af81707aff93d8ee047523308df3bba4a68565008857a.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1595,8 +1549,14 @@ And the bid that maximizes your expected gain is \$22,000.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1609,12 +1569,13 @@ And the bid that maximizes your expected gain is \$22,000.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
 <p>There’s a lot going on this this chapter, so let’s review the steps:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>First we used KDE and data from past shows to estimate prior distributions for the values of the showcases.</p></li>
 <li><p>Then we used bids from past shows to model the distribution of errors as a normal distribution.</p></li>
 <li><p>We did a Bayesian update using the distribution of errors to compute the likelihood of the data.</p></li>
@@ -1625,7 +1586,7 @@ And the bid that maximizes your expected gain is \$22,000.</p>
 The bid that maximizes the chance of winning is not generally the same as the bid that maximizes expected gain.</p>
 </section>
 <section id="discussion">
-<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">#</a></h2>
+<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this heading">#</a></h2>
 <p>When people discuss the pros and cons of Bayesian estimation, as contrasted with classical methods sometimes called “frequentist”, they often claim that in many cases Bayesian methods and frequentist methods produce the same results.</p>
 <p>In my opinion, this claim is mistaken because Bayesian and frequentist method produce different <em>kinds</em> of results:</p>
 <ul class="simple">
@@ -1642,7 +1603,7 @@ In general, frequentist estimation provides little guidance for decision-making.
 <p>If you hear someone say that Bayesian and frequentist methods produce the same results, you can be confident that they don’t understand Bayesian methods.</p>
 </section>
 <section id="exercises">
-<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">#</a></h2>
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
 <p><strong>Exercise:</strong> When I worked in Cambridge, Massachusetts, I usually took the subway to South Station and then a commuter train home to Needham.  Because the subway was unpredictable, I left the office early enough that I could wait up to 15 minutes and still catch the commuter train.</p>
 <p>When I got to the subway stop, there were usually about 10 people waiting on the platform.  If there were fewer than that, I figured I just missed a train, so I expected to wait a little longer than usual.  And if there there more than that, I expected another train soon.</p>
 <p>But if there were a <em>lot</em> more than 10 passengers waiting, I inferred that something was wrong, and I expected a long wait.  In that case, I might leave and take a taxi.</p>
@@ -1682,6 +1643,11 @@ We can use orders from past weeks to estimate the parameter of this distribution
 <p>Combining these costs with your predictive distribution, how many books should you order to maximize your expected profit?</p>
 <p>To get you started, the following functions compute profits and costs according to the specification of the problem:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_cost</span><span class="p">(</span><span class="n">printed</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute print costs.</span>
@@ -1695,8 +1661,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">total_income</span><span class="p">(</span><span class="n">printed</span><span class="p">,</span> <span class="n">orders</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute income.</span>
@@ -1709,8 +1681,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inventory_cost</span><span class="p">(</span><span class="n">printed</span><span class="p">,</span> <span class="n">orders</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute inventory costs.</span>
@@ -1726,8 +1704,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">out_of_stock_cost</span><span class="p">(</span><span class="n">printed</span><span class="p">,</span> <span class="n">orders</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute out of stock costs.</span>
@@ -1744,8 +1728,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_profit</span><span class="p">(</span><span class="n">printed</span><span class="p">,</span> <span class="n">orders</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute profit.</span>
@@ -1760,9 +1750,15 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>To test these functions, suppose we get exactly 10 orders per week for eight weeks:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">always_10</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">*</span> <span class="mi">8</span>
 <span class="n">always_10</span>
@@ -1774,9 +1770,15 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>If you print 60 books, your net profit is \$200, as in the example.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_profit</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="n">always_10</span><span class="p">)</span>
 </pre></div>
@@ -1787,9 +1789,15 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>If you print 100 books, your net profit is \$310.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_profit</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">always_10</span><span class="p">)</span>
 </pre></div>
@@ -1800,11 +1808,17 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Of course, in the context of the problem you don’t know how many books will be ordered in any given week.  You don’t even know the average rate of orders.  However, given the data and some assumptions about the prior, you can compute the distribution of the rate of orders.</p>
 <p>You’ll have a chance to do that, but to demonstrate the decision analysis part of the problem, I’ll start with the arbitrary assumption that order rates come from a gamma distribution with mean 9.</p>
 <p>Here’s a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents this distribution.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gamma</span>
 
@@ -1822,9 +1836,15 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>And here’s what it looks like:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Book ordering rate ($\lambda$)&#39;</span><span class="p">,</span>
@@ -1833,13 +1853,19 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_149_0.png" src="_images/chap09_149_0.png" />
+<img alt="_images/f0c07feace81ea12a0bd72e74c54165fcf17f2031f3a2fcdd831a65ed6c36fea.png" src="_images/f0c07feace81ea12a0bd72e74c54165fcf17f2031f3a2fcdd831a65ed6c36fea.png" />
 </div>
+</details>
 </div>
 <p>Now, we <em>could</em> generate a predictive distribution for the number of books ordered in a given week, but in this example we have to deal with a complicated cost function.  In particular, <code class="docutils literal notranslate"><span class="pre">out_of_stock_cost</span></code> depends on the sequence of orders.</p>
 <p>So, rather than generate a predictive distribution, I suggest we run simulations.  I’ll demonstrate the steps.</p>
 <p>First, from our hypothetical distribution of rates, we can draw a random sample of 1000 values.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rates</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
 <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span>
@@ -1851,9 +1877,15 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>For each possible rate, we can generate a sequence of 8 orders.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
 <span class="n">order_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">rates</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
@@ -1870,10 +1902,16 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Each row of this array is a hypothetical sequence of orders based on a different hypothetical order rate.</p>
 <p>Now, if you tell me how many books you printed, I can compute your expected profits, averaged over these 1000 possible sequences.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_expected_profits</span><span class="p">(</span><span class="n">printed</span><span class="p">,</span> <span class="n">order_array</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute profits averaged over a sample of orders.</span>
@@ -1887,9 +1925,15 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>For example, here are the expected profits if you order 70, 80, or 90 books.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_expected_profits</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="n">order_array</span><span class="p">)</span>
 </pre></div>
@@ -1900,8 +1944,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_expected_profits</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="n">order_array</span><span class="p">)</span>
 </pre></div>
@@ -1912,8 +1962,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_expected_profits</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">order_array</span><span class="p">)</span>
 </pre></div>
@@ -1924,9 +1980,15 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Now, let’s sweep through a range of values and compute expected profits as a function of the number of books you print.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">printed_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">110</span><span class="p">)</span>
 <span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">compute_expected_profits</span><span class="p">(</span><span class="n">printed</span><span class="p">,</span> <span class="n">order_array</span><span class="p">)</span>
@@ -1935,8 +1997,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expected_profits</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
@@ -1946,11 +2014,17 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_162_0.png" src="_images/chap09_162_0.png" />
+<img alt="_images/e7bd0c699b0f0d5d3def4bba11e16b0b0f888bb38e04107ae33456cb2593b744.png" src="_images/e7bd0c699b0f0d5d3def4bba11e16b0b0f888bb38e04107ae33456cb2593b744.png" />
 </div>
+</details>
 </div>
 <p>Here is the optimal order and the expected profit.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expected_profits</span><span class="o">.</span><span class="n">idxmax</span><span class="p">(),</span> <span class="n">expected_profits</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 </pre></div>
@@ -1961,9 +2035,15 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Now it’s your turn.  Choose a prior that you think is reasonable, update it with the data you are given, and then use the posterior distribution to do the analysis I just demonstrated.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1982,8 +2062,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1996,10 +2082,16 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_167_0.png" src="_images/chap09_167_0.png" />
+<img alt="_images/a6338a1a0893a7144417ca17ebf2bc03705a6c0f0dc14683682fd835e33ee33f.png" src="_images/a6338a1a0893a7144417ca17ebf2bc03705a6c0f0dc14683682fd835e33ee33f.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2022,8 +2114,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2034,8 +2132,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2046,8 +2150,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2060,8 +2170,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2077,8 +2193,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2098,8 +2220,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2112,8 +2240,14 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2127,10 +2261,16 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap09_175_0.png" src="_images/chap09_175_0.png" />
+<img alt="_images/f6e8f3aba82c7dc42ab819db153489febe30bd949e0bc8eb661d66f90388cf3a.png" src="_images/f6e8f3aba82c7dc42ab819db153489febe30bd949e0bc8eb661d66f90388cf3a.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -2145,6 +2285,7 @@ We can use orders from past weeks to estimate the parameter of this distribution
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 </section>
@@ -2169,50 +2310,115 @@ We can use orders from past weeks to estimate the parameter of this distribution
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="chap08.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Poisson Processes</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chap08.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Poisson Processes</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="chap10.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="chap10.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Testing</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Allen B. Downey<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-price-is-right-problem">The Price Is Right Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-prior">The Prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-density-estimation">Kernel Density Estimation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-error">Distribution of Error</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update">Update</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#probability-of-winning">Probability of Winning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Decision Analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#maximizing-expected-gain">Maximizing Expected Gain</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#discussion">Discussion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

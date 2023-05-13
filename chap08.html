@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Poisson Processes &#8212; Think Bayes</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,58 +61,87 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chap08';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Decision Analysis" href="chap09.html" />
     <link rel="prev" title="Minimum, Maximum, and Mixture" href="chap07.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">Think Bayes</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -110,479 +150,239 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Chapters
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="preface.html">
-   Preface
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap01.html">
-   Probability
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap02.html">
-   Bayes’s Theorem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap03.html">
-   Distributions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap04.html">
-   Estimating Proportions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap05.html">
-   Estimating Counts
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap06.html">
-   Odds and Addends
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap07.html">
-   Minimum, Maximum, and Mixture
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Poisson Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap09.html">
-   Decision Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap10.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap11.html">
-   Comparison
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap12.html">
-   Classification
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap13.html">
-   Inference
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap14.html">
-   Survival Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap15.html">
-   Mark and Recapture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap16.html">
-   Logistic Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap17.html">
-   Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap18.html">
-   Conjugate Priors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap19.html">
-   MCMC
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap20.html">
-   Approximate Bayesian Computation
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19.html">MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">Approximate Bayesian Computation</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Examples
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="redline.html">
-   The Red Line Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="vaccine2.html">
-   Estimating vaccine efficacy
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="usb.html">
-   Flipping USB Connectors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="sister.html">
-   The Left Handed Sister Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="bayes_dice.html">
-   Bayesian Dice
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="radiation.html">
-   The Emitter-Detector Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital.html">
-   Grid algorithms for hierarchical models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital_birth_rate.html">
-   Comparing birth rates
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="ok.html">
-   How Many Typos?
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/chap08.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
-</div>
+  
+  <div id="rtd-footer-container"></div>
 
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-<a href="https://github.com/AllenDowney/ThinkBayes2"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="bottom"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fab fa-github"></i>
   </span>
 
 </a>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/chap08.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chap08.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.ipynb</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
-
-      </li>
+</li>
+      
+      
+      
       
       <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file-pdf"></i>
   </span>
-<span class="headerbtn__text-container">.pdf</span>
+<span class="btn__text-container">.pdf</span>
 </button>
-
-      </li>
+</li>
       
-    </ul>
-  </div>
+  </ul>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
   </span>
 
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-world-cup-problem">
-   The World Cup Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-poisson-distribution">
-   The Poisson Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-gamma-distribution">
-   The Gamma Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-update">
-   The Update
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#probability-of-superiority">
-   Probability of Superiority
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#predicting-the-rematch">
-   Predicting the Rematch
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-exponential-distribution">
-   The Exponential Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Poisson Processes</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-world-cup-problem">
-   The World Cup Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-poisson-distribution">
-   The Poisson Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-gamma-distribution">
-   The Gamma Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-update">
-   The Update
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#probability-of-superiority">
-   Probability of Superiority
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#predicting-the-rematch">
-   Predicting the Rematch
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-exponential-distribution">
-   The Exponential Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Poisson Processes</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-world-cup-problem">The World Cup Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-poisson-distribution">The Poisson Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gamma-distribution">The Gamma Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-update">The Update</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#probability-of-superiority">Probability of Superiority</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#predicting-the-rematch">Predicting the Rematch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-exponential-distribution">The Exponential Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
-  <section class="tex2jax_ignore mathjax_ignore" id="poisson-processes">
-<h1>Poisson Processes<a class="headerlink" href="#poisson-processes" title="Permalink to this headline">#</a></h1>
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="poisson-processes">
+<h1>Poisson Processes<a class="headerlink" href="#poisson-processes" title="Permalink to this heading">#</a></h1>
 <p>This chapter introduces the <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_point_process">Poisson process</a>, which is a model used to describe events that occur at random intervals.
 As an example of a Poisson process, we’ll model goal-scoring in soccer, which is American English for the game everyone else calls “football”.
 We’ll use goals scored in a game to estimate the parameter of a Poisson process; then we’ll use the posterior distribution to make predictions.</p>
 <p>And we’ll solve The World Cup Problem.</p>
 <section id="the-world-cup-problem">
-<h2>The World Cup Problem<a class="headerlink" href="#the-world-cup-problem" title="Permalink to this headline">#</a></h2>
+<h2>The World Cup Problem<a class="headerlink" href="#the-world-cup-problem" title="Permalink to this heading">#</a></h2>
 <p>In the 2018 FIFA World Cup final, France defeated Croatia 4 goals to 2.  Based on this outcome:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>How confident should we be that France is the better team?</p></li>
 <li><p>If the same teams played again, what is the chance France would win again?</p></li>
 </ol>
 <p>To answer these questions, we have to make some modeling decisions.</p>
 <ul class="simple">
-<li><p>First, I’ll assume that for any team against another team there is some unknown goal-scoring rate, measured in goals per game, which I’ll denote with the Python variable <code class="docutils literal notranslate"><span class="pre">lam</span></code> or the Greek letter <span class="math notranslate nohighlight">\(\lambda\)</span>, pronounced “lambda”.</p></li>
-<li><p>Second, I’ll assume that a goal is equally likely during any minute of a game.  So, in a 90 minute game, the probability of scoring during any minute is <span class="math notranslate nohighlight">\(\lambda/90\)</span>.</p></li>
+<li><p>First, I’ll assume that for any team against another team there is some unknown goal-scoring rate, measured in goals per game, which I’ll denote with the Python variable <code class="docutils literal notranslate"><span class="pre">lam</span></code> or the Greek letter $\lambda$, pronounced “lambda”.</p></li>
+<li><p>Second, I’ll assume that a goal is equally likely during any minute of a game.  So, in a 90 minute game, the probability of scoring during any minute is $\lambda/90$.</p></li>
 <li><p>Third, I’ll assume that a team never scores twice during the same minute.</p></li>
 </ul>
 <p>Of course, none of these assumptions is completely true in the real world, but I think they are reasonable simplifications.
@@ -592,13 +392,12 @@ As George Box said, “All models are wrong; some are useful.”
 true, at least roughly, the number of goals scored in a game follows a Poisson distribution, at least roughly.</p>
 </section>
 <section id="the-poisson-distribution">
-<h2>The Poisson Distribution<a class="headerlink" href="#the-poisson-distribution" title="Permalink to this headline">#</a></h2>
-<p>If the number of goals scored in a game follows a <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a> with a goal-scoring rate, <span class="math notranslate nohighlight">\(\lambda\)</span>, the probability of scoring <span class="math notranslate nohighlight">\(k\)</span> goals is</p>
-<div class="math notranslate nohighlight">
-\[\lambda^k \exp(-\lambda) ~/~ k!\]</div>
-<p>for any non-negative value of <span class="math notranslate nohighlight">\(k\)</span>.</p>
+<h2>The Poisson Distribution<a class="headerlink" href="#the-poisson-distribution" title="Permalink to this heading">#</a></h2>
+<p>If the number of goals scored in a game follows a <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a> with a goal-scoring rate, $\lambda$, the probability of scoring $k$ goals is</p>
+<p>$$\lambda^k \exp(-\lambda) ~/~ k!$$</p>
+<p>for any non-negative value of $k$.</p>
 <p>SciPy provides a <code class="docutils literal notranslate"><span class="pre">poisson</span></code> object that represents a Poisson distribution.
-We can create one with <span class="math notranslate nohighlight">\(\lambda=1.4\)</span> like this:</p>
+We can create one with $\lambda=1.4$ like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
@@ -660,6 +459,11 @@ We can create one with <span class="math notranslate nohighlight">\(\lambda=1.4\
 </div>
 <p>And here’s what it looks like.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
 
@@ -670,8 +474,14 @@ We can create one with <span class="math notranslate nohighlight">\(\lambda=1.4\
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_goals</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Poisson distribution with $\lambda=1.4$&#39;</span><span class="p">)</span>
 
@@ -679,8 +489,9 @@ We can create one with <span class="math notranslate nohighlight">\(\lambda=1.4\
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_17_0.png" src="_images/chap08_17_0.png" />
+<img alt="_images/58c54aa34d3731e8b80f04a10b301b1ece4e10316ef4a35fd1a70b4332219d71.png" src="_images/58c54aa34d3731e8b80f04a10b301b1ece4e10316ef4a35fd1a70b4332219d71.png" />
 </div>
 </div>
 <p>The most likely outcomes are 0, 1, and 2; higher values are possible but increasingly unlikely.
@@ -690,12 +501,12 @@ This distribution shows that if we know the goal scoring rate, we can predict th
 <p>To answer that, we need to think about the prior distribution of <code class="docutils literal notranslate"><span class="pre">lam</span></code>, which represents the range of possible values and their probabilities before we see the score.</p>
 </section>
 <section id="the-gamma-distribution">
-<h2>The Gamma Distribution<a class="headerlink" href="#the-gamma-distribution" title="Permalink to this headline">#</a></h2>
+<h2>The Gamma Distribution<a class="headerlink" href="#the-gamma-distribution" title="Permalink to this heading">#</a></h2>
 <p>If you have ever seen a soccer game, you have some information about <code class="docutils literal notranslate"><span class="pre">lam</span></code>.  In most games, teams score a few goals each.  In rare cases, a team might score more than 5 goals, but they almost never score more than 10.</p>
 <p>Using <a class="reference external" href="https://www.statista.com/statistics/269031/goals-scored-per-game-at-the-fifa-world-cup-since-1930/">data from previous World Cups</a>, I estimate that each team scores about 1.4 goals per game, on average.  So I’ll set the mean of <code class="docutils literal notranslate"><span class="pre">lam</span></code> to be 1.4.</p>
 <p>For a good team against a bad one, we expect <code class="docutils literal notranslate"><span class="pre">lam</span></code> to be higher; for a bad team against a good one, we expect it to be lower.</p>
 <p>To model the distribution of goal-scoring rates, I’ll use a <a class="reference external" href="https://en.wikipedia.org/wiki/Gamma_distribution">gamma distribution</a>, which I chose because:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>The goal scoring rate is continuous and non-negative, and the gamma distribution is appropriate for this kind of quantity.</p></li>
 <li><p>The gamma distribution has only one parameter, <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, which is the mean.  So it’s easy to construct a gamma distribution with the mean we want.</p></li>
 <li><p>As we’ll see, the shape of the gamma distribution is a reasonable choice, given what we know about soccer.</p></li>
@@ -732,6 +543,11 @@ The <code class="docutils literal notranslate"><span class="pre">ps</span></code
 <p>The result is a discrete approximation of a gamma distribution.
 Here’s what it looks like.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate_rate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
     <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Goal scoring rate (lam)&#39;</span><span class="p">,</span>
@@ -740,21 +556,33 @@ Here’s what it looks like.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 <span class="n">decorate_rate</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Prior distribution of $\lambda$&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_26_0.png" src="_images/chap08_26_0.png" />
+<img alt="_images/7ba78434be5f44d022795ae6c9f5d4277050e2da9534b44be608bda840475700.png" src="_images/7ba78434be5f44d022795ae6c9f5d4277050e2da9534b44be608bda840475700.png" />
 </div>
 </div>
 <p>This distribution represents our prior knowledge about goal scoring: <code class="docutils literal notranslate"><span class="pre">lam</span></code> is usually less than 2, occasionally as high as 6, and seldom higher than that.</p>
 <p>And we can confirm that the mean is about 1.4.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
@@ -765,13 +593,14 @@ Here’s what it looks like.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>As usual, reasonable people could disagree about the details of the prior, but this is good enough to get started.  Let’s do an update.</p>
 </section>
 <section id="the-update">
-<h2>The Update<a class="headerlink" href="#the-update" title="Permalink to this headline">#</a></h2>
-<p>Suppose you are given the goal-scoring rate, <span class="math notranslate nohighlight">\(\lambda\)</span>, and asked to compute the probability of scoring a number of goals, <span class="math notranslate nohighlight">\(k\)</span>.  That is precisely the question we answered by computing the Poisson PMF.</p>
-<p>For example, if <span class="math notranslate nohighlight">\(\lambda\)</span> is 1.4, the probability of scoring 4 goals in a game is:</p>
+<h2>The Update<a class="headerlink" href="#the-update" title="Permalink to this heading">#</a></h2>
+<p>Suppose you are given the goal-scoring rate, $\lambda$, and asked to compute the probability of scoring a number of goals, $k$.  That is precisely the question we answered by computing the Poisson PMF.</p>
+<p>For example, if $\lambda$ is 1.4, the probability of scoring 4 goals in a game is:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lam</span> <span class="o">=</span> <span class="mf">1.4</span>
@@ -786,7 +615,7 @@ Here’s what it looks like.</p>
 </div>
 </div>
 </div>
-<p>Now suppose we are have an array of possible values for <span class="math notranslate nohighlight">\(\lambda\)</span>; we can compute the likelihood of the data for each hypothetical value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>, like this:</p>
+<p>Now suppose we are have an array of possible values for $\lambda$; we can compute the likelihood of the data for each hypothetical value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>, like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lams</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">qs</span>
@@ -824,6 +653,11 @@ To get the posterior distribution, we multiply the prior by the likelihoods we j
 </div>
 <p>Here’s what the posterior distribution looks like, along with the prior.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 <span class="n">france</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;France posterior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">)</span>
@@ -832,8 +666,9 @@ To get the posterior distribution, we multiply the prior by the likelihoods we j
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_40_0.png" src="_images/chap08_40_0.png" />
+<img alt="_images/8a3342b969ad573b94b1b8e696c887e4f7ee6b38a3b746430e6b92396d756742.png" src="_images/8a3342b969ad573b94b1b8e696c887e4f7ee6b38a3b746430e6b92396d756742.png" />
 </div>
 </div>
 <p>The data, <code class="docutils literal notranslate"><span class="pre">k=4</span></code>, makes us think higher values of <code class="docutils literal notranslate"><span class="pre">lam</span></code> are more likely and lower values are less likely.  So the posterior distribution is shifted to the right.</p>
@@ -848,6 +683,11 @@ To get the posterior distribution, we multiply the prior by the likelihoods we j
 </div>
 <p>And here are the results.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 <span class="n">croatia</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Croatia posterior&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">)</span>
@@ -856,8 +696,9 @@ To get the posterior distribution, we multiply the prior by the likelihoods we j
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_44_0.png" src="_images/chap08_44_0.png" />
+<img alt="_images/d5a935a0a5ac15c7cef65b49f17499e8f84f352a4439e1461a9dd40ae0c830de.png" src="_images/d5a935a0a5ac15c7cef65b49f17499e8f84f352a4439e1461a9dd40ae0c830de.png" />
 </div>
 </div>
 <p>Here are the posterior means for these distributions.</p>
@@ -879,7 +720,7 @@ Likewise after France scores 4 goals, their posterior mean is 2.7.</p>
 <p>These results are typical of a Bayesian update: the location of the posterior distribution is a compromise between the prior and the data.</p>
 </section>
 <section id="probability-of-superiority">
-<h2>Probability of Superiority<a class="headerlink" href="#probability-of-superiority" title="Permalink to this headline">#</a></h2>
+<h2>Probability of Superiority<a class="headerlink" href="#probability-of-superiority" title="Permalink to this heading">#</a></h2>
 <p>Now that we have a posterior distribution for each team, we can answer the first question: How confident should we be that France is the better team?</p>
 <p>In the model, “better” means having a higher goal-scoring rate against the opponent.  We can use the posterior distributions to compute the probability that a random value drawn from France’s distribution exceeds a value drawn from Croatia’s.</p>
 <p>One way to do that is to enumerate all pairs of values from the two distributions, adding up the total probability that one value exceeds the other.</p>
@@ -931,7 +772,7 @@ In reality, if a team is down by one goal, they might play more aggressively tow
 <p>As always, the results are only as good as the model.</p>
 </section>
 <section id="predicting-the-rematch">
-<h2>Predicting the Rematch<a class="headerlink" href="#predicting-the-rematch" title="Permalink to this headline">#</a></h2>
+<h2>Predicting the Rematch<a class="headerlink" href="#predicting-the-rematch" title="Permalink to this heading">#</a></h2>
 <p>Now we can take on the second question: If the same teams played again, what is the chance Croatia would win?
 To answer this question, we’ll generate the “posterior predictive distribution”, which is the number of goals we expect a team to score.</p>
 <p>If we knew the goal scoring rate, <code class="docutils literal notranslate"><span class="pre">lam</span></code>, the distribution of goals would be a Poisson distribution with parameter <code class="docutils literal notranslate"><span class="pre">lam</span></code>.
@@ -947,6 +788,11 @@ Since we don’t know <code class="docutils literal notranslate"><span class="pr
 </div>
 <p>The following figure shows what these distributions look like for a few values of <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -959,8 +805,9 @@ Since we don’t know <code class="docutils literal notranslate"><span class="pr
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_58_0.png" src="_images/chap08_58_0.png" />
+<img alt="_images/62062c40c6a4a2831a237ab2924b29f91d3f6e61a7de23f3dc1237010380f9dd.png" src="_images/62062c40c6a4a2831a237ab2924b29f91d3f6e61a7de23f3dc1237010380f9dd.png" />
 </div>
 </div>
 <p>The predictive distribution is a mixture of these <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects, weighted with the posterior probabilities.
@@ -976,14 +823,20 @@ We can use <code class="docutils literal notranslate"><span class="pre">make_mix
 </div>
 <p>Here’s the predictive distribution for the number of goals France would score in a rematch.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pred_france</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;France&#39;</span><span class="p">)</span>
 <span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Posterior predictive distribution&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_62_0.png" src="_images/chap08_62_0.png" />
+<img alt="_images/59075d25fad64df15f9e94a861a4486a16b91f6bad681d050dc3290afca3698d.png" src="_images/59075d25fad64df15f9e94a861a4486a16b91f6bad681d050dc3290afca3698d.png" />
 </div>
 </div>
 <p>This distribution represents two sources of uncertainty: we don’t know the actual value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>, and even if we did, we would not know the number of goals in the next game.</p>
@@ -996,6 +849,11 @@ We can use <code class="docutils literal notranslate"><span class="pre">make_mix
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pred_croatia</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Croatia&#39;</span><span class="p">)</span>
 <span class="n">decorate_goals</span><span class="p">(</span><span class="s1">&#39;Posterior predictive distribution&#39;</span><span class="p">)</span>
@@ -1003,8 +861,9 @@ We can use <code class="docutils literal notranslate"><span class="pre">make_mix
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_65_0.png" src="_images/chap08_65_0.png" />
+<img alt="_images/3c5c1e25e759daa7d773f22210dbfb08b6f53081a393466e75c90808850d29c0.png" src="_images/3c5c1e25e759daa7d773f22210dbfb08b6f53081a393466e75c90808850d29c0.png" />
 </div>
+</details>
 </div>
 <p>We can use these distributions to compute the probability that France wins, loses, or ties the rematch.</p>
 <div class="cell docutils container">
@@ -1063,17 +922,16 @@ We can use <code class="docutils literal notranslate"><span class="pre">make_mix
 Even if France is the better team, they might lose the game.</p>
 </section>
 <section id="the-exponential-distribution">
-<h2>The Exponential Distribution<a class="headerlink" href="#the-exponential-distribution" title="Permalink to this headline">#</a></h2>
+<h2>The Exponential Distribution<a class="headerlink" href="#the-exponential-distribution" title="Permalink to this heading">#</a></h2>
 <p>As an exercise at the end of this notebook, you’ll have a chance to work on  the following variation on the World Cup Problem:</p>
 <blockquote>
 <div><p>In the 2014 FIFA World Cup, Germany played Brazil in a semifinal match. Germany scored after 11 minutes and again at the 23 minute mark. At that point in the match, how many goals would you expect Germany to score after 90 minutes? What was the probability that they would score 5 more goals (as, in fact, they did)?</p>
 </div></blockquote>
 <p>In this version, notice that the data is not the number of goals in a fixed period of time, but the time between goals.</p>
 <p>To compute the likelihood of data like this, we can take advantage of the theory of Poisson processes again.  If each team has a constant goal-scoring rate, we expect the time between goals to follow an <a class="reference external" href="https://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a>.</p>
-<p>If the goal-scoring rate is <span class="math notranslate nohighlight">\(\lambda\)</span>, the probability of seeing an interval between goals of <span class="math notranslate nohighlight">\(t\)</span> is proportional to the PDF of the exponential distribution:</p>
-<div class="math notranslate nohighlight">
-\[\lambda \exp(-\lambda t)\]</div>
-<p>Because <span class="math notranslate nohighlight">\(t\)</span> is a continuous quantity, the value of this expression is not a probability; it is a probability density.  However, it is proportional to the probability of the data, so we can use it as a likelihood in a Bayesian update.</p>
+<p>If the goal-scoring rate is $\lambda$, the probability of seeing an interval between goals of $t$ is proportional to the PDF of the exponential distribution:</p>
+<p>$$\lambda \exp(-\lambda t)$$</p>
+<p>Because $t$ is a continuous quantity, the value of this expression is not a probability; it is a probability density.  However, it is proportional to the probability of the data, so we can use it as a likelihood in a Bayesian update.</p>
 <p>SciPy provides <code class="docutils literal notranslate"><span class="pre">expon</span></code>, which creates an object that represents an exponential distribution.
 However, it does not take <code class="docutils literal notranslate"><span class="pre">lam</span></code> as a parameter in the way you might expect, which makes it awkward to work with.
 Since the PDF of the exponential distribution is so easy to evaluate, I’ll use my own function.</p>
@@ -1086,7 +944,7 @@ Since the PDF of the exponential distribution is so easy to evaluate, I’ll use
 </div>
 </div>
 </div>
-<p>To see what the exponential distribution looks like, let’s assume again that <code class="docutils literal notranslate"><span class="pre">lam</span></code> is 1.4; we can compute the distribution of <span class="math notranslate nohighlight">\(t\)</span> like this:</p>
+<p>To see what the exponential distribution looks like, let’s assume again that <code class="docutils literal notranslate"><span class="pre">lam</span></code> is 1.4; we can compute the distribution of $t$ like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lam</span> <span class="o">=</span> <span class="mf">1.4</span>
@@ -1105,6 +963,11 @@ Since the PDF of the exponential distribution is so easy to evaluate, I’ll use
 </div>
 <p>And here’s what it looks like:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate_time</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
     <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time between goals (games)&#39;</span><span class="p">,</span>
@@ -1113,8 +976,14 @@ Since the PDF of the exponential distribution is so easy to evaluate, I’ll use
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_time</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;exponential with $\lambda$ = 1.4&#39;</span><span class="p">)</span>
 
@@ -1122,35 +991,36 @@ Since the PDF of the exponential distribution is so easy to evaluate, I’ll use
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_79_0.png" src="_images/chap08_79_0.png" />
+<img alt="_images/96ec4c44d1ecd930473d03903142cfd3b9249ca8650f4d696d5463fa14032e4b.png" src="_images/96ec4c44d1ecd930473d03903142cfd3b9249ca8650f4d696d5463fa14032e4b.png" />
 </div>
 </div>
 <p>It is counterintuitive, but true, that the most likely time to score a goal is immediately.  After that, the probability of each successive interval is a little lower.</p>
 <p>With a goal-scoring rate of 1.4, it is possible that a team will take more than one game to score a goal, but it is unlikely that they will take more than two games.</p>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
 <p>This chapter introduces three new distributions, so it can be hard to keep them straight.
 Let’s review:</p>
 <ul class="simple">
 <li><p>If a system satisfies the assumptions of a Poisson model, the number of events in a period of time follows a Poisson distribution, which is a discrete distribution with integer quantities from 0 to infinity. In practice, we can usually ignore low-probability quantities above a finite limit.</p></li>
 <li><p>Also under the Poisson model, the interval between events follows an exponential distribution, which is a continuous distribution with quantities from 0 to infinity. Because it is continuous, it is described by a probability density function (PDF) rather than a probability mass function (PMF). But when we use an exponential distribution to compute the likelihood of the data, we can treat densities as unnormalized probabilities.</p></li>
-<li><p>The Poisson and exponential distributions are parameterized by an event rate, denoted <span class="math notranslate nohighlight">\(\lambda\)</span> or <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p></li>
-<li><p>For the prior distribution of <span class="math notranslate nohighlight">\(\lambda\)</span>, I used a gamma distribution, which is a continuous distribution with quantities from 0 to infinity, but I approximated it with a discrete, bounded PMF. The gamma distribution has one parameter, denoted <span class="math notranslate nohighlight">\(\alpha\)</span> or <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, which is also its mean.</p></li>
+<li><p>The Poisson and exponential distributions are parameterized by an event rate, denoted $\lambda$ or <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p></li>
+<li><p>For the prior distribution of $\lambda$, I used a gamma distribution, which is a continuous distribution with quantities from 0 to infinity, but I approximated it with a discrete, bounded PMF. The gamma distribution has one parameter, denoted $\alpha$ or <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, which is also its mean.</p></li>
 </ul>
 <p>I chose the gamma distribution because the shape is consistent with our background knowledge about goal-scoring rates.
 There are other distributions we could have used; however, we will see in &lt;&lt;_ConjugatePriors&gt;&gt; that the gamma distribution can be a particularly good choice.</p>
 <p>But we have a few things to do before we get there, starting with these exercises.</p>
 </section>
 <section id="exercises">
-<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">#</a></h2>
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
 <p><strong>Exercise:</strong> Let’s finish the exercise we started:</p>
 <blockquote>
 <div><p>In the 2014 FIFA World Cup, Germany played Brazil in a semifinal match. Germany scored after 11 minutes and again at the 23 minute mark. At that point in the match, how many goals would you expect Germany to score after 90 minutes? What was the probability that they would score 5 more goals (as, in fact, they did)?</p>
 </div></blockquote>
 <p>Here are the steps I recommend:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Starting with the same gamma prior we used in the previous problem, compute the likelihood of scoring a goal after 11 minutes for each possible value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>.  Don’t forget to convert all times into games rather than minutes.</p></li>
 <li><p>Compute the posterior distribution of <code class="docutils literal notranslate"><span class="pre">lam</span></code> for Germany after the first goal.</p></li>
 <li><p>Compute the likelihood of scoring another goal after 12 more minutes and do another update.  Plot the prior, posterior after one goal, and posterior after two goals.</p></li>
@@ -1158,6 +1028,11 @@ There are other distributions we could have used; however, we will see in &lt;&l
 <li><p>Compute the probability of scoring 5 or more goals during the remaining time.</p></li>
 </ol>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1178,8 +1053,14 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1193,8 +1074,14 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1209,8 +1096,14 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1225,10 +1118,16 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_88_0.png" src="_images/chap08_88_0.png" />
+<img alt="_images/0740f0e6f3f0aac3874b6c1f90f5771a7972aa50727a230b24702f1dc46f999f.png" src="_images/0740f0e6f3f0aac3874b6c1f90f5771a7972aa50727a230b24702f1dc46f999f.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1241,8 +1140,14 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1253,8 +1158,14 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1266,10 +1177,16 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_91_0.png" src="_images/chap08_91_0.png" />
+<img alt="_images/0cecd0c7ba065fb6b2658efe96e68f30cb0ac638e3b23059c2fd7a58b1978682.png" src="_images/0cecd0c7ba065fb6b2658efe96e68f30cb0ac638e3b23059c2fd7a58b1978682.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1284,8 +1201,14 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1300,10 +1223,16 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> Returning to the first version of the World Cup Problem.  Suppose France and Croatia play a rematch.  What is the probability that France scores first?</p>
 <p>Hint: Compute the posterior predictive distribution for the time until the first goal by making a mixture of exponential distributions.  You can use the following function to make a PMF that approximates an exponential distribution.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_expo_pmf</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Make a PMF of an exponential distribution.</span>
@@ -1321,8 +1250,14 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1333,8 +1268,14 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1345,8 +1286,14 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1360,10 +1307,16 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_99_0.png" src="_images/chap08_99_0.png" />
+<img alt="_images/c6056f1c8681d9a55bbb7434ffbf28fd8676cf8e71f1e833edec65ca92f43b2f.png" src="_images/c6056f1c8681d9a55bbb7434ffbf28fd8676cf8e71f1e833edec65ca92f43b2f.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1378,6 +1331,7 @@ There are other distributions we could have used; however, we will see in &lt;&l
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> In the 2010-11 National Hockey League (NHL) Finals, my beloved Boston
 Bruins played a best-of-seven championship series against the despised
@@ -1390,6 +1344,11 @@ http://www.nhl.com, specifically the average goals per game
 for each team in the 2010-11 season.  The distribution is well modeled by a gamma distribution with mean 2.8.</p>
 <p>In what ways do you think the outcome of these games might violate the assumptions of the Poisson model?  How would these violations affect your predictions?</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1409,8 +1368,14 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1429,8 +1394,14 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1444,10 +1415,16 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.7997400090376567
 </pre></div>
 </div>
-<img alt="_images/chap08_104_1.png" src="_images/chap08_104_1.png" />
+<img alt="_images/8961cb45c2d1db771b78e9c4b438312f7dce1565f33644f678a6f2463f8a0a2f.png" src="_images/8961cb45c2d1db771b78e9c4b438312f7dce1565f33644f678a6f2463f8a0a2f.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1464,8 +1441,14 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1482,8 +1465,14 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1495,10 +1484,16 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_107_0.png" src="_images/chap08_107_0.png" />
+<img alt="_images/c60ceceee189a52422bbfd1fa049ebb442236f4beb2ea4762ef515d24343ffbe.png" src="_images/c60ceceee189a52422bbfd1fa049ebb442236f4beb2ea4762ef515d24343ffbe.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1507,8 +1502,14 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1520,10 +1521,16 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_109_0.png" src="_images/chap08_109_0.png" />
+<img alt="_images/aacd06863c73f0847d6ec939ef6c81a6bafb123c3163fd62b93fa43e0cf9d227.png" src="_images/aacd06863c73f0847d6ec939ef6c81a6bafb123c3163fd62b93fa43e0cf9d227.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1535,10 +1542,16 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap08_110_0.png" src="_images/chap08_110_0.png" />
+<img alt="_images/325cc125fc2ae0889f9548b61f17be3f2cfd34d5a5f974a9951b5b3ffba5321f.png" src="_images/325cc125fc2ae0889f9548b61f17be3f2cfd34d5a5f974a9951b5b3ffba5321f.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1555,8 +1568,14 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1573,8 +1592,14 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1595,6 +1620,7 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 </section>
@@ -1619,50 +1645,113 @@ for each team in the 2010-11 season.  The distribution is well modeled by a gamm
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="chap07.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Minimum, Maximum, and Mixture</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chap07.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Minimum, Maximum, and Mixture</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="chap09.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="chap09.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Decision Analysis</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Allen B. Downey<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-world-cup-problem">The World Cup Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-poisson-distribution">The Poisson Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gamma-distribution">The Gamma Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-update">The Update</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#probability-of-superiority">Probability of Superiority</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#predicting-the-rematch">Predicting the Rematch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-exponential-distribution">The Exponential Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

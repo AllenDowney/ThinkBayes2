@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>The Emitter-Detector Problem &#8212; Think Bayes</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,58 +61,87 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'radiation';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Grid algorithms for hierarchical models" href="hospital.html" />
     <link rel="prev" title="Bayesian Dice" href="bayes_dice.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">Think Bayes</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -110,453 +150,240 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Chapters
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="preface.html">
-   Preface
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap01.html">
-   Probability
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap02.html">
-   Bayes’s Theorem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap03.html">
-   Distributions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap04.html">
-   Estimating Proportions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap05.html">
-   Estimating Counts
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap06.html">
-   Odds and Addends
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap07.html">
-   Minimum, Maximum, and Mixture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap08.html">
-   Poisson Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap09.html">
-   Decision Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap10.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap11.html">
-   Comparison
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap12.html">
-   Classification
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap13.html">
-   Inference
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap14.html">
-   Survival Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap15.html">
-   Mark and Recapture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap16.html">
-   Logistic Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap17.html">
-   Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap18.html">
-   Conjugate Priors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap19.html">
-   MCMC
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap20.html">
-   Approximate Bayesian Computation
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19.html">MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">Approximate Bayesian Computation</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Examples
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="redline.html">
-   The Red Line Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="vaccine2.html">
-   Estimating vaccine efficacy
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="usb.html">
-   Flipping USB Connectors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="sister.html">
-   The Left Handed Sister Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="bayes_dice.html">
-   Bayesian Dice
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   The Emitter-Detector Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital.html">
-   Grid algorithms for hierarchical models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital_birth_rate.html">
-   Comparing birth rates
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="ok.html">
-   How Many Typos?
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/radiation.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
-</div>
+  
+  <div id="rtd-footer-container"></div>
 
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-<a href="https://github.com/AllenDowney/ThinkBayes2"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="bottom"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fab fa-github"></i>
   </span>
 
 </a>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/radiation.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/radiation.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.ipynb</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
-
-      </li>
+</li>
+      
+      
+      
       
       <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file-pdf"></i>
   </span>
-<span class="headerbtn__text-container">.pdf</span>
+<span class="btn__text-container">.pdf</span>
 </button>
-
-      </li>
+</li>
       
-    </ul>
-  </div>
+  </ul>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
   </span>
 
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#modeling-a-radiation-sensor">
-   Modeling a radiation sensor
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#first-update">
-   First update
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#jeffreys-prior">
-   Jeffreys prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#robot-a">
-   Robot A
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#robot-b">
-   Robot B
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#going-the-other-way">
-   Going the other way
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>The Emitter-Detector Problem</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#modeling-a-radiation-sensor">
-   Modeling a radiation sensor
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#first-update">
-   First update
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#jeffreys-prior">
-   Jeffreys prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#robot-a">
-   Robot A
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#robot-b">
-   Robot B
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#going-the-other-way">
-   Going the other way
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>The Emitter-Detector Problem</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modeling-a-radiation-sensor">Modeling a radiation sensor</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-update">First update</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jeffreys-prior">Jeffreys prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#robot-a">Robot A</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#robot-b">Robot B</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#going-the-other-way">Going the other way</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
-  <section class="tex2jax_ignore mathjax_ignore" id="the-emitter-detector-problem">
-<h1>The Emitter-Detector Problem<a class="headerlink" href="#the-emitter-detector-problem" title="Permalink to this headline">#</a></h1>
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="the-emitter-detector-problem">
+<h1>The Emitter-Detector Problem<a class="headerlink" href="#the-emitter-detector-problem" title="Permalink to this heading">#</a></h1>
 <p><a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/radiation.ipynb">Click here to run this notebook on Colab</a></p>
 <section id="modeling-a-radiation-sensor">
-<h2>Modeling a radiation sensor<a class="headerlink" href="#modeling-a-radiation-sensor" title="Permalink to this headline">#</a></h2>
+<h2>Modeling a radiation sensor<a class="headerlink" href="#modeling-a-radiation-sensor" title="Permalink to this heading">#</a></h2>
 <p>Here’s an example from Jaynes, <em>Probability Theory</em>, page 168:</p>
 <blockquote>
-<div><p>We have a radioactive source … which is emitting particles of some sort … There is a rate <span class="math notranslate nohighlight">\(p\)</span>, in particles per second, at which a radioactive nucleus sends particles through our counter; and each particle passing through produces counts at the rate <span class="math notranslate nohighlight">\(\theta\)</span>. From measuring the number {c1 , c2 , …} of counts in different seconds, what can we say about the numbers {n1 , n2 , …} actually passing through the counter in each second, and
+<div><p>We have a radioactive source … which is emitting particles of some sort … There is a rate $p$, in particles per second, at which a radioactive nucleus sends particles through our counter; and each particle passing through produces counts at the rate $\theta$. From measuring the number {c1 , c2 , …} of counts in different seconds, what can we say about the numbers {n1 , n2 , …} actually passing through the counter in each second, and
 what can we say about the strength of the source?</p>
 </div></blockquote>
 <p>I presented a <a class="reference external" href="https://www.greenteapress.com/thinkbayes/html/thinkbayes015.html#sec130">version of this problem</a> in the first edition of <em>Think Bayes</em>, but I don’t think I explained it well, and my solution was a bit of a mess.
 In the second edition, I use more NumPy and SciPy, which makes it possible to express the solution more clearly and concisely, so let me give it another try.</p>
-<p>As a model of the radioactive source, Jaynes suggests we imagine “<span class="math notranslate nohighlight">\(N\)</span> nuclei, each of which has independently the probability <span class="math notranslate nohighlight">\(r\)</span> of sending a particle through our counter in any one second”.
-If <span class="math notranslate nohighlight">\(N\)</span> is large and <span class="math notranslate nohighlight">\(r\)</span> is small, the number or particles emitted in a given second is well modeled by a Poisson distribution with parameter <span class="math notranslate nohighlight">\(s = N r\)</span>, where <span class="math notranslate nohighlight">\(s\)</span> is the strength of the source.</p>
+<p>As a model of the radioactive source, Jaynes suggests we imagine “$N$ nuclei, each of which has independently the probability $r$ of sending a particle through our counter in any one second”.
+If $N$ is large and $r$ is small, the number or particles emitted in a given second is well modeled by a Poisson distribution with parameter $s = N r$, where $s$ is the strength of the source.</p>
 <p>As a model of the sensor, we’ll assume that “each particle passing through the counter
-has independently the probability <span class="math notranslate nohighlight">\(\phi\)</span> of making a count”.
-So if we know the actual number of particles, <span class="math notranslate nohighlight">\(n\)</span>, and the efficiency of the sensor, <span class="math notranslate nohighlight">\(\phi\)</span>, the distribution of the count is <span class="math notranslate nohighlight">\(\mathrm{Binomial}(n, \phi)\)</span>.</p>
-<p>With that, we are ready to solve the problem, but first, an aside: I am not sure why Jaynes states the problem in terms of <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(\theta\)</span>, and then solves it in terms of <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(\phi\)</span>.
+has independently the probability $\phi$ of making a count”.
+So if we know the actual number of particles, $n$, and the efficiency of the sensor, $\phi$, the distribution of the count is $\mathrm{Binomial}(n, \phi)$.</p>
+<p>With that, we are ready to solve the problem, but first, an aside: I am not sure why Jaynes states the problem in terms of $p$ and $\theta$, and then solves it in terms of $s$ and $\phi$.
 It might have been an oversight, or there might be subtle distinction he intended to draw the reader’s attention to.
 The book is full of dire warnings about distinctions like this, but in this case I don’t see an explanation.</p>
-<p>Anyway, following Jaynes, I’ll start with a uniform prior for <span class="math notranslate nohighlight">\(s\)</span>, over a range of values wide enough to cover the region where the likelihood of the data is non-negligible.</p>
+<p>Anyway, following Jaynes, I’ll start with a uniform prior for $s$, over a range of values wide enough to cover the region where the likelihood of the data is non-negligible.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -607,8 +434,8 @@ The book is full of dire warnings about distinctions like this, but in this case
 </table>
 </div></div></div>
 </div>
-<p>For each value of <span class="math notranslate nohighlight">\(s\)</span>, the distribution of <span class="math notranslate nohighlight">\(n\)</span> is Poisson, so we can form the joint prior of <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(n\)</span> using the <code class="docutils literal notranslate"><span class="pre">poisson</span></code> function from SciPy.
-I’ll use a range of values for <span class="math notranslate nohighlight">\(n\)</span> that, again, covers the region where the likelihood of the data is non-negligible.</p>
+<p>For each value of $s$, the distribution of $n$ is Poisson, so we can form the joint prior of $s$ and $n$ using the <code class="docutils literal notranslate"><span class="pre">poisson</span></code> function from SciPy.
+I’ll use a range of values for $n$ that, again, covers the region where the likelihood of the data is non-negligible.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
@@ -626,8 +453,8 @@ I’ll use a range of values for <span class="math notranslate nohighlight">\(n\
 </div>
 </div>
 </div>
-<p>The result is an array with one row for each value of <span class="math notranslate nohighlight">\(n\)</span> and one column for each value of <span class="math notranslate nohighlight">\(s\)</span>.
-To get the prior probability for each pair, we multiply each row by the prior probabilities of <span class="math notranslate nohighlight">\(s\)</span>.
+<p>The result is an array with one row for each value of $n$ and one column for each value of $s$.
+To get the prior probability for each pair, we multiply each row by the prior probabilities of $s$.
 The following function encapsulates this computation and puts the result in a Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that represents the joint prior.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -846,7 +673,7 @@ The following function encapsulates this computation and puts the result in a Pa
 </div></div></div>
 </div>
 <p>Now we’re ready to compute the likelihood of the data.
-In this problem, it depends only on <span class="math notranslate nohighlight">\(n\)</span>, regardless of <span class="math notranslate nohighlight">\(s\)</span>, so we only have to compute it once for each value of <span class="math notranslate nohighlight">\(n\)</span>.</p>
+In this problem, it depends only on $n$, regardless of $s$, so we only have to compute it once for each value of $n$.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
@@ -864,7 +691,7 @@ In this problem, it depends only on <span class="math notranslate nohighlight">\
 </div>
 </div>
 </div>
-<p>The result is an array of likelihoods, one for each value of <span class="math notranslate nohighlight">\(n\)</span>.
+<p>The result is an array of likelihoods, one for each value of $n$.
 To do the Bayesian update, we need to multiply each column in the prior by this array of likelihoods.
 We can do that using the <code class="docutils literal notranslate"><span class="pre">multiply</span></code> method with the <code class="docutils literal notranslate"><span class="pre">axis</span></code> argument.</p>
 <div class="cell docutils container">
@@ -1083,7 +910,7 @@ We can do that using the <code class="docutils literal notranslate"><span class=
 </div>
 </section>
 <section id="first-update">
-<h2>First update<a class="headerlink" href="#first-update" title="Permalink to this headline">#</a></h2>
+<h2>First update<a class="headerlink" href="#first-update" title="Permalink to this heading">#</a></h2>
 <p>Let’s test the update function with the first example, on page 178 of <em>Probability Theory</em>:</p>
 <blockquote>
 <div><p>During the first second, <code class="docutils literal notranslate"><span class="pre">c1</span> <span class="pre">=</span> <span class="pre">10</span></code> counts are registered. What can [we] say about the number <code class="docutils literal notranslate"><span class="pre">n1</span></code> of particles?</p>
@@ -1291,7 +1118,7 @@ We can do that using the <code class="docutils literal notranslate"><span class=
 </div></div></div>
 </div>
 <p>The following figure is a contour plot of the joint posterior distribution.
-As you might expect, <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(n\)</span> are highly correlated; that is, if we believe <span class="math notranslate nohighlight">\(s\)</span> is low, we should believe that <span class="math notranslate nohighlight">\(n\)</span> is low, and contrariwise if <span class="math notranslate nohighlight">\(s\)</span> is high.</p>
+As you might expect, $s$ and $n$ are highly correlated; that is, if we believe $s$ is low, we should believe that $n$ is low, and contrariwise if $s$ is high.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">plot_contour</span>
@@ -1301,10 +1128,10 @@ As you might expect, <span class="math notranslate nohighlight">\(s\)</span> and
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/radiation_22_0.png" src="_images/radiation_22_0.png" />
+<img alt="_images/b5cc8230c348ba4b83c235c20afe353243cada64c8a17e899620331c993a21bb.png" src="_images/b5cc8230c348ba4b83c235c20afe353243cada64c8a17e899620331c993a21bb.png" />
 </div>
 </div>
-<p>From the posterior distribution, we can extract the marginal distributions of <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(n\)</span>.</p>
+<p>From the posterior distribution, we can extract the marginal distributions of $s$ and $n$.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">marginal</span>
@@ -1319,7 +1146,7 @@ As you might expect, <span class="math notranslate nohighlight">\(s\)</span> and
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>109.99983355767465
 </pre></div>
 </div>
-<img alt="_images/radiation_24_1.png" src="_images/radiation_24_1.png" />
+<img alt="_images/f3655c7e8ac622ed2137103e8ec175d15721f4c402798c4b7794f59f58746e51.png" src="_images/f3655c7e8ac622ed2137103e8ec175d15721f4c402798c4b7794f59f58746e51.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1334,10 +1161,10 @@ As you might expect, <span class="math notranslate nohighlight">\(s\)</span> and
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>108.99984691276569
 </pre></div>
 </div>
-<img alt="_images/radiation_25_1.png" src="_images/radiation_25_1.png" />
+<img alt="_images/59df8b33ca4bd09abf77ddcc0aeaaaa817667e393a1ca03598e118c9371298cb.png" src="_images/59df8b33ca4bd09abf77ddcc0aeaaaa817667e393a1ca03598e118c9371298cb.png" />
 </div>
 </div>
-<p>The posterior mean of <span class="math notranslate nohighlight">\(n\)</span> is close to 109, which is consistent with Equation 6.116.</p>
+<p>The posterior mean of $n$ is close to 109, which is consistent with Equation 6.116.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_n</span><span class="o">.</span><span class="n">idxmax</span><span class="p">(),</span> <span class="n">c</span><span class="o">/</span><span class="n">phi</span>
@@ -1366,12 +1193,12 @@ It looks like the posterior probabilities for 99 and 100 are the same, but the f
 </div>
 </section>
 <section id="jeffreys-prior">
-<h2>Jeffreys prior<a class="headerlink" href="#jeffreys-prior" title="Permalink to this headline">#</a></h2>
-<p>Instead of a uniform prior for <span class="math notranslate nohighlight">\(s\)</span>, we can use a Jeffreys prior, in which the prior probability for each value of <span class="math notranslate nohighlight">\(s\)</span> is proportional to <span class="math notranslate nohighlight">\(1/s\)</span>.
+<h2>Jeffreys prior<a class="headerlink" href="#jeffreys-prior" title="Permalink to this heading">#</a></h2>
+<p>Instead of a uniform prior for $s$, we can use a Jeffreys prior, in which the prior probability for each value of $s$ is proportional to $1/s$.
 This has the advantage of “invariance under certain changes of parameters”, which is “the only correct way to express complete ignorance of a scale parameter.”
-However, Jaynes suggests that it is not clear “whether <span class="math notranslate nohighlight">\(s\)</span> can properly be regarded as a scale parameter in this problem.”</p>
+However, Jaynes suggests that it is not clear “whether $s$ can properly be regarded as a scale parameter in this problem.”</p>
 <p>Nevertheless, he suggests we try it and see what happens.
-Here’s the Jeffreys prior for <span class="math notranslate nohighlight">\(s\)</span>.</p>
+Here’s the Jeffreys prior for $s$.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_jeff</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">ss</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">ss</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
@@ -1418,7 +1245,7 @@ Here’s the Jeffreys prior for <span class="math notranslate nohighlight">\(s\)
 </table>
 </div></div></div>
 </div>
-<p>We can use it to compute the joint prior of <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(n\)</span>, and update it with <code class="docutils literal notranslate"><span class="pre">c1</span></code>.</p>
+<p>We can use it to compute the joint prior of $s$ and $n$, and update it with <code class="docutils literal notranslate"><span class="pre">c1</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_jeff</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">prior_jeff</span><span class="p">,</span> <span class="n">ns</span><span class="p">)</span>
@@ -1427,7 +1254,7 @@ Here’s the Jeffreys prior for <span class="math notranslate nohighlight">\(s\)
 </div>
 </div>
 </div>
-<p>Here’s the marginal posterior distribution of <span class="math notranslate nohighlight">\(n\)</span>:</p>
+<p>Here’s the marginal posterior distribution of $n$:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_n</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior_jeff</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -1440,7 +1267,7 @@ Here’s the Jeffreys prior for <span class="math notranslate nohighlight">\(s\)
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>99.99995605790188
 </pre></div>
 </div>
-<img alt="_images/radiation_35_1.png" src="_images/radiation_35_1.png" />
+<img alt="_images/7101eedd63277d78a54f25477a6f60c9c2234af947ed9755dd213aafca0854ea.png" src="_images/7101eedd63277d78a54f25477a6f60c9c2234af947ed9755dd213aafca0854ea.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1458,7 +1285,7 @@ Here’s the Jeffreys prior for <span class="math notranslate nohighlight">\(s\)
 <p>The posterior mean is close to 100 and the MAP is 91; both are consistent with the results in Equation 6.122.</p>
 </section>
 <section id="robot-a">
-<h2>Robot A<a class="headerlink" href="#robot-a" title="Permalink to this headline">#</a></h2>
+<h2>Robot A<a class="headerlink" href="#robot-a" title="Permalink to this heading">#</a></h2>
 <p>Now we get to what I think is the most interesting part of this example, which is to take into account a second observation under two models of the scenario:</p>
 <blockquote>
 <div><p>Two robots, [A and B], have different prior information about the source of the particles.
@@ -1466,7 +1293,7 @@ The source is hidden in another room which A and B are not allowed to enter.
 A has no knowledge at all about the source of particles; for all [it] knows, … the other room might be full of little [people] who run back and forth, holding first one radioactive source, then another, up to the exit window.</p>
 <p>B has one additional qualitative fact: [it] knows that the source is a radioactive sample of long lifetime, in a fixed position.</p>
 </div></blockquote>
-<p>In other words, B has reason to believe that the source strength <span class="math notranslate nohighlight">\(s\)</span> is constant from one interval to the next, while A admits the possibility that <span class="math notranslate nohighlight">\(s\)</span> is different for each interval.</p>
+<p>In other words, B has reason to believe that the source strength $s$ is constant from one interval to the next, while A admits the possibility that $s$ is different for each interval.</p>
 <p>The following figure, from Jaynes, represents these models graphically (Jaynes calls them “logical situations” because he seems to be allergic to the word “model”).</p>
 <img src="https://github.com/AllenDowney/ThinkBayes2/raw/master/examples/jaynes177.png" width="400">
 <p>For A, the “different intervals are logically independent”, so the update with <code class="docutils literal notranslate"><span class="pre">c2</span> <span class="pre">=</span> <span class="pre">16</span></code> starts with the same prior.</p>
@@ -1491,7 +1318,7 @@ A has no knowledge at all about the source of particles; for all [it] knows, …
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>168.947980523708
 </pre></div>
 </div>
-<img alt="_images/radiation_41_1.png" src="_images/radiation_41_1.png" />
+<img alt="_images/08e991dae10108d2fbefe797ad82aaba68f40c89ab3c91309740f4f0bd085ed7.png" src="_images/08e991dae10108d2fbefe797ad82aaba68f40c89ab3c91309740f4f0bd085ed7.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1510,9 +1337,9 @@ A has no knowledge at all about the source of particles; for all [it] knows, …
 The MAP is 160, which is consistent with 6.123.</p>
 </section>
 <section id="robot-b">
-<h2>Robot B<a class="headerlink" href="#robot-b" title="Permalink to this headline">#</a></h2>
-<p>For B, the “logical situation” is different. If we consider <span class="math notranslate nohighlight">\(s\)</span> to be constant, we can – and should! – take the information from the first update into account when we perform the second update.
-We can do that by using the posterior distribution of <span class="math notranslate nohighlight">\(s\)</span> from the first update to form the joint prior for the second update, like this:</p>
+<h2>Robot B<a class="headerlink" href="#robot-b" title="Permalink to this heading">#</a></h2>
+<p>For B, the “logical situation” is different. If we consider $s$ to be constant, we can – and should! – take the information from the first update into account when we perform the second update.
+We can do that by using the posterior distribution of $s$ from the first update to form the joint prior for the second update, like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">posterior_s</span><span class="p">,</span> <span class="n">ns</span><span class="p">)</span>
@@ -1527,10 +1354,10 @@ We can do that by using the posterior distribution of <span class="math notransl
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>137.499999315101
 </pre></div>
 </div>
-<img alt="_images/radiation_45_1.png" src="_images/radiation_45_1.png" />
+<img alt="_images/4b50d9a60cf899178330dfb1199ffb2945f405006de59bcf8dc1cc49cf943f2e.png" src="_images/4b50d9a60cf899178330dfb1199ffb2945f405006de59bcf8dc1cc49cf943f2e.png" />
 </div>
 </div>
-<p>The posterior mean of <span class="math notranslate nohighlight">\(n\)</span> is close to 137.5, which is consistent with Equation 6.134.
+<p>The posterior mean of $n$ is close to 137.5, which is consistent with Equation 6.134.
 The MAP is 132, which is one less than the analytic result, 133.
 But again, there are two values with the same probability except for floating-point errors.</p>
 <div class="cell docutils container">
@@ -1557,16 +1384,16 @@ But again, there are two values with the same probability except for floating-po
 </div>
 </div>
 </div>
-<p>Under B’s model, the data from the first interval updates our belief about <span class="math notranslate nohighlight">\(s\)</span>, which influences what we believe about <code class="docutils literal notranslate"><span class="pre">n2</span></code>.</p>
+<p>Under B’s model, the data from the first interval updates our belief about $s$, which influences what we believe about <code class="docutils literal notranslate"><span class="pre">n2</span></code>.</p>
 </section>
 <section id="going-the-other-way">
-<h2>Going the other way<a class="headerlink" href="#going-the-other-way" title="Permalink to this headline">#</a></h2>
-<p>That might not seem surprising, but there is an additional point Jaynes makes with this example, which is that it also works the other way around: Having seen <code class="docutils literal notranslate"><span class="pre">c2</span></code>, we have more information about <span class="math notranslate nohighlight">\(s\)</span>, which means we can – and should! – go back and reconsider what we concluded about <code class="docutils literal notranslate"><span class="pre">n1</span></code>.</p>
+<h2>Going the other way<a class="headerlink" href="#going-the-other-way" title="Permalink to this heading">#</a></h2>
+<p>That might not seem surprising, but there is an additional point Jaynes makes with this example, which is that it also works the other way around: Having seen <code class="docutils literal notranslate"><span class="pre">c2</span></code>, we have more information about $s$, which means we can – and should! – go back and reconsider what we concluded about <code class="docutils literal notranslate"><span class="pre">n1</span></code>.</p>
 <p>We can do that by imagining we did the experiments in the opposite order, so</p>
-<ol class="simple">
-<li><p>We’ll start again with a joint prior based on a uniform distribution for <span class="math notranslate nohighlight">\(s\)</span>,</p></li>
+<ol class="arabic simple">
+<li><p>We’ll start again with a joint prior based on a uniform distribution for $s$,</p></li>
 <li><p>Update it based on <code class="docutils literal notranslate"><span class="pre">c2</span></code>,</p></li>
-<li><p>Use the posterior distribution of <span class="math notranslate nohighlight">\(s\)</span> to form a new joint prior,</p></li>
+<li><p>Use the posterior distribution of $s$ to form a new joint prior,</p></li>
 <li><p>Update it based on <code class="docutils literal notranslate"><span class="pre">c1</span></code>, and</p></li>
 <li><p>Extract the marginal posterior for <code class="docutils literal notranslate"><span class="pre">n1</span></code>.</p></li>
 </ol>
@@ -1647,19 +1474,19 @@ And the MAP is 126, which is one less than the result in Equation 6.132, again d
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/radiation_58_0.png" src="_images/radiation_58_0.png" />
+<img alt="_images/2293d73b99596e9fda0e513eab50d159e0e4e484ce95a38d399835f483c2c60e.png" src="_images/2293d73b99596e9fda0e513eab50d159e0e4e484ce95a38d399835f483c2c60e.png" />
 </div>
 </div>
 <p>With the additional information from <code class="docutils literal notranslate"><span class="pre">c2</span></code>:</p>
 <ul class="simple">
-<li><p>We give higher probability to large values of <span class="math notranslate nohighlight">\(s\)</span>, so we also give higher probability to large values of <code class="docutils literal notranslate"><span class="pre">n1</span></code>, and</p></li>
-<li><p>The width of the distribution is narrower, which shows that with more information about <span class="math notranslate nohighlight">\(s\)</span>, we have more information about <code class="docutils literal notranslate"><span class="pre">n1</span></code>.</p></li>
+<li><p>We give higher probability to large values of $s$, so we also give higher probability to large values of <code class="docutils literal notranslate"><span class="pre">n1</span></code>, and</p></li>
+<li><p>The width of the distribution is narrower, which shows that with more information about $s$, we have more information about <code class="docutils literal notranslate"><span class="pre">n1</span></code>.</p></li>
 </ul>
-<p>This is one of several examples Jaynes uses to distinguish between “logical and causal dependence.” In this example, causal dependence only goes in the forward direction: “<span class="math notranslate nohighlight">\(s\)</span> is the physical cause which partially determines <span class="math notranslate nohighlight">\(n\)</span>; and then <span class="math notranslate nohighlight">\(n\)</span> in turn is the physical cause which partially determines <span class="math notranslate nohighlight">\(c\)</span>”.</p>
+<p>This is one of several examples Jaynes uses to distinguish between “logical and causal dependence.” In this example, causal dependence only goes in the forward direction: “$s$ is the physical cause which partially determines $n$; and then $n$ in turn is the physical cause which partially determines $c$”.</p>
 <p>Therefore, <code class="docutils literal notranslate"><span class="pre">c1</span></code> and <code class="docutils literal notranslate"><span class="pre">c2</span></code> are causally independent: if the number of particles counted in one interval is unusually high (or low), that does not cause the number of particles during any other interval to be higher or lower.</p>
-<p>But if <span class="math notranslate nohighlight">\(s\)</span> is unknown, they are not <em>logically</em> independent. For example, if <code class="docutils literal notranslate"><span class="pre">c1</span></code> is lower than expected, that implies that lower values of <span class="math notranslate nohighlight">\(s\)</span> are more likely, which implies that lower values of <code class="docutils literal notranslate"><span class="pre">n2</span></code> are more likely, which implies that lower values of <code class="docutils literal notranslate"><span class="pre">c2</span></code> are more likely.</p>
+<p>But if $s$ is unknown, they are not <em>logically</em> independent. For example, if <code class="docutils literal notranslate"><span class="pre">c1</span></code> is lower than expected, that implies that lower values of $s$ are more likely, which implies that lower values of <code class="docutils literal notranslate"><span class="pre">n2</span></code> are more likely, which implies that lower values of <code class="docutils literal notranslate"><span class="pre">c2</span></code> are more likely.</p>
 <p>And, as we’ve seen, it works the other way, too.
-For example, if <code class="docutils literal notranslate"><span class="pre">c2</span></code> is higher than expected, that implies that higher values of <span class="math notranslate nohighlight">\(s\)</span>, <code class="docutils literal notranslate"><span class="pre">n1</span></code>, and <code class="docutils literal notranslate"><span class="pre">c1</span></code> are more likely.</p>
+For example, if <code class="docutils literal notranslate"><span class="pre">c2</span></code> is higher than expected, that implies that higher values of $s$, <code class="docutils literal notranslate"><span class="pre">n1</span></code>, and <code class="docutils literal notranslate"><span class="pre">c1</span></code> are more likely.</p>
 <p>If you find the second result more surprising – that is, if you think it’s weird that <code class="docutils literal notranslate"><span class="pre">c2</span></code> changes what we believe about <code class="docutils literal notranslate"><span class="pre">n1</span></code> – that implies that you are not (yet) distinguishing between logical and causal dependence.</p>
 </section>
 </section>
@@ -1684,50 +1511,110 @@ For example, if <code class="docutils literal notranslate"><span class="pre">c2<
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="bayes_dice.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Bayesian Dice</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="bayes_dice.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Bayesian Dice</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="hospital.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="hospital.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Grid algorithms for hierarchical models</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Allen B. Downey<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modeling-a-radiation-sensor">Modeling a radiation sensor</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-update">First update</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jeffreys-prior">Jeffreys prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#robot-a">Robot A</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#robot-b">Robot B</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#going-the-other-way">Going the other way</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

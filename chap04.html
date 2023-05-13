@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Estimating Proportions &#8212; Think Bayes</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,58 +61,87 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chap04';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Estimating Counts" href="chap05.html" />
     <link rel="prev" title="Distributions" href="chap03.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">Think Bayes</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -110,460 +150,229 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Chapters
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="preface.html">
-   Preface
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap01.html">
-   Probability
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap02.html">
-   Bayes’s Theorem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap03.html">
-   Distributions
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Estimating Proportions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap05.html">
-   Estimating Counts
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap06.html">
-   Odds and Addends
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap07.html">
-   Minimum, Maximum, and Mixture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap08.html">
-   Poisson Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap09.html">
-   Decision Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap10.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap11.html">
-   Comparison
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap12.html">
-   Classification
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap13.html">
-   Inference
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap14.html">
-   Survival Analysis
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap15.html">
-   Mark and Recapture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap16.html">
-   Logistic Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap17.html">
-   Regression
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap18.html">
-   Conjugate Priors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap19.html">
-   MCMC
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="chap20.html">
-   Approximate Bayesian Computation
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">Distributions</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19.html">MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">Approximate Bayesian Computation</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Examples
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="redline.html">
-   The Red Line Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="vaccine2.html">
-   Estimating vaccine efficacy
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="usb.html">
-   Flipping USB Connectors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="sister.html">
-   The Left Handed Sister Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="bayes_dice.html">
-   Bayesian Dice
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="radiation.html">
-   The Emitter-Detector Problem
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital.html">
-   Grid algorithms for hierarchical models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hospital_birth_rate.html">
-   Comparing birth rates
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="ok.html">
-   How Many Typos?
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/AllenDowney/ThinkBayes2/master?urlpath=tree/chap04.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
-</div>
+  
+  <div id="rtd-footer-container"></div>
 
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-<a href="https://github.com/AllenDowney/ThinkBayes2"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="bottom"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fab fa-github"></i>
   </span>
 
 </a>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/chap04.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chap04.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.ipynb</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
-
-      </li>
+</li>
+      
+      
+      
       
       <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file-pdf"></i>
   </span>
-<span class="headerbtn__text-container">.pdf</span>
+<span class="btn__text-container">.pdf</span>
 </button>
-
-      </li>
+</li>
       
-    </ul>
-  </div>
+  </ul>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
   </span>
 
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-euro-problem">
-   The Euro Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-binomial-distribution">
-   The Binomial Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#bayesian-estimation">
-   Bayesian Estimation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#triangle-prior">
-   Triangle Prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-binomial-likelihood-function">
-   The Binomial Likelihood Function
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#bayesian-statistics">
-   Bayesian Statistics
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Estimating Proportions</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-euro-problem">
-   The Euro Problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-binomial-distribution">
-   The Binomial Distribution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#bayesian-estimation">
-   Bayesian Estimation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#triangle-prior">
-   Triangle Prior
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-binomial-likelihood-function">
-   The Binomial Likelihood Function
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#bayesian-statistics">
-   Bayesian Statistics
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Estimating Proportions</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-euro-problem">The Euro Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-binomial-distribution">The Binomial Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-estimation">Bayesian Estimation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#triangle-prior">Triangle Prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-binomial-likelihood-function">The Binomial Likelihood Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-statistics">Bayesian Statistics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
-  <section class="tex2jax_ignore mathjax_ignore" id="estimating-proportions">
-<h1>Estimating Proportions<a class="headerlink" href="#estimating-proportions" title="Permalink to this headline">#</a></h1>
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="estimating-proportions">
+<h1>Estimating Proportions<a class="headerlink" href="#estimating-proportions" title="Permalink to this heading">#</a></h1>
 <p>In the previous chapter we solved the 101 Bowls Problem, and I admitted that it is not really about guessing which bowl the cookies came from; it is about estimating proportions.</p>
 <p>In this chapter, we take another step toward Bayesian statistics by solving the Euro problem.
 We’ll start with the same prior distribution, and we’ll see that the update is the same, mathematically.
 But I will argue that it is a different problem, philosophically, and use it to introduce two defining elements of Bayesian statistics: choosing prior distributions, and using probability to represent the unknown.</p>
 <section id="the-euro-problem">
-<h2>The Euro Problem<a class="headerlink" href="#the-euro-problem" title="Permalink to this headline">#</a></h2>
+<h2>The Euro Problem<a class="headerlink" href="#the-euro-problem" title="Permalink to this heading">#</a></h2>
 <p>In <em>Information Theory, Inference, and Learning Algorithms</em>, David MacKay poses this problem:</p>
 <p>“A statistical statement appeared in <em>The Guardian</em> on Friday January 4, 2002:</p>
 <blockquote>
@@ -574,14 +383,13 @@ But I will argue that it is a different problem, philosophically, and use it to 
 First we’ll use the binomial distribution to see where that 7% came from; then we’ll use Bayes’s Theorem to estimate the probability that this coin comes up heads.</p>
 </section>
 <section id="the-binomial-distribution">
-<h2>The Binomial Distribution<a class="headerlink" href="#the-binomial-distribution" title="Permalink to this headline">#</a></h2>
+<h2>The Binomial Distribution<a class="headerlink" href="#the-binomial-distribution" title="Permalink to this heading">#</a></h2>
 <p>Suppose I tell you that a coin is “fair”, that is, the probability of heads is 50%.  If you spin it twice, there are four outcomes: <code class="docutils literal notranslate"><span class="pre">HH</span></code>, <code class="docutils literal notranslate"><span class="pre">HT</span></code>, <code class="docutils literal notranslate"><span class="pre">TH</span></code>, and <code class="docutils literal notranslate"><span class="pre">TT</span></code>.  All four outcomes have the same probability, 25%.</p>
 <p>If we add up the total number of heads, there are three possible results: 0, 1, or 2.  The probabilities of 0 and 2 are 25%, and the probability of 1 is 50%.</p>
-<p>More generally, suppose the probability of heads is <span class="math notranslate nohighlight">\(p\)</span> and we spin the coin <span class="math notranslate nohighlight">\(n\)</span> times.  The probability that we get a total of <span class="math notranslate nohighlight">\(k\)</span> heads is given by the <a class="reference external" href="https://en.wikipedia.org/wiki/Binomial_distribution">binomial distribution</a>:</p>
-<div class="math notranslate nohighlight">
-\[\binom{n}{k} p^k (1-p)^{n-k}\]</div>
-<p>for any value of <span class="math notranslate nohighlight">\(k\)</span> from 0 to <span class="math notranslate nohighlight">\(n\)</span>, including both.
-The term <span class="math notranslate nohighlight">\(\binom{n}{k}\)</span> is the <a class="reference external" href="https://en.wikipedia.org/wiki/Binomial_coefficient">binomial coefficient</a>, usually pronounced “n choose k”.</p>
+<p>More generally, suppose the probability of heads is $p$ and we spin the coin $n$ times.  The probability that we get a total of $k$ heads is given by the <a class="reference external" href="https://en.wikipedia.org/wiki/Binomial_distribution">binomial distribution</a>:</p>
+<p>$$\binom{n}{k} p^k (1-p)^{n-k}$$</p>
+<p>for any value of $k$ from 0 to $n$, including both.
+The term $\binom{n}{k}$ is the <a class="reference external" href="https://en.wikipedia.org/wiki/Binomial_coefficient">binomial coefficient</a>, usually pronounced “n choose k”.</p>
 <p>We could evaluate this expression ourselves, but we can also use the SciPy function <code class="docutils literal notranslate"><span class="pre">binom.pmf</span></code>.
 For example, if we flip a coin <code class="docutils literal notranslate"><span class="pre">n=2</span></code> times and the probability of heads is <code class="docutils literal notranslate"><span class="pre">p=0.5</span></code>, here’s the probability of getting <code class="docutils literal notranslate"><span class="pre">k=1</span></code> heads:</p>
 <div class="cell docutils container">
@@ -691,6 +499,11 @@ If we put these probabilities in a <code class="docutils literal notranslate"><s
 </div>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
 
@@ -702,8 +515,9 @@ If we put these probabilities in a <code class="docutils literal notranslate"><s
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap04_17_0.png" src="_images/chap04_17_0.png" />
+<img alt="_images/78776da24ecbd5525d7f021195efd37ee9f890ed482a679078c11cd2f6e24baa.png" src="_images/78776da24ecbd5525d7f021195efd37ee9f890ed482a679078c11cd2f6e24baa.png" />
 </div>
 </div>
 <p>The most likely quantity in this distribution is 125:</p>
@@ -789,6 +603,11 @@ If we put these probabilities in a <code class="docutils literal notranslate"><s
 And if we get 110, we have come up short by 15.</p>
 <p>7% is the sum of both of these “tails”, as shown in the following figure.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -808,8 +627,9 @@ And if we get 110, we have come up short by 15.</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap04_31_0.png" src="_images/chap04_31_0.png" />
+<img alt="_images/bbe850c4ba1754c42250404d1be42aca905c5085d068a8cd75a524120acd38b2.png" src="_images/bbe850c4ba1754c42250404d1be42aca905c5085d068a8cd75a524120acd38b2.png" />
 </div>
 </div>
 <p>Here’s how we compute the total probability of the left tail.</p>
@@ -831,7 +651,7 @@ so the total probability of outcomes “as extreme” as 140 is 6.6%.</p>
 <p>That’s interesting, but it doesn’t answer MacKay’s question.  Let’s see if we can.</p>
 </section>
 <section id="bayesian-estimation">
-<h2>Bayesian Estimation<a class="headerlink" href="#bayesian-estimation" title="Permalink to this headline">#</a></h2>
+<h2>Bayesian Estimation<a class="headerlink" href="#bayesian-estimation" title="Permalink to this heading">#</a></h2>
 <p>Any given coin has some probability of landing heads up when spun
 on edge; I’ll call this probability <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 It seems reasonable to believe that <code class="docutils literal notranslate"><span class="pre">x</span></code> depends
@@ -909,6 +729,11 @@ That’s more efficient than normalizing it after each spin (although we’ll se
 </div>
 <p>And here’s what the posterior looks like.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate_euro</span><span class="p">(</span><span class="n">title</span><span class="p">):</span>
     <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Proportion of heads (x)&#39;</span><span class="p">,</span>
@@ -917,16 +742,23 @@ That’s more efficient than normalizing it after each spin (although we’ll se
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;140 heads out of 250&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">)</span>
 <span class="n">decorate_euro</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior distribution of x&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap04_49_0.png" src="_images/chap04_49_0.png" />
+<img alt="_images/dd30c6b049d5869916cbb249de23ebe991fb42772dad3eb5da6714b70d4aeb42.png" src="_images/dd30c6b049d5869916cbb249de23ebe991fb42772dad3eb5da6714b70d4aeb42.png" />
 </div>
 </div>
 <p>This figure shows the posterior distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code>, which is the proportion of heads for the coin we observed.</p>
@@ -947,7 +779,7 @@ It indicates that values less than 0.4 and greater than 0.7 are unlikely; values
 </div>
 </section>
 <section id="triangle-prior">
-<h2>Triangle Prior<a class="headerlink" href="#triangle-prior" title="Permalink to this headline">#</a></h2>
+<h2>Triangle Prior<a class="headerlink" href="#triangle-prior" title="Permalink to this heading">#</a></h2>
 <p>So far we’ve been using a uniform prior:</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
@@ -986,6 +818,11 @@ Here’s the code that constructs it:</p>
 Then we use <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">hypos</span></code> to make a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
 <p>The following figure shows the result, along with the uniform prior.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">uniform</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="n">triangle</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -993,8 +830,9 @@ Then we use <code class="docutils literal notranslate"><span class="pre">a</span
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap04_57_0.png" src="_images/chap04_57_0.png" />
+<img alt="_images/4cdca293cccae337c63f6c15db30cf19669f1955bef2dc4da5e6bd5ac35c56cd.png" src="_images/4cdca293cccae337c63f6c15db30cf19669f1955bef2dc4da5e6bd5ac35c56cd.png" />
 </div>
 </div>
 <p>Now we can update both priors with the same data:</p>
@@ -1008,6 +846,11 @@ Then we use <code class="docutils literal notranslate"><span class="pre">a</span
 </div>
 <p>Here are the posteriors.</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">uniform</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="n">triangle</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -1015,8 +858,9 @@ Then we use <code class="docutils literal notranslate"><span class="pre">a</span
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="_images/chap04_61_0.png" src="_images/chap04_61_0.png" />
+<img alt="_images/53d63fd46dbabe83c44373b98d53b283d13d9308199d87274f185e49165ae929.png" src="_images/53d63fd46dbabe83c44373b98d53b283d13d9308199d87274f185e49165ae929.png" />
 </div>
 </div>
 <p>The differences between the posterior distributions are barely visible, and so small they would hardly matter in practice.</p>
@@ -1030,14 +874,13 @@ data, people who start with different priors will tend to
 converge on the same posterior distribution.</p>
 </section>
 <section id="the-binomial-likelihood-function">
-<h2>The Binomial Likelihood Function<a class="headerlink" href="#the-binomial-likelihood-function" title="Permalink to this headline">#</a></h2>
+<h2>The Binomial Likelihood Function<a class="headerlink" href="#the-binomial-likelihood-function" title="Permalink to this heading">#</a></h2>
 <p>So far we’ve been computing the updates one spin at a time, so for the Euro problem we have to do 250 updates.</p>
 <p>A more efficient alternative is to compute the likelihood of the entire dataset at once.
 For each hypothetical value of <code class="docutils literal notranslate"><span class="pre">x</span></code>, we have to compute the probability of getting 140 heads out of 250 spins.</p>
 <p>Well, we know how to do that; this is the question the binomial distribution answers.
-If the probability of heads is <span class="math notranslate nohighlight">\(p\)</span>, the probability of <span class="math notranslate nohighlight">\(k\)</span> heads in <span class="math notranslate nohighlight">\(n\)</span> spins is:</p>
-<div class="math notranslate nohighlight">
-\[\binom{n}{k} p^k (1-p)^{n-k}\]</div>
+If the probability of heads is $p$, the probability of $k$ heads in $n$ spins is:</p>
+<p>$$\binom{n}{k} p^k (1-p)^{n-k}$$</p>
 <p>And we can use SciPy to compute it.
 The following function takes a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> that represents a prior distribution and a tuple of integers that represent the data:</p>
 <div class="cell docutils container">
@@ -1082,7 +925,7 @@ Here’s the update.</p>
 <p>But this way of doing the computation is much more efficient.</p>
 </section>
 <section id="bayesian-statistics">
-<h2>Bayesian Statistics<a class="headerlink" href="#bayesian-statistics" title="Permalink to this headline">#</a></h2>
+<h2>Bayesian Statistics<a class="headerlink" href="#bayesian-statistics" title="Permalink to this heading">#</a></h2>
 <p>You might have noticed similarities between the Euro problem and the 101 Bowls Problem in &lt;&lt;_101Bowls&gt;&gt;.
 The prior distributions are the same, the likelihoods are the same, and with the same data the results would be the same.
 But there are two differences.</p>
@@ -1110,7 +953,7 @@ Historically, many people have been bothered by its subjectivity and its use of 
 <p>If you are interested in this history, I recommend Sharon Bertsch McGrayne’s book, <em><a class="reference external" href="https://yalebooks.yale.edu/book/9780300188226/theory-would-not-die">The Theory That Would Not Die</a></em>.</p>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
 <p>In this chapter I posed David MacKay’s Euro problem and we started to solve it.
 Given the data, we computed the posterior distribution for <code class="docutils literal notranslate"><span class="pre">x</span></code>, the probability a Euro coin comes up heads.</p>
 <p>We tried two different priors, updated them with the same data, and found that the posteriors were nearly the same.
@@ -1123,21 +966,32 @@ I’m going to leave this question hanging a little longer; we’ll come back to
 <p>But first you might want to work on these exercises.</p>
 </section>
 <section id="exercises">
-<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">#</a></h2>
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
 <p><strong>Exercise:</strong> In Major League Baseball, most players have a batting average between .200 and .330, which means that their probability of getting a hit is between 0.2 and 0.33.</p>
 <p>Suppose a player appearing in their first game gets 3 hits out of 3 attempts.  What is the posterior distribution for their probability of getting a hit?</p>
 <p>For this exercise, I’ll construct the prior distribution by starting with a uniform distribution and updating it with imaginary data until it has a shape that reflects my background knowledge of batting averages.</p>
 <p>Here’s the uniform prior:</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
 <span class="n">prior</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hypos</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>And here is a dictionary of likelihoods, with <code class="docutils literal notranslate"><span class="pre">Y</span></code> for getting a hit and <code class="docutils literal notranslate"><span class="pre">N</span></code> for not getting a hit.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="n">hypos</span><span class="p">,</span>
@@ -1146,17 +1000,29 @@ I’m going to leave this question hanging a little longer; we’ll come back to
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Here’s a dataset that yields a reasonable prior distribution.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span> <span class="o">*</span> <span class="mi">25</span> <span class="o">+</span> <span class="s1">&#39;N&#39;</span> <span class="o">*</span> <span class="mi">75</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>And here’s the update with the imaginary data.</p>
 <div class="cell tag_remove-output tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
     <span class="n">prior</span> <span class="o">*=</span> <span class="n">likelihood</span><span class="p">[</span><span class="n">data</span><span class="p">]</span>
@@ -1165,9 +1031,15 @@ I’m going to leave this question hanging a little longer; we’ll come back to
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Finally, here’s what the prior looks like.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;prior&#39;</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Probability of getting a hit&#39;</span><span class="p">,</span>
@@ -1176,12 +1048,18 @@ I’m going to leave this question hanging a little longer; we’ll come back to
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap04_87_0.png" src="_images/chap04_87_0.png" />
+<img alt="_images/113a21d5073b3244e9b3de11539ffe19d34f4bc5fb44f1501c7f35824bc000d4.png" src="_images/113a21d5073b3244e9b3de11539ffe19d34f4bc5fb44f1501c7f35824bc000d4.png" />
 </div>
+</details>
 </div>
 <p>This distribution indicates that most players have a batting average near 250, with only a few players below 175 or above 350.  I’m not sure how accurately this prior reflects the distribution of batting averages in Major League Baseball, but it is good enough for this exercise.</p>
 <p>Now update this distribution with the data and plot the posterior.  What is the most likely quantity in the posterior distribution?</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1199,8 +1077,14 @@ I’m going to leave this question hanging a little longer; we’ll come back to
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1212,10 +1096,16 @@ I’m going to leave this question hanging a little longer; we’ll come back to
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap04_90_0.png" src="_images/chap04_90_0.png" />
+<img alt="_images/22d82381a7a62c41f12af9cfbff8febaa9b39ee34d570c2575e5622c02a24cc0.png" src="_images/22d82381a7a62c41f12af9cfbff8febaa9b39ee34d570c2575e5622c02a24cc0.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1228,8 +1118,14 @@ I’m going to leave this question hanging a little longer; we’ll come back to
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1242,6 +1138,7 @@ I’m going to leave this question hanging a little longer; we’ll come back to
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> Whenever you survey people about sensitive issues, you have to deal with <a class="reference external" href="https://en.wikipedia.org/wiki/Social_desirability_bias">social desirability bias</a>, which is the tendency of people to adjust their answers to show themselves in the most positive light.
 One way to improve the accuracy of the results is <a class="reference external" href="https://en.wikipedia.org/wiki/Randomized_response">randomized response</a>.</p>
@@ -1256,6 +1153,11 @@ You can get a more accurate estimate if you ask them indirectly, like this: Ask 
 Knowing this, people might be more willing to answer honestly.</p>
 <p>Suppose you survey 100 people this way and get 80 YESes and 20 NOs.  Based on this data, what is the posterior distribution for the fraction of people who cheat on their taxes?  What is the most likely quantity in the posterior distribution?</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1268,8 +1170,14 @@ Knowing this, people might be more willing to answer honestly.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1283,8 +1191,14 @@ Knowing this, people might be more willing to answer honestly.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1304,8 +1218,14 @@ Knowing this, people might be more willing to answer honestly.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1316,10 +1236,16 @@ Knowing this, people might be more willing to answer honestly.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap04_97_0.png" src="_images/chap04_97_0.png" />
+<img alt="_images/449441453b54871fe06691651a71cb5ad95283abe7e5a15c06079f2a6f1dc9e7.png" src="_images/449441453b54871fe06691651a71cb5ad95283abe7e5a15c06079f2a6f1dc9e7.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1332,6 +1258,7 @@ Knowing this, people might be more willing to answer honestly.</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> Suppose you want to test whether a coin is fair, but you don’t want to spin it hundreds of times.
 So you make a machine that spins the coin automatically and uses computer vision to determine the outcome.</p>
@@ -1339,6 +1266,11 @@ So you make a machine that spins the coin automatically and uses computer vision
 <p>If we spin a coin 250 times and the machine reports 140 heads, what is the posterior distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code>?
 What happens as you vary the value of <code class="docutils literal notranslate"><span class="pre">y</span></code>?</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1355,8 +1287,14 @@ What happens as you vary the value of <code class="docutils literal notranslate"
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1375,8 +1313,14 @@ What happens as you vary the value of <code class="docutils literal notranslate"
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1389,10 +1333,16 @@ What happens as you vary the value of <code class="docutils literal notranslate"
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap04_102_0.png" src="_images/chap04_102_0.png" />
+<img alt="_images/e9299449114d960b46cbaa39aec91bbe8cc5f1098a613525faf9b79a51a7eead.png" src="_images/e9299449114d960b46cbaa39aec91bbe8cc5f1098a613525faf9b79a51a7eead.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1405,15 +1355,21 @@ What happens as you vary the value of <code class="docutils literal notranslate"
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p><strong>Exercise:</strong> In preparation for an alien invasion, the Earth Defense League (EDL) has been working on new missiles to shoot down space invaders.  Of course, some missile designs are better than others; let’s assume that each design has some probability of hitting an alien ship, <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <p>Based on previous tests, the distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code> in the population of designs is approximately uniform between 0.1 and 0.4.</p>
 <p>Now suppose the new ultra-secret Alien Blaster 9000 is being tested.  In a press conference, an EDL general reports that the new design has been tested twice, taking two shots during each test.  The results of the test are confidential, so the general won’t say how many targets were hit, but they report: “The same number of targets were hit in the two tests, so we have reason to think this new design is consistent.”</p>
 <p>Is this data good or bad?
 That is, does it increase or decrease your estimate of <code class="docutils literal notranslate"><span class="pre">x</span></code> for the Alien Blaster 9000?</p>
-<p>Hint: If the probability of hitting each target is <span class="math notranslate nohighlight">\(x\)</span>, the probability of hitting one target in both tests
-is <span class="math notranslate nohighlight">\(\left[2x(1-x)\right]^2\)</span>.</p>
+<p>Hint: If the probability of hitting each target is $x$, the probability of hitting one target in both tests
+is $\left[2x(1-x)\right]^2$.</p>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1422,8 +1378,14 @@ is <span class="math notranslate nohighlight">\(\left[2x(1-x)\right]^2\)</span>.
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1435,8 +1397,14 @@ is <span class="math notranslate nohighlight">\(\left[2x(1-x)\right]^2\)</span>.
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1450,8 +1418,14 @@ is <span class="math notranslate nohighlight">\(\left[2x(1-x)\right]^2\)</span>.
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1468,10 +1442,16 @@ is <span class="math notranslate nohighlight">\(\left[2x(1-x)\right]^2\)</span>.
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap04_109_0.png" src="_images/chap04_109_0.png" />
+<img alt="_images/c9c1e9bf10d628665828b3673a516fa1b68f6db8450ad81025e9011aacc14f48.png" src="_images/c9c1e9bf10d628665828b3673a516fa1b68f6db8450ad81025e9011aacc14f48.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1485,8 +1465,14 @@ is <span class="math notranslate nohighlight">\(\left[2x(1-x)\right]^2\)</span>.
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1500,10 +1486,16 @@ is <span class="math notranslate nohighlight">\(\left[2x(1-x)\right]^2\)</span>.
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/chap04_111_0.png" src="_images/chap04_111_0.png" />
+<img alt="_images/4c35edb942e0b9bc2704ca667de18b2127c8b149fac68f4406b38a173a4d8331.png" src="_images/4c35edb942e0b9bc2704ca667de18b2127c8b149fac68f4406b38a173a4d8331.png" />
 </div>
+</details>
 </div>
 <div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
@@ -1517,6 +1509,7 @@ is <span class="math notranslate nohighlight">\(\left[2x(1-x)\right]^2\)</span>.
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 </section>
@@ -1541,50 +1534,112 @@ is <span class="math notranslate nohighlight">\(\left[2x(1-x)\right]^2\)</span>.
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="chap03.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Distributions</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chap03.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Distributions</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="chap05.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="chap05.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Estimating Counts</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Allen B. Downey<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-euro-problem">The Euro Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-binomial-distribution">The Binomial Distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-estimation">Bayesian Estimation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#triangle-prior">Triangle Prior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-binomial-likelihood-function">The Binomial Likelihood Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-statistics">Bayesian Statistics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

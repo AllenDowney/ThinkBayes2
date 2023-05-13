@@ -2,14 +2,23 @@
 
 by Allen B. Downey
 
-*Think Bayes* is an introduction to Bayesian statistics using computational methods.  
+*Think Bayes* is an introduction to Bayesian statistics using computational methods.
+
+Print and electronic versions of this book are available from [Amazon](https://amzn.to/334eqGo)
+and [O'Reilly Media](https://shop.aer.io/oreilly/p/think-bayes-2nd/9781492089469-9149).
+
+For each chapter, there is a Jupyter notebook, below, where you can read the text, run the
+examples, and work on the exercises.
+
+You can read the free version of the book by following the links on the left.
+
+If you are looking for **solutions to the exercises**, follow the links on the left.
 
 *Think Bayes* is a Free Book. It is available under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/), which means that you are free to copy and modify it, as long as you attribute the work and don’t use it for commercial purposes.
 
 Other Free Books by Allen Downey are available from [Green Tea Press](https://greenteapress.com/wp/).
 
-Print and electronic versions of this book are available from [Amazon](https://amzn.to/334eqGo)
-and [O'Reilly Media](https://shop.aer.io/oreilly/p/think-bayes-2nd/9781492089469-9149).
+
 
 **Run the notebooks**
 
