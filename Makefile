@@ -1,15 +1,13 @@
 PROJECT_NAME = ThinkBayes2
-PYTHON_VERSION = 3.8
+PYTHON_VERSION = 3.10
 PYTHON_INTERPRETER = python
 
 
-## Set up python interpreter environment
 create_environment:
-	conda create --name $(PROJECT_NAME) python=$(PYTHON_VERSION) -y
+	conda create -y --name $(PROJECT_NAME) python=$(PYTHON_VERSION) pymc
 	@echo ">>> conda env created. Activate with:\nconda activate $(PROJECT_NAME)"
 
 
-## Install Python Dependencies
 requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
@@ -22,4 +20,5 @@ clean:
 
 
 tests:
-	cd soln; pytest --nbmake chap01.ipynb
+	cd soln; pytest --nbmake chap0[1-9].ipynb
+	cd soln; pytest --nbmake chap1[0-8].ipynb
