@@ -1,3 +1,4 @@
+import warnings
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,11 +13,11 @@ from scipy.stats import poisson
 
 def values(series):
     """Make a series of values and the number of times they appear.
-    
+
     Returns a DataFrame because they get rendered better in Jupyter.
-    
+
     series: Pandas Series
-    
+
     returns: Pandas DataFrame
     """
     series = series.value_counts(dropna=False).sort_index()
@@ -27,7 +28,7 @@ def values(series):
 
 def write_table(table, label, **options):
     """Write a table in LaTex format.
-    
+
     table: DataFrame
     label: string
     options: passed to DataFrame.to_latex
@@ -37,11 +38,11 @@ def write_table(table, label, **options):
     s = table.to_latex(**options)
     fp.write(s)
     fp.close()
-    
-    
+
+
 def write_pmf(pmf, label):
     """Write a Pmf object as a table.
-    
+
     pmf: Pmf
     label: string
     """
@@ -50,7 +51,7 @@ def write_pmf(pmf, label):
     df['ps'] = pmf.values
     write_table(df, label, index=False)
 
-    
+
 def underride(d, **options):
     """Add key-value pairs to d only if key is not in d.
 
@@ -63,30 +64,39 @@ def underride(d, **options):
     return d
 
 
+class SuppressWarning:
+    def __enter__(self):
+        warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        warnings.filterwarnings("default", category=UserWarning, module="matplotlib")
+
+
 def decorate(**options):
     """Decorate the current axes.
-    
+
     Call decorate with keyword arguments like
     decorate(title='Title',
              xlabel='x',
              ylabel='y')
-             
+
     The keyword arguments can be any of the axis properties
     https://matplotlib.org/api/axes_api.html
     """
     ax = plt.gca()
     ax.set(**options)
-    
+
     handles, labels = ax.get_legend_handles_labels()
     if handles:
         ax.legend(handles, labels)
 
-    plt.tight_layout()
-    
-    
+    with SuppressWarning():
+        plt.tight_layout()
+
+
 def savefig(root, **options):
     """Save the current figure.
-    
+
     root: string filename root
     options: passed to plt.savefig
     """
@@ -100,12 +110,12 @@ def savefig(root, **options):
         fname = f'figs/{root}.{format}'
         plt.savefig(fname, **options)
 
-        
+
 def make_die(sides):
     """Pmf that represents a die with the given number of sides.
-    
+
     sides: int
-    
+
     returns: Pmf
     """
     outcomes = np.arange(1, sides+1)
@@ -115,9 +125,9 @@ def make_die(sides):
 
 def add_dist_seq(seq):
     """Distribution of sum of quantities from PMFs.
-    
+
     seq: sequence of Pmf objects
-    
+
     returns: Pmf
     """
     total = seq[0]
@@ -128,12 +138,12 @@ def add_dist_seq(seq):
 
 def make_mixture(pmf, pmf_seq):
     """Make a mixture of distributions.
-    
+
     pmf: mapping from each hypothesis to its probability
          (or it can be a sequence of probabilities)
-    pmf_seq: sequence of Pmfs, each representing 
+    pmf_seq: sequence of Pmfs, each representing
              a conditional distribution for one hypothesis
-             
+
     returns: Pmf representing the mixture
     """
     df = pd.DataFrame(pmf_seq).fillna(0).transpose()
@@ -144,7 +154,7 @@ def make_mixture(pmf, pmf_seq):
 
 def summarize(posterior, digits=3, prob=0.9):
     """Print the mean and CI of a distribution.
-    
+
     posterior: Pmf
     digits: number of digits to round to
     prob: probability in the CI
@@ -152,17 +162,17 @@ def summarize(posterior, digits=3, prob=0.9):
     mean = np.round(posterior.mean(), 3)
     ci = posterior.credible_interval(prob)
     print (mean, ci)
-    
+
 
 def outer_product(s1, s2):
     """Compute the outer product of two Series.
-    
+
     First Series goes down the rows;
     second goes across the columns.
-    
+
     s1: Series
     s2: Series
-    
+
     return: DataFrame
     """
     a = np.multiply.outer(s1.to_numpy(), s2.to_numpy())
@@ -171,11 +181,11 @@ def outer_product(s1, s2):
 
 def make_uniform(qs, name=None, **options):
     """Make a Pmf that represents a uniform distribution.
-    
+
     qs: quantities
     name: string name for the quantities
     options: passed to Pmf
-    
+
     returns: Pmf
     """
     pmf = Pmf(1.0, qs, **options)
@@ -187,13 +197,13 @@ def make_uniform(qs, name=None, **options):
 
 def make_joint(s1, s2):
     """Compute the outer product of two Series.
-    
+
     First Series goes across the columns;
     second goes down the rows.
-    
+
     s1: Series
     s2: Series
-    
+
     return: DataFrame
     """
     X, Y = np.meshgrid(s1, s2)
@@ -202,9 +212,9 @@ def make_joint(s1, s2):
 
 def make_mesh(joint):
     """Make a mesh grid from the quantities in a joint distribution.
-    
+
     joint: DataFrame representing a joint distribution
-    
+
     returns: a mesh grid (X, Y) where X contains the column names and
                                       Y contains the row labels
     """
@@ -215,23 +225,23 @@ def make_mesh(joint):
 
 def normalize(joint):
     """Normalize a joint distribution.
-    
+
     joint: DataFrame
     """
     prob_data = joint.to_numpy().sum()
     joint /= prob_data
     return prob_data
-    
+
 
 def marginal(joint, axis):
     """Compute a marginal distribution.
-    
+
     axis=0 returns the marginal distribution of the first variable
     axis=1 returns the marginal distribution of the second variable
-    
+
     joint: DataFrame representing a joint distribution
     axis: int axis to sum along
-    
+
     returns: Pmf
     """
     return Pmf(joint.sum(axis=axis))
@@ -239,10 +249,10 @@ def marginal(joint, axis):
 
 def pmf_marginal(joint_pmf, level):
     """Compute a marginal distribution.
-    
+
     joint_pmf: Pmf representing a joint distribution
     level: int, level to sum along
-    
+
     returns: Pmf
     """
     return Pmf(joint_pmf.sum(level=level))
@@ -250,27 +260,27 @@ def pmf_marginal(joint_pmf, level):
 
 def plot_contour(joint, **options):
     """Plot a joint distribution.
-    
+
     joint: DataFrame representing a joint PMF
     """
     low = joint.to_numpy().min()
     high = joint.to_numpy().max()
     levels = np.linspace(low, high, 6)
     levels = levels[1:]
-    
+
     underride(options, levels=levels, linewidths=1)
     cs = plt.contour(joint.columns, joint.index, joint, **options)
-    decorate(xlabel=joint.columns.name, 
+    decorate(xlabel=joint.columns.name,
              ylabel=joint.index.name)
     return cs
 
 
 def make_binomial(n, p):
     """Make a binomial distribution.
-    
+
     n: number of trials
     p: probability of success
-    
+
     returns: Pmf representing the distribution of k
     """
     ks = np.arange(n+1)
@@ -280,10 +290,10 @@ def make_binomial(n, p):
 
 def make_gamma_dist(alpha, beta):
     """Makes a gamma object.
-    
+
     alpha: shape parameter
     beta: scale parameter
-    
+
     returns: gamma object
     """
     dist = gamma(alpha, scale=1/beta)
@@ -294,10 +304,10 @@ def make_gamma_dist(alpha, beta):
 
 def make_poisson_pmf(lam, qs):
     """Make a PMF of a Poisson distribution.
-    
+
     lam: event rate
     qs: sequence of values for `k`
-    
+
     returns: Pmf
     """
     ps = poisson(lam).pmf(qs)
@@ -308,10 +318,10 @@ def make_poisson_pmf(lam, qs):
 
 def pmf_from_dist(dist, qs):
     """Make a discrete approximation.
-    
+
     dist: SciPy distribution object
     qs: quantities
-    
+
     returns: Pmf
     """
     ps = dist.pdf(qs)
@@ -322,10 +332,10 @@ def pmf_from_dist(dist, qs):
 
 def kde_from_sample(sample, qs, **options):
     """Make a kernel density estimate from a sample
-    
+
     sample: sequence of values
     qs: quantities where we should evaluate the KDE
-    
+
     returns: normalized Pmf
     """
     kde = gaussian_kde(sample)
@@ -337,10 +347,10 @@ def kde_from_sample(sample, qs, **options):
 
 def kde_from_pmf(pmf, n=101, **options):
     """Make a kernel density estimate from a Pmf.
-    
+
     pmf: Pmf object
     n: number of points
-    
+
     returns: Pmf object
     """
     # TODO: should this take qs rather than use min-max?
@@ -382,7 +392,7 @@ from seaborn import JointGrid
 
 def joint_plot(joint, **options):
     """Show joint and marginal distributions.
-    
+
     joint: DataFrame that represents a joint distribution
     options: passed to JointGrid
     """
@@ -395,22 +405,22 @@ def joint_plot(joint, **options):
 
     # make a JointGrid with minimal data
     data = pd.DataFrame({x:[0], y:[0]})
-    g = JointGrid(x, y, data, **options)
+    g = JointGrid(x=x, y=y, data=data, **options)
 
     # replace the contour plot
-    g.ax_joint.contour(joint.columns, 
-                       joint.index, 
-                       joint, 
+    g.ax_joint.contour(joint.columns,
+                       joint.index,
+                       joint,
                        cmap='viridis')
-    
+
     # replace the marginals
     marginal_x = marginal(joint, 0)
     g.ax_marg_x.plot(marginal_x.qs, marginal_x.ps)
-    
+
     marginal_y = marginal(joint, 1)
     g.ax_marg_y.plot(marginal_y.ps, marginal_y.qs)
 
-    
+
 Gray20 = (0.162, 0.162, 0.162, 0.7)
 Gray30 = (0.262, 0.262, 0.262, 0.7)
 Gray40 = (0.355, 0.355, 0.355, 0.7)
@@ -456,10 +466,11 @@ Re80 = (0.988, 0.646, 0.532, 0.7)
 
 from cycler import cycler
 
-color_list = [Bl30, Or70, Gr50, Re60, Pu20, Gray70, Re80, Gray50, 
+color_list = [Bl30, Or70, Gr50, Re60, Pu20, Gray70, Re80, Gray50,
               Gr70, Bl50, Re40, Pu70, Or50, Gr30, Bl70, Pu50, Gray30]
 color_cycle = cycler(color=color_list)
 
 def set_pyplot_params():
+    # plt.rcParams['figure.dpi'] = 300
     plt.rcParams['axes.prop_cycle'] = color_cycle
     plt.rcParams['lines.linewidth'] = 3
