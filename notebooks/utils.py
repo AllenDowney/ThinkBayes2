@@ -1,3 +1,4 @@
+import warnings
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -63,6 +64,14 @@ def underride(d, **options):
     return d
 
 
+class SuppressWarning:
+    def __enter__(self):
+        warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        warnings.filterwarnings("default", category=UserWarning, module="matplotlib")
+
+
 def decorate(**options):
     """Decorate the current axes.
 
@@ -81,7 +90,8 @@ def decorate(**options):
     if handles:
         ax.legend(handles, labels)
 
-    plt.tight_layout()
+    with SuppressWarning():
+        plt.tight_layout()
 
 
 def savefig(root, **options):
