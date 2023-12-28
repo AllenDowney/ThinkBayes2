@@ -62,6 +62,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'chap11';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -618,11 +620,13 @@ With that, we are ready to take on a new Bayesian problem.</p>
 <section id="joint-distribution">
 <h2>Joint Distribution<a class="headerlink" href="#joint-distribution" title="Permalink to this heading">#</a></h2>
 <p>The next step is to construct a distribution that represents the probability of every pair of heights, which is called a joint distribution. The elements of the joint distribution are</p>
-<p>$$P(A_x~\mathrm{and}~B_y)$$</p>
-<p>which is the probability that <code class="docutils literal notranslate"><span class="pre">A</span></code> is $x$ cm tall and <code class="docutils literal notranslate"><span class="pre">B</span></code> is $y$ cm tall, for all values of $x$ and $y$.</p>
+<div class="math notranslate nohighlight">
+\[P(A_x~\mathrm{and}~B_y)\]</div>
+<p>which is the probability that <code class="docutils literal notranslate"><span class="pre">A</span></code> is <span class="math notranslate nohighlight">\(x\)</span> cm tall and <code class="docutils literal notranslate"><span class="pre">B</span></code> is <span class="math notranslate nohighlight">\(y\)</span> cm tall, for all values of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>.</p>
 <p>At this point all we know about <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> is that they are male residents of the U.S., so their heights are independent; that is, knowing the height of <code class="docutils literal notranslate"><span class="pre">A</span></code> provides no additional information about the height of <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
 <p>In that case, we can compute the joint probabilities like this:</p>
-<p>$$P(A_x~\mathrm{and}~B_y) = P(A_x)~P(B_y)$$</p>
+<div class="math notranslate nohighlight">
+\[P(A_x~\mathrm{and}~B_y) = P(A_x)~P(B_y)\]</div>
 <p>Each joint probability is the product of one element from the distribution of <code class="docutils literal notranslate"><span class="pre">x</span></code> and one element from the distribution of <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
 <p>So if we have <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects that represent the distribution of height for <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>, we can compute the joint distribution by computing the outer product of the probabilities in each <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>.</p>
 <p>The following function takes two <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> objects and returns a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that represents the joint distribution.</p>
@@ -1162,8 +1166,8 @@ The result is the conditional distribution of height for <code class="docutils l
 <section id="dependence-and-independence">
 <h2>Dependence and Independence<a class="headerlink" href="#dependence-and-independence" title="Permalink to this heading">#</a></h2>
 <p>When we constructed the joint prior distribution, I said that the heights of <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> were independent, which means that knowing one of them provides no information about the other.
-In other words, the conditional probability $P(A_x | B_y)$ is the same as the unconditional probability $P(A_x)$.</p>
-<p>But in the posterior distribution, $A$ and $B$ are not independent.
+In other words, the conditional probability <span class="math notranslate nohighlight">\(P(A_x | B_y)\)</span> is the same as the unconditional probability <span class="math notranslate nohighlight">\(P(A_x)\)</span>.</p>
+<p>But in the posterior distribution, <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> are not independent.
 If we know that <code class="docutils literal notranslate"><span class="pre">A</span></code> is taller than <code class="docutils literal notranslate"><span class="pre">B</span></code>, and we know how tall <code class="docutils literal notranslate"><span class="pre">A</span></code> is, that gives us information about <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
 <p>The conditional distribution we just computed demonstrates this dependence.</p>
 </section>
@@ -1415,10 +1419,11 @@ Now we choose a random woman, <code class="docutils literal notranslate"><span c
 </details>
 </div>
 <p><strong>Exercise:</strong> <a class="reference external" href="https://en.wikipedia.org/wiki/Elo_rating_system">The Elo rating system</a> is a way to quantify the skill level of players for games like chess.</p>
-<p>It is based on a model of the relationship between the ratings of players and the outcome of a game.  Specifically, if $R_A$ is the rating of player <code class="docutils literal notranslate"><span class="pre">A</span></code> and $R_B$ is the rating of player <code class="docutils literal notranslate"><span class="pre">B</span></code>, the probability that <code class="docutils literal notranslate"><span class="pre">A</span></code> beats <code class="docutils literal notranslate"><span class="pre">B</span></code> is given by the <a class="reference external" href="https://en.wikipedia.org/wiki/Logistic_function">logistic function</a>:</p>
-<p>$$P(\mathrm{A~beats~B}) = \frac{1}{1 + 10^{(R_B-R_A)/400}}$$</p>
+<p>It is based on a model of the relationship between the ratings of players and the outcome of a game.  Specifically, if <span class="math notranslate nohighlight">\(R_A\)</span> is the rating of player <code class="docutils literal notranslate"><span class="pre">A</span></code> and <span class="math notranslate nohighlight">\(R_B\)</span> is the rating of player <code class="docutils literal notranslate"><span class="pre">B</span></code>, the probability that <code class="docutils literal notranslate"><span class="pre">A</span></code> beats <code class="docutils literal notranslate"><span class="pre">B</span></code> is given by the <a class="reference external" href="https://en.wikipedia.org/wiki/Logistic_function">logistic function</a>:</p>
+<div class="math notranslate nohighlight">
+\[P(\mathrm{A~beats~B}) = \frac{1}{1 + 10^{(R_B-R_A)/400}}\]</div>
 <p>The parameters 10 and 400 are arbitrary choices that determine the range of the ratings.  In chess, the range is from 100 to 2800.</p>
-<p>Notice that the probability of winning depends only on the difference in rankings.  As an example, if $R_A$ exceeds $R_B$ by 100 points, the probability that <code class="docutils literal notranslate"><span class="pre">A</span></code> wins is</p>
+<p>Notice that the probability of winning depends only on the difference in rankings.  As an example, if <span class="math notranslate nohighlight">\(R_A\)</span> exceeds <span class="math notranslate nohighlight">\(R_B\)</span> by 100 points, the probability that <code class="docutils literal notranslate"><span class="pre">A</span></code> wins is</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="o">/</span><span class="mi">400</span><span class="p">))</span>

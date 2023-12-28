@@ -62,6 +62,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'chap08';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -391,23 +393,24 @@ We’ll use goals scored in a game to estimate the parameter of a Poisson proces
 </ol>
 <p>To answer these questions, we have to make some modeling decisions.</p>
 <ul class="simple">
-<li><p>First, I’ll assume that for any team against another team there is some unknown goal-scoring rate, measured in goals per game, which I’ll denote with the Python variable <code class="docutils literal notranslate"><span class="pre">lam</span></code> or the Greek letter $\lambda$, pronounced “lambda”.</p></li>
-<li><p>Second, I’ll assume that a goal is equally likely during any minute of a game.  So, in a 90 minute game, the probability of scoring during any minute is $\lambda/90$.</p></li>
+<li><p>First, I’ll assume that for any team against another team there is some unknown goal-scoring rate, measured in goals per game, which I’ll denote with the Python variable <code class="docutils literal notranslate"><span class="pre">lam</span></code> or the Greek letter <span class="math notranslate nohighlight">\(\lambda\)</span>, pronounced “lambda”.</p></li>
+<li><p>Second, I’ll assume that a goal is equally likely during any minute of a game.  So, in a 90 minute game, the probability of scoring during any minute is <span class="math notranslate nohighlight">\(\lambda/90\)</span>.</p></li>
 <li><p>Third, I’ll assume that a team never scores twice during the same minute.</p></li>
 </ul>
 <p>Of course, none of these assumptions is completely true in the real world, but I think they are reasonable simplifications.
 As George Box said, “All models are wrong; some are useful.”
-(https://en.wikipedia.org/wiki/All_models_are_wrong).</p>
+(<a class="reference external" href="https://en.wikipedia.org/wiki/All_models_are_wrong">https://en.wikipedia.org/wiki/All_models_are_wrong</a>).</p>
 <p>In this case, the model is useful because if these assumptions are
 true, at least roughly, the number of goals scored in a game follows a Poisson distribution, at least roughly.</p>
 </section>
 <section id="the-poisson-distribution">
 <h2>The Poisson Distribution<a class="headerlink" href="#the-poisson-distribution" title="Permalink to this heading">#</a></h2>
-<p>If the number of goals scored in a game follows a <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a> with a goal-scoring rate, $\lambda$, the probability of scoring $k$ goals is</p>
-<p>$$\lambda^k \exp(-\lambda) ~/~ k!$$</p>
-<p>for any non-negative value of $k$.</p>
+<p>If the number of goals scored in a game follows a <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a> with a goal-scoring rate, <span class="math notranslate nohighlight">\(\lambda\)</span>, the probability of scoring <span class="math notranslate nohighlight">\(k\)</span> goals is</p>
+<div class="math notranslate nohighlight">
+\[\lambda^k \exp(-\lambda) ~/~ k!\]</div>
+<p>for any non-negative value of <span class="math notranslate nohighlight">\(k\)</span>.</p>
 <p>SciPy provides a <code class="docutils literal notranslate"><span class="pre">poisson</span></code> object that represents a Poisson distribution.
-We can create one with $\lambda=1.4$ like this:</p>
+We can create one with <span class="math notranslate nohighlight">\(\lambda=1.4\)</span> like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
@@ -609,8 +612,8 @@ Here’s what it looks like.</p>
 </section>
 <section id="the-update">
 <h2>The Update<a class="headerlink" href="#the-update" title="Permalink to this heading">#</a></h2>
-<p>Suppose you are given the goal-scoring rate, $\lambda$, and asked to compute the probability of scoring a number of goals, $k$.  That is precisely the question we answered by computing the Poisson PMF.</p>
-<p>For example, if $\lambda$ is 1.4, the probability of scoring 4 goals in a game is:</p>
+<p>Suppose you are given the goal-scoring rate, <span class="math notranslate nohighlight">\(\lambda\)</span>, and asked to compute the probability of scoring a number of goals, <span class="math notranslate nohighlight">\(k\)</span>.  That is precisely the question we answered by computing the Poisson PMF.</p>
+<p>For example, if <span class="math notranslate nohighlight">\(\lambda\)</span> is 1.4, the probability of scoring 4 goals in a game is:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lam</span> <span class="o">=</span> <span class="mf">1.4</span>
@@ -625,7 +628,7 @@ Here’s what it looks like.</p>
 </div>
 </div>
 </div>
-<p>Now suppose we are have an array of possible values for $\lambda$; we can compute the likelihood of the data for each hypothetical value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>, like this:</p>
+<p>Now suppose we are have an array of possible values for <span class="math notranslate nohighlight">\(\lambda\)</span>; we can compute the likelihood of the data for each hypothetical value of <code class="docutils literal notranslate"><span class="pre">lam</span></code>, like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lams</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">qs</span>
@@ -939,9 +942,10 @@ Even if France is the better team, they might lose the game.</p>
 </div></blockquote>
 <p>In this version, notice that the data is not the number of goals in a fixed period of time, but the time between goals.</p>
 <p>To compute the likelihood of data like this, we can take advantage of the theory of Poisson processes again.  If each team has a constant goal-scoring rate, we expect the time between goals to follow an <a class="reference external" href="https://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a>.</p>
-<p>If the goal-scoring rate is $\lambda$, the probability of seeing an interval between goals of $t$ is proportional to the PDF of the exponential distribution:</p>
-<p>$$\lambda \exp(-\lambda t)$$</p>
-<p>Because $t$ is a continuous quantity, the value of this expression is not a probability; it is a probability density.  However, it is proportional to the probability of the data, so we can use it as a likelihood in a Bayesian update.</p>
+<p>If the goal-scoring rate is <span class="math notranslate nohighlight">\(\lambda\)</span>, the probability of seeing an interval between goals of <span class="math notranslate nohighlight">\(t\)</span> is proportional to the PDF of the exponential distribution:</p>
+<div class="math notranslate nohighlight">
+\[\lambda \exp(-\lambda t)\]</div>
+<p>Because <span class="math notranslate nohighlight">\(t\)</span> is a continuous quantity, the value of this expression is not a probability; it is a probability density.  However, it is proportional to the probability of the data, so we can use it as a likelihood in a Bayesian update.</p>
 <p>SciPy provides <code class="docutils literal notranslate"><span class="pre">expon</span></code>, which creates an object that represents an exponential distribution.
 However, it does not take <code class="docutils literal notranslate"><span class="pre">lam</span></code> as a parameter in the way you might expect, which makes it awkward to work with.
 Since the PDF of the exponential distribution is so easy to evaluate, I’ll use my own function.</p>
@@ -954,7 +958,7 @@ Since the PDF of the exponential distribution is so easy to evaluate, I’ll use
 </div>
 </div>
 </div>
-<p>To see what the exponential distribution looks like, let’s assume again that <code class="docutils literal notranslate"><span class="pre">lam</span></code> is 1.4; we can compute the distribution of $t$ like this:</p>
+<p>To see what the exponential distribution looks like, let’s assume again that <code class="docutils literal notranslate"><span class="pre">lam</span></code> is 1.4; we can compute the distribution of <span class="math notranslate nohighlight">\(t\)</span> like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lam</span> <span class="o">=</span> <span class="mf">1.4</span>
@@ -1016,8 +1020,8 @@ Let’s review:</p>
 <ul class="simple">
 <li><p>If a system satisfies the assumptions of a Poisson model, the number of events in a period of time follows a Poisson distribution, which is a discrete distribution with integer quantities from 0 to infinity. In practice, we can usually ignore low-probability quantities above a finite limit.</p></li>
 <li><p>Also under the Poisson model, the interval between events follows an exponential distribution, which is a continuous distribution with quantities from 0 to infinity. Because it is continuous, it is described by a probability density function (PDF) rather than a probability mass function (PMF). But when we use an exponential distribution to compute the likelihood of the data, we can treat densities as unnormalized probabilities.</p></li>
-<li><p>The Poisson and exponential distributions are parameterized by an event rate, denoted $\lambda$ or <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p></li>
-<li><p>For the prior distribution of $\lambda$, I used a gamma distribution, which is a continuous distribution with quantities from 0 to infinity, but I approximated it with a discrete, bounded PMF. The gamma distribution has one parameter, denoted $\alpha$ or <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, which is also its mean.</p></li>
+<li><p>The Poisson and exponential distributions are parameterized by an event rate, denoted <span class="math notranslate nohighlight">\(\lambda\)</span> or <code class="docutils literal notranslate"><span class="pre">lam</span></code>.</p></li>
+<li><p>For the prior distribution of <span class="math notranslate nohighlight">\(\lambda\)</span>, I used a gamma distribution, which is a continuous distribution with quantities from 0 to infinity, but I approximated it with a discrete, bounded PMF. The gamma distribution has one parameter, denoted <span class="math notranslate nohighlight">\(\alpha\)</span> or <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, which is also its mean.</p></li>
 </ul>
 <p>I chose the gamma distribution because the shape is consistent with our background knowledge about goal-scoring rates.
 There are other distributions we could have used; however, we will see in &lt;&lt;_ConjugatePriors&gt;&gt; that the gamma distribution can be a particularly good choice.</p>
@@ -1350,7 +1354,7 @@ won the next two games 8-1 and 4-0.  At this point in the series, what
 is the probability that Boston will win the next game, and what is
 their probability of winning the championship?</p>
 <p>To choose a prior distribution, I got some statistics from
-http://www.nhl.com, specifically the average goals per game
+<a class="reference external" href="http://www.nhl.com">http://www.nhl.com</a>, specifically the average goals per game
 for each team in the 2010-11 season.  The distribution is well modeled by a gamma distribution with mean 2.8.</p>
 <p>In what ways do you think the outcome of these games might violate the assumptions of the Poisson model?  How would these violations affect your predictions?</p>
 <div class="cell tag_hide-cell docutils container">

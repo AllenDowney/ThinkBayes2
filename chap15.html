@@ -62,6 +62,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'chap15';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -395,20 +397,21 @@ document.write(`
 During the second session, if we choose 19 bears at random, what is the probability that 4 of them were previously identified?</p>
 <p>I’ll define</p>
 <ul class="simple">
-<li><p>$N$: actual population size, 100.</p></li>
-<li><p>$K$: number of bears identified in the first session, 23.</p></li>
-<li><p>$n$: number of bears observed in the second session, 19 in the example.</p></li>
-<li><p>$k$: number of bears in the second session that were previously identified, 4.</p></li>
+<li><p><span class="math notranslate nohighlight">\(N\)</span>: actual population size, 100.</p></li>
+<li><p><span class="math notranslate nohighlight">\(K\)</span>: number of bears identified in the first session, 23.</p></li>
+<li><p><span class="math notranslate nohighlight">\(n\)</span>: number of bears observed in the second session, 19 in the example.</p></li>
+<li><p><span class="math notranslate nohighlight">\(k\)</span>: number of bears in the second session that were previously identified, 4.</p></li>
 </ul>
-<p>For given values of $N$, $K$, and $n$, the probability of finding $k$ previously-identified bears is given by the <a class="reference external" href="https://en.wikipedia.org/wiki/Hypergeometric_distribution">hypergeometric distribution</a>:</p>
-<p>$$\binom{K}{k} \binom{N-K}{n-k}/ \binom{N}{n}$$</p>
-<p>where the <a class="reference external" href="https://en.wikipedia.org/wiki/Binomial_coefficient">binomial coefficient</a>, $\binom{K}{k}$, is the number of subsets of size $k$ we can choose from a population of size $K$.</p>
+<p>For given values of <span class="math notranslate nohighlight">\(N\)</span>, <span class="math notranslate nohighlight">\(K\)</span>, and <span class="math notranslate nohighlight">\(n\)</span>, the probability of finding <span class="math notranslate nohighlight">\(k\)</span> previously-identified bears is given by the <a class="reference external" href="https://en.wikipedia.org/wiki/Hypergeometric_distribution">hypergeometric distribution</a>:</p>
+<div class="math notranslate nohighlight">
+\[\binom{K}{k} \binom{N-K}{n-k}/ \binom{N}{n}\]</div>
+<p>where the <a class="reference external" href="https://en.wikipedia.org/wiki/Binomial_coefficient">binomial coefficient</a>, <span class="math notranslate nohighlight">\(\binom{K}{k}\)</span>, is the number of subsets of size <span class="math notranslate nohighlight">\(k\)</span> we can choose from a population of size <span class="math notranslate nohighlight">\(K\)</span>.</p>
 <p>To understand why, consider:</p>
 <ul class="simple">
-<li><p>The denominator, $\binom{N}{n}$, is the number of subsets of $n$ we could choose from a population of $N$ bears.</p></li>
-<li><p>The numerator is the number of subsets that contain $k$ bears from the previously identified $K$ and $n-k$ from the previously unseen $N-K$.</p></li>
+<li><p>The denominator, <span class="math notranslate nohighlight">\(\binom{N}{n}\)</span>, is the number of subsets of <span class="math notranslate nohighlight">\(n\)</span> we could choose from a population of <span class="math notranslate nohighlight">\(N\)</span> bears.</p></li>
+<li><p>The numerator is the number of subsets that contain <span class="math notranslate nohighlight">\(k\)</span> bears from the previously identified <span class="math notranslate nohighlight">\(K\)</span> and <span class="math notranslate nohighlight">\(n-k\)</span> from the previously unseen <span class="math notranslate nohighlight">\(N-K\)</span>.</p></li>
 </ul>
-<p>SciPy provides <code class="docutils literal notranslate"><span class="pre">hypergeom</span></code>, which we can use to compute this probability for a range of values of $k$.</p>
+<p>SciPy provides <code class="docutils literal notranslate"><span class="pre">hypergeom</span></code>, which we can use to compute this probability for a range of values of <span class="math notranslate nohighlight">\(k\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -424,7 +427,7 @@ During the second session, if we choose 19 bears at random, what is the probabil
 </div>
 </div>
 </div>
-<p>The result is the distribution of $k$ with given parameters $N$, $K$, and $n$.
+<p>The result is the distribution of <span class="math notranslate nohighlight">\(k\)</span> with given parameters <span class="math notranslate nohighlight">\(N\)</span>, <span class="math notranslate nohighlight">\(K\)</span>, and <span class="math notranslate nohighlight">\(n\)</span>.
 Here’s what it looks like.</p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
@@ -449,10 +452,10 @@ Here’s what it looks like.</p>
 <img alt="_images/89091d8fbc23233c4e404edd21d8ea5de9de3e5bc1e8080e25666147e0fa8aca.png" src="_images/89091d8fbc23233c4e404edd21d8ea5de9de3e5bc1e8080e25666147e0fa8aca.png" />
 </div>
 </div>
-<p>The most likely value of $k$ is 4, which is the value actually observed in the experiment.<br />
-That suggests that $N=100$ is a reasonable estimate of the population, given this data.</p>
-<p>We’ve computed the distribution of $k$ given $N$, $K$, and $n$.
-Now let’s go the other way: given $K$, $n$, and $k$, how can we estimate the total population, $N$?</p>
+<p>The most likely value of <span class="math notranslate nohighlight">\(k\)</span> is 4, which is the value actually observed in the experiment.<br />
+That suggests that <span class="math notranslate nohighlight">\(N=100\)</span> is a reasonable estimate of the population, given this data.</p>
+<p>We’ve computed the distribution of <span class="math notranslate nohighlight">\(k\)</span> given <span class="math notranslate nohighlight">\(N\)</span>, <span class="math notranslate nohighlight">\(K\)</span>, and <span class="math notranslate nohighlight">\(n\)</span>.
+Now let’s go the other way: given <span class="math notranslate nohighlight">\(K\)</span>, <span class="math notranslate nohighlight">\(n\)</span>, and <span class="math notranslate nohighlight">\(k\)</span>, how can we estimate the total population, <span class="math notranslate nohighlight">\(N\)</span>?</p>
 </section>
 <section id="the-update">
 <h2>The Update<a class="headerlink" href="#the-update" title="Permalink to this heading">#</a></h2>
@@ -643,8 +646,9 @@ We can use <code class="docutils literal notranslate"><span class="pre">N</span>
 </div>
 </div>
 <p>Now the probability of the data is given by the <a class="reference external" href="https://en.wikipedia.org/wiki/Multinomial_distribution">multinomial distribution</a>:</p>
-<p>$$\frac{N!}{\prod x_i!} \prod y_i^{x_i}$$</p>
-<p>where $N$ is actual population, $x$ is a sequence with the counts in each category, and $y$ is a sequence of probabilities for each category.</p>
+<div class="math notranslate nohighlight">
+\[\frac{N!}{\prod x_i!} \prod y_i^{x_i}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N\)</span> is actual population, <span class="math notranslate nohighlight">\(x\)</span> is a sequence with the counts in each category, and <span class="math notranslate nohighlight">\(y\)</span> is a sequence of probabilities for each category.</p>
 <p>SciPy provides <code class="docutils literal notranslate"><span class="pre">multinomial</span></code>, which provides <code class="docutils literal notranslate"><span class="pre">pmf</span></code>, which computes this probability.
 Here is the probability of the data for these values of <code class="docutils literal notranslate"><span class="pre">N</span></code> and <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
 <div class="cell docutils container">

@@ -62,6 +62,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'chap16';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -396,19 +398,25 @@ A few minutes later, another student arrived.</p>
 When third female student arrived, I was confident I was in the wrong room.
 And as it turned out, I was.</p>
 <p>I’ll use this anecdote to demonstrate Bayes’s Rule on a logarithmic scale and show how it relates to logistic regression.</p>
-<p>Using $H$ to represent the hypothesis that I was in the right room, and $F$ to represent the observation that the first other student was female, we can write Bayes’s Rule like this:</p>
-<p>$$O(H|F) = O(H) \frac{P(F|H)}{P(F|not H)}$$</p>
+<p>Using <span class="math notranslate nohighlight">\(H\)</span> to represent the hypothesis that I was in the right room, and <span class="math notranslate nohighlight">\(F\)</span> to represent the observation that the first other student was female, we can write Bayes’s Rule like this:</p>
+<div class="math notranslate nohighlight">
+\[O(H|F) = O(H) \frac{P(F|H)}{P(F|not H)}\]</div>
 <p>Before I saw the other students, I was confident I was in the right room, so I might assign prior odds of 10:1 in favor:</p>
-<p>$$O(H) = 10$$</p>
+<div class="math notranslate nohighlight">
+\[O(H) = 10\]</div>
 <p>If I was in the right room, the likelihood of the first female student was about 17%.
 If I was not in the right room, the likelihood of the first female student was more like 50%,</p>
-<p>$$\frac{P(F|H)}{P(F|not H)} = 17 / 50$$</p>
+<div class="math notranslate nohighlight">
+\[\frac{P(F|H)}{P(F|not H)} = 17 / 50\]</div>
 <p>So the likelihood ratio is close to 1/3.  Applying Bayes’s Rule, the posterior odds were</p>
-<p>$$O(H|F) = 10 / 3$$</p>
+<div class="math notranslate nohighlight">
+\[O(H|F) = 10 / 3\]</div>
 <p>After two students, the posterior odds were</p>
-<p>$$O(H|FF) = 10 / 9$$</p>
+<div class="math notranslate nohighlight">
+\[O(H|FF) = 10 / 9\]</div>
 <p>And after three students:</p>
-<p>$$O(H|FFF) = 10 / 27$$</p>
+<div class="math notranslate nohighlight">
+\[O(H|FFF) = 10 / 27\]</div>
 <p>At that point, I was right to suspect I was in the wrong room.</p>
 <p>The following table shows the odds after each update, the corresponding probabilities, and the change in probability after each step, expressed in percentage points.</p>
 <div class="cell tag_hide-cell docutils container">
@@ -501,7 +509,7 @@ If I was not in the right room, the likelihood of the first female student was m
 <p>Each update uses the same likelihood, but the changes in probability are not the same.  The first update decreases the probability by about 14 percentage points, the second by 24, and the third by 26.
 That’s normal for this kind of update, and in fact it’s necessary; if the changes were the same size, we would quickly get into negative probabilities.</p>
 <p>The odds follow a more obvious pattern.  Because each update multiplies the odds by the same likelihood ratio, the odds form a geometric sequence.
-And that brings us to consider another way to represent uncertainty: <strong>log odds</strong>, which is the logarithm of odds, usually expressed using the natural log (base $e$).</p>
+And that brings us to consider another way to represent uncertainty: <strong>log odds</strong>, which is the logarithm of odds, usually expressed using the natural log (base <span class="math notranslate nohighlight">\(e\)</span>).</p>
 <p>Adding log odds to the table:</p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
@@ -602,16 +610,19 @@ The change in log odds after each update is the logarithm of the likelihood rati
 </div>
 </div>
 <p>That’s true in this example, and we can show that it’s true in general by taking the log of both sides of Bayes’s Rule.</p>
-<p>$$\log O(H|F) = \log O(H) + \log \frac{P(F|H)}{P(F|not H)}$$</p>
-<p>On a log odds scale, a Bayesian update is additive.  So if $F^x$ means that $x$ female students arrive while I am waiting, the posterior log odds that I am in the right room are:</p>
-<p>$$\log O(H|F^x) = \log O(H) + x \log \frac{P(F|H)}{P(F|not H)}$$</p>
+<div class="math notranslate nohighlight">
+\[\log O(H|F) = \log O(H) + \log \frac{P(F|H)}{P(F|not H)}\]</div>
+<p>On a log odds scale, a Bayesian update is additive.  So if <span class="math notranslate nohighlight">\(F^x\)</span> means that <span class="math notranslate nohighlight">\(x\)</span> female students arrive while I am waiting, the posterior log odds that I am in the right room are:</p>
+<div class="math notranslate nohighlight">
+\[\log O(H|F^x) = \log O(H) + x \log \frac{P(F|H)}{P(F|not H)}\]</div>
 <p>This equation represents a linear relationship between the log likelihood ratio and the posterior log odds.</p>
-<p>In this example the linear equation is exact, but even when it’s not, it is common to use a linear function to model the relationship between an explanatory variable, $x$, and a dependent variable expressed in log odds, like this:</p>
-<p>$$\log O(H | x) = \beta_0 + \beta_1 x$$</p>
-<p>where $\beta_0$ and $\beta_1$ are unknown parameters:</p>
+<p>In this example the linear equation is exact, but even when it’s not, it is common to use a linear function to model the relationship between an explanatory variable, <span class="math notranslate nohighlight">\(x\)</span>, and a dependent variable expressed in log odds, like this:</p>
+<div class="math notranslate nohighlight">
+\[\log O(H | x) = \beta_0 + \beta_1 x\]</div>
+<p>where <span class="math notranslate nohighlight">\(\beta_0\)</span> and <span class="math notranslate nohighlight">\(\beta_1\)</span> are unknown parameters:</p>
 <ul class="simple">
-<li><p>The intercept, $\beta_0$, is the log odds of the hypothesis when $x$ is 0.</p></li>
-<li><p>The slope, $\beta_1$, is the log of the likelihood ratio.</p></li>
+<li><p>The intercept, <span class="math notranslate nohighlight">\(\beta_0\)</span>, is the log odds of the hypothesis when <span class="math notranslate nohighlight">\(x\)</span> is 0.</p></li>
+<li><p>The slope, <span class="math notranslate nohighlight">\(\beta_1\)</span>, is the log of the likelihood ratio.</p></li>
 </ul>
 <p>This equation is the basis of logistic regression.</p>
 </section>
@@ -969,9 +980,10 @@ The change in log odds after each update is the logarithm of the likelihood rati
 </div>
 <p>When the outside temperature was below 65 degrees, there was always damage to the O-rings.  When the temperature was above 65 degrees, there was usually no damage.</p>
 <p>Based on this figure, it seems plausible that the probability of damage is related to temperature.  If we assume this probability follows a logistic model, we can write:</p>
-<p>$$\log O(H | x) = \beta_0 + \beta_1 x$$</p>
-<p>where $H$ is the hypothesis that the O-rings will be damaged, $x$ is temperature, and $\beta_0$ and $\beta_1$ are the parameters we will estimate.
-For reasons I’ll explain soon, I’ll define $x$ to be temperature shifted by an offset so its mean is 0.</p>
+<div class="math notranslate nohighlight">
+\[\log O(H | x) = \beta_0 + \beta_1 x\]</div>
+<p>where <span class="math notranslate nohighlight">\(H\)</span> is the hypothesis that the O-rings will be damaged, <span class="math notranslate nohighlight">\(x\)</span> is temperature, and <span class="math notranslate nohighlight">\(\beta_0\)</span> and <span class="math notranslate nohighlight">\(\beta_1\)</span> are the parameters we will estimate.
+For reasons I’ll explain soon, I’ll define <span class="math notranslate nohighlight">\(x\)</span> to be temperature shifted by an offset so its mean is 0.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
@@ -1520,7 +1532,7 @@ dtype: float64
 </section>
 <section id="transforming-distributions">
 <h2>Transforming Distributions<a class="headerlink" href="#transforming-distributions" title="Permalink to this heading">#</a></h2>
-<p>Let’s interpret these parameters.  Recall that the intercept is the log odds of the hypothesis when $x$ is 0, which is when temperature is about 70 degrees F (the value of <code class="docutils literal notranslate"><span class="pre">offset</span></code>).
+<p>Let’s interpret these parameters.  Recall that the intercept is the log odds of the hypothesis when <span class="math notranslate nohighlight">\(x\)</span> is 0, which is when temperature is about 70 degrees F (the value of <code class="docutils literal notranslate"><span class="pre">offset</span></code>).
 So we can interpret the quantities in <code class="docutils literal notranslate"><span class="pre">marginal_inter</span></code> as log odds.</p>
 <p>To convert them to probabilities, I’ll use the following function, which transforms the quantities in a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code> by applying a given function:</p>
 <div class="cell docutils container">
@@ -1592,7 +1604,7 @@ So we can interpret the quantities in <code class="docutils literal notranslate"
 </details>
 </div>
 <p>This result shows the second reason I defined <code class="docutils literal notranslate"><span class="pre">x</span></code> to be zero when temperature is 70 degrees F; this way, the intercept corresponds to the probability of damage at a relevant temperature, rather than 0 degrees F.</p>
-<p>Now let’s look more closely at the estimated slope.  In the logistic model, the parameter $\beta_1$ is the log of the likelihood ratio.</p>
+<p>Now let’s look more closely at the estimated slope.  In the logistic model, the parameter <span class="math notranslate nohighlight">\(\beta_1\)</span> is the log of the likelihood ratio.</p>
 <p>So we can interpret the quantities in <code class="docutils literal notranslate"><span class="pre">marginal_slope</span></code> as log likelihood ratios, and we can use <code class="docutils literal notranslate"><span class="pre">exp</span></code> to transform them to likelihood ratios (also known as Bayes factors).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2022,7 +2034,7 @@ With that kind of prediction, it can be hard to say whether it is right or wrong
 <p>Use the methods in this chapter to estimate the probability of diagnosis as a function of birth month.
 The notebook for this chapter provides the data and some suggestions for getting started.</p>
 <p>The paper includes this figure:</p>
-<img width="500" src="https://www.nejm.org/na101/home/literatum/publisher/mms/journals/content/nejm/2018/nejm_2018.379.issue-22/nejmoa1806828/20190131/images/img_xlarge/nejmoa1806828_f1.jpeg">
+<a class="reference internal image-reference" href="https://www.nejm.org/na101/home/literatum/publisher/mms/journals/content/nejm/2018/nejm_2018.379.issue-22/nejmoa1806828/20190131/images/img_xlarge/nejmoa1806828_f1.jpeg"><img alt="https://www.nejm.org/na101/home/literatum/publisher/mms/journals/content/nejm/2018/nejm_2018.379.issue-22/nejmoa1806828/20190131/images/img_xlarge/nejmoa1806828_f1.jpeg" src="https://www.nejm.org/na101/home/literatum/publisher/mms/journals/content/nejm/2018/nejm_2018.379.issue-22/nejmoa1806828/20190131/images/img_xlarge/nejmoa1806828_f1.jpeg" style="width: 500px;" /></a>
 <p>In my opinion, this representation of the data does not show the effect as clearly as it could.</p>
 <p>But the figure includes the raw data, so we can analyze it ourselves.</p>
 <p>Note: there is an error in the figure, confirmed by personal correspondence:</p>

@@ -62,6 +62,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'chap19';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -394,8 +396,8 @@ Unlike grid methods, MCMC methods don’t try to compute the posterior distribut
 Yes, again.</p>
 <section id="the-world-cup-problem">
 <h2>The World Cup Problem<a class="headerlink" href="#the-world-cup-problem" title="Permalink to this heading">#</a></h2>
-<p>In &lt;&lt;_PoissonProcesses&gt;&gt; we modeled goal scoring in football (soccer) as a Poisson process characterized by a goal-scoring rate, denoted $\lambda$.</p>
-<p>We used a gamma distribution to represent the prior distribution of $\lambda$, then we used the outcome of the game to compute the posterior distribution for both teams.</p>
+<p>In &lt;&lt;_PoissonProcesses&gt;&gt; we modeled goal scoring in football (soccer) as a Poisson process characterized by a goal-scoring rate, denoted <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+<p>We used a gamma distribution to represent the prior distribution of <span class="math notranslate nohighlight">\(\lambda\)</span>, then we used the outcome of the game to compute the posterior distribution for both teams.</p>
 <p>To answer the first question, we used the posterior distributions to compute the “probability of superiority” for France.</p>
 <p>To answer the second question, we computed the posterior predictive distributions for each team, that is, the distribution of goals we expect in a rematch.</p>
 <p>In this chapter we’ll solve this problem again using PyMC3, which is a library that provide implementations of several MCMC methods.
@@ -403,7 +405,7 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 </section>
 <section id="grid-approximation">
 <h2>Grid Approximation<a class="headerlink" href="#grid-approximation" title="Permalink to this heading">#</a></h2>
-<p>As we did in &lt;&lt;_TheGammaDistribution&gt;&gt; we’ll use a gamma distribution with parameter $\alpha=1.4$ to represent the prior.</p>
+<p>As we did in &lt;&lt;_TheGammaDistribution&gt;&gt; we’ll use a gamma distribution with parameter <span class="math notranslate nohighlight">\(\alpha=1.4\)</span> to represent the prior.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gamma</span>
@@ -414,7 +416,7 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 </div>
 </div>
 </div>
-<p>I’ll use <code class="docutils literal notranslate"><span class="pre">linspace</span></code> to generate possible values for $\lambda$, and <code class="docutils literal notranslate"><span class="pre">pmf_from_dist</span></code> to compute a discrete approximation of the prior.</p>
+<p>I’ll use <code class="docutils literal notranslate"><span class="pre">linspace</span></code> to generate possible values for <span class="math notranslate nohighlight">\(\lambda\)</span>, and <code class="docutils literal notranslate"><span class="pre">pmf_from_dist</span></code> to compute a discrete approximation of the prior.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -464,7 +466,7 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 </div>
 </div>
 </div>
-<p>The result is an array of possible values for the goal-scoring rate, $\lambda$.
+<p>The result is an array of possible values for the goal-scoring rate, <span class="math notranslate nohighlight">\(\lambda\)</span>.
 For each value in <code class="docutils literal notranslate"><span class="pre">sample_prior</span></code>, I’ll generate one value from a Poisson distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1204,12 +1206,13 @@ by Esteban Ortiz-Ospina and Max Roser, which discusses (among many other things)
 </table>
 </div></div></div>
 </div>
-<p>The estimated slope is about 0.72, which suggests that an increase of one unit in log-GDP, which is a factor of $e \approx 2.7$ in GDP, is associated with an increase of 0.72 units on the happiness ladder.</p>
+<p>The estimated slope is about 0.72, which suggests that an increase of one unit in log-GDP, which is a factor of <span class="math notranslate nohighlight">\(e \approx 2.7\)</span> in GDP, is associated with an increase of 0.72 units on the happiness ladder.</p>
 <p>Now let’s estimate the same parameters using PyMC3.
 We’ll use the same regression model as in Section &lt;&lt;_RegressionModel&gt;&gt;:</p>
-<p>$$y = a x + b + \epsilon$$</p>
-<p>where $y$ is the dependent variable (ladder score), $x$ is the predictive variable (log GDP) and $\epsilon$ is a series of values from a normal distribution with standard deviation $\sigma$.</p>
-<p>$a$ and $b$ are the slope and intercept of the regression line.
+<div class="math notranslate nohighlight">
+\[y = a x + b + \epsilon\]</div>
+<p>where <span class="math notranslate nohighlight">\(y\)</span> is the dependent variable (ladder score), <span class="math notranslate nohighlight">\(x\)</span> is the predictive variable (log GDP) and <span class="math notranslate nohighlight">\(\epsilon\)</span> is a series of values from a normal distribution with standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> are the slope and intercept of the regression line.
 They are unknown parameters, so we will use the data to estimate them.</p>
 <p>The following is the PyMC3 specification of this model.</p>
 <div class="cell docutils container">
@@ -1774,8 +1777,8 @@ In the exercises, you will have a chance to practice.</p>
 <h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
 <p><strong>Exercise:</strong> As a warmup, let’s use PyMC3 to solve the Euro problem.
 Suppose we spin a coin 250 times and it comes up heads 140 times.
-What is the posterior distribution of $x$, the probability of heads?</p>
-<p>For the prior, use a beta distribution with parameters $\alpha=1$ and $\beta=1$.</p>
+What is the posterior distribution of <span class="math notranslate nohighlight">\(x\)</span>, the probability of heads?</p>
+<p>For the prior, use a beta distribution with parameters <span class="math notranslate nohighlight">\(\alpha=1\)</span> and <span class="math notranslate nohighlight">\(\beta=1\)</span>.</p>
 <p>See <a class="reference external" href="https://docs.pymc.io/api/distributions/continuous.html">the PyMC3 documentation</a> for the list of continuous distributions.</p>
 <div class="cell tag_hide-cell docutils container">
 <details class="hide above-input">
@@ -1886,11 +1889,11 @@ The number of effective samples is smaller than 25% for some parameters.
 </div>
 </details>
 </div>
-<p><strong>Exercise:</strong> In &lt;&lt;_TheWeibullDistribution&gt;&gt; we generated a sample from a Weibull distribution with $\lambda=3$ and $k=0.8$.
+<p><strong>Exercise:</strong> In &lt;&lt;_TheWeibullDistribution&gt;&gt; we generated a sample from a Weibull distribution with <span class="math notranslate nohighlight">\(\lambda=3\)</span> and <span class="math notranslate nohighlight">\(k=0.8\)</span>.
 Then we used the data to compute a grid approximation of the posterior distribution of those parameters.</p>
 <p>Now let’s do the same with PyMC3.</p>
 <p>For the priors, you can use uniform distributions as we did in &lt;&lt;_SurvivalAnalysis&gt;&gt;, or you could use <code class="docutils literal notranslate"><span class="pre">HalfNormal</span></code> distributions provided by PyMC3.</p>
-<p>Note: The <code class="docutils literal notranslate"><span class="pre">Weibull</span></code> class in PyMC3 uses different parameters than SciPy.  The parameter <code class="docutils literal notranslate"><span class="pre">alpha</span></code> in PyMC3 corresponds to $k$, and <code class="docutils literal notranslate"><span class="pre">beta</span></code> corresponds to $\lambda$.</p>
+<p>Note: The <code class="docutils literal notranslate"><span class="pre">Weibull</span></code> class in PyMC3 uses different parameters than SciPy.  The parameter <code class="docutils literal notranslate"><span class="pre">alpha</span></code> in PyMC3 corresponds to <span class="math notranslate nohighlight">\(k\)</span>, and <code class="docutils literal notranslate"><span class="pre">beta</span></code> corresponds to <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
 <p>Here’s the data again:</p>
 <div class="cell tag_hide-celll docutils container">
 <div class="cell_input docutils container">
