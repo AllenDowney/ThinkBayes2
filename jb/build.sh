@@ -1,7 +1,7 @@
 # Build the Jupyter book version
 
 # make the asciidoc version of the preface
-pandoc -t asciidoc --wrap none --atx-headers preface.md > preface.asciidoc
+pandoc -t asciidoc --wrap none --markdown-headings=atx preface.md > preface.asciidoc
 
 # if adding chapters, update _toc.yml
 
