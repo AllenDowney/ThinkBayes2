@@ -1,0 +1,1113 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>The All-Knowing Cube of Probability &#8212; Think Bayes</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'beta_binomial';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="How Many Books?" href="bookstore.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    Think Bayes 2
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19.html">MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">Approximate Bayesian Computation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bookstore.html">How Many Books?</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">The All-Knowing Cube of Probability</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/beta_binomial.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>The All-Knowing Cube of Probability</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#making-the-cube">Making the cube</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-binomial-distribution">The binomial distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-negative-binomial-distribution">The negative binomial distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-beta-distribution">The beta distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-priors">Conjugate priors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update-with-nbinom">Update with nbinom</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-predictive-distributions">Posterior predictive distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-other-posterior-predictive">The other posterior predictive</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="the-all-knowing-cube-of-probability">
+<h1>The All-Knowing Cube of Probability<a class="headerlink" href="#the-all-knowing-cube-of-probability" title="Permalink to this heading">#</a></h1>
+<blockquote>
+<div><p>This example uses array computations to explore the concept of conjugate distributions.
+It is an extension of <em><a class="reference external" href="https://greenteapress.com/wp/think-bayes/">Think Bayes</a></em>, <a class="reference external" href="https://allendowney.github.io/ThinkBayes2/chap18.html">Chapter 18</a>, which explains how to use conjugate priors to do Bayesian updates with very little computation.</p>
+</div></blockquote>
+<p>The all-knowing cube of probability is an 3-D array that contains the past, the present, and the probabilistic future.</p>
+<p>At first, the cube appears to be a collection of binomial PMFs, but if we turn it sideways, we see that it is also a collection of negative binomial PMFs, and if we turn it sideways again, it is also a collection of grid-approximated beta distributions.</p>
+<p>This tripartite nature is the source of its uncanny ability to perform Bayesian updates, which I will demonstrate.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="making-the-cube">
+<h2>Making the cube<a class="headerlink" href="#making-the-cube" title="Permalink to this heading">#</a></h2>
+<p>Suppose you run <span class="math notranslate nohighlight">\(n\)</span> trials where the probability of success is <span class="math notranslate nohighlight">\(p\)</span>.
+To compute the probability of <span class="math notranslate nohighlight">\(k\)</span> successes, we can use the binomial distribution.</p>
+<p>For example, here’s a range of values for <span class="math notranslate nohighlight">\(k\)</span> and <span class="math notranslate nohighlight">\(n\)</span>, and a discrete grid of values for <span class="math notranslate nohighlight">\(p\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span>
+<span class="n">ns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">meshgrid</span></code> to make a 3-D grid of <span class="math notranslate nohighlight">\(k\)</span>, <span class="math notranslate nohighlight">\(n\)</span>, and <span class="math notranslate nohighlight">\(p\)</span>, and <code class="docutils literal notranslate"><span class="pre">binom</span></code> to evaluate the binomial PMF at each point.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
+
+<span class="n">K</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+<span class="n">cube</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+<span class="n">cube</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(101, 101, 101)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is the <strong>all-knowing cube of probability</strong>, so-called because it can answer all of our questions about Bernoulli trials.
+Allow me to demonstrate.</p>
+</section>
+<section id="the-binomial-distribution">
+<h2>The binomial distribution<a class="headerlink" href="#the-binomial-distribution" title="Permalink to this heading">#</a></h2>
+<p>Suppose we are given <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(p\)</span>, and we would like to know the distribution of <span class="math notranslate nohighlight">\(k\)</span>.
+We can answer that question by selecting a vector from the cube along the <span class="math notranslate nohighlight">\(k\)</span> axis.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">pmf_k</span> <span class="o">=</span> <span class="n">cube</span><span class="p">[:,</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a normalized PMF.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_k</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9999999999999996
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">pmf_k</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Binomial distribution of $k$&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/1dbbe565464b50915e694c1adcba74a56d1cbc3079226148517aa86de13d54f4.png" src="_images/1dbbe565464b50915e694c1adcba74a56d1cbc3079226148517aa86de13d54f4.png" />
+</div>
+</div>
+<p>Because we used <code class="docutils literal notranslate"><span class="pre">binom</span></code> to compute the cube, we should not be surprised to find that this slice from the cube is a binomial PMF.
+But just to make sure, we can use <code class="docutils literal notranslate"><span class="pre">binom</span></code> again to confirm it.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_binom</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can check that the results are consistent.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">pmf_k</span><span class="p">,</span> <span class="n">pmf_binom</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>So we can think of the cube as a collection of binomial PMFs.
+But we can also think of it as a joint distribution of <span class="math notranslate nohighlight">\(k\)</span>, <span class="math notranslate nohighlight">\(n\)</span>, and <span class="math notranslate nohighlight">\(p\)</span>, which raises the question: what do we get if we select a vector along the <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(p\)</span> axes?</p>
+</section>
+<section id="the-negative-binomial-distribution">
+<h2>The negative binomial distribution<a class="headerlink" href="#the-negative-binomial-distribution" title="Permalink to this heading">#</a></h2>
+<p>Suppose we plan to run Bernoulli trials with probability <span class="math notranslate nohighlight">\(p\)</span> until we see <span class="math notranslate nohighlight">\(k\)</span> successes.
+How many trials will it take?</p>
+<p>We can answer this question by selecting a vector from the cube along the <span class="math notranslate nohighlight">\(n\)</span> axis.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">pmf_n</span> <span class="o">=</span> <span class="n">cube</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:,</span> <span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is close to the answer we want, but there’s something we have to fix.
+Remember that the values in the cube come from the binomial PMF, which looks like this.</p>
+<div class="math notranslate nohighlight">
+\[Pr(k; n, p) = \binom{n}{k} p^{k} (1-p)^{n-k}\]</div>
+<p>The first term is the binomial coefficient, which indicates that there are <span class="math notranslate nohighlight">\(n\)</span> places we could find <span class="math notranslate nohighlight">\(k\)</span> successes.
+But if we keep running trials until we see <span class="math notranslate nohighlight">\(k\)</span> successes, we know the last trial will be a success, which means there are only <span class="math notranslate nohighlight">\(n-1\)</span> places we could find the other <span class="math notranslate nohighlight">\(k-1\)</span> successes.</p>
+<p>So we have to adjust the values from the cube by dividing the elements by <span class="math notranslate nohighlight">\(n/k\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+<span class="n">pmf_n</span> <span class="o">/=</span> <span class="p">(</span><span class="n">ns</span> <span class="o">/</span> <span class="n">k</span><span class="p">)</span>
+<span class="n">pmf_n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And normalize the results to get a proper PMF.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_n</span> <span class="o">/=</span> <span class="n">pmf_n</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">pmf_n</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Negative binomial distribution of $n$&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/51edcd12a1bc05b69931e2780914f6188edca778ea322bda187b49025823c225.png" src="_images/51edcd12a1bc05b69931e2780914f6188edca778ea322bda187b49025823c225.png" />
+</div>
+</div>
+<p>This is a negative binomial distribution, which we can confirm using <code class="docutils literal notranslate"><span class="pre">scipy.stats.nbinom</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">nbinom</span>
+
+<span class="n">pmf_nbinom</span> <span class="o">=</span> <span class="n">nbinom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">ns</span><span class="o">-</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">pmf_nbinom</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9999999094998685
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">pmf_n</span><span class="p">,</span> <span class="n">pmf_nbinom</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>To see why this works we can compare the binomial PMF, which is a distribution over <span class="math notranslate nohighlight">\(k\)</span> with <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(p\)</span> as parameters:</p>
+<div class="math notranslate nohighlight">
+\[Pr(k; n, p) = \binom{n}{k} p^{k} (1-p)^{n-k}\]</div>
+<p>And the negative binomial PMF, which I’ve written as a distribution over <span class="math notranslate nohighlight">\(n\)</span> with <span class="math notranslate nohighlight">\(k\)</span> and <span class="math notranslate nohighlight">\(p\)</span> as parameters:</p>
+<div class="math notranslate nohighlight">
+\[Pr(n; k, p) = \binom{n-1}{k-1} p^k (1-p)^{n-k}\]</div>
+<p>This is not the most common way to parameterize the negative binomial distribution, but it shows that the only difference is in the binomial coefficient, because we know that the last trial is a success.</p>
+</section>
+<section id="the-beta-distribution">
+<h2>The beta distribution<a class="headerlink" href="#the-beta-distribution" title="Permalink to this heading">#</a></h2>
+<p>Suppose we have 101 devices that perform Bernoulli trials with different probabilities.
+The first device has <span class="math notranslate nohighlight">\(p=0\)</span>, the second has <span class="math notranslate nohighlight">\(p=0.01\)</span>, and so on up to the last device with <span class="math notranslate nohighlight">\(p=1\)</span>.</p>
+<p>Now suppose we choose one of the devices so that all values of <span class="math notranslate nohighlight">\(p\)</span> are equally likely.
+If we run <span class="math notranslate nohighlight">\(n\)</span> trials and see <span class="math notranslate nohighlight">\(k\)</span> successes, what is the distribution of <span class="math notranslate nohighlight">\(p\)</span>?</p>
+<p>We can answer this question by selecting a vector from the cube along the <span class="math notranslate nohighlight">\(p\)</span> axis.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">50</span>
+
+<span class="n">pdf_p</span> <span class="o">=</span> <span class="n">cube</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is not normalized.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pdf_p</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.96078431372549
+</pre></div>
+</div>
+</div>
+</div>
+<p>But we can normalize it like this.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pdf_p</span> <span class="o">/=</span> <span class="n">pdf_p</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s what it looks like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">pdf_p</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Beta distribution of $p$&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/1e2f223d24ce1e9e25ec684e3a964abe687315c7cf0abbccc146146a9d09dc10.png" src="_images/1e2f223d24ce1e9e25ec684e3a964abe687315c7cf0abbccc146146a9d09dc10.png" />
+</div>
+</div>
+<p>This is a beta distribution, which we can confirm by running <code class="docutils literal notranslate"><span class="pre">scipy.stats.beta</span></code> with a change of variables, <span class="math notranslate nohighlight">\(a = k+1\)</span> and <span class="math notranslate nohighlight">\(b = n-k+1\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">beta</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(26, 26)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pdf_beta</span> <span class="o">=</span> <span class="n">beta</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">pdf_beta</span> <span class="o">/=</span> <span class="n">pdf_beta</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">pdf_p</span><span class="p">,</span> <span class="n">pdf_beta</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>To see why this works, let’s compare the PDF of the beta distribution</p>
+<div class="math notranslate nohighlight">
+\[f(p, a, b) = \frac{1}{B(a, b)} p^{a-1} (1-p)^{b-1} \]</div>
+<p>And the PMF of the binomial distribution.</p>
+<div class="math notranslate nohighlight">
+\[Pr(k; n, p) = \binom{n}{k} p^{k} (1-p)^{n-k}\]</div>
+<p>With the change of variables, they are identical except for the first term, which normalizes the distributions.</p>
+</section>
+<section id="conjugate-priors">
+<h2>Conjugate priors<a class="headerlink" href="#conjugate-priors" title="Permalink to this heading">#</a></h2>
+<p>This similarity is the reason the beta and binomial are conjugate distributions, which means they are joined together.
+This relationship has a useful property for Bayesian statistics: if the prior distribution of <span class="math notranslate nohighlight">\(p\)</span> is beta and the likelihood of the data is binomial, the posterior distribution is also beta.</p>
+<p>To see how that works, here is the PDF of the a beta prior distribution with parameters <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[p^{a-1} (1-p)^{b-1}\]</div>
+<p>I have omitted the normalizing factor – we don’t need it because we are going to normalize the distribution after the update.</p>
+<p>Now suppose we see <span class="math notranslate nohighlight">\(k\)</span> successes in <span class="math notranslate nohighlight">\(n\)</span> trials.
+The likelihood of this data is given by the binomial distribution, which has this PMF.</p>
+<div class="math notranslate nohighlight">
+\[p^{k} (1-p)^{n-k}\]</div>
+<p>Again, I have omitted the normalizing factor.
+Now to get the unnormalized posterior, we multiply the beta prior and the binomial likelihood. The result is</p>
+<div class="math notranslate nohighlight">
+\[p^{a-1+k} (1-p)^{b-1+n-k}\]</div>
+<p>which we recognize as an unnormalized beta distribution with parameters <span class="math notranslate nohighlight">\(a+k\)</span> and <span class="math notranslate nohighlight">\(b+n-k\)</span>.</p>
+<p>So if we observe <span class="math notranslate nohighlight">\(k\)</span> successes in <span class="math notranslate nohighlight">\(n\)</span> trials, we can do the update by making a beta posterior with parameters <span class="math notranslate nohighlight">\(a+k\)</span> and <span class="math notranslate nohighlight">\(b+n-k\)</span>.</p>
+<p>As an example, suppose the prior is a beta distribution with parameters <span class="math notranslate nohighlight">\(a=2\)</span> and <span class="math notranslate nohighlight">\(b=3\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">prior</span> <span class="o">=</span> <span class="n">beta</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And suppose we see <span class="math notranslate nohighlight">\(k=5\)</span> successes in <span class="math notranslate nohighlight">\(n=10\)</span> attempts.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">like</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">ps</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can compute the posterior by multiplying the prior and the likelihood, then normalizing the results.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">like</span>
+<span class="n">posterior</span> <span class="o">/=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Or we can compute a beta distribution with the updated parameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_beta</span> <span class="o">=</span> <span class="n">beta</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">a</span><span class="o">+</span><span class="n">k</span><span class="p">,</span> <span class="n">b</span><span class="o">+</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">)</span>
+<span class="n">posterior_beta</span> <span class="o">/=</span> <span class="n">posterior_beta</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is the same either way.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">posterior_beta</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>But we don’t have to compute the posterior by doing an explicit update, or by computing a beta distribution, because the all-knowing cube of probability already knows the answer – we just have to ask.</p>
+<p>The following function takes the parameters <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> and looks up the corresponding beta distribution already computed in the cube.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_beta</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">cube</span><span class="p">):</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="n">pdf</span> <span class="o">=</span> <span class="n">cube</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">pdf</span> <span class="o">/=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">pdf</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can use it to get the posterior distribution of <span class="math notranslate nohighlight">\(p\)</span> from the cube.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_cube</span> <span class="o">=</span> <span class="n">get_beta</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">k</span><span class="p">,</span> <span class="n">b</span> <span class="o">+</span> <span class="n">n</span> <span class="o">-</span> <span class="n">k</span><span class="p">,</span> <span class="n">cube</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And confirm that we get the same result.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">posterior_beta</span><span class="p">,</span> <span class="n">posterior_cube</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">posterior_cube</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Posterior distribution of p&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/2b4e629151043e7f5d3a22dbba5ac9a8705b3ae0cd6a79ae6e9e462eb2e876a0.png" src="_images/2b4e629151043e7f5d3a22dbba5ac9a8705b3ae0cd6a79ae6e9e462eb2e876a0.png" />
+</div>
+</div>
+</section>
+<section id="update-with-nbinom">
+<h2>Update with nbinom<a class="headerlink" href="#update-with-nbinom" title="Permalink to this heading">#</a></h2>
+<p>Now suppose that instead of running <span class="math notranslate nohighlight">\(n\)</span> trials, we keep running trials until we see <span class="math notranslate nohighlight">\(k\)</span> successes – and suppose it takes <span class="math notranslate nohighlight">\(n\)</span> trials.</p>
+<p>In this case, we can use the negative binomial distribution to compute the likelihood of the data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">like2</span> <span class="o">=</span> <span class="n">nbinom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">ps</span><span class="p">)</span>
+<span class="n">like2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can do the update in the usual way.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior2</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">like2</span>
+<span class="n">posterior2</span> <span class="o">/=</span> <span class="n">posterior2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>It turns out that the result is the same in both cases:</p>
+<ul class="simple">
+<li><p>If we decide ahead of time to run <span class="math notranslate nohighlight">\(n\)</span> trials, and see <span class="math notranslate nohighlight">\(k\)</span> successes, or</p></li>
+<li><p>If we run until we see <span class="math notranslate nohighlight">\(k\)</span> successes, and it takes <span class="math notranslate nohighlight">\(n\)</span> trials.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">posterior2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>Bayesian inference only depends on the data, not the stopping condition.
+Or, as my friend Ted Bunn put it: <a class="reference external" href="https://blog.richmond.edu/physicsbunn/2012/01/05/who-knows-what-evil-lurks-in-the-hearts-of-men-the-bayesian-doesnt-care/">Who knows what evil lurks in the hearts of men? The Bayesian doesn’t care.</a></p>
+</section>
+<section id="posterior-predictive-distributions">
+<h2>Posterior predictive distributions<a class="headerlink" href="#posterior-predictive-distributions" title="Permalink to this heading">#</a></h2>
+<p>The all-knowing cube of probability knows what we should believe in the light of new data, but that’s not all.
+It also knows the future, at least probabilistically.</p>
+<p>After an update, we can get posterior predictive distribution by computing a weighted mixture of binomial distributions with different values of <span class="math notranslate nohighlight">\(p\)</span>, weighted by the posterior probabilities.</p>
+<p>We can do that by selecting the <span class="math notranslate nohighlight">\((k, p)\)</span> plane from the cube, multiplying by the posterior and summing away the <span class="math notranslate nohighlight">\(p\)</span> axis.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">post_pred_k</span> <span class="o">=</span> <span class="p">(</span><span class="n">cube</span><span class="p">[:,</span> <span class="n">n</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">posterior</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a distribution over <span class="math notranslate nohighlight">\(k\)</span>. Here’s what it looks like (dropping values of <span class="math notranslate nohighlight">\(k\)</span> greater than <span class="math notranslate nohighlight">\(n\)</span>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ks</span><span class="p">[:</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">post_pred_k</span><span class="p">[:</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Posterior predictive distribution of k&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/2590e39b2e536e14079fcc7ba7faff83a4bfbcce3d1babb7f3169dcdf8b6cf36.png" src="_images/2590e39b2e536e14079fcc7ba7faff83a4bfbcce3d1babb7f3169dcdf8b6cf36.png" />
+</div>
+</div>
+<p>A beta mixture of binomials is a beta-binomial distribution, and it has a PMF we can compute analytically.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">betabinom</span>
+
+<span class="n">post_pred_bb</span> <span class="o">=</span> <span class="n">betabinom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="o">+</span><span class="n">k</span><span class="p">,</span> <span class="n">b</span><span class="o">+</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>So we can confirm that the all-knowing cube was correct.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">post_pred_k</span><span class="p">,</span> <span class="n">post_pred_bb</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-other-posterior-predictive">
+<h2>The other posterior predictive<a class="headerlink" href="#the-other-posterior-predictive" title="Permalink to this heading">#</a></h2>
+<p>We can also use the cube to compute the posterior predictive distribution of <span class="math notranslate nohighlight">\(n\)</span> given a required number of successes, <span class="math notranslate nohighlight">\(k\)</span>.</p>
+<p>We start by selecting the <span class="math notranslate nohighlight">\((n, p)\)</span> plane from the cube, which is a collection of negative binomials distributions, except that we have to correct them by dividing through by <span class="math notranslate nohighlight">\(n/k\)</span>, as we did above.</p>
+<p>Actually, we only have to divide by <span class="math notranslate nohighlight">\(n\)</span> because <span class="math notranslate nohighlight">\(k\)</span> is a constant that will get normalized away.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plane</span> <span class="o">=</span> <span class="n">cube</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">ns</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+<span class="n">plane</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we can compute a weighted sum as in the previous example, multiplying by the posterior and summing away the <span class="math notranslate nohighlight">\(p\)</span> axis.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">post_pred_n</span> <span class="o">=</span> <span class="p">(</span><span class="n">plane</span> <span class="o">*</span> <span class="n">posterior</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">post_pred_n</span> <span class="o">/=</span> <span class="n">post_pred_n</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">post_pred_n</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PMF&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Posterior predictive distribution of n&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/f9799c743157bf4fad1e53e01bb39d37622a3165729b2255b2157422d1e781e8.png" src="_images/f9799c743157bf4fad1e53e01bb39d37622a3165729b2255b2157422d1e781e8.png" />
+</div>
+</div>
+<p>A beta-weighted mixture of negative binomials is a beta-negative binomial distribution, and it has a PMF we can compute analytically.
+SciPy doesn’t have a function to do it, but we can write our own using functions in <code class="docutils literal notranslate"><span class="pre">scipy.special</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.special</span> <span class="k">as</span> <span class="nn">sps</span>
+
+<span class="k">def</span> <span class="nf">betanegbinom_pmf</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the PMF of the beta-negative binomial distribution.</span>
+<span class="sd">    </span>
+<span class="sd">    Generated by ChatGPT, revised based on</span>
+<span class="sd">    https://en.wikipedia.org/wiki/Beta_negative_binomial_distribution</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    - n: Number of trials before stopping.</span>
+<span class="sd">    - r: Number of successes required.</span>
+<span class="sd">    - a: Shape parameter of the beta distribution.</span>
+<span class="sd">    - b: Shape parameter of the beta distribution.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    - PMF value for the given parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="n">r</span>
+    <span class="n">binomial_coefficient</span> <span class="o">=</span> <span class="n">sps</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="n">beta_num</span> <span class="o">=</span> <span class="n">sps</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">r</span><span class="p">,</span> <span class="n">b</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span>
+    <span class="n">beta_den</span> <span class="o">=</span> <span class="n">sps</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+    <span class="n">pmf</span> <span class="o">=</span> <span class="n">binomial_coefficient</span> <span class="o">*</span> <span class="p">(</span><span class="n">beta_num</span> <span class="o">/</span> <span class="n">beta_den</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pmf</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The conventional parameterization of the beta-negative binomial uses <span class="math notranslate nohighlight">\(k\)</span> for the number of failures and <span class="math notranslate nohighlight">\(r\)</span> for the number of required successes, so we have to change some variables to get a distribution over <span class="math notranslate nohighlight">\(n\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">post_pred_bnb</span> <span class="o">=</span> <span class="n">betanegbinom_pmf</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">a</span><span class="o">+</span><span class="n">k</span><span class="p">,</span> <span class="n">b</span><span class="o">+</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">)</span>
+<span class="n">post_pred_bnb</span> <span class="o">/=</span> <span class="n">post_pred_bnb</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>But we can confirm that the result from the cube is consistent with the analytic PMF.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">post_pred_n</span><span class="p">,</span> <span class="n">post_pred_bnb</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>In conclusion, the all-knowing cube of probability contains the past (the prior distributions), the present (the posterior distributions), and the future (the posterior predictive distributions).</p>
+<p>Think Bayes, Second Edition</p>
+<p>Copyright 2020 Allen B. Downey</p>
+<p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="bookstore.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">How Many Books?</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#making-the-cube">Making the cube</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-binomial-distribution">The binomial distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-negative-binomial-distribution">The negative binomial distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-beta-distribution">The beta distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-priors">Conjugate priors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update-with-nbinom">Update with nbinom</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-predictive-distributions">Posterior predictive distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-other-posterior-predictive">The other posterior predictive</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
