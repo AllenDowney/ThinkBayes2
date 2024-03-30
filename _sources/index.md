@@ -20,8 +20,7 @@ If you are looking for **solutions to the exercises**, follow the links on the l
 Other Free Books by Allen Downey are available from [Green Tea Press](https://greenteapress.com/wp/).
 
 
-
-**Run the notebooks**
+## Run the notebooks
 
 [Download the notebooks as a Zip file](https://github.com/AllenDowney/ThinkBayes2/raw/master/ThinkBayes2Notebooks.zip)
 

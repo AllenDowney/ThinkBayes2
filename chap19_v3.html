@@ -540,7 +540,7 @@ To see what it looks like, we’ll compute the PMF of the sample.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/63111896372fd55cc75fbff6fee738f0c59e5d06676116f2cefbb5aed1c170e6.png" src="_images/63111896372fd55cc75fbff6fee738f0c59e5d06676116f2cefbb5aed1c170e6.png" />
+<img alt="_images/bf62eec880e055fc719a0ff38539e2a395226ccf1997bb2da55eaf97fdba19ed.png" src="_images/bf62eec880e055fc719a0ff38539e2a395226ccf1997bb2da55eaf97fdba19ed.png" />
 </div>
 </div>
 <p>One reason to compute the prior predictive distribution is to check whether our model of the system seems reasonable.
@@ -607,7 +607,19 @@ We can use a <code class="docutils literal notranslate"><span class="pre">with</
 </div>
 </div>
 </div>
-<p>The result is a dictionary-like object that maps from the variables, <code class="docutils literal notranslate"><span class="pre">lam</span></code> and <code class="docutils literal notranslate"><span class="pre">goals</span></code>, to the samples.
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">idata</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>arviz.data.inference_data.InferenceData
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is an <code class="docutils literal notranslate"><span class="pre">InferenceData</span></code> object that contains information about the sampling process and the results.
 We can extract the sample of <code class="docutils literal notranslate"><span class="pre">lam</span></code> like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -660,11 +672,11 @@ We can extract the sample of <code class="docutils literal notranslate"><span cl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/798001ead35536b22de0349921034733e0b5ea77e0239e94eac04f1116661b98.png" src="_images/798001ead35536b22de0349921034733e0b5ea77e0239e94eac04f1116661b98.png" />
+<img alt="_images/7dbbc0a61a9958f8c4981b2e004cf69d4780e9e4061d23c0a5c5a2e42c54df95.png" src="_images/7dbbc0a61a9958f8c4981b2e004cf69d4780e9e4061d23c0a5c5a2e42c54df95.png" />
 </div>
 </div>
 <p>The results are similar, which confirms that the specification of the model is correct and the sampler works as advertised.</p>
-<p>From the trace we can also extract <code class="docutils literal notranslate"><span class="pre">goals</span></code>, which is a sample from the prior predictive distribution.</p>
+<p>From the inference data we can also extract <code class="docutils literal notranslate"><span class="pre">goals</span></code>, which is a sample from the prior predictive distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_prior_pred_pymc</span> <span class="o">=</span> <span class="n">get_values</span><span class="p">(</span><span class="n">idata</span><span class="o">.</span><span class="n">prior</span><span class="p">[</span><span class="s1">&#39;goals&#39;</span><span class="p">])</span>
@@ -703,7 +715,7 @@ We can extract the sample of <code class="docutils literal notranslate"><span cl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/272beb2d8ff2ae8f30843a7b352d69b112a1efe94e320b0ad16a270dd3c564a1.png" src="_images/272beb2d8ff2ae8f30843a7b352d69b112a1efe94e320b0ad16a270dd3c564a1.png" />
+<img alt="_images/556e15280de1f65666e228fc5c82b02ad26d3d9869138104f48bbba74ebb6ac8.png" src="_images/556e15280de1f65666e228fc5c82b02ad26d3d9869138104f48bbba74ebb6ac8.png" />
 </div>
 </div>
 <p>Again, the results are similar, so we have some confidence we are using PyMC right.</p>
@@ -815,7 +827,7 @@ From <code class="docutils literal notranslate"><span class="pre">idata2</span><
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/05d8429a8663b8bdb077e9f35f729467b01c95addc2c566d62f4340f9340d758.png" src="_images/05d8429a8663b8bdb077e9f35f729467b01c95addc2c566d62f4340f9340d758.png" />
+<img alt="_images/0aca26a1231a6622d347d149b8a3ee31517eb2b4db5e1dbcc94c8a2effca1f38.png" src="_images/0aca26a1231a6622d347d149b8a3ee31517eb2b4db5e1dbcc94c8a2effca1f38.png" />
 </div>
 </div>
 <p>The results from PyMC are consistent with the results from the grid approximation.</p>
@@ -826,7 +838,7 @@ From <code class="docutils literal notranslate"><span class="pre">idata2</span><
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model2</span><span class="p">:</span>
-    <span class="n">post_pred</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_posterior_predictive</span><span class="p">(</span><span class="n">idata2</span><span class="p">)</span>
+    <span class="n">idata2_pred</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_posterior_predictive</span><span class="p">(</span><span class="n">idata2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -853,10 +865,10 @@ From <code class="docutils literal notranslate"><span class="pre">idata2</span><
     </div>
     </div></div>
 </div>
-<p>The result is a dictionary that contains a sample of <code class="docutils literal notranslate"><span class="pre">goals</span></code>.</p>
+<p>The result is an <code class="docutils literal notranslate"><span class="pre">InferenceData</span></code> object that contains a sample of <code class="docutils literal notranslate"><span class="pre">goals</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_post_pred_pymc</span> <span class="o">=</span> <span class="n">get_values</span><span class="p">(</span><span class="n">post_pred</span><span class="o">.</span><span class="n">posterior_predictive</span><span class="p">[</span><span class="s1">&#39;goals&#39;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_post_pred_pymc</span> <span class="o">=</span> <span class="n">get_values</span><span class="p">(</span><span class="n">idata2_pred</span><span class="o">.</span><span class="n">posterior_predictive</span><span class="p">[</span><span class="s1">&#39;goals&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -899,7 +911,7 @@ From <code class="docutils literal notranslate"><span class="pre">idata2</span><
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/6b18cf24cda9ff1c923effcc14deb3cf194b502ac3c3fd3fad842bd6ff0bb3ab.png" src="_images/6b18cf24cda9ff1c923effcc14deb3cf194b502ac3c3fd3fad842bd6ff0bb3ab.png" />
+<img alt="_images/4ff62660bf238754ded2f8bec12b246101ff30a171a992e01b35463265e0f646.png" src="_images/4ff62660bf238754ded2f8bec12b246101ff30a171a992e01b35463265e0f646.png" />
 </div>
 </div>
 <p>Again, the results are consistent.
@@ -1242,7 +1254,7 @@ NUTS: [a, b, sigma]
       <progress value='6000' class='' max='6000' style='width:300px; height:20px; vertical-align: middle;'></progress>
       100.00% [6000/6000 00:05<00:00 Sampling 4 chains, 0 divergences]
     </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 5 seconds.
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 6 seconds.
 </pre></div>
 </div>
 </div>
@@ -1262,7 +1274,7 @@ Here are the posterior distributions of slope, <code class="docutils literal not
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/3e113f36e532f1f9d52bf66b114aab206cc32a5e749b57c678b4c40e27e2d1bf.png" src="_images/3e113f36e532f1f9d52bf66b114aab206cc32a5e749b57c678b4c40e27e2d1bf.png" />
+<img alt="_images/4ccfdcf709054d0f44cc4a44f2df3cbb27f8132293440f98cb57e282ef4bcfa3.png" src="_images/4ccfdcf709054d0f44cc4a44f2df3cbb27f8132293440f98cb57e282ef4bcfa3.png" />
 </div>
 </div>
 <p>The graphs show the distributions of the samples, estimated by KDE, and 94% credible intervals.  In the figure, “HDI” stands for <a class="reference external" href="https://www.sciencedirect.com/topics/mathematics/highest-density-interval">“highest-density interval”</a>.</p>
@@ -1275,7 +1287,7 @@ Here are the posterior distributions of slope, <code class="docutils literal not
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: [0.71953928]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: [0.72130426]
 Regression slope: 0.717738495630452
 </pre></div>
 </div>
@@ -1289,7 +1301,7 @@ Regression slope: 0.717738495630452
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: [-1.21622953]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: [-1.23201509]
 Regression intercept: -1.1986460618088843
 </pre></div>
 </div>
@@ -1303,7 +1315,7 @@ Regression intercept: -1.1986460618088843
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/ea0a1bb66788c12fc635ae908c458aca851cc726ab524bb9f8441ab58f81d104.png" src="_images/ea0a1bb66788c12fc635ae908c458aca851cc726ab524bb9f8441ab58f81d104.png" />
+<img alt="_images/901ee020fc67709642949a9a25f231a3019eea4fc4d6597e1e0bc3e458770a8e.png" src="_images/901ee020fc67709642949a9a25f231a3019eea4fc4d6597e1e0bc3e458770a8e.png" />
 </div>
 </div>
 <p>The values in the posterior distribution of <code class="docutils literal notranslate"><span class="pre">sigma</span></code> seem plausible.</p>
@@ -1523,7 +1535,7 @@ NUTS: [b0, b1, b2, b3, b4, b5, b6, sigma]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.000503147885427163
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0012751341212245242
 </pre></div>
 </div>
 </div>
@@ -1536,7 +1548,7 @@ NUTS: [b0, b1, b2, b3, b4, b5, b6, sigma]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5174968236215033
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5150208888645642
 </pre></div>
 </div>
 </div>
@@ -1603,33 +1615,33 @@ NUTS: [b0, b1, b2, b3, b4, b5, b6, sigma]
   <tbody>
     <tr>
       <th>Logged GDP per capita</th>
-      <td>0.246</td>
-      <td>[0.088, 0.419]</td>
+      <td>0.242</td>
+      <td>[0.069, 0.41]</td>
     </tr>
     <tr>
       <th>Social support</th>
       <td>0.225</td>
-      <td>[0.076, 0.381]</td>
+      <td>[0.072, 0.378]</td>
     </tr>
     <tr>
       <th>Healthy life expectancy</th>
       <td>0.225</td>
-      <td>[0.076, 0.381]</td>
+      <td>[0.072, 0.378]</td>
     </tr>
     <tr>
       <th>Freedom to make life choices</th>
-      <td>0.186</td>
-      <td>[0.082, 0.29]</td>
+      <td>0.188</td>
+      <td>[0.082, 0.289]</td>
     </tr>
     <tr>
       <th>Generosity</th>
-      <td>0.058</td>
-      <td>[-0.032, 0.143]</td>
+      <td>0.055</td>
+      <td>[-0.032, 0.142]</td>
     </tr>
     <tr>
       <th>Perceptions of corruption</th>
-      <td>-0.098</td>
-      <td>[-0.189, -0.005]</td>
+      <td>-0.100</td>
+      <td>[-0.195, -0.007]</td>
     </tr>
   </tbody>
 </table>
@@ -1679,8 +1691,8 @@ What is the posterior distribution of <span class="math notranslate nohighlight"
 <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model5</span><span class="p">:</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Binomial</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">k_obs</span><span class="p">)</span>
-    <span class="n">trace5</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
-    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace5</span><span class="p">)</span>
+    <span class="n">idata5</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">idata5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1711,7 +1723,7 @@ NUTS: [x]
     </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 1 seconds.
 </pre></div>
 </div>
-<img alt="_images/59415ab454bfdd618417c13336e90a0928664fd7f7ebccd67b6b8c4c6c46253b.png" src="_images/59415ab454bfdd618417c13336e90a0928664fd7f7ebccd67b6b8c4c6c46253b.png" />
+<img alt="_images/6e5ac074fc99977b0cf7f4a9bc715884b9965f00f3c2129d25978e15fbd6f4c1.png" src="_images/6e5ac074fc99977b0cf7f4a9bc715884b9965f00f3c2129d25978e15fbd6f4c1.png" />
 </div>
 </details>
 </div>
@@ -1738,8 +1750,8 @@ NUTS: [x]
 <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model6</span><span class="p">:</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">DiscreteUniform</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">HyperGeometric</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">trace6</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
-    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace6</span><span class="p">)</span>
+    <span class="n">idata6</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">idata6</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1768,7 +1780,7 @@ Metropolis: [N]
     </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 1 seconds.
 </pre></div>
 </div>
-<img alt="_images/9317b8278960b5fb39a761d507a9b3d0a51fec7673eb0def587d237786bbd253.png" src="_images/9317b8278960b5fb39a761d507a9b3d0a51fec7673eb0def587d237786bbd253.png" />
+<img alt="_images/30ec4b1580a9470b862648966c83c9c5bb5c36d81afb04a623e5545573ef9e9e.png" src="_images/30ec4b1580a9470b862648966c83c9c5bb5c36d81afb04a623e5545573ef9e9e.png" />
 </div>
 </details>
 </div>
@@ -1799,8 +1811,8 @@ Then we used the data to compute a grid approximation of the posterior distribut
     <span class="n">lam</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;lam&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.1</span><span class="p">)</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">5.1</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Weibull</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">lam</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">trace7</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
-    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace7</span><span class="p">)</span>
+    <span class="n">idata7</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">idata7</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1831,7 +1843,7 @@ NUTS: [lam, k]
     </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 2 seconds.
 </pre></div>
 </div>
-<img alt="_images/6abc4c15ef347da0579b5b7848d9c20f026545fd9330de34d548f8341f932215.png" src="_images/6abc4c15ef347da0579b5b7848d9c20f026545fd9330de34d548f8341f932215.png" />
+<img alt="_images/7222540adbef26c611ca7afcdf8cc29a3ef6d7d72304a98fd02a03788e14748d.png" src="_images/7222540adbef26c611ca7afcdf8cc29a3ef6d7d72304a98fd02a03788e14748d.png" />
 </div>
 </details>
 </div>
@@ -1940,7 +1952,7 @@ NUTS: [lam, k]
     <span class="n">mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
     <span class="n">sigma</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">trace8</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">idata8</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1984,12 +1996,12 @@ NUTS: [mu, sigma]
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
 <span class="k">with</span> <span class="n">model8</span><span class="p">:</span>
-    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace8</span><span class="p">)</span>
+    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">idata8</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/1bb4b889fe561ba1d0dd785e6e70b1ffc8db08433adc1e3aadc31a4758cd6c85.png" src="_images/1bb4b889fe561ba1d0dd785e6e70b1ffc8db08433adc1e3aadc31a4758cd6c85.png" />
+<img alt="_images/651a2450e7c1048ad994f72987a7038a1683bedfc6af021866689f04ac9c448c.png" src="_images/651a2450e7c1048ad994f72987a7038a1683bedfc6af021866689f04ac9c448c.png" />
 </div>
 </details>
 </div>
@@ -2076,7 +2088,7 @@ To do that, we can use <code class="docutils literal notranslate"><span class="p
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
 <span class="k">with</span> <span class="n">model9</span><span class="p">:</span>
-    <span class="n">trace9</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">idata9</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2124,12 +2136,12 @@ The effective sample size per chain is smaller than 100 for some parameters.  A 
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
 <span class="k">with</span> <span class="n">model9</span><span class="p">:</span>
-    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace9</span><span class="p">)</span>
+    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">idata9</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/a8de0d4593ed5005abd9a49d2d36e579fc484cf9dfa57c0fd7e9b7484b47e9d4.png" src="_images/a8de0d4593ed5005abd9a49d2d36e579fc484cf9dfa57c0fd7e9b7484b47e9d4.png" />
+<img alt="_images/2df13eb3c1a3976c68225d1a95c449e97010b7186ad0bfae31959355b6413f04.png" src="_images/2df13eb3c1a3976c68225d1a95c449e97010b7186ad0bfae31959355b6413f04.png" />
 </div>
 </details>
 </div>
