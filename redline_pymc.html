@@ -367,7 +367,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-5-log-t-prior-of-gap-times">Model 5: Log-t prior of gap times</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-model">Run the model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlations">Correlations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-with-a-range-of-n-obs">Run with a range of n_obs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-with-a-range-of-n">Run with a range of n</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-results">Plot results</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#all-models">All models</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#make-figures-for-the-talk">Make figures for the talk</a></li>
@@ -384,15 +384,15 @@ document.write(`
                   
   <section id="the-red-line-problem">
 <h1>The Red Line Problem<a class="headerlink" href="#the-red-line-problem" title="Permalink to this heading">#</a></h1>
-<p>This example is based on an exercise in <a class="reference external" href="https://greenteapress.com/wp/think-bayes/">Think Bayes, 2nd edition</a>:</p>
+<p>This example is based on an exercise from <a class="reference external" href="https://greenteapress.com/wp/think-bayes/">Think Bayes, 2nd edition</a>:</p>
 <blockquote>
 <div><p>The Red Line is a subway that connects Cambridge and Boston, Massachusetts. When I was working in Cambridge I took the Red Line from Kendall Square to South Station and caught the commuter rail to Needham. During rush hour Red Line trains run every 7-8 minutes, on average.</p>
 <p>When I arrived at the subway stop, I could estimate the time until the next train based on the number of passengers on the platform. If there were only a few people, I inferred that I just missed a train and expected to wait about 7 minutes. If there were more passengers, I expected the train to arrive sooner. But if there were a large number of passengers, I suspected that trains were not running on schedule, so I expected to wait a long time.</p>
 <p>While I was waiting, I thought about how Bayesian inference could help predict my wait time and decide when I should give up and take a taxi. This example presents the analysis I came up with.</p>
 </div></blockquote>
 <p>In <a class="reference external" href="https://allendowney.github.io/ThinkBayes2/redline.html">this previous example</a> I solve a version of the Red Line Problem using grid algorithms.
-In this notebook, I’ll solve this problem using PyMC.
-If you are not familiar with PyMC, you can <span class="xref myst">start with this chapter from <em>Think Bayes</em></span>, especially the World Cup Problem.</p>
+In this notebook, we’ll solve it using PyMC.</p>
+<p>If you are not familiar with PyMC, you can <a class="reference external" href="https://allendowney.github.io/ThinkBayes2/chap19.html">start with this chapter from <em>Think Bayes</em></a>, especially the World Cup Problem. Or you can <a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/notebooks/chap19_v3.ipynb">run that chapter on Colab</a>.</p>
 <p>You can read <a class="reference external" href="https://docs.google.com/presentation/d/e/2PACX-1vRXWXWBPHur73EbgZl_w0t0JNpmdIndLmtGLMnlRtn0iP8xMcGTweXeIn47eodXMJwdQ8BcVW0FtUrr/pub">the slides I used to present this example</a>.</p>
 <p><a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/redline_pymc.ipynb">Click here to run this notebook on Colab</a></p>
 <div class="cell docutils container">
@@ -425,9 +425,10 @@ If you are not familiar with PyMC, you can <span class="xref myst">start with th
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pymc</span> <span class="k">as</span> <span class="nn">pm</span>
 
 <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
 </pre></div>
@@ -436,7 +437,8 @@ If you are not familiar with PyMC, you can <span class="xref myst">start with th
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make the figures smaller to save some screen real estate.</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make the figures smaller to save some screen real estate</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.dpi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">75</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">]</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.titlelocation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span>
@@ -531,33 +533,47 @@ For more about this kind of length-biased sampling, see Chapter 2 of <a class="r
 For the sampler to behave well, we need to evaluate the estimated density far enough into the tails to make a smooth transition down to 0.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Modified version based on the example at</span>
-<span class="c1"># from https://www.pymc.io/projects/examples/en/latest/howto/updating_priors.html</span>
-
-<span class="k">def</span> <span class="nf">kde_from_sample</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_interpolated</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make an Interpolated distribution from a sample.</span>
+<span class="sd">    </span>
+<span class="sd">    Uses the sample as weights to simulate length-biased sampling.</span>
+<span class="sd">    </span>
+<span class="sd">    sample: array of observed gap times</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
-    <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">sample</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
     
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">+</span><span class="n">s</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">gaussian_kde</span><span class="p">(</span><span class="n">sample</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-
-    <span class="c1"># pad the domain with zeros</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">s</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">s</span><span class="p">]])</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">m</span> <span class="o">-</span> <span class="mi">5</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">5</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="mi">301</span><span class="p">)</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">gaussian_kde</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">sample</span><span class="p">)(</span><span class="n">qs</span><span class="p">)</span>
     
-    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">Interpolated</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">Interpolated</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="n">ps</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>Here’s a model that uses that prior of gap times and a normal model for the arrival rate of passengers.</p>
-<p>As a starting place, I’ll assume we have a precise estimate of the passenger arrival rate – we’ll relax that assumption later.</p>
+<p>Here’s a model that uses that prior of gap times and a normal model for the arrival rate of passengers.
+As a starting place, I’ll assume we have a precise estimate of the passenger arrival rate – we’ll relax that assumption later.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymc</span> <span class="k">as</span> <span class="nn">pm</span>  
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">gap_time</span> <span class="o">=</span> <span class="n">make_interpolated</span><span class="p">(</span><span class="s1">&#39;gap_time&#39;</span><span class="p">,</span> <span class="n">observed_gap_times</span><span class="p">)</span>
+    
+    <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;elapsed_time&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">gap_time</span><span class="p">)</span>
+    
+    <span class="n">remaining_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s1">&#39;remaining_time&#39;</span><span class="p">,</span> <span class="n">gap_time</span> <span class="o">-</span> <span class="n">elapsed_time</span><span class="p">)</span>
 
-<span class="c1"># train gap time: interpolated</span>
+    <span class="n">rate</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">elapsed_time</span> <span class="o">*</span> <span class="n">rate</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>With the following function, we can make different versions of the model with different values of <code class="docutils literal notranslate"><span class="pre">n_obs</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># train gap time: interpolated</span>
 <span class="c1"># passenger arrival rate: Normal</span>
 
 <span class="k">def</span> <span class="nf">make_model1</span><span class="p">(</span><span class="n">n_obs</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
@@ -566,10 +582,11 @@ For the sampler to behave well, we need to evaluate the estimated density far en
 <span class="sd">    n_obs: observed passengers</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
-        <span class="n">gap_time</span> <span class="o">=</span> <span class="n">kde_from_sample</span><span class="p">(</span><span class="s1">&#39;gap_time&#39;</span><span class="p">,</span> <span class="n">observed_gap_times</span><span class="p">)</span>
+        <span class="n">gap_time</span> <span class="o">=</span> <span class="n">make_interpolated</span><span class="p">(</span><span class="s1">&#39;gap_time&#39;</span><span class="p">,</span> <span class="n">observed_gap_times</span><span class="p">)</span>
         <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;elapsed_time&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">gap_time</span><span class="p">)</span>
-
-        <span class="n">rate</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">remaining_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s1">&#39;remaining_time&#39;</span><span class="p">,</span> <span class="n">gap_time</span> <span class="o">-</span> <span class="n">elapsed_time</span><span class="p">)</span>
+        
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="n">mu</span> <span class="o">=</span> <span class="n">elapsed_time</span> <span class="o">*</span> <span class="n">rate</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">n_obs</span><span class="p">)</span>
         
@@ -583,7 +600,7 @@ For the sampler to behave well, we need to evaluate the estimated density far en
 <h2>Model 2: Normal prior of gap times<a class="headerlink" href="#model-2-normal-prior-of-gap-times" title="Permalink to this heading">#</a></h2>
 <p>The KDE prior might be most faithful to the data, but it probably includes details of the sample that are not generalizable.
 It might be just as reasonable to use a normal prior, and it might improve the performance of the sampler.</p>
-<p>To see how good the model it, we can use the estimated density to compute a CDF.</p>
+<p>To see how good the model is, we can use the estimated density to compute a CDF.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
@@ -614,6 +631,23 @@ It might be just as reasonable to use a normal prior, and it might improve the p
 <p>The following figure compares the distributions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
+
+<span class="c1"># generate a 90% CI for cdf_prior</span>
+<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed_gap_times</span><span class="p">)</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">cdf_prior</span><span class="o">.</span><span class="n">qs</span>
+<span class="n">resampled</span> <span class="o">=</span> <span class="p">[</span><span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">kde_prior</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">n</span><span class="p">)[</span><span class="mi">0</span><span class="p">])(</span><span class="n">qs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">)]</span>
+
+<span class="n">resampled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resampled</span><span class="p">)</span>
+<span class="n">resampled</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">low</span> <span class="o">=</span> <span class="n">resampled</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">high</span> <span class="o">=</span> <span class="n">resampled</span><span class="p">[</span><span class="mi">95</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
 
 <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
@@ -621,6 +655,7 @@ It might be just as reasonable to use a normal prior, and it might improve the p
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Normal model&#39;</span><span class="p">)</span>
 <span class="n">cdf_prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;KDE prior&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Gap time (minutes)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;red_line4.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
@@ -628,15 +663,13 @@ It might be just as reasonable to use a normal prior, and it might improve the p
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/22e517defa86634a7cdfc03a278c15922a724a0fcf13ce2c90333462fdacefff.png" src="_images/22e517defa86634a7cdfc03a278c15922a724a0fcf13ce2c90333462fdacefff.png" />
+<img alt="_images/d7ddff998292896e37b63d94b83e500acb00e891f0c68c5034614c157a69274c.png" src="_images/d7ddff998292896e37b63d94b83e500acb00e891f0c68c5034614c157a69274c.png" />
 </div>
 </div>
 <p>The normal model fits the estimated density well, so it’s probably a good choice to represent the prior distribution of gap times, as in the following model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymc</span> <span class="k">as</span> <span class="nn">pm</span>  
-
-<span class="c1"># train gap time: Normal</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># train gap time: Normal</span>
 <span class="c1"># passenger arrival rate: Normal</span>
 
 <span class="k">def</span> <span class="nf">make_model2</span><span class="p">(</span><span class="n">n_obs</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
@@ -645,8 +678,9 @@ It might be just as reasonable to use a normal prior, and it might improve the p
     <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
         <span class="n">gap_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;gap_time&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;elapsed_time&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">gap_time</span><span class="p">)</span>
-
-        <span class="n">rate</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">remaining_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s1">&#39;remaining_time&#39;</span><span class="p">,</span> <span class="n">gap_time</span> <span class="o">-</span> <span class="n">elapsed_time</span><span class="p">)</span>
+        
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="n">mu</span> <span class="o">=</span> <span class="n">elapsed_time</span> <span class="o">*</span> <span class="n">rate</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">n_obs</span><span class="p">)</span>
         
@@ -719,21 +753,21 @@ The following function evaluates the CDF of the lognormal distribution with para
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Lognormal model&#39;</span><span class="p">)</span>
 
 <span class="n">pmf_prior</span><span class="o">.</span><span class="n">make_cdf</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;KDE prior&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Gap time (minutes)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;red_line5.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/771e89df3ad35e353cc0c905f126d8d600b3b37e34fb0ee9824dffe29e8ffe85.png" src="_images/771e89df3ad35e353cc0c905f126d8d600b3b37e34fb0ee9824dffe29e8ffe85.png" />
+<img alt="_images/dfb9a92b1782fafa5c9611f837ee261f377a0f8b13d1182347e36ed5a4dc76ec.png" src="_images/dfb9a92b1782fafa5c9611f837ee261f377a0f8b13d1182347e36ed5a4dc76ec.png" />
 </div>
 </div>
 <p>The lognormal model does not fit the estimated densities as well as the normal model, so there is a trade-off between the advantages of the lognormal model and fidelity to the data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymc</span> <span class="k">as</span> <span class="nn">pm</span>  
-
-<span class="c1"># train gap time: Lognormal</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># train gap time: Lognormal</span>
 <span class="c1"># passenger arrival rate: Normal</span>
 
 <span class="k">def</span> <span class="nf">make_model3</span><span class="p">(</span><span class="n">n_obs</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
@@ -743,8 +777,9 @@ The following function evaluates the CDF of the lognormal distribution with para
         <span class="n">log_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;log_time&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="n">gap_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s1">&#39;gap_time&#39;</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_time</span><span class="p">))</span>
         <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;elapsed_time&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">gap_time</span><span class="p">)</span>
-
-        <span class="n">rate</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">remaining_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s1">&#39;remaining_time&#39;</span><span class="p">,</span> <span class="n">gap_time</span> <span class="o">-</span> <span class="n">elapsed_time</span><span class="p">)</span>
+        
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="n">mu</span> <span class="o">=</span> <span class="n">elapsed_time</span> <span class="o">*</span> <span class="n">rate</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">n_obs</span><span class="p">)</span>
         
@@ -818,9 +853,7 @@ The gamma distribution is wider and slightly skewed to the right.</p>
 <p>And here’s a version of the model with the gamma distribution of arrival rates (and the lognormal model of gap times).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymc</span> <span class="k">as</span> <span class="nn">pm</span>  
-
-<span class="c1"># train gap time: Lognormal</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># train gap time: Lognormal</span>
 <span class="c1"># passenger arrival rate: Gamma</span>
 
 
@@ -831,6 +864,7 @@ The gamma distribution is wider and slightly skewed to the right.</p>
         <span class="n">log_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;log_time&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="n">gap_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s1">&#39;gap_time&#39;</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_time</span><span class="p">))</span>
         <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;elapsed_time&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">gap_time</span><span class="p">)</span>
+        <span class="n">remaining_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s1">&#39;remaining_time&#39;</span><span class="p">,</span> <span class="n">gap_time</span> <span class="o">-</span> <span class="n">elapsed_time</span><span class="p">)</span>
 
         <span class="n">rate</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
         <span class="n">mu</span> <span class="o">=</span> <span class="n">elapsed_time</span> <span class="o">*</span> <span class="n">rate</span>
@@ -898,22 +932,22 @@ For more on the properties of these distributions, and how they apply to real da
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;log-t model&#39;</span><span class="p">)</span>
 
 <span class="n">cdf_prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;KDE prior&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Gap time (minutes)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;CDF&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;red_line7.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/46c2a18da2ccd24d539bdf8e55a3342e1c37e9a2412f7d46f5935f09e9841f7c.png" src="_images/46c2a18da2ccd24d539bdf8e55a3342e1c37e9a2412f7d46f5935f09e9841f7c.png" />
+<img alt="_images/06fba99a1861c950cf49ce65c039cbfabd030a8ce914c39b97d655460c29a06b.png" src="_images/06fba99a1861c950cf49ce65c039cbfabd030a8ce914c39b97d655460c29a06b.png" />
 </div>
 </div>
 <p>The Student-t model fits the data about as well as the lognormal model, and not as well as the normal model.
 So again there is a trade-off between the amenable properties of the distributions and fidelity to the data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymc</span> <span class="k">as</span> <span class="nn">pm</span>  
-
-<span class="c1"># train gap time: StudentT</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># train gap time: StudentT</span>
 <span class="c1"># passenger arrival rate: Gamma</span>
 
 <span class="k">def</span> <span class="nf">make_model5</span><span class="p">(</span><span class="n">n_obs</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
@@ -923,6 +957,7 @@ So again there is a trade-off between the amenable properties of the distributio
         <span class="n">log_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">StudentT</span><span class="p">(</span><span class="s1">&#39;log_time&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="n">nu</span><span class="p">)</span>
         <span class="n">gap_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s1">&#39;gap_time&#39;</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_time</span><span class="p">))</span>
         <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;elapsed_time&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">gap_time</span><span class="p">)</span>
+        <span class="n">remaining_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s1">&#39;remaining_time&#39;</span><span class="p">,</span> <span class="n">gap_time</span> <span class="o">-</span> <span class="n">elapsed_time</span><span class="p">)</span>
 
         <span class="n">rate</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
         <span class="n">mu</span> <span class="o">=</span> <span class="n">elapsed_time</span> <span class="o">*</span> <span class="n">rate</span>
@@ -953,7 +988,7 @@ So again there is a trade-off between the amenable properties of the distributio
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/081f6c8a7da3cab94524e249c31fd6d7b31c3d6312bc5d478036b41a6c41e033.svg" src="_images/081f6c8a7da3cab94524e249c31fd6d7b31c3d6312bc5d478036b41a6c41e033.svg" /></div>
+<img alt="_images/85ed8ca13cbff197d29daa82807ed042927ae5499a5dbedaebd889f538be3f26.svg" src="_images/85ed8ca13cbff197d29daa82807ed042927ae5499a5dbedaebd889f538be3f26.svg" /></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -968,11 +1003,79 @@ So again there is a trade-off between the amenable properties of the distributio
 </div>
 </div>
 </div>
-<p>Most of the models sample well with a wide range of <code class="docutils literal notranslate"><span class="pre">n_obs</span></code>.</p>
+<p>First we’ll sample from the prior and prior predictive distributions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
-    <span class="n">idata</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">tune</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+    <span class="n">idata</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_prior_predictive</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling: [elapsed_time, gap_time, n, rate]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gap_times</span> <span class="o">=</span> <span class="n">idata</span><span class="p">[</span><span class="s1">&#39;prior&#39;</span><span class="p">][</span><span class="s1">&#39;gap_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">gap_times</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.812407053329704
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kde_gap_time</span> <span class="o">=</span> <span class="n">gaussian_kde</span><span class="p">(</span><span class="n">gap_times</span><span class="p">)</span>
+
+<span class="n">plot_kde</span><span class="p">(</span><span class="n">kde_gap_time</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;interpolated&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">plot_kde</span><span class="p">(</span><span class="n">kde_prior</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;observed&#39;</span><span class="p">)</span>
+
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Gap between trains (minutes)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/f67bc8cbd5a34a0ea9a840ab6b8ef1c174be5e34d9216243aa691c8bcc1ef69c.png" src="_images/f67bc8cbd5a34a0ea9a840ab6b8ef1c174be5e34d9216243aa691c8bcc1ef69c.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">elapsed_times</span> <span class="o">=</span> <span class="n">idata</span><span class="o">.</span><span class="n">prior</span><span class="p">[</span><span class="s1">&#39;elapsed_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">elapsed_times</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.481724809482283
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ns</span> <span class="o">=</span> <span class="n">idata</span><span class="o">.</span><span class="n">prior_predictive</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.934
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now sample from the posterior distribution</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">idata</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -997,10 +1100,10 @@ NUTS: [gap_time, elapsed_time, rate]
                 background: #F44336;
             }
         </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+      <progress value='8000' class='' max='8000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [8000/8000 00:02<00:00 Sampling 4 chains, 0 divergences]
     </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 2 seconds.
 </pre></div>
 </div>
 </div>
@@ -1009,22 +1112,7 @@ NUTS: [gap_time, elapsed_time, rate]
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">arviz</span> <span class="k">as</span> <span class="nn">az</span>
 
-<span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gap_time&#39;</span><span class="p">,</span> <span class="s1">&#39;elapsed_time&#39;</span><span class="p">,</span> <span class="s1">&#39;rate&#39;</span><span class="p">]</span>
-
-<span class="k">with</span> <span class="n">model</span><span class="p">:</span>
-    <span class="n">az</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">var_names</span><span class="p">)</span>
-    
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/24241ad06e9aeb2a86d11179e25b377bb60cfb4d36bc6d56e102ddea26f95185.png" src="_images/24241ad06e9aeb2a86d11179e25b377bb60cfb4d36bc6d56e102ddea26f95185.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata</span><span class="p">)</span>
+<span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1060,55 +1148,81 @@ NUTS: [gap_time, elapsed_time, rate]
   </thead>
   <tbody>
     <tr>
-      <th>gap_time</th>
-      <td>8.040</td>
-      <td>2.790</td>
-      <td>2.637</td>
-      <td>12.605</td>
-      <td>0.074</td>
-      <td>0.053</td>
-      <td>1404.0</td>
-      <td>1445.0</td>
+      <th>rate</th>
+      <td>2.002</td>
+      <td>0.098</td>
+      <td>1.811</td>
+      <td>2.182</td>
+      <td>0.002</td>
+      <td>0.001</td>
+      <td>2816.0</td>
+      <td>2319.0</td>
       <td>1.0</td>
     </tr>
     <tr>
-      <th>rate</th>
-      <td>1.998</td>
-      <td>0.097</td>
-      <td>1.811</td>
-      <td>2.173</td>
-      <td>0.003</td>
-      <td>0.002</td>
-      <td>1424.0</td>
-      <td>1180.0</td>
+      <th>gap_time</th>
+      <td>8.755</td>
+      <td>2.439</td>
+      <td>4.667</td>
+      <td>13.424</td>
+      <td>0.052</td>
+      <td>0.038</td>
+      <td>2235.0</td>
+      <td>1516.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <th>elapsed_time</th>
-      <td>2.910</td>
-      <td>1.193</td>
-      <td>0.864</td>
-      <td>5.059</td>
-      <td>0.026</td>
-      <td>0.021</td>
-      <td>2303.0</td>
-      <td>1533.0</td>
+      <td>5.121</td>
+      <td>1.493</td>
+      <td>2.474</td>
+      <td>7.908</td>
+      <td>0.022</td>
+      <td>0.017</td>
+      <td>4501.0</td>
+      <td>3362.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>remaining_time</th>
+      <td>3.634</td>
+      <td>2.455</td>
+      <td>0.001</td>
+      <td>7.858</td>
+      <td>0.055</td>
+      <td>0.039</td>
+      <td>1842.0</td>
+      <td>1519.0</td>
       <td>1.0</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<p>Here are the posterior distributions for the key parameters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
-    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">var_names</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gap_time&#39;</span><span class="p">,</span> <span class="s1">&#39;elapsed_time&#39;</span><span class="p">,</span> <span class="s1">&#39;remaining_time&#39;</span><span class="p">]</span>
+
+<span class="n">az</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">var_names</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/673b0026c18de1b10aeaed1a28faf9367fce5818ead1d0e5605e3f50c4ce2dfb.png" src="_images/673b0026c18de1b10aeaed1a28faf9367fce5818ead1d0e5605e3f50c4ce2dfb.png" />
+<img alt="_images/635cc492042c1693fb734884b56215bf35039392ff3392424da3cf887d7de451.png" src="_images/635cc492042c1693fb734884b56215bf35039392ff3392424da3cf887d7de451.png" />
+</div>
+</div>
+<p>Here are the posterior distributions for the key parameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;remaining_time&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;red_line9.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/ae26027c204866f14221635728020e8b49a963be9a43d3ce80170df66d6577c6.png" src="_images/ae26027c204866f14221635728020e8b49a963be9a43d3ce80170df66d6577c6.png" />
 </div>
 </div>
 <p>To compute the posterior distribution of the remaining time – which is what we are primarily interested in – we have to extract the samples of <code class="docutils literal notranslate"><span class="pre">gap_time</span></code> and <code class="docutils literal notranslate"><span class="pre">elapsed_time</span></code> and subtract them elementwise.</p>
@@ -1135,7 +1249,7 @@ NUTS: [gap_time, elapsed_time, rate]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.092938407036723
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.754988603964444
 </pre></div>
 </div>
 </div>
@@ -1148,20 +1262,20 @@ NUTS: [gap_time, elapsed_time, rate]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.973473057775593
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5.121400416305409
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">remaining_times</span> <span class="o">=</span> <span class="n">gap_times</span> <span class="o">-</span> <span class="n">elapsed_times</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">remaining_times</span> <span class="o">=</span> <span class="n">get_sample</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="s1">&#39;remaining_time&#39;</span><span class="p">)</span>
 <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">remaining_times</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.1194653492611315
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.633588187659036
 </pre></div>
 </div>
 </div>
@@ -1181,14 +1295,102 @@ NUTS: [gap_time, elapsed_time, rate]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/12d23630ad3b1d6be3b6e6057b6f4f3adbb76e14e15e53c1d335520757d35d78.png" src="_images/12d23630ad3b1d6be3b6e6057b6f4f3adbb76e14e15e53c1d335520757d35d78.png" />
+<img alt="_images/2c88970e3864117476ea8a569fd6ed9384f518bd7f8a6a7f4994b9f10bed82c7.png" src="_images/2c88970e3864117476ea8a569fd6ed9384f518bd7f8a6a7f4994b9f10bed82c7.png" />
 </div>
 </div>
 </section>
 <section id="correlations">
 <h2>Correlations<a class="headerlink" href="#correlations" title="Permalink to this heading">#</a></h2>
 <p>It is common practice to look at posterior marginal distributions, but often there are non-negligible correlations among the sampled values.
-For example, here are the correlations between gap_times, elapsed times, and rates.</p>
+For example, in models 4 and 5, we are uncertain about the rate of passenger arrivals, which means that there are two possible explanations if we see more passengers than usual: maybe it’s been a while since the last train, or maybe passengers have arrived faster than expects.
+So in these models, we expect to see a negative correlation between these parameters.</p>
+<p>To find out, let’s run <code class="docutils literal notranslate"><span class="pre">model4</span></code> with <code class="docutils literal notranslate"><span class="pre">n=40</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">make_model</span> <span class="o">=</span> <span class="n">make_model4</span>
+<span class="n">model_name</span> <span class="o">=</span> <span class="n">make_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">make_model</span><span class="p">(</span><span class="n">n_obs</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">idata</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [log_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='8000' class='' max='8000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [8000/8000 00:02<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 2 seconds.
+</pre></div>
+</div>
+</div>
+</div>
+<p>And extract the posterior samples.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gap_times</span> <span class="o">=</span> <span class="n">get_sample</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="s1">&#39;gap_time&#39;</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">gap_times</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>15.452587782018568
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">elapsed_times</span> <span class="o">=</span> <span class="n">get_sample</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="s1">&#39;elapsed_time&#39;</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">elapsed_times</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>13.398551865339813
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">remaining_times</span> <span class="o">=</span> <span class="n">get_sample</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="s1">&#39;remaining_time&#39;</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">remaining_times</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.0540359166787554
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rates</span> <span class="o">=</span> <span class="n">get_sample</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="s1">&#39;rate&#39;</span><span class="p">)</span>
@@ -1197,26 +1399,28 @@ For example, here are the correlations between gap_times, elapsed times, and rat
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.0121527955917644
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.657591840877828
 </pre></div>
 </div>
 </div>
 </div>
+<p>Here are the correlations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">([</span><span class="n">gap_times</span><span class="p">,</span> <span class="n">elapsed_times</span><span class="p">,</span> <span class="n">rates</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">([</span><span class="n">gap_times</span><span class="p">,</span> <span class="n">elapsed_times</span><span class="p">,</span> <span class="n">remaining_times</span><span class="p">,</span> <span class="n">rates</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 1.        ,  0.63332794, -0.12562136],
-       [ 0.63332794,  1.        , -0.17330646],
-       [-0.12562136, -0.17330646,  1.        ]])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 1.        ,  0.81251204,  0.55163458, -0.55434647],
+       [ 0.81251204,  1.        , -0.03801598, -0.67941241],
+       [ 0.55163458, -0.03801598,  1.        ,  0.02185898],
+       [-0.55434647, -0.67941241,  0.02185898,  1.        ]])
 </pre></div>
 </div>
 </div>
 </div>
-<p>Rates are negatively correlated with the other two values because when we see a lot of people on the platform, there are two possible explanations: a longer than average elapsed time and a higher than average arrival rate.</p>
+<p>To show the relationship between elapsed time and arrival rate, let’s make a contour plot of their joint distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">joint_contour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -1239,29 +1443,18 @@ For example, here are the correlations between gap_times, elapsed times, and rat
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_contour</span><span class="p">(</span><span class="n">elapsed_times</span><span class="p">,</span> <span class="n">rates</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Elapsed time (minutes)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Arrival rate (per minute)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;redline8.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/7b97b5cfff866588382c2fb275a38e6e255eb54c513141df57bce862e3cf5da6.png" src="_images/7b97b5cfff866588382c2fb275a38e6e255eb54c513141df57bce862e3cf5da6.png" />
+<img alt="_images/e3fcca680fee58f258efad012cc29a7ead405f1d8b40743c79f01d3a6bc3f7c6.png" src="_images/e3fcca680fee58f258efad012cc29a7ead405f1d8b40743c79f01d3a6bc3f7c6.png" />
 </div>
 </div>
-<p>And since elapsed time is necessarily a fraction of gap time, they are positively correlated, with a sharp cutoff when elapsed time equals gap time.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
-<span class="n">joint_contour</span><span class="p">(</span><span class="n">gap_times</span><span class="p">,</span> <span class="n">elapsed_times</span><span class="p">)</span>
-<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Gap time (minutes)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Elapsed time (minutes)&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/56f408efd6c2c2c9a59f0176b2dd611f30b13cad8fd5d1684b0f88805fa29f17.png" src="_images/56f408efd6c2c2c9a59f0176b2dd611f30b13cad8fd5d1684b0f88805fa29f17.png" />
-</div>
-</div>
+<p>The result is a shape I call the banana of ignorance: because there are two possible explanations for the data, the joint distribution of the two parameters makes a hyperbola that looks a little like a banana.</p>
 </section>
-<section id="run-with-a-range-of-n-obs">
-<h2>Run with a range of n_obs<a class="headerlink" href="#run-with-a-range-of-n-obs" title="Permalink to this heading">#</a></h2>
+<section id="run-with-a-range-of-n">
+<h2>Run with a range of n<a class="headerlink" href="#run-with-a-range-of-n" title="Permalink to this heading">#</a></h2>
 <p>The following function runs the model with a range of values for <code class="docutils literal notranslate"><span class="pre">n_obs</span></code> and writes the results as <code class="docutils literal notranslate"><span class="pre">DataFrames</span></code> in an HDF file.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1339,11 +1532,10 @@ NUTS: [gap_time, elapsed_time, rate]
             }
         </style>
       <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 77 divergences]
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 37 divergences]
     </div>
     </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
-There were 77 divergences after tuning. Increase `target_accept` or reparameterize.
+There were 37 divergences after tuning. Increase `target_accept` or reparameterize.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5
@@ -1370,10 +1562,10 @@ NUTS: [gap_time, elapsed_time, rate]
             }
         </style>
       <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 5 divergences]
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 4 divergences]
     </div>
     </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-There were 5 divergences after tuning. Increase `target_accept` or reparameterize.
+There were 4 divergences after tuning. Increase `target_accept` or reparameterize.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10
@@ -1470,6 +1662,472 @@ NUTS: [gap_time, elapsed_time, rate]
 Initializing NUTS using jitter+adapt_diag...
 Multiprocess sampling (4 chains in 4 jobs)
 NUTS: [gap_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [gap_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 70 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+There were 70 divergences after tuning. Increase `target_accept` or reparameterize.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [gap_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 6 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+There were 6 divergences after tuning. Increase `target_accept` or reparameterize.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [gap_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [gap_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>30
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [gap_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>40
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [gap_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [log_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:00<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [log_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:00<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [log_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [log_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>30
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [log_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>40
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [log_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [log_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [log_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [log_time, elapsed_time, rate]
+</pre></div>
+</div>
+<div class="output text_html">
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
+    </div>
+    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [log_time, elapsed_time, rate]
 </pre></div>
 </div>
 <div class="output text_html">
@@ -1490,301 +2148,6 @@ NUTS: [gap_time, elapsed_time, rate]
       100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
     </div>
     </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 2 seconds.
-The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
-The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [gap_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 58 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-There were 58 divergences after tuning. Increase `target_accept` or reparameterize.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [gap_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 14 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-There were 14 divergences after tuning. Increase `target_accept` or reparameterize.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [gap_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [gap_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>30
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [gap_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>40
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [gap_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [log_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:00<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [log_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [log_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [log_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>30
@@ -1899,180 +2262,6 @@ NUTS: [log_time, elapsed_time, rate]
         </style>
       <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
       100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [log_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [log_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>30
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [log_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>40
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [log_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [log_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:00<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
-Multiprocess sampling (4 chains in 4 jobs)
-NUTS: [log_time, elapsed_time, rate]
-</pre></div>
-</div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [4000/4000 00:00<00:00 Sampling 4 chains, 0 divergences]
     </div>
     </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
 </pre></div>
@@ -2192,6 +2381,7 @@ NUTS: [log_time, elapsed_time, rate]
     </div>
     </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 500 tune and 500 draw iterations (2_000 + 2_000 draws total) took 1 seconds.
 The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
+The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
 </pre></div>
 </div>
 </div>
@@ -2236,13 +2426,26 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/7c4f549022d73adb6a78c83bd71506b6baaa28ecf240ab36858968281155b870.png" src="_images/7c4f549022d73adb6a78c83bd71506b6baaa28ecf240ab36858968281155b870.png" />
+<img alt="_images/64f8b378450e56ad951d081daddc83d8223e76f61761542e45bc4591d8d9cbdf.png" src="_images/64f8b378450e56ad951d081daddc83d8223e76f61761542e45bc4591d8d9cbdf.png" />
 </div>
 </div>
 </section>
 <section id="plot-results">
 <h2>Plot results<a class="headerlink" href="#plot-results" title="Permalink to this heading">#</a></h2>
 <p>Now, to summarize the results, the following function computes the mean of the given variable over a range of <code class="docutils literal notranslate"><span class="pre">n_obs</span></code>, for a given model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">label_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;model1&#39;</span><span class="p">:</span> <span class="s1">&#39;1: Interpolated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;model2&#39;</span><span class="p">:</span> <span class="s1">&#39;2: Normal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;model3&#39;</span><span class="p">:</span> <span class="s1">&#39;3: Lognormal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;model4&#39;</span><span class="p">:</span> <span class="s1">&#39;4: Lognormal + Gamma&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;model5&#39;</span><span class="p">:</span> <span class="s1">&#39;5: Student t + Gamma&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_model_results</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">varname</span><span class="p">):</span>
@@ -2254,7 +2457,7 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
         <span class="n">model_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;model</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">get_result</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">varname</span><span class="p">)</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">model_name</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">label_dict</span><span class="p">[</span><span class="n">model_name</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -2268,7 +2471,7 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/04dc5e492a22a887efe11068deb23f2debc87b855ea5f35461ef2bc4f5337e20.png" src="_images/04dc5e492a22a887efe11068deb23f2debc87b855ea5f35461ef2bc4f5337e20.png" />
+<img alt="_images/906da5b339e86a4b454e83c168021062821d742154c7a7c6496945b2ea9448a3.png" src="_images/906da5b339e86a4b454e83c168021062821d742154c7a7c6496945b2ea9448a3.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2279,7 +2482,7 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/47acc16dc3a63fde935aa002097e5b8fa7eea7245abd2a9e11fb5429befc8231.png" src="_images/47acc16dc3a63fde935aa002097e5b8fa7eea7245abd2a9e11fb5429befc8231.png" />
+<img alt="_images/5e1898e5bb51c600702e4268490ee6956ecec4055933aa3de09635f9c6071cd7.png" src="_images/5e1898e5bb51c600702e4268490ee6956ecec4055933aa3de09635f9c6071cd7.png" />
 </div>
 </div>
 </section>
@@ -2300,7 +2503,7 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/1cb8cb64db87d59b3a7c5dcb3d8fb505310bb0537e87a67d9cfc34917ef5b603.png" src="_images/1cb8cb64db87d59b3a7c5dcb3d8fb505310bb0537e87a67d9cfc34917ef5b603.png" />
+<img alt="_images/72506135d27be9b404021e14c95597ddf2bff4d0d2229410561aec4f47f50df1.png" src="_images/72506135d27be9b404021e14c95597ddf2bff4d0d2229410561aec4f47f50df1.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2311,7 +2514,7 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/8b358425aa5d9e5a4a864add2af84c212bccbf374dc3ad195c186c7599d9a9b8.png" src="_images/8b358425aa5d9e5a4a864add2af84c212bccbf374dc3ad195c186c7599d9a9b8.png" />
+<img alt="_images/d84ed1df6155c29d7a58759c758ccd92a255a9d5501427319f2fe03d1ab14c1b.png" src="_images/d84ed1df6155c29d7a58759c758ccd92a255a9d5501427319f2fe03d1ab14c1b.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2322,7 +2525,7 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/eb75b02bfc2d3732f7657b180da88767a2675b4fa04f56bb6b855bed06787308.png" src="_images/eb75b02bfc2d3732f7657b180da88767a2675b4fa04f56bb6b855bed06787308.png" />
+<img alt="_images/14aa5ec57c71aa2e6f0d6ec4f8fbc14c70938d6e52739042d91f7e1d88b3a71f.png" src="_images/14aa5ec57c71aa2e6f0d6ec4f8fbc14c70938d6e52739042d91f7e1d88b3a71f.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2333,7 +2536,7 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/54328ea37dff178502f9638ccefff1272cf6bbd461f0e8324620be44cfcb055e.png" src="_images/54328ea37dff178502f9638ccefff1272cf6bbd461f0e8324620be44cfcb055e.png" />
+<img alt="_images/462df37e73841027455cf47ed9f2f724d42ecf7d83c62f4c0f24da7134fe4644.png" src="_images/462df37e73841027455cf47ed9f2f724d42ecf7d83c62f4c0f24da7134fe4644.png" />
 </div>
 </div>
 </section>
@@ -2341,11 +2544,15 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 <h2>Make figures for the talk<a class="headerlink" href="#make-figures-for-the-talk" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ylabel_dict</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title_dict</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;gap&#39;</span><span class="p">:</span> <span class="s1">&#39;Mean posterior gap time&#39;</span><span class="p">,</span>
     <span class="s1">&#39;elapsed&#39;</span><span class="p">:</span> <span class="s1">&#39;Mean posterior elapsed time&#39;</span><span class="p">,</span>
     <span class="s1">&#39;remaining&#39;</span><span class="p">:</span> <span class="s1">&#39;Expected remaining time&#39;</span><span class="p">,</span>
     <span class="s1">&#39;rate&#39;</span><span class="p">:</span> <span class="s1">&#39;Mean posterior arrival rate&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">unit_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;rate&#39;</span><span class="p">:</span> <span class="s1">&#39;Per minute&#39;</span><span class="p">,</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -2354,13 +2561,15 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_figures</span><span class="p">(</span><span class="n">varname</span><span class="p">):</span>
+    <span class="n">ylabel</span> <span class="o">=</span> <span class="n">unit_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span> <span class="s1">&#39;Minutes&#39;</span><span class="p">)</span> 
+    
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
         <span class="n">models</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
         <span class="n">plot_model_results</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">varname</span><span class="p">)</span>
         <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;People on platform&#39;</span><span class="p">,</span> 
                  <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Minutes&#39;</span><span class="p">,</span>
-                 <span class="n">title</span><span class="o">=</span><span class="n">ylabel_dict</span><span class="p">[</span><span class="n">varname</span><span class="p">])</span>
+                 <span class="n">title</span><span class="o">=</span><span class="n">title_dict</span><span class="p">[</span><span class="n">varname</span><span class="p">])</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;red_line_</span><span class="si">{</span><span class="n">varname</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.png&#39;</span>
         <span class="c1"># print(filename)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
@@ -2375,11 +2584,11 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/b7977415c22642df7ef28880d0939c69be91490f061c085642153938a0c4fd77.png" src="_images/b7977415c22642df7ef28880d0939c69be91490f061c085642153938a0c4fd77.png" />
-<img alt="_images/47cf5a3f2e70937b420f11b05e8dbc6c06edd5cb9925d1bae852aacfa9ac402f.png" src="_images/47cf5a3f2e70937b420f11b05e8dbc6c06edd5cb9925d1bae852aacfa9ac402f.png" />
-<img alt="_images/bbaba4c70bb27677ef159e59cab26bf58a44b3f05896084fe4783106d6a209a8.png" src="_images/bbaba4c70bb27677ef159e59cab26bf58a44b3f05896084fe4783106d6a209a8.png" />
-<img alt="_images/001b9cfcf20e7d7e7a6ac1126a40a7ab2198b66a4748adfda46e1a8255e3908a.png" src="_images/001b9cfcf20e7d7e7a6ac1126a40a7ab2198b66a4748adfda46e1a8255e3908a.png" />
-<img alt="_images/973cc189bbad39c1570ef1925a422896a3a77d5a6944096e22976bfa131dba52.png" src="_images/973cc189bbad39c1570ef1925a422896a3a77d5a6944096e22976bfa131dba52.png" />
+<img alt="_images/d23aa1e35c39bb5aa5a2d8d377278ea16f4819979094d08c7c42a1bb8742de1d.png" src="_images/d23aa1e35c39bb5aa5a2d8d377278ea16f4819979094d08c7c42a1bb8742de1d.png" />
+<img alt="_images/cbe1485ca8c88874348dfed6876ef28ae3c752a81b41840c90b1b604ec86d457.png" src="_images/cbe1485ca8c88874348dfed6876ef28ae3c752a81b41840c90b1b604ec86d457.png" />
+<img alt="_images/31a3322ed6ff81f7e353c26a0272a5f19c747c3b672e8a61ee571246895d16e1.png" src="_images/31a3322ed6ff81f7e353c26a0272a5f19c747c3b672e8a61ee571246895d16e1.png" />
+<img alt="_images/5c5b9301d4f42a8a6d30e7cde37cdc7e5c8b469c8716ee2d3f256d92af035bb3.png" src="_images/5c5b9301d4f42a8a6d30e7cde37cdc7e5c8b469c8716ee2d3f256d92af035bb3.png" />
+<img alt="_images/06d3b032a18fa2b72873db0c7204ba4386033098c4ea3d0173919adac1fd8681.png" src="_images/06d3b032a18fa2b72873db0c7204ba4386033098c4ea3d0173919adac1fd8681.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2389,11 +2598,11 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/80ad0f765e5e29e45bf7f7945a89201981d9f27df10d725f2fe1600cd3396942.png" src="_images/80ad0f765e5e29e45bf7f7945a89201981d9f27df10d725f2fe1600cd3396942.png" />
-<img alt="_images/51ea495720b98b15f9ad6d3ab7cd721d30a121f6896eb9e95db30443d07a7ea5.png" src="_images/51ea495720b98b15f9ad6d3ab7cd721d30a121f6896eb9e95db30443d07a7ea5.png" />
-<img alt="_images/a9afeb7e9447528e89ac524192cece60e09b4c70a142d3c61439724d06601b96.png" src="_images/a9afeb7e9447528e89ac524192cece60e09b4c70a142d3c61439724d06601b96.png" />
-<img alt="_images/196aa183463c4e922e0df4081d82e8eff776856d5214c5bcb1a138ef8c2e24af.png" src="_images/196aa183463c4e922e0df4081d82e8eff776856d5214c5bcb1a138ef8c2e24af.png" />
-<img alt="_images/96fc189a11a430b6068903447f1e3822fe818dacd154863291e16baba930acaf.png" src="_images/96fc189a11a430b6068903447f1e3822fe818dacd154863291e16baba930acaf.png" />
+<img alt="_images/c980d2a39acb92e4b0c22a92c5595251b5c986b77403bbeef318bd79193b81fb.png" src="_images/c980d2a39acb92e4b0c22a92c5595251b5c986b77403bbeef318bd79193b81fb.png" />
+<img alt="_images/d69504dc955a3d0ec2d06e937896cb05595e09f1476444dd23c51146d2ce4a6f.png" src="_images/d69504dc955a3d0ec2d06e937896cb05595e09f1476444dd23c51146d2ce4a6f.png" />
+<img alt="_images/fa5ae61b559bb01f46fcbde2d38dc08a864adc00c5ae2d14675034281ecc3816.png" src="_images/fa5ae61b559bb01f46fcbde2d38dc08a864adc00c5ae2d14675034281ecc3816.png" />
+<img alt="_images/5615d8d97a199953214def3099345f13f83c7e4bd5b4b2f744e386c0fa87f1ae.png" src="_images/5615d8d97a199953214def3099345f13f83c7e4bd5b4b2f744e386c0fa87f1ae.png" />
+<img alt="_images/c2323453b5219c2980351c4e9cf0f7ae877ed5c2c805b0b6bf81c4f95b77173e.png" src="_images/c2323453b5219c2980351c4e9cf0f7ae877ed5c2c805b0b6bf81c4f95b77173e.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2403,11 +2612,11 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/0bdc1f944f75c67054af65b7eb5c8f7d0f5511fd3573d4a65fa6d2a5932fb091.png" src="_images/0bdc1f944f75c67054af65b7eb5c8f7d0f5511fd3573d4a65fa6d2a5932fb091.png" />
-<img alt="_images/1a4e7e583152dc86c0e6c40f787016a8a89acb2a993a1987a68f8b7b3438fdd7.png" src="_images/1a4e7e583152dc86c0e6c40f787016a8a89acb2a993a1987a68f8b7b3438fdd7.png" />
-<img alt="_images/5a07d9a17eb8a76a2d822a81df3cd73ca2dceb0ceb9091dcca83fbb1771b9cce.png" src="_images/5a07d9a17eb8a76a2d822a81df3cd73ca2dceb0ceb9091dcca83fbb1771b9cce.png" />
-<img alt="_images/950a96437725b1ac9b6f241c3ac01b46f604f4f147c1444a9ea0504514e55df5.png" src="_images/950a96437725b1ac9b6f241c3ac01b46f604f4f147c1444a9ea0504514e55df5.png" />
-<img alt="_images/f92d015d71b17e1360ca90e98da3fdfd747bbb3f7a63c7f700f2217cbc780035.png" src="_images/f92d015d71b17e1360ca90e98da3fdfd747bbb3f7a63c7f700f2217cbc780035.png" />
+<img alt="_images/45e676b611172607671c7a9ea0740bb1400db893cef9287e5cf41ea5caa86562.png" src="_images/45e676b611172607671c7a9ea0740bb1400db893cef9287e5cf41ea5caa86562.png" />
+<img alt="_images/9dbc01d563d44b352cc81c67d94dcdd7a6718a130a797b8c82909990f4e6d995.png" src="_images/9dbc01d563d44b352cc81c67d94dcdd7a6718a130a797b8c82909990f4e6d995.png" />
+<img alt="_images/99e07058bb78e62fb6b22110a4f5a2251d6f3256e3f2d7a64d2bd28bcb94036e.png" src="_images/99e07058bb78e62fb6b22110a4f5a2251d6f3256e3f2d7a64d2bd28bcb94036e.png" />
+<img alt="_images/2d099d175cf47659d02d00cc84aa7c17e137fb77f3428f0db0519a2675fce58c.png" src="_images/2d099d175cf47659d02d00cc84aa7c17e137fb77f3428f0db0519a2675fce58c.png" />
+<img alt="_images/49e4093c9295bbd03db995ac5bcddc5f105edf5059ecb568d8c6ccf18e417879.png" src="_images/49e4093c9295bbd03db995ac5bcddc5f105edf5059ecb568d8c6ccf18e417879.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2417,11 +2626,11 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/c284e5588f137e9ee4831109462ae0cbfd619287aa13a168736e1afe8318e76a.png" src="_images/c284e5588f137e9ee4831109462ae0cbfd619287aa13a168736e1afe8318e76a.png" />
-<img alt="_images/b91981b3f664aff46967d1de964ca9f91b2c5328c02844d0625c9755f759c02d.png" src="_images/b91981b3f664aff46967d1de964ca9f91b2c5328c02844d0625c9755f759c02d.png" />
-<img alt="_images/5348569b5ccb1b9fa5170a55ee1b566a96cdd855d5d4c4845ba21b239e853666.png" src="_images/5348569b5ccb1b9fa5170a55ee1b566a96cdd855d5d4c4845ba21b239e853666.png" />
-<img alt="_images/9644d6f6c92d207287d72fc296132e7060f1b55b3587039806ed105c38fc3b9d.png" src="_images/9644d6f6c92d207287d72fc296132e7060f1b55b3587039806ed105c38fc3b9d.png" />
-<img alt="_images/b210522397c6d8428e04fe5146532c8d87122e0db5ec406fc8f11ebc796a39a1.png" src="_images/b210522397c6d8428e04fe5146532c8d87122e0db5ec406fc8f11ebc796a39a1.png" />
+<img alt="_images/07f9453c149c696999858bd0acbad55de8a8c19b1199bb9fa250546da7cecb02.png" src="_images/07f9453c149c696999858bd0acbad55de8a8c19b1199bb9fa250546da7cecb02.png" />
+<img alt="_images/de2719123c7d35f98a271ce6116e10e497240f051421bc15d2bc1b5651f9c45b.png" src="_images/de2719123c7d35f98a271ce6116e10e497240f051421bc15d2bc1b5651f9c45b.png" />
+<img alt="_images/ba827afb945249a00b35962c5b8b9de5a83a77bc3f93bfc35e557585ae966524.png" src="_images/ba827afb945249a00b35962c5b8b9de5a83a77bc3f93bfc35e557585ae966524.png" />
+<img alt="_images/4f8b6f9e648d108da02fa8b2f812bcb29aecf1b2f30766b9378882b91eac0058.png" src="_images/4f8b6f9e648d108da02fa8b2f812bcb29aecf1b2f30766b9378882b91eac0058.png" />
+<img alt="_images/10c3ba70a7aeb451fc092ef5d6638f88981c1ad3bb4ac2e00c2eb51df2c9191d.png" src="_images/10c3ba70a7aeb451fc092ef5d6638f88981c1ad3bb4ac2e00c2eb51df2c9191d.png" />
 </div>
 </div>
 <p>Think Bayes, Second Edition</p>
@@ -2501,7 +2710,7 @@ The rhat statistic is larger than 1.01 for some parameters. This indicates probl
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-5-log-t-prior-of-gap-times">Model 5: Log-t prior of gap times</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-model">Run the model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlations">Correlations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-with-a-range-of-n-obs">Run with a range of n_obs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-with-a-range-of-n">Run with a range of n</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-results">Plot results</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#all-models">All models</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#make-figures-for-the-talk">Make figures for the talk</a></li>
