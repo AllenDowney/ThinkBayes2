@@ -4,10 +4,9 @@ by Allen B. Downey
 
 *Think Bayes* is an introduction to Bayesian statistics using computational methods.
 
-Print and electronic versions of this book are available from
-[Bookhop.org](https://bookshop.org/a/98697/9781492089469),
-[Amazon](https://amzn.to/334eqGo),
-and [O'Reilly Media](https://shop.aer.io/oreilly/p/think-bayes-2nd/9781492089469-9149).
+You can order print and ebook versions of *Think Bayes 2e* from
+[Bookshop.org](https://bookshop.org/a/98697/9781492089469) and
+[Amazon](https://amzn.to/334eqGo).
 
 For each chapter, there is a Jupyter notebook, below, where you can read the text, run the examples, and work on the exercises.
 
