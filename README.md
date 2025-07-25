@@ -9,7 +9,7 @@ by Allen B. Downey
 
 
 Print and electronic versions of this book are available from
-[Bookhop.org](https://bookshop.org/a/98697/9781492089469),
+[Bookshop.org](https://bookshop.org/a/98697/9781492089469),
 [Amazon](https://amzn.to/334eqGo),
 and [O'Reilly Media](https://shop.aer.io/oreilly/p/think-bayes-2nd/9781492089469-9149).
 
