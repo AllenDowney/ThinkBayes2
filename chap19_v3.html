@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>19. MCMC &#8212; Think Bayes</title>
   
@@ -15,53 +14,49 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="_static/togglebutton.js"></script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]]}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'chap19_v3';</script>
@@ -78,28 +73,23 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -121,12 +111,20 @@ const thebe_selector_output = ".output, .cell_output"
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -141,6 +139,9 @@ const thebe_selector_output = ".output, .cell_output"
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -149,10 +150,22 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     <p class="title logo__title">Think Bayes</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -204,6 +217,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="bookstore.html">How Many Books?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="beta_binomial.html">The All-Knowing Cube of Probability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="zipf.html">What’s a chartist?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bread.html">The Poincaré Problem</a></li>
 </ul>
 
     </div>
@@ -219,7 +233,7 @@ const thebe_selector_output = ".output, .cell_output"
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -228,14 +242,14 @@ const thebe_selector_output = ".output, .cell_output"
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -325,26 +339,28 @@ const thebe_selector_output = ".output, .cell_output"
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -386,13 +402,13 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <p>You can order print and ebook versions of <em>Think Bayes 2e</em> from
 <a class="reference external" href="https://bookshop.org/a/98697/9781492089469">Bookshop.org</a> and
 <a class="reference external" href="https://amzn.to/334eqGo">Amazon</a>.</p>
 <section id="mcmc">
-<h1><span class="section-number">19. </span>MCMC<a class="headerlink" href="#mcmc" title="Permalink to this heading">#</a></h1>
+<h1><span class="section-number">19. </span>MCMC<a class="headerlink" href="#mcmc" title="Link to this heading">#</a></h1>
 <p>[NOTE: this online version of Chapter 19 has been updated for PyMC version 5]</p>
 <p>For most of this book we’ve used grid methods to approximate posterior distributions.
 For models with one or two parameters, grid algorithms are fast and the results are precise enough for most practical purposes.
@@ -410,10 +426,10 @@ Yes, again.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># install empiricaldist if necessary</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">empiricaldist</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">empiricaldist</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>empiricaldist
-    <span class="kn">import</span> <span class="nn">empiricaldist</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">empiricaldist</span>
 </pre></div>
 </div>
 </div>
@@ -422,12 +438,12 @@ Yes, again.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get utils.py</span>
 
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">basename</span><span class="p">,</span> <span class="n">exists</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">basename</span><span class="p">,</span> <span class="n">exists</span>
 
-<span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="n">filename</span> <span class="o">=</span> <span class="n">basename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlretrieve</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlretrieve</span>
         <span class="n">local</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Downloaded &#39;</span> <span class="o">+</span> <span class="n">local</span><span class="p">)</span>
 
@@ -438,14 +454,14 @@ Yes, again.</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">set_pyplot_params</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_pyplot_params</span>
 <span class="n">set_pyplot_params</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 </div>
 <section id="the-world-cup-problem">
-<h2><span class="section-number">19.1. </span>The World Cup Problem<a class="headerlink" href="#the-world-cup-problem" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.1. </span>The World Cup Problem<a class="headerlink" href="#the-world-cup-problem" title="Link to this heading">#</a></h2>
 <p>In &lt;&lt;_PoissonProcesses&gt;&gt; we modeled goal scoring in football (soccer) as a Poisson process characterized by a goal-scoring rate, denoted <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
 <p>We used a gamma distribution to represent the prior distribution of <span class="math notranslate nohighlight">\(\lambda\)</span>, then we used the outcome of the game to compute the posterior distribution for both teams.</p>
 <p>To answer the first question, we used the posterior distributions to compute the “probability of superiority” for France.</p>
@@ -454,11 +470,11 @@ Yes, again.</p>
 But we’ll start by reviewing the grid approximation of the prior and the prior predictive distribution.</p>
 </section>
 <section id="grid-approximation">
-<h2><span class="section-number">19.2. </span>Grid Approximation<a class="headerlink" href="#grid-approximation" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.2. </span>Grid Approximation<a class="headerlink" href="#grid-approximation" title="Link to this heading">#</a></h2>
 <p>As we did in &lt;&lt;_TheGammaDistribution&gt;&gt; we’ll use a gamma distribution with parameter <span class="math notranslate nohighlight">\(\alpha=1.4\)</span> to represent the prior.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gamma</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">gamma</span>
 
 <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.4</span>
 <span class="n">prior_dist</span> <span class="o">=</span> <span class="n">gamma</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
@@ -469,8 +485,8 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 <p>I’ll use <code class="docutils literal notranslate"><span class="pre">linspace</span></code> to generate possible values for <span class="math notranslate nohighlight">\(\lambda\)</span>, and <code class="docutils literal notranslate"><span class="pre">pmf_from_dist</span></code> to compute a discrete approximation of the prior.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">pmf_from_dist</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">pmf_from_dist</span>
 
 <span class="n">lams</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
 <span class="n">prior_pmf</span> <span class="o">=</span> <span class="n">pmf_from_dist</span><span class="p">(</span><span class="n">prior_dist</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span>
@@ -481,7 +497,7 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 <p>We can use the Poisson distribution to compute the likelihood of the data; as an example, we’ll use 4 goals.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">poisson</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">likelihood</span> <span class="o">=</span> <span class="n">poisson</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">lams</span><span class="p">)</span>
@@ -498,7 +514,7 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.05015532557804499
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>np.float64(0.05015532557804499)
 </pre></div>
 </div>
 </div>
@@ -506,7 +522,7 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 <p>Soon we will solve the same problem with PyMC, but first it will be useful to introduce something new: the prior predictive distribution.</p>
 </section>
 <section id="prior-predictive-distribution">
-<h2><span class="section-number">19.3. </span>Prior Predictive Distribution<a class="headerlink" href="#prior-predictive-distribution" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.3. </span>Prior Predictive Distribution<a class="headerlink" href="#prior-predictive-distribution" title="Link to this heading">#</a></h2>
 <p>We have seen the posterior predictive distribution in previous chapters; the prior predictive distribution is similar except that (as you might have guessed) it is based on the prior.</p>
 <p>To estimate the prior predictive distribution, we’ll start by drawing a sample from the prior.</p>
 <div class="cell docutils container">
@@ -520,7 +536,7 @@ But we’ll start by reviewing the grid approximation of the prior and the prior
 For each value in <code class="docutils literal notranslate"><span class="pre">sample_prior</span></code>, I’ll generate one value from a Poisson distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">poisson</span>
 
 <span class="n">sample_prior_pred</span> <span class="o">=</span> <span class="n">poisson</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">sample_prior</span><span class="p">)</span>
 </pre></div>
@@ -531,7 +547,7 @@ For each value in <code class="docutils literal notranslate"><span class="pre">s
 To see what it looks like, we’ll compute the PMF of the sample.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">empiricaldist</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pmf</span>
 
 <span class="n">pmf_prior_pred</span> <span class="o">=</span> <span class="n">Pmf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">sample_prior_pred</span><span class="p">)</span>
 </pre></div>
@@ -541,7 +557,7 @@ To see what it looks like, we’ll compute the PMF of the sample.</p>
 <p>And here’s what it looks like:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">decorate</span>
 
 <span class="n">pmf_prior_pred</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of goals&#39;</span><span class="p">,</span>
@@ -551,7 +567,7 @@ To see what it looks like, we’ll compute the PMF of the sample.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/bf62eec880e055fc719a0ff38539e2a395226ccf1997bb2da55eaf97fdba19ed.png" src="_images/bf62eec880e055fc719a0ff38539e2a395226ccf1997bb2da55eaf97fdba19ed.png" />
+<img alt="_images/29f0bc177ef89099ce626d5eae7a9613159148b6dbc4d4a28ed64b24bf24cd82.png" src="_images/29f0bc177ef89099ce626d5eae7a9613159148b6dbc4d4a28ed64b24bf24cd82.png" />
 </div>
 </div>
 <p>One reason to compute the prior predictive distribution is to check whether our model of the system seems reasonable.
@@ -559,7 +575,7 @@ In this case, the distribution of goals seems consistent with what we know about
 <p>But in this chapter we have another reason: computing the prior predictive distribution is a first step toward using MCMC.</p>
 </section>
 <section id="introducing-pymc">
-<h2><span class="section-number">19.4. </span>Introducing PyMC<a class="headerlink" href="#introducing-pymc" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.4. </span>Introducing PyMC<a class="headerlink" href="#introducing-pymc" title="Link to this heading">#</a></h2>
 <p>PyMC is a Python library that provides several MCMC methods.
 To use PyMC, we have to specify a model of the process that generates the data.
 In this example, the model has two steps:</p>
@@ -570,7 +586,7 @@ In this example, the model has two steps:</p>
 <p>Here’s how we specify this model in PyMC:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymc</span> <span class="k">as</span> <span class="nn">pm</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pymc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pm</span>
 
 <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
     <span class="n">lam</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="s1">&#39;lam&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.4</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
@@ -596,13 +612,14 @@ In this example, the two indented statements are associated with the new <code c
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/ba626904994a303dc84e2ba87010abdd041a73f7a07c7f18f59c92ab41f59c21.svg" src="_images/ba626904994a303dc84e2ba87010abdd041a73f7a07c7f18f59c92ab41f59c21.svg" /></div>
+<img alt="_images/3eb560da62bd760d097fba791ca5db013640e0d1a3e9c1e35dc9f0a14e83b0ac.svg" src="_images/3eb560da62bd760d097fba791ca5db013640e0d1a3e9c1e35dc9f0a14e83b0ac.svg" />
+</div>
 </div>
 <p>In this visualization, the ovals show that <code class="docutils literal notranslate"><span class="pre">lam</span></code> is drawn from a gamma distribution and <code class="docutils literal notranslate"><span class="pre">goals</span></code> is drawn from a Poisson distribution.
 The arrow shows that the values of <code class="docutils literal notranslate"><span class="pre">lam</span></code> are used as parameters for the distribution of <code class="docutils literal notranslate"><span class="pre">goals</span></code>.</p>
 </section>
 <section id="sampling-the-prior">
-<h2><span class="section-number">19.5. </span>Sampling the Prior<a class="headerlink" href="#sampling-the-prior" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.5. </span>Sampling the Prior<a class="headerlink" href="#sampling-the-prior" title="Link to this heading">#</a></h2>
 <p>PyMC provides a function that generates samples from the prior and prior predictive distributions.
 We can use a <code class="docutils literal notranslate"><span class="pre">with</span></code> statement to run this function in the context of the model.</p>
 <div class="cell docutils container">
@@ -634,7 +651,7 @@ We can use a <code class="docutils literal notranslate"><span class="pre">with</
 We can extract the sample of <code class="docutils literal notranslate"><span class="pre">lam</span></code> like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_values</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_values</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">array</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -656,9 +673,9 @@ We can extract the sample of <code class="docutils literal notranslate"><span cl
 <p>The following figure compares the CDF of this sample to the CDF of the sample we generated using the <code class="docutils literal notranslate"><span class="pre">gamma</span></code> object from SciPy.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">empiricaldist</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cdf</span>
 
-<span class="k">def</span> <span class="nf">plot_cdf</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_cdf</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot the CDF of a sample.</span>
 
 <span class="sd">    sample: sequence of quantities</span>
@@ -683,7 +700,7 @@ We can extract the sample of <code class="docutils literal notranslate"><span cl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/7dbbc0a61a9958f8c4981b2e004cf69d4780e9e4061d23c0a5c5a2e42c54df95.png" src="_images/7dbbc0a61a9958f8c4981b2e004cf69d4780e9e4061d23c0a5c5a2e42c54df95.png" />
+<img alt="_images/20e679f476070379237aebd0f343ba505d64b7c990b37fab2d72c5d0179dc544.png" src="_images/20e679f476070379237aebd0f343ba505d64b7c990b37fab2d72c5d0179dc544.png" />
 </div>
 </div>
 <p>The results are similar, which confirms that the specification of the model is correct and the sampler works as advertised.</p>
@@ -705,7 +722,7 @@ We can extract the sample of <code class="docutils literal notranslate"><span cl
 <p>Because the quantities in the posterior predictive distribution are discrete (number of goals) I’ll plot the CDFs as step functions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_pred</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">plot_pred</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
     <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -726,13 +743,13 @@ We can extract the sample of <code class="docutils literal notranslate"><span cl
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/556e15280de1f65666e228fc5c82b02ad26d3d9869138104f48bbba74ebb6ac8.png" src="_images/556e15280de1f65666e228fc5c82b02ad26d3d9869138104f48bbba74ebb6ac8.png" />
+<img alt="_images/1b6b3c9e97ff6c2994978352b57510a8085650b84b05ce0e1b4d830a46af2d1e.png" src="_images/1b6b3c9e97ff6c2994978352b57510a8085650b84b05ce0e1b4d830a46af2d1e.png" />
 </div>
 </div>
 <p>Again, the results are similar, so we have some confidence we are using PyMC right.</p>
 </section>
 <section id="when-do-we-get-to-inference">
-<h2><span class="section-number">19.6. </span>When Do We Get to Inference?<a class="headerlink" href="#when-do-we-get-to-inference" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.6. </span>When Do We Get to Inference?<a class="headerlink" href="#when-do-we-get-to-inference" title="Link to this heading">#</a></h2>
 <p>Finally, we are ready for actual inference.  We just have to make one small change.
 Here is the model we used to generate the prior predictive distribution:</p>
 <div class="cell docutils container">
@@ -766,30 +783,13 @@ Here is the model we used to generate the prior predictive distribution:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initializing NUTS using jitter+adapt_diag...
 Multiprocess sampling (4 chains in 4 jobs)
 NUTS: [lam]
 </pre></div>
 </div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='6000' class='' max='6000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [6000/6000 00:00<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 1 seconds.
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "5d83bd4498ea4806ad0a9b63a060bec5", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 1 seconds.
 </pre></div>
 </div>
 </div>
@@ -838,13 +838,13 @@ From <code class="docutils literal notranslate"><span class="pre">idata2</span><
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/0aca26a1231a6622d347d149b8a3ee31517eb2b4db5e1dbcc94c8a2effca1f38.png" src="_images/0aca26a1231a6622d347d149b8a3ee31517eb2b4db5e1dbcc94c8a2effca1f38.png" />
+<img alt="_images/245f4ce1f69a4da6b7d6efb199f2181a05000a4eafc7329d7354ab399bb3affb.png" src="_images/245f4ce1f69a4da6b7d6efb199f2181a05000a4eafc7329d7354ab399bb3affb.png" />
 </div>
 </div>
 <p>The results from PyMC are consistent with the results from the grid approximation.</p>
 </section>
 <section id="posterior-predictive-distribution">
-<h2><span class="section-number">19.7. </span>Posterior Predictive Distribution<a class="headerlink" href="#posterior-predictive-distribution" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.7. </span>Posterior Predictive Distribution<a class="headerlink" href="#posterior-predictive-distribution" title="Link to this heading">#</a></h2>
 <p>Finally, to sample from the posterior predictive distribution, we can use <code class="docutils literal notranslate"><span class="pre">sample_posterior_predictive</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -857,24 +857,8 @@ From <code class="docutils literal notranslate"><span class="pre">idata2</span><
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling: [goals]
 </pre></div>
 </div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='2000' class='' max='2000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [2000/2000 00:00<00:00]
-    </div>
-    </div></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "42334df362c442e1a923c5755e216d43", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div></div>
 </div>
 <p>The result is an <code class="docutils literal notranslate"><span class="pre">InferenceData</span></code> object that contains a sample of <code class="docutils literal notranslate"><span class="pre">goals</span></code>.</p>
 <div class="cell docutils container">
@@ -922,7 +906,7 @@ From <code class="docutils literal notranslate"><span class="pre">idata2</span><
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/4ff62660bf238754ded2f8bec12b246101ff30a171a992e01b35463265e0f646.png" src="_images/4ff62660bf238754ded2f8bec12b246101ff30a171a992e01b35463265e0f646.png" />
+<img alt="_images/bdaca711618230f859d74ff4f35b23af7a920f08d82bf137797a500c2081557a.png" src="_images/bdaca711618230f859d74ff4f35b23af7a920f08d82bf137797a500c2081557a.png" />
 </div>
 </div>
 <p>Again, the results are consistent.
@@ -934,7 +918,7 @@ In fact, we could have solved it with even less computation, using a conjugate p
 The power of PyMC will be clearer with a more complex model.</p>
 </section>
 <section id="happiness">
-<h2><span class="section-number">19.8. </span>Happiness<a class="headerlink" href="#happiness" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.8. </span>Happiness<a class="headerlink" href="#happiness" title="Link to this heading">#</a></h2>
 <p>Recently I read <a class="reference external" href="https://ourworldindata.org/happiness-and-life-satisfaction">“Happiness and Life Satisfaction”</a>
 by Esteban Ortiz-Ospina and Max Roser, which discusses (among many other things) the relationship between income and happiness, both between countries, within countries, and over time.</p>
 <p>It cites the <a class="reference external" href="https://worldhappiness.report/">“World Happiness Report”</a>, which includes <a class="reference external" href="https://worldhappiness.report/ed/2020/social-environments-for-world-happiness/">results of a multiple regression analysis</a> that explores the relationship between happiness and six potentially predictive factors:</p>
@@ -965,7 +949,7 @@ by Esteban Ortiz-Ospina and Max Roser, which discusses (among many other things)
 <p>We can use Pandas to read the data into a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;WHR20_DataForFigure2.1.xls&#39;</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -1117,7 +1101,7 @@ by Esteban Ortiz-Ospina and Max Roser, which discusses (among many other things)
 </div>
 </section>
 <section id="simple-regression">
-<h2><span class="section-number">19.9. </span>Simple Regression<a class="headerlink" href="#simple-regression" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.9. </span>Simple Regression<a class="headerlink" href="#simple-regression" title="Link to this heading">#</a></h2>
 <p>To get started, let’s look at the relationship between happiness and income as represented by gross domestic product (GDP) per person.</p>
 <p>The column named <code class="docutils literal notranslate"><span class="pre">'Logged</span> <span class="pre">GDP</span> <span class="pre">per</span> <span class="pre">capita'</span></code> represents the natural logarithm of GDP for each country, divided by population, corrected for <a class="reference external" href="https://en.wikipedia.org/wiki/Purchasing_power_parity">purchasing power parity</a> (PPP).</p>
 <div class="cell docutils container">
@@ -1130,7 +1114,7 @@ by Esteban Ortiz-Ospina and Max Roser, which discusses (among many other things)
 <p>The following figure is a scatter plot of <code class="docutils literal notranslate"><span class="pre">score</span></code> versus <code class="docutils literal notranslate"><span class="pre">log_gdp</span></code>, with one marker for each country.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">log_gdp</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
 
@@ -1140,14 +1124,14 @@ by Esteban Ortiz-Ospina and Max Roser, which discusses (among many other things)
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/6c95919974e18aed01c3f89171be4c7936dd3e15ce649d7ea74636f3cf8fd024.png" src="_images/6c95919974e18aed01c3f89171be4c7936dd3e15ce649d7ea74636f3cf8fd024.png" />
+<img alt="_images/4be0a03a0db88ad35b3a85e7dd5bd7690fd730a0ff6d92ad09e6f43863568249.png" src="_images/4be0a03a0db88ad35b3a85e7dd5bd7690fd730a0ff6d92ad09e6f43863568249.png" />
 </div>
 </div>
 <p>It’s clear that there is a relationship between these variables: people in countries with higher GDP generally report higher levels of happiness.</p>
 <p>We can use <code class="docutils literal notranslate"><span class="pre">linregress</span></code> from SciPy to compute a simple regression of these variables.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">linregress</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">linregress</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span><span class="n">log_gdp</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
 </pre></div>
@@ -1242,30 +1226,13 @@ And <code class="docutils literal notranslate"><span class="pre">y</span></code>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initializing NUTS using jitter+adapt_diag...
 Multiprocess sampling (4 chains in 4 jobs)
 NUTS: [a, b, sigma]
 </pre></div>
 </div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='6000' class='' max='6000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [6000/6000 00:05<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 6 seconds.
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "7f4aeebd048741ae9453ec05ccfb8347", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 4 seconds.
 </pre></div>
 </div>
 </div>
@@ -1277,7 +1244,7 @@ You can ignore them for now.</p>
 Here are the posterior distributions of slope, <code class="docutils literal notranslate"><span class="pre">a</span></code>, and intercept, <code class="docutils literal notranslate"><span class="pre">b</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">arviz</span> <span class="k">as</span> <span class="nn">az</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">arviz</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">az</span>
 
 <span class="k">with</span> <span class="n">model3</span><span class="p">:</span>
     <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">idata3</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]);</span>
@@ -1285,7 +1252,7 @@ Here are the posterior distributions of slope, <code class="docutils literal not
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/4ccfdcf709054d0f44cc4a44f2df3cbb27f8132293440f98cb57e282ef4bcfa3.png" src="_images/4ccfdcf709054d0f44cc4a44f2df3cbb27f8132293440f98cb57e282ef4bcfa3.png" />
+<img alt="_images/8909e62d44b79deed16e3669c020cfc65a17fa5c474e0fb3038064f8ef4bf509.png" src="_images/8909e62d44b79deed16e3669c020cfc65a17fa5c474e0fb3038064f8ef4bf509.png" />
 </div>
 </div>
 <p>The graphs show the distributions of the samples, estimated by KDE, and 94% credible intervals.  In the figure, “HDI” stands for <a class="reference external" href="https://www.sciencedirect.com/topics/mathematics/highest-density-interval">“highest-density interval”</a>.</p>
@@ -1298,7 +1265,7 @@ Here are the posterior distributions of slope, <code class="docutils literal not
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: [0.72130426]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: [0.71690396]
 Regression slope: 0.717738495630452
 </pre></div>
 </div>
@@ -1312,7 +1279,7 @@ Regression slope: 0.717738495630452
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: [-1.23201509]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample mean: [-1.19223158]
 Regression intercept: -1.1986460618088843
 </pre></div>
 </div>
@@ -1326,7 +1293,7 @@ Regression intercept: -1.1986460618088843
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/901ee020fc67709642949a9a25f231a3019eea4fc4d6597e1e0bc3e458770a8e.png" src="_images/901ee020fc67709642949a9a25f231a3019eea4fc4d6597e1e0bc3e458770a8e.png" />
+<img alt="_images/c2f97c95d043ae6ab07fef3dd0488bc021342cfa7b035805c0131809ee9f95cb.png" src="_images/c2f97c95d043ae6ab07fef3dd0488bc021342cfa7b035805c0131809ee9f95cb.png" />
 </div>
 </div>
 <p>The values in the posterior distribution of <code class="docutils literal notranslate"><span class="pre">sigma</span></code> seem plausible.</p>
@@ -1362,7 +1329,7 @@ And with 153 countries, we would have to compute almost 4 trillion likelihoods.<
 </div>
 </section>
 <section id="multiple-regression">
-<h2><span class="section-number">19.10. </span>Multiple Regression<a class="headerlink" href="#multiple-regression" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.10. </span>Multiple Regression<a class="headerlink" href="#multiple-regression" title="Link to this heading">#</a></h2>
 <p>Before we implement the multiple regression model, I’ll select the columns we need from the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1510,30 +1477,13 @@ I’ll extract the dependent variable.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initializing NUTS using jitter+adapt_diag...
 Multiprocess sampling (4 chains in 4 jobs)
 NUTS: [b0, b1, b2, b3, b4, b5, b6, sigma]
 </pre></div>
 </div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='6000' class='' max='6000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [6000/6000 00:04<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 4 seconds.
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "eef7da85e99d40eca084198df3893f13", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 4 seconds.
 </pre></div>
 </div>
 </div>
@@ -1546,7 +1496,7 @@ NUTS: [b0, b1, b2, b3, b4, b5, b6, sigma]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0012751341212245242
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>np.float64(0.001014408542637)
 </pre></div>
 </div>
 </div>
@@ -1559,7 +1509,7 @@ NUTS: [b0, b1, b2, b3, b4, b5, b6, sigma]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5150208888645642
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>np.float64(0.517165987897353)
 </pre></div>
 </div>
 </div>
@@ -1578,7 +1528,7 @@ NUTS: [b0, b1, b2, b3, b4, b5, b6, sigma]
 <p>We can also compute 94% credible intervals (between the 3rd and 97th percentiles).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">credible_interval</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">credible_interval</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute 94% credible interval.&quot;&quot;&quot;</span>
     <span class="n">ci</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">97</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ci</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -1626,33 +1576,33 @@ NUTS: [b0, b1, b2, b3, b4, b5, b6, sigma]
   <tbody>
     <tr>
       <th>Logged GDP per capita</th>
-      <td>0.242</td>
-      <td>[0.069, 0.41]</td>
+      <td>0.255</td>
+      <td>[0.091, 0.429]</td>
     </tr>
     <tr>
       <th>Social support</th>
-      <td>0.225</td>
-      <td>[0.072, 0.378]</td>
+      <td>0.222</td>
+      <td>[0.066, 0.373]</td>
     </tr>
     <tr>
       <th>Healthy life expectancy</th>
-      <td>0.225</td>
-      <td>[0.072, 0.378]</td>
+      <td>0.222</td>
+      <td>[0.066, 0.373]</td>
     </tr>
     <tr>
       <th>Freedom to make life choices</th>
-      <td>0.188</td>
-      <td>[0.082, 0.289]</td>
+      <td>0.191</td>
+      <td>[0.09, 0.294]</td>
     </tr>
     <tr>
       <th>Generosity</th>
-      <td>0.055</td>
-      <td>[-0.032, 0.142]</td>
+      <td>0.056</td>
+      <td>[-0.031, 0.147]</td>
     </tr>
     <tr>
       <th>Perceptions of corruption</th>
-      <td>-0.100</td>
-      <td>[-0.195, -0.007]</td>
+      <td>-0.098</td>
+      <td>[-0.194, -0.004]</td>
     </tr>
   </tbody>
 </table>
@@ -1666,7 +1616,7 @@ But it does not really demonstrate the power of Bayesian regression.</p>
 <p>Bayesian methods are more useful if we plan to use the posterior distribution of the parameters as part of a decision analysis process.</p>
 </section>
 <section id="summary">
-<h2><span class="section-number">19.11. </span>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.11. </span>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
 <p>In this chapter we used PyMC to implement two models we’ve seen before: a Poisson model of goal-scoring in soccer and a simple regression model.
 Then we implemented a multiple regression model that would not have been possible to compute with a grid approximation.</p>
 <p>MCMC is more powerful than grid methods, but that power comes with some disadvantages:</p>
@@ -1681,17 +1631,17 @@ But when you need MCMC, it is useful to have a grid algorithm to compare to (eve
 In the exercises, you will have a chance to practice.</p>
 </section>
 <section id="exercises">
-<h2><span class="section-number">19.12. </span>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">19.12. </span>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>
 <p><strong>Exercise:</strong> As a warmup, let’s use PyMC to solve the Euro problem.
 Suppose we spin a coin 250 times and it comes up heads 140 times.
 What is the posterior distribution of <span class="math notranslate nohighlight">\(x\)</span>, the probability of heads?</p>
 <p>For the prior, use a beta distribution with parameters <span class="math notranslate nohighlight">\(\alpha=1\)</span> and <span class="math notranslate nohighlight">\(\beta=1\)</span>.</p>
 <p>See <a class="reference external" href="https://docs.pymc.io/api/distributions/continuous.html">the PyMC documentation</a> for the list of continuous distributions.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1708,33 +1658,16 @@ What is the posterior distribution of <span class="math notranslate nohighlight"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initializing NUTS using jitter+adapt_diag...
 Multiprocess sampling (4 chains in 4 jobs)
 NUTS: [x]
 </pre></div>
 </div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='6000' class='' max='6000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [6000/6000 00:00<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 1 seconds.
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "bb96b5eed4754944b09e5797b4fdf9a5", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 2 seconds.
 </pre></div>
 </div>
-<img alt="_images/6e5ac074fc99977b0cf7f4a9bc715884b9965f00f3c2129d25978e15fbd6f4c1.png" src="_images/6e5ac074fc99977b0cf7f4a9bc715884b9965f00f3c2129d25978e15fbd6f4c1.png" />
+<img alt="_images/938465d1269376b4684261010db9ddafbc7ea7542a8448c41aacc4b87f70a967.png" src="_images/938465d1269376b4684261010db9ddafbc7ea7542a8448c41aacc4b87f70a967.png" />
 </div>
 </details>
 </div>
@@ -1746,10 +1679,10 @@ NUTS: [x]
 <p>See <a class="reference external" href="https://docs.pymc.io/api/distributions/discrete.html">the PyMC documentation</a> for the list of discrete distributions.</p>
 <p>Note: <code class="docutils literal notranslate"><span class="pre">HyperGeometric</span></code> was added to PyMC after version 3.8, so you might need to update your installation to do this exercise.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1771,27 +1704,12 @@ NUTS: [x]
 Metropolis: [N]
 </pre></div>
 </div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='8000' class='' max='8000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [8000/8000 00:00<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 1 seconds.
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "a137a88e4a34437d991131f075751d10", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 1 seconds.
+The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
 </pre></div>
 </div>
-<img alt="_images/30ec4b1580a9470b862648966c83c9c5bb5c36d81afb04a623e5545573ef9e9e.png" src="_images/30ec4b1580a9470b862648966c83c9c5bb5c36d81afb04a623e5545573ef9e9e.png" />
+<img alt="_images/3266929b7ed701192ba40a506430d39b0c02bad8d342c2e5388642b9fe0a15f4.png" src="_images/3266929b7ed701192ba40a506430d39b0c02bad8d342c2e5388642b9fe0a15f4.png" />
 </div>
 </details>
 </div>
@@ -1810,10 +1728,10 @@ Then we used the data to compute a grid approximation of the posterior distribut
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1828,33 +1746,17 @@ Then we used the data to compute a grid approximation of the posterior distribut
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initializing NUTS using jitter+adapt_diag...
 Multiprocess sampling (4 chains in 4 jobs)
 NUTS: [lam, k]
 </pre></div>
 </div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='8000' class='' max='8000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [8000/8000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 2 seconds.
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "83b3eab6de46411c9bcc50bdb7dee17c", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 2 seconds.
+There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 </pre></div>
 </div>
-<img alt="_images/7222540adbef26c611ca7afcdf8cc29a3ef6d7d72304a98fd02a03788e14748d.png" src="_images/7222540adbef26c611ca7afcdf8cc29a3ef6d7d72304a98fd02a03788e14748d.png" />
+<img alt="_images/4497b31f9eb2691d40c298b18a41bb0bb8b5ca18be5751e5ad1860b4e629b4f4.png" src="_images/4497b31f9eb2691d40c298b18a41bb0bb8b5ca18be5751e5ad1860b4e629b4f4.png" />
 </div>
 </details>
 </div>
@@ -1870,7 +1772,7 @@ NUTS: [lam, k]
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;drp_scores.csv&#39;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -1951,10 +1853,10 @@ NUTS: [lam, k]
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1968,40 +1870,23 @@ NUTS: [lam, k]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
-Initializing NUTS using jitter+adapt_diag...
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initializing NUTS using jitter+adapt_diag...
 Multiprocess sampling (4 chains in 4 jobs)
 NUTS: [mu, sigma]
 </pre></div>
 </div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='6000' class='' max='6000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [6000/6000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 1 seconds.
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ab25ecc957ae422aba5986fea554af3f", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 500 draw iterations (4_000 + 2_000 draws total) took 1 seconds.
 </pre></div>
 </div>
 </div>
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2012,7 +1897,7 @@ NUTS: [mu, sigma]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/651a2450e7c1048ad994f72987a7038a1683bedfc6af021866689f04ac9c448c.png" src="_images/651a2450e7c1048ad994f72987a7038a1683bedfc6af021866689f04ac9c448c.png" />
+<img alt="_images/29cdc000f52ae0116692bb33e3fcba63ec103b4fd2d70bdf8af36ef08aa3b41e.png" src="_images/29cdc000f52ae0116692bb33e3fcba63ec103b4fd2d70bdf8af36ef08aa3b41e.png" />
 </div>
 </details>
 </div>
@@ -2022,16 +1907,6 @@ NUTS: [mu, sigma]
 </div></blockquote>
 <p>Suppose the first tester finds 20 bugs, the second finds 15, and they
 find 3 in common; use PyMC to estimate the number of bugs.</p>
-<p>Note: This exercise is more difficult that some of the previous ones.  One of the challenges is that the data includes <code class="docutils literal notranslate"><span class="pre">k00</span></code>, which depends on <code class="docutils literal notranslate"><span class="pre">N</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">k00</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">num_seen</span>
-</pre></div>
-</div>
-<p>So we have to construct the data as part of the model.
-To do that, we can use <code class="docutils literal notranslate"><span class="pre">pm.math.stack</span></code>, which makes an array:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">k00</span><span class="p">,</span> <span class="n">k01</span><span class="p">,</span> <span class="n">k10</span><span class="p">,</span> <span class="n">k11</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>Finally, you might find it helpful to use <code class="docutils literal notranslate"><span class="pre">pm.Multinomial</span></code>.</p>
 <p>I’ll use the following notation for the data:</p>
 <ul class="simple">
 <li><p>k11 is the number of bugs found by both testers,</p></li>
@@ -2052,22 +1927,38 @@ To do that, we can use <code class="docutils literal notranslate"><span class="p
 <p>In total, 32 bugs have been discovered:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_seen</span> <span class="o">=</span> <span class="n">k01</span> <span class="o">+</span> <span class="n">k10</span> <span class="o">+</span> <span class="n">k11</span>
-<span class="n">num_seen</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k_obs</span> <span class="o">=</span> <span class="p">[</span><span class="n">k01</span><span class="p">,</span> <span class="n">k10</span><span class="p">,</span> <span class="n">k11</span><span class="p">]</span>
+<span class="n">n_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">k_obs</span><span class="p">)</span>
+<span class="n">n_obs</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>32
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>np.int64(32)
 </pre></div>
 </div>
 </div>
 </div>
+<p>Note: This exercise is more difficult that some of the previous ones, and the solution that appeared in previous versions of this notebook doesn’t work in recent versions of PyMC.
+Here are some suggestions that might help.</p>
+<ul class="simple">
+<li><p>Define priors for <code class="docutils literal notranslate"><span class="pre">p0</span></code>, <code class="docutils literal notranslate"><span class="pre">p1</span></code>, and <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p></li>
+<li><p>Compute the complementary probabilities, <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>, well as the probability of being seen, <code class="docutils literal notranslate"><span class="pre">p_seen</span></code>, and the probabilities of being seen by the first, second, or both testers, given that a bug is discovered.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">q0</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">p0</span>
+<span class="n">q1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">p1</span>
+<span class="n">p_seen</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">q0</span><span class="o">*</span><span class="n">q1</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">q0</span><span class="o">*</span><span class="n">p1</span><span class="p">,</span> <span class="n">p0</span><span class="o">*</span><span class="n">q1</span><span class="p">,</span> <span class="n">p0</span><span class="o">*</span><span class="n">p1</span><span class="p">])</span> <span class="o">/</span> <span class="n">p_seen</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Compute <em>two</em> likelihoods: the probability of finding <code class="docutils literal notranslate"><span class="pre">n_obs</span></code> bugs given <code class="docutils literal notranslate"><span class="pre">N</span></code> and <code class="docutils literal notranslate"><span class="pre">p_seen</span></code>, and the probability of <code class="docutils literal notranslate"><span class="pre">k_obs</span></code> given <code class="docutils literal notranslate"><span class="pre">n_obs</span></code> and <code class="docutils literal notranslate"><span class="pre">ps</span></code>.</p></li>
+</ul>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2075,31 +1966,31 @@ To do that, we can use <code class="docutils literal notranslate"><span class="p
 <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model9</span><span class="p">:</span>
     <span class="n">p0</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s1">&#39;p0&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">p1</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">N</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">DiscreteUniform</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">num_seen</span><span class="p">,</span> <span class="mi">350</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">DiscreteUniform</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">n_obs</span><span class="p">,</span> <span class="mi">350</span><span class="p">)</span>
     
     <span class="n">q0</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">p0</span>
     <span class="n">q1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">p1</span>
-    <span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="n">q0</span><span class="o">*</span><span class="n">q1</span><span class="p">,</span> <span class="n">q0</span><span class="o">*</span><span class="n">p1</span><span class="p">,</span> <span class="n">p0</span><span class="o">*</span><span class="n">q1</span><span class="p">,</span> <span class="n">p0</span><span class="o">*</span><span class="n">p1</span><span class="p">]</span>
+    <span class="n">p_seen</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">q0</span><span class="o">*</span><span class="n">q1</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">q0</span><span class="o">*</span><span class="n">p1</span><span class="p">,</span> <span class="n">p0</span><span class="o">*</span><span class="n">q1</span><span class="p">,</span> <span class="n">p0</span><span class="o">*</span><span class="n">p1</span><span class="p">])</span> <span class="o">/</span> <span class="n">p_seen</span>
     
-    <span class="n">k00</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">num_seen</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">k00</span><span class="p">,</span> <span class="n">k01</span><span class="p">,</span> <span class="n">k10</span><span class="p">,</span> <span class="n">k11</span><span class="p">))</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Multinomial</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">ps</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">Binomial</span><span class="p">(</span><span class="s2">&quot;n_obs&quot;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p_seen</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">n_obs</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">Multinomial</span><span class="p">(</span><span class="s1">&#39;k_obs&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n_obs</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">ps</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">k_obs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
 <span class="k">with</span> <span class="n">model9</span><span class="p">:</span>
-    <span class="n">idata9</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">idata9</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2110,26 +2001,8 @@ CompoundStep
 &gt;Metropolis: [N]
 </pre></div>
 </div>
-<div class="output text_html">
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='8000' class='' max='8000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [8000/8000 00:01<00:00 Sampling 4 chains, 0 divergences]
-    </div>
-    </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 2 seconds.
-/home/downey/miniconda3/envs/ThinkBayes2/lib/python3.10/site-packages/pymc/backends/arviz.py:65: UserWarning: Could not extract data from symbolic observation y
-  warnings.warn(f&quot;Could not extract data from symbolic observation {obs}&quot;)
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "000184340e2a4ebb8ea58848bf258416", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 3 seconds.
 The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
 The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
 </pre></div>
@@ -2138,10 +2011,95 @@ The effective sample size per chain is smaller than 100 for some parameters.  A 
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
+
+<span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata9</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+      <th>sd</th>
+      <th>hdi_3%</th>
+      <th>hdi_97%</th>
+      <th>mcse_mean</th>
+      <th>mcse_sd</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+      <th>r_hat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>N</th>
+      <td>116.376</td>
+      <td>58.896</td>
+      <td>41.000</td>
+      <td>233.000</td>
+      <td>9.702</td>
+      <td>6.701</td>
+      <td>38.0</td>
+      <td>84.0</td>
+      <td>1.08</td>
+    </tr>
+    <tr>
+      <th>p0</th>
+      <td>0.216</td>
+      <td>0.099</td>
+      <td>0.059</td>
+      <td>0.393</td>
+      <td>0.015</td>
+      <td>0.005</td>
+      <td>44.0</td>
+      <td>142.0</td>
+      <td>1.07</td>
+    </tr>
+    <tr>
+      <th>p1</th>
+      <td>0.165</td>
+      <td>0.079</td>
+      <td>0.040</td>
+      <td>0.311</td>
+      <td>0.011</td>
+      <td>0.004</td>
+      <td>48.0</td>
+      <td>137.0</td>
+      <td>1.06</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</details>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2152,11 +2110,11 @@ The effective sample size per chain is smaller than 100 for some parameters.  A 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/2df13eb3c1a3976c68225d1a95c449e97010b7186ad0bfae31959355b6413f04.png" src="_images/2df13eb3c1a3976c68225d1a95c449e97010b7186ad0bfae31959355b6413f04.png" />
+<img alt="_images/60d4feec0b151eaf151df816580bb1dd6ed5de3e83b885a175f81eb2f168beab.png" src="_images/60d4feec0b151eaf151df816580bb1dd6ed5de3e83b885a175f81eb2f168beab.png" />
 </div>
 </details>
 </div>
-<p>Think Bayes, Second Edition</p>
+<p><em>Think Bayes</em>, Second Edition</p>
 <p>Copyright 2020 Allen B. Downey</p>
 <p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
 </section>
@@ -2189,8 +2147,8 @@ The effective sample size per chain is smaller than 100 for some parameters.  A 
               
               
               
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="prev-next-footer d-print-none">
+                  
 <div class="prev-next-area">
     <a class="left-prev"
        href="chap18.html"
@@ -2218,6 +2176,7 @@ The effective sample size per chain is smaller than 100 for some parameters.  A 
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -2258,9 +2217,10 @@ By Allen B. Downey
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -2284,8 +2244,8 @@ By Allen B. Downey
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>14. Survival Analysis &#8212; Think Bayes</title>
   
@@ -15,53 +14,49 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="_static/togglebutton.js"></script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]]}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'chap14';</script>
@@ -78,28 +73,23 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -121,12 +111,20 @@ const thebe_selector_output = ".output, .cell_output"
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -141,6 +139,9 @@ const thebe_selector_output = ".output, .cell_output"
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -149,10 +150,22 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     <p class="title logo__title">Think Bayes</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -204,6 +217,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="bookstore.html">How Many Books?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="beta_binomial.html">The All-Knowing Cube of Probability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="zipf.html">What’s a chartist?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bread.html">The Poincaré Problem</a></li>
 </ul>
 
     </div>
@@ -219,7 +233,7 @@ const thebe_selector_output = ".output, .cell_output"
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -228,14 +242,14 @@ const thebe_selector_output = ".output, .cell_output"
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -325,26 +339,28 @@ const thebe_selector_output = ".output, .cell_output"
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -384,28 +400,28 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <p>You can order print and ebook versions of <em>Think Bayes 2e</em> from
 <a class="reference external" href="https://bookshop.org/a/98697/9781492089469">Bookshop.org</a> and
 <a class="reference external" href="https://amzn.to/334eqGo">Amazon</a>.</p>
 <section id="survival-analysis">
-<h1><span class="section-number">14. </span>Survival Analysis<a class="headerlink" href="#survival-analysis" title="Permalink to this heading">#</a></h1>
+<h1><span class="section-number">14. </span>Survival Analysis<a class="headerlink" href="#survival-analysis" title="Link to this heading">#</a></h1>
 <p>This chapter introduces “survival analysis”, which is a set of statistical methods used to answer questions about the time until an event.
 In the context of medicine it is literally about survival, but it can be applied to the time until any kind of event, or instead of time it can be about space or other dimensions.</p>
 <p>Survival analysis is challenging because the data we have are often incomplete.  But as we’ll see, Bayesian methods are particularly good at working with incomplete data.</p>
 <p>As examples, we’ll consider two applications that are a little less serious than life and death: the time until light bulbs fail and the time until dogs in a shelter are adopted.
 To describe these “survival times”, we’ll use the Weibull distribution.</p>
 <section id="the-weibull-distribution">
-<h2><span class="section-number">14.1. </span>The Weibull Distribution<a class="headerlink" href="#the-weibull-distribution" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">14.1. </span>The Weibull Distribution<a class="headerlink" href="#the-weibull-distribution" title="Link to this heading">#</a></h2>
 <p>The <a class="reference external" href="https://en.wikipedia.org/wiki/Weibull_distribution">Weibull distribution</a> is often used in survival analysis because it is a good model for the distribution of lifetimes for manufactured products, at least over some parts of the range.</p>
 <p>SciPy provides several versions of the Weibull distribution; the one we’ll use is called <code class="docutils literal notranslate"><span class="pre">weibull_min</span></code>.
 To make the interface consistent with our notation, I’ll wrap it in a function that takes as parameters <span class="math notranslate nohighlight">\(\lambda\)</span>, which mostly affects the location or “central tendency” of the distribution, and <span class="math notranslate nohighlight">\(k\)</span>, which affects the shape.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">weibull_min</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">weibull_min</span>
 
-<span class="k">def</span> <span class="nf">weibull_dist</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">weibull_dist</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">weibull_min</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">lam</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -425,9 +441,9 @@ To make the interface consistent with our notation, I’ll wrap it in a function
 Here’s what the Weibull CDF looks like with those parameters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Cdf</span>
-<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">decorate</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">empiricaldist</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cdf</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">decorate</span>
 
 <span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
 <span class="n">ps</span> <span class="o">=</span> <span class="n">actual_dist</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
@@ -441,7 +457,7 @@ Here’s what the Weibull CDF looks like with those parameters.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/165e4472a2e421796fed341383b2f25a0686b6223380934e1bf7a4af385005e3.png" src="_images/165e4472a2e421796fed341383b2f25a0686b6223380934e1bf7a4af385005e3.png" />
+<img alt="_images/c3b335823ff23013127eaa305f9cea759068c5f94f4f1e2eeb38ef88c5dec53b.png" src="_images/c3b335823ff23013127eaa305f9cea759068c5f94f4f1e2eeb38ef88c5dec53b.png" />
 </div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">actual_dist</span></code> provides <code class="docutils literal notranslate"><span class="pre">rvs</span></code>, which we can use to generate a random sample from this distribution.</p>
@@ -464,7 +480,7 @@ Now let’s see if we can go the other way: given the sample, we’ll estimate t
 <p>Here’s a uniform prior distribution for <span class="math notranslate nohighlight">\(\lambda\)</span>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_uniform</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_uniform</span>
 
 <span class="n">lams</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
 <span class="n">prior_lam</span> <span class="o">=</span> <span class="n">make_uniform</span><span class="p">(</span><span class="n">lams</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lambda&#39;</span><span class="p">)</span>
@@ -484,7 +500,7 @@ Now let’s see if we can go the other way: given the sample, we’ll estimate t
 <p>I’ll use <code class="docutils literal notranslate"><span class="pre">make_joint</span></code> to make a joint prior distribution for the two parameters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_joint</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_joint</span>
 
 <span class="n">prior</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">prior_lam</span><span class="p">,</span> <span class="n">prior_k</span><span class="p">)</span>
 </pre></div>
@@ -532,17 +548,17 @@ Now let’s see if we can go the other way: given the sample, we’ll estimate t
 <p>Now we can compute the posterior distribution in the usual way.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input above-output-prompt docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">normalize</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalize</span>
 
 <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
 <span class="n">normalize</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<details class="hide below-input">
+<details class="admonition hide below-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell output</span>
-<span class="expanded">Hide code cell output</span>
+<p class="collapsed admonition-title">Show code cell output</p>
+<p class="expanded admonition-title">Hide code cell output</p>
 </summary>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.052573567183434e-09
@@ -555,7 +571,7 @@ Now let’s see if we can go the other way: given the sample, we’ll estimate t
 It takes a joint prior distribution and the data, and returns a joint posterior distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_weibull</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">update_weibull</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Update the prior based on data.&quot;&quot;&quot;</span>
     <span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">,</span> <span class="n">data_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
         <span class="n">prior</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
@@ -581,13 +597,13 @@ It takes a joint prior distribution and the data, and returns a joint posterior 
 </div>
 <p>And here’s a contour plot of the joint posterior distribution.</p>
 <div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">plot_contour</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_contour</span>
 
 <span class="n">plot_contour</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
 <span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior joint distribution of Weibull parameters&#39;</span><span class="p">)</span>
@@ -596,23 +612,23 @@ It takes a joint prior distribution and the data, and returns a joint posterior 
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/77fcd1c56c2f0ce10efa56dbabec2d9b197d606003e4f5968c14f2f0cb4ed13f.png" src="_images/77fcd1c56c2f0ce10efa56dbabec2d9b197d606003e4f5968c14f2f0cb4ed13f.png" />
+<img alt="_images/2ac89405e4d7a6385f2597a32ba879d78b1d9bf2542be3e8059a2bae15ff55bd.png" src="_images/2ac89405e4d7a6385f2597a32ba879d78b1d9bf2542be3e8059a2bae15ff55bd.png" />
 </div>
 </div>
 <p>It looks like the range of likely values for <span class="math notranslate nohighlight">\(\lambda\)</span> is about 1 to 4, which contains the actual value we used to generate the data, 3.
 And the range for <span class="math notranslate nohighlight">\(k\)</span> is about 0.5 to 1.5, which contains the actual value, 0.8.</p>
 </section>
 <section id="marginal-distributions">
-<h2><span class="section-number">14.2. </span>Marginal Distributions<a class="headerlink" href="#marginal-distributions" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">14.2. </span>Marginal Distributions<a class="headerlink" href="#marginal-distributions" title="Link to this heading">#</a></h2>
 <p>To be more precise about these ranges, we can extract the marginal distributions:</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">marginal</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">marginal</span>
 
 <span class="n">posterior_lam</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">posterior_k</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -623,13 +639,13 @@ And the range for <span class="math notranslate nohighlight">\(k\)</span> is abo
 </div>
 <p>And compute the posterior means and 90% credible intervals.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
 <span class="n">posterior_lam</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;lambda&#39;</span><span class="p">)</span>
@@ -640,17 +656,17 @@ And the range for <span class="math notranslate nohighlight">\(k\)</span> is abo
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/4eab37f50de519d5098ae53189c5334a625a4117a40b09fa40489e916fa2bf0b.png" src="_images/4eab37f50de519d5098ae53189c5334a625a4117a40b09fa40489e916fa2bf0b.png" />
+<img alt="_images/b150b22e98513216d6d9c728c80dfbce6ca7a3643d270bd52a1017c339661c59.png" src="_images/b150b22e98513216d6d9c728c80dfbce6ca7a3643d270bd52a1017c339661c59.png" />
 </div>
 </details>
 </div>
 <p>The vertical gray line show the actual value of <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
 <p>Here’s the marginal posterior distribution for <span class="math notranslate nohighlight">\(k\)</span>.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">)</span>
@@ -662,17 +678,17 @@ And the range for <span class="math notranslate nohighlight">\(k\)</span> is abo
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/146ab0f8b11ab9ec51aea0fdfe7339761a6115fa77b3ac7fe71c80aa0d760090.png" src="_images/146ab0f8b11ab9ec51aea0fdfe7339761a6115fa77b3ac7fe71c80aa0d760090.png" />
+<img alt="_images/9402d6da5f5d72b6299ec8a1c53a55d793ff4be68ca5fa47df1ec50eac3b5fce.png" src="_images/9402d6da5f5d72b6299ec8a1c53a55d793ff4be68ca5fa47df1ec50eac3b5fce.png" />
 </div>
 </details>
 </div>
 <p>The posterior distributions are wide, which means that with only 10 data points we can’t estimated the parameters precisely.
 But for both parameters, the actual value falls in the credible interval.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">posterior_lam</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
@@ -687,10 +703,10 @@ But for both parameters, the actual value falls in the credible interval.</p>
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">posterior_k</span><span class="o">.</span><span class="n">credible_interval</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
@@ -706,7 +722,7 @@ But for both parameters, the actual value falls in the credible interval.</p>
 </div>
 </section>
 <section id="incomplete-data">
-<h2><span class="section-number">14.3. </span>Incomplete Data<a class="headerlink" href="#incomplete-data" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">14.3. </span>Incomplete Data<a class="headerlink" href="#incomplete-data" title="Link to this heading">#</a></h2>
 <p>In the previous example we were given 10 random values from a Weibull distribution, and we used them to estimate the parameters (which we pretended we didn’t know).</p>
 <p>But in many real-world scenarios, we don’t have complete data; in particular, when we observe a system at a point in time, we generally have information about the past, but not the future.</p>
 <p>As an example, suppose you work at a dog shelter and you are interested in the time between the arrival of a new dog and when it is adopted.
@@ -747,7 +763,7 @@ We can generate a sample from that distribution like this:</p>
 <p>I’ll use these values to construct a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that contains the arrival and departure times for each dog, called <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">start</span><span class="o">+</span><span class="n">duration</span><span class="p">)</span>
 <span class="n">obs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
@@ -866,13 +882,13 @@ But in this case it is hidden because we don’t know the future, not because so
 </div>
 <p>Now we can plot a “lifeline” for each dog, showing the arrival and departure times on a time line.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_lifelines</span><span class="p">(</span><span class="n">obs</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">plot_lifelines</span><span class="p">(</span><span class="n">obs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot a line for each observation.</span>
 <span class="sd">    </span>
 <span class="sd">    obs: DataFrame</span>
@@ -901,10 +917,10 @@ But in this case it is hidden because we don’t know the future, not because so
 </details>
 </div>
 <div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_lifelines</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
@@ -913,7 +929,7 @@ But in this case it is hidden because we don’t know the future, not because so
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/d6dd919f6937358b5da512f2b078083de2cd5500b7118f9665579ec6044373f6.png" src="_images/d6dd919f6937358b5da512f2b078083de2cd5500b7118f9665579ec6044373f6.png" />
+<img alt="_images/17eaa10031e41ed3b2c28d6f2b32ec289433c49edbf16698cfa22f3adfae538c.png" src="_images/17eaa10031e41ed3b2c28d6f2b32ec289433c49edbf16698cfa22f3adfae538c.png" />
 </div>
 </div>
 <p>And I’ll add one more column to the table, which contains the duration of the observed parts of the lifelines.</p>
@@ -927,7 +943,7 @@ But in this case it is hidden because we don’t know the future, not because so
 <p>What we have simulated is the data that would be available at the beginning of Week 8.</p>
 </section>
 <section id="using-incomplete-data">
-<h2><span class="section-number">14.4. </span>Using Incomplete Data<a class="headerlink" href="#using-incomplete-data" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">14.4. </span>Using Incomplete Data<a class="headerlink" href="#using-incomplete-data" title="Link to this heading">#</a></h2>
 <p>Now, let’s see how we can use both kinds of data, complete and incomplete, to infer the parameters of the distribution of residence times.</p>
 <p>First I’ll split the data into two sets: <code class="docutils literal notranslate"><span class="pre">data1</span></code> contains residence times for dogs whose arrival and departure times are known; <code class="docutils literal notranslate"><span class="pre">data2</span></code> contains incomplete residence times for dogs who were not adopted during the observation interval.</p>
 <div class="cell docutils container">
@@ -939,10 +955,10 @@ But in this case it is hidden because we don’t know the future, not because so
 </div>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data1</span>
@@ -964,10 +980,10 @@ Name: T, dtype: float64
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data2</span>
@@ -998,7 +1014,7 @@ At the end of the observation interval, we don’t know what the residence time 
 <p>The following function is identical to <code class="docutils literal notranslate"><span class="pre">update_weibull</span></code> except that it uses <code class="docutils literal notranslate"><span class="pre">sf</span></code>, which computes the survival function, rather than <code class="docutils literal notranslate"><span class="pre">pdf</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_weibull_incomplete</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">update_weibull_incomplete</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Update the prior using incomplete data.&quot;&quot;&quot;</span>
     <span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">,</span> <span class="n">data_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
         <span class="n">prior</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
@@ -1032,7 +1048,7 @@ At the end of the observation interval, we don’t know what the residence time 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/c7ee32a715f0f7f5eede80659e6afa17a007adbe93236237580dcfeb4d59e17d.png" src="_images/c7ee32a715f0f7f5eede80659e6afa17a007adbe93236237580dcfeb4d59e17d.png" />
+<img alt="_images/9235c3f71a4be5aea698746269ed873a23f0e47cd7b3bfe848262c545f0143a4.png" src="_images/9235c3f71a4be5aea698746269ed873a23f0e47cd7b3bfe848262c545f0143a4.png" />
 </div>
 </div>
 <p>Compared to the previous contour plot, it looks like the range of likely values for <span class="math notranslate nohighlight">\(\lambda\)</span> is substantially wider.
@@ -1047,10 +1063,10 @@ We can see that more clearly by looking at the marginal distributions.</p>
 </div>
 <p>Here’s the posterior marginal distribution for <span class="math notranslate nohighlight">\(\lambda\)</span> compared to the distribution we got using all complete data.</p>
 <div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_lam</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;All complete&#39;</span><span class="p">,</span>
@@ -1065,7 +1081,7 @@ We can see that more clearly by looking at the marginal distributions.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/b27b0a38dde380c88b64bce34905027ef43332cd5ddff47b9eba6b2c56dc22af.png" src="_images/b27b0a38dde380c88b64bce34905027ef43332cd5ddff47b9eba6b2c56dc22af.png" />
+<img alt="_images/b4ff1730606c688924196df41c4fad83050f218be7dd645d9b47ce9a83db86e3.png" src="_images/b4ff1730606c688924196df41c4fad83050f218be7dd645d9b47ce9a83db86e3.png" />
 </div>
 </div>
 <p>The distribution with some incomplete data is substantially wider.</p>
@@ -1074,10 +1090,10 @@ That suggests that the range of the prior distribution is not wide enough to cov
 If I were concerned about making this distribution more accurate, I would go back and run the update again with a wider prior.</p>
 <p>Here’s the posterior marginal distribution for <span class="math notranslate nohighlight">\(k\)</span>:</p>
 <div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_k</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;All complete&#39;</span><span class="p">,</span>
@@ -1092,7 +1108,7 @@ If I were concerned about making this distribution more accurate, I would go bac
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/0d5cf63e8cd6276770a088ce33f36cb3c83eefd722368f1143e949dd9f55322b.png" src="_images/0d5cf63e8cd6276770a088ce33f36cb3c83eefd722368f1143e949dd9f55322b.png" />
+<img alt="_images/82a19f7ad4817659f3cb9e308948a7868f8e3a746a5665f15c4ddd7e24b2dc2c.png" src="_images/82a19f7ad4817659f3cb9e308948a7868f8e3a746a5665f15c4ddd7e24b2dc2c.png" />
 </div>
 </div>
 <p>In this example, the marginal distribution is shifted to the left when we have incomplete data, but it is not substantially wider.</p>
@@ -1101,7 +1117,7 @@ If I were concerned about making this distribution more accurate, I would go bac
 <p>This example is based on data I generated; in the next section we’ll do a similar analysis with real data.</p>
 </section>
 <section id="light-bulbs">
-<h2><span class="section-number">14.5. </span>Light Bulbs<a class="headerlink" href="#light-bulbs" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">14.5. </span>Light Bulbs<a class="headerlink" href="#light-bulbs" title="Link to this heading">#</a></h2>
 <p>In 2007 <a class="reference external" href="https://www.researchgate.net/publication/225450325_Renewal_Rate_of_Filament_Lamps_Theory_and_Experiment">researchers ran an experiment</a> to characterize the distribution of lifetimes for light bulbs.
 Here is their description of the experiment:</p>
 <blockquote>
@@ -1109,10 +1125,10 @@ Here is their description of the experiment:</p>
 <p>The assembly was monitored at regular intervals of 12 h to look for failures. The instants of recorded failures were [recorded] and a total of 32 data points were obtained such that even the last bulb failed.</p>
 </div></blockquote>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;https://gist.github.com/epogrebnyak/7933e16c0ad215742c4c104be4fbdeb1/raw/c932bc5b6aa6317770c4cbf43eb591511fec08f9/lamps.csv&#39;</span><span class="p">)</span>
@@ -1198,7 +1214,7 @@ Here is their description of the experiment:</p>
 We can represent these values and frequencies using a <code class="docutils literal notranslate"><span class="pre">Pmf</span></code>, like this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">empiricaldist</span> <span class="kn">import</span> <span class="n">Pmf</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">empiricaldist</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pmf</span>
 
 <span class="n">pmf_bulb</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">])</span>
 <span class="n">pmf_bulb</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
@@ -1214,10 +1230,10 @@ We can represent these values and frequencies using a <code class="docutils lite
 <p>Because of the design of this experiment, we can consider the data to be a representative sample from the distribution of lifetimes, at least for light bulbs that are lit continuously.</p>
 <p>The average lifetime is about 1400 h.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf_bulb</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -1284,10 +1300,10 @@ We can use <code class="docutils literal notranslate"><span class="pre">np.repea
 </div>
 <p>Here’s what the posterior joint distribution looks like:</p>
 <div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_contour</span><span class="p">(</span><span class="n">posterior_bulb</span><span class="p">)</span>
@@ -1297,13 +1313,13 @@ We can use <code class="docutils literal notranslate"><span class="pre">np.repea
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/c045d0c012c5c3280ab43869032f47b98c77b0ad79fef4e376c00d3b6dc6e990.png" src="_images/c045d0c012c5c3280ab43869032f47b98c77b0ad79fef4e376c00d3b6dc6e990.png" />
+<img alt="_images/f3b9a728327ca891d668492ea7081ad1a3492e7e76ed79be031fcba9e212b4b7.png" src="_images/f3b9a728327ca891d668492ea7081ad1a3492e7e76ed79be031fcba9e212b4b7.png" />
 </div>
 </div>
 <p>To summarize this joint posterior distribution, we’ll compute the posterior mean lifetime.</p>
 </section>
 <section id="posterior-means">
-<h2><span class="section-number">14.6. </span>Posterior Means<a class="headerlink" href="#posterior-means" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">14.6. </span>Posterior Means<a class="headerlink" href="#posterior-means" title="Link to this heading">#</a></h2>
 <p>To compute the posterior mean of a joint distribution, we’ll make a mesh that contains the values of <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(k\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1353,7 +1369,7 @@ We can use <code class="docutils literal notranslate"><span class="pre">np.repea
 <p>The following function encapsulates these steps:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">joint_weibull_mean</span><span class="p">(</span><span class="n">joint</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">joint_weibull_mean</span><span class="p">(</span><span class="n">joint</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the mean of a joint distribution of Weibulls.&quot;&quot;&quot;</span>
     <span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
         <span class="n">joint</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">joint</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
@@ -1366,18 +1382,18 @@ We can use <code class="docutils literal notranslate"><span class="pre">np.repea
 </div>
 </section>
 <section id="incomplete-information">
-<h2><span class="section-number">14.7. </span>Incomplete Information<a class="headerlink" href="#incomplete-information" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">14.7. </span>Incomplete Information<a class="headerlink" href="#incomplete-information" title="Link to this heading">#</a></h2>
 <p>The previous update was not quite right, because it assumed each light bulb died at the instant we observed it.<br />
 According to the report, the researchers only checked the bulbs every 12 hours.  So if they see that a bulb has died, they know only that it died during the 12 hours since the last check.</p>
 <p>It is more strictly correct to use the following update function, which uses the CDF of the Weibull distribution to compute the probability that a bulb dies during a given 12 hour interval.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_weibull_between</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">update_weibull_between</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Update the prior based on data.&quot;&quot;&quot;</span>
     <span class="n">lam_mesh</span><span class="p">,</span> <span class="n">k_mesh</span><span class="p">,</span> <span class="n">data_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
         <span class="n">prior</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
@@ -1398,10 +1414,10 @@ According to the report, the researchers only checked the bulbs every 12 hours. 
 <p>The probability that a value falls in an interval is the difference between the CDF at the beginning and end of the interval.</p>
 <p>Here’s how we run the update.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_bulb2</span> <span class="o">=</span> <span class="n">update_weibull_between</span><span class="p">(</span><span class="n">prior_bulb</span><span class="p">,</span> <span class="n">data_bulb</span><span class="p">)</span>
@@ -1412,10 +1428,10 @@ According to the report, the researchers only checked the bulbs every 12 hours. 
 </div>
 <p>And here are the results.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_contour</span><span class="p">(</span><span class="n">posterior_bulb2</span><span class="p">)</span>
@@ -1424,7 +1440,7 @@ According to the report, the researchers only checked the bulbs every 12 hours. 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/a01f57da5382dd9ebeae9b3de1f7f0bbd3e8431a6486f4c3b2d63dadc7312526.png" src="_images/a01f57da5382dd9ebeae9b3de1f7f0bbd3e8431a6486f4c3b2d63dadc7312526.png" />
+<img alt="_images/e72b4da7b6313a1eb951502e81d3d202436d0a26ac23d55231351fb297d2c3b7.png" src="_images/e72b4da7b6313a1eb951502e81d3d202436d0a26ac23d55231351fb297d2c3b7.png" />
 </div>
 </details>
 </div>
@@ -1432,10 +1448,10 @@ According to the report, the researchers only checked the bulbs every 12 hours. 
 And that’s good news, because it suggests that using the PDF can be a good approximation even if it’s not strictly correct.</p>
 <p>To see whether it makes any difference at all, let’s check the posterior means.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_weibull_mean</span><span class="p">(</span><span class="n">posterior_bulb</span><span class="p">)</span>
@@ -1450,10 +1466,10 @@ And that’s good news, because it suggests that using the PDF can be a good app
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_weibull_mean</span><span class="p">(</span><span class="n">posterior_bulb2</span><span class="p">)</span>
@@ -1471,7 +1487,7 @@ And that’s good news, because it suggests that using the PDF can be a good app
 And that makes sense: if we assume that a bulb is equally likely to expire at any point in the interval, the average would be the midpoint of the interval.</p>
 </section>
 <section id="posterior-predictive-distribution">
-<h2><span class="section-number">14.8. </span>Posterior Predictive Distribution<a class="headerlink" href="#posterior-predictive-distribution" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">14.8. </span>Posterior Predictive Distribution<a class="headerlink" href="#posterior-predictive-distribution" title="Link to this heading">#</a></h2>
 <p>Suppose you install 100 light bulbs of the kind in the previous section, and you come back to check on them after 1000 hours.  Based on the posterior distribution we just computed, what is the distribution of the number of bulbs you find dead?</p>
 <p>If we knew the parameters of the Weibull distribution for sure, the answer would be a binomial distribution.</p>
 <p>For example, if we know that <span class="math notranslate nohighlight">\(\lambda=1550\)</span> and <span class="math notranslate nohighlight">\(k=4.25\)</span>, we can use <code class="docutils literal notranslate"><span class="pre">weibull_dist</span></code> to compute the probability that a bulb dies before you return:</p>
@@ -1495,7 +1511,7 @@ And that makes sense: if we assume that a bulb is equally likely to expire at an
 <p>If there are 100 bulbs and each has this probability of dying, the number of dead bulbs follows a binomial distribution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_binomial</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_binomial</span>
 
 <span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">prob_dead</span>
@@ -1506,10 +1522,10 @@ And that makes sense: if we assume that a bulb is equally likely to expire at an
 </div>
 <p>And here’s what it looks like.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dist_num_dead</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;known parameters&#39;</span><span class="p">)</span>
@@ -1521,7 +1537,7 @@ And that makes sense: if we assume that a bulb is equally likely to expire at an
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/42e12ef3e54e221fa4ede683f0bbf06d0c501a4eb94e1bc5da2cab501e520592.png" src="_images/42e12ef3e54e221fa4ede683f0bbf06d0c501a4eb94e1bc5da2cab501e520592.png" />
+<img alt="_images/440958cf37811d9f77e58db296fe3bbb5925babe47d6530dabf67e8f83061d21.png" src="_images/440958cf37811d9f77e58db296fe3bbb5925babe47d6530dabf67e8f83061d21.png" />
 </div>
 </details>
 </div>
@@ -1565,7 +1581,7 @@ dtype: float64
 <p>Now we can use <code class="docutils literal notranslate"><span class="pre">make_mixture</span></code>, passing as parameters the posterior probabilities in <code class="docutils literal notranslate"><span class="pre">posterior_series</span></code> and the sequence of binomial distributions in <code class="docutils literal notranslate"><span class="pre">pmf_seq</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">make_mixture</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_mixture</span>
 
 <span class="n">post_pred</span> <span class="o">=</span> <span class="n">make_mixture</span><span class="p">(</span><span class="n">posterior_series</span><span class="p">,</span> <span class="n">pmf_seq</span><span class="p">)</span>
 </pre></div>
@@ -1574,10 +1590,10 @@ dtype: float64
 </div>
 <p>Here’s what the posterior predictive distribution looks like, compared to the binomial distribution we computed with known parameters.</p>
 <div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dist_num_dead</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;known parameters&#39;</span><span class="p">)</span>
@@ -1590,13 +1606,13 @@ dtype: float64
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/43a987be520fd3d9c1db443a0138114292fb696c4ef951ab46ac6e015469a169.png" src="_images/43a987be520fd3d9c1db443a0138114292fb696c4ef951ab46ac6e015469a169.png" />
+<img alt="_images/3159d3192e7d5ce607349adbb1baab234867f6a5b1c549dc72cc204c62c7376a.png" src="_images/3159d3192e7d5ce607349adbb1baab234867f6a5b1c549dc72cc204c62c7376a.png" />
 </div>
 </div>
 <p>The posterior predictive distribution is wider because it represents our uncertainty about the parameters as well as our uncertainty about the number of dead bulbs.</p>
 </section>
 <section id="summary">
-<h2><span class="section-number">14.9. </span>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">14.9. </span>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
 <p>This chapter introduces survival analysis, which is used to answer questions about the time until an event, and the Weibull distribution, which is a good model for “lifetimes” (broadly interpreted) in a number of domains.</p>
 <p>We used joint distributions to represent prior probabilities for the parameters of the Weibull distribution, and we updated them three ways: knowing the exact duration of a lifetime, knowing a lower bound, and knowing that a lifetime fell in a given interval.</p>
 <p>These examples demonstrate a feature of Bayesian methods: they can be adapted to handle incomplete, or “censored”, data with only small changes.  As an exercise, you’ll have a chance to work with one more type of censored data, when we are given an upper bound on a lifetime.</p>
@@ -1605,7 +1621,7 @@ In the exercises, you’ll have a chance to estimate the parameters of a two-par
 <p>And in the next chapter we’ll move on to models with three parameters!</p>
 </section>
 <section id="exercises">
-<h2><span class="section-number">14.10. </span>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">14.10. </span>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>
 <p><strong>Exercise:</strong> Using data about the lifetimes of light bulbs, we computed the posterior distribution from the parameters of a Weibull distribution, <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(k\)</span>, and the posterior predictive distribution for the number of dead bulbs, out of 100, after 1000 hours.</p>
 <p>Now suppose you do the experiment:  You install 100 light bulbs, come back after 1000 hours, and find 20 dead light bulbs.
 Update the posterior distribution based on this data.
@@ -1617,10 +1633,10 @@ How much does it change the posterior mean?</p>
 <li><p>Use those likelihoods to update the posterior distribution.</p></li>
 </ol>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1642,15 +1658,15 @@ How much does it change the posterior mean?</p>
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
 
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binom</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">binom</span>
 
 <span class="n">k</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
@@ -1667,10 +1683,10 @@ How much does it change the posterior mean?</p>
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1683,15 +1699,15 @@ How much does it change the posterior mean?</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/e5e76b96bcdb981d51b473a995694931c9ec47affcc8c1f3dfb73d7172794803.png" src="_images/e5e76b96bcdb981d51b473a995694931c9ec47affcc8c1f3dfb73d7172794803.png" />
+<img alt="_images/8fc35ea49afe8bdc0809fa3a24fd544f186d1ba6382faae7cc770e9b65c2c623.png" src="_images/8fc35ea49afe8bdc0809fa3a24fd544f186d1ba6382faae7cc770e9b65c2c623.png" />
 </div>
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1704,7 +1720,7 @@ How much does it change the posterior mean?</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1378.3949572816412
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1378.3949572816407
 </pre></div>
 </div>
 </div>
@@ -1718,15 +1734,15 @@ gamma distribution.</p>
 <p>For the two-parameter gamma distribution, we will use <span class="math notranslate nohighlight">\(k\)</span> for the “shape parameter”, which determines the shape of the distribution, and the Greek letter <span class="math notranslate nohighlight">\(\theta\)</span> or <code class="docutils literal notranslate"><span class="pre">theta</span></code> for the “scale parameter”.</p>
 <p>The following function takes these parameters and returns a <code class="docutils literal notranslate"><span class="pre">gamma</span></code> object from SciPy.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.stats</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span>
 
-<span class="k">def</span> <span class="nf">gamma_dist</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gamma_dist</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Makes a gamma object.</span>
 <span class="sd">    </span>
 <span class="sd">    k: shape parameter</span>
@@ -1743,10 +1759,10 @@ gamma distribution.</p>
 <p>Now we need some data.
 The following cell downloads data I collected from the National Oceanic and Atmospheric Administration (<a class="reference external" href="http://www.ncdc.noaa.gov/cdo-web/search">NOAA</a>) for Seattle, Washington in May 2020.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the data file</span>
@@ -1759,10 +1775,10 @@ The following cell downloads data I collected from the National Oceanic and Atmo
 </div>
 <p>Now we can load it into a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>:</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weather</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;2203951.csv&#39;</span><span class="p">)</span>
@@ -1874,10 +1890,10 @@ The following cell downloads data I collected from the National Oceanic and Atmo
 </div>
 <p>I’ll make a Boolean Series to indicate which days it rained.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rained</span> <span class="o">=</span> <span class="n">weather</span><span class="p">[</span><span class="s1">&#39;PRCP&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
@@ -1894,10 +1910,10 @@ The following cell downloads data I collected from the National Oceanic and Atmo
 </div>
 <p>And select the total rainfall on the days it rained.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prcp</span> <span class="o">=</span> <span class="n">weather</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rained</span><span class="p">,</span> <span class="s1">&#39;PRCP&#39;</span><span class="p">]</span>
@@ -1922,10 +1938,10 @@ Name: PRCP, dtype: float64
 </div>
 <p>Here’s what the CDF of the data looks like.</p>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdf_data</span> <span class="o">=</span> <span class="n">Cdf</span><span class="o">.</span><span class="n">from_seq</span><span class="p">(</span><span class="n">prcp</span><span class="p">)</span>
@@ -1937,7 +1953,7 @@ Name: PRCP, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/5c588671547b5c94db2a6883cc4aad1ee78cc18cbcac03f2d597ef510b5cc19c.png" src="_images/5c588671547b5c94db2a6883cc4aad1ee78cc18cbcac03f2d597ef510b5cc19c.png" />
+<img alt="_images/cd381b92927d9eb0aaf1c9e322801c1b9a013e89d022e68597a6ac20dc5c3fc6.png" src="_images/cd381b92927d9eb0aaf1c9e322801c1b9a013e89d022e68597a6ac20dc5c3fc6.png" />
 </div>
 </details>
 </div>
@@ -1950,10 +1966,10 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 <li><p>Compute the posterior predictive distribution of rainfall, and use it to estimate the probability of getting more than 1.5 inches of rain in one day.</p></li>
 </ol>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1974,10 +1990,10 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -1993,10 +2009,10 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2009,10 +2025,10 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2026,10 +2042,10 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2044,10 +2060,10 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2067,10 +2083,10 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2083,17 +2099,17 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>150287.91980136462
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>150287.91980136465
 </pre></div>
 </div>
 </div>
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2113,10 +2129,10 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2130,15 +2146,15 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/569775f8c7a7fb0df6c9658876198997230b9dae8712f38ff26f0629929d9e47.png" src="_images/569775f8c7a7fb0df6c9658876198997230b9dae8712f38ff26f0629929d9e47.png" />
+<img alt="_images/1dc61693f733920eb0e7cd2c09eb1a2fd49e693948e46a23c3f6eecaa9e2d606.png" src="_images/1dc61693f733920eb0e7cd2c09eb1a2fd49e693948e46a23c3f6eecaa9e2d606.png" />
 </div>
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2146,7 +2162,7 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 <span class="c1"># I&#39;ll check the marginal distributions to make sure the</span>
 <span class="c1"># range of the priors is wide enough</span>
 
-<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">marginal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">marginal</span>
 
 <span class="n">posterior_k</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">posterior_theta</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -2156,10 +2172,10 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2174,15 +2190,15 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/69409935354138ed39afaf3aaa5ada3ff5bc77d6f005ab27429bf478d8d0946b.png" src="_images/69409935354138ed39afaf3aaa5ada3ff5bc77d6f005ab27429bf478d8d0946b.png" />
+<img alt="_images/dd3e6214924d4f4d1684d5619445e0190601fc1ec88ef238903721b7535eae1c.png" src="_images/dd3e6214924d4f4d1684d5619445e0190601fc1ec88ef238903721b7535eae1c.png" />
 </div>
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2199,10 +2215,10 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2217,15 +2233,15 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/1dd3578256b42f046ac84921ad312dfbfaf9c27a70cd8f865948011b66d08eca.png" src="_images/1dd3578256b42f046ac84921ad312dfbfaf9c27a70cd8f865948011b66d08eca.png" />
+<img alt="_images/202522cab2c7e3473c8554f0bc81174febd220ecedafa7ea790092fe05b6593c.png" src="_images/202522cab2c7e3473c8554f0bc81174febd220ecedafa7ea790092fe05b6593c.png" />
 </div>
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2242,10 +2258,10 @@ To estimate the probability of more than 1.5 inches, we need to extrapolate from
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2273,10 +2289,10 @@ dtype: float64
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2290,10 +2306,10 @@ dtype: float64
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2302,7 +2318,7 @@ dtype: float64
 <span class="c1"># and make a sequence of predictive Pmfs, one</span>
 <span class="c1"># for each possible pair of parameters</span>
 
-<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">pmf_from_dist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">pmf_from_dist</span>
 
 <span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
 <span class="n">pmf_seq</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2316,10 +2332,10 @@ dtype: float64
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2334,10 +2350,10 @@ dtype: float64
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution</span>
@@ -2352,15 +2368,15 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/91c9c0543eef83e3308033e1fb3a26f62b4651f1f1b4e9f5d72ddea583069bf2.png" src="_images/91c9c0543eef83e3308033e1fb3a26f62b4651f1f1b4e9f5d72ddea583069bf2.png" />
+<img alt="_images/7dd64176fe05b8ff00d010266389cba4c34ef47771609ad8e4e1155a982dd9fc.png" src="_images/7dd64176fe05b8ff00d010266389cba4c34ef47771609ad8e4e1155a982dd9fc.png" />
 </div>
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution </span>
@@ -2381,10 +2397,10 @@ dtype: float64
 </details>
 </div>
 <div class="cell tag_hide-cell docutils container">
-<details class="hide above-input">
+<details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution </span>
@@ -2403,6 +2419,9 @@ dtype: float64
 </div>
 </details>
 </div>
+<p><em>Think Bayes</em>, Second Edition</p>
+<p>Copyright 2020 Allen B. Downey</p>
+<p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
 </section>
 </section>
 
@@ -2433,8 +2452,8 @@ dtype: float64
               
               
               
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="prev-next-footer d-print-none">
+                  
 <div class="prev-next-area">
     <a class="left-prev"
        href="chap13.html"
@@ -2462,6 +2481,7 @@ dtype: float64
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -2500,9 +2520,10 @@ By Allen B. Downey
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -2526,8 +2547,8 @@ By Allen B. Downey
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

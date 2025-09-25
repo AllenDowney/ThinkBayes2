@@ -1,0 +1,886 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The Poincaré Problem &#8212; Think Bayes</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'bread';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="What’s a chartist?" href="zipf.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    Think Bayes 2
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Front Matter</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">1. Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">2. Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">3. Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">4. Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">5. Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">6. Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">7. Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">8. Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">9. Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">10. Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">11. Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">12. Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">13. Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">14. Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">15. Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">16. Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">17. Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">18. Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19_v3.html">19. MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">20. Approximate Bayesian Computation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redline_pymc.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bookstore.html">How Many Books?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beta_binomial.html">The All-Knowing Cube of Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zipf.html">What’s a chartist?</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">The Poincaré Problem</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/bread.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>The Poincaré Problem</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ask-a-bayesian">Ask a Bayesian</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <p>You can order print and ebook versions of <em>Think Bayes 2e</em> from
+<a class="reference external" href="https://bookshop.org/a/98697/9781492089469">Bookshop.org</a> and
+<a class="reference external" href="https://amzn.to/334eqGo">Amazon</a>.</p>
+<section id="the-poincare-problem">
+<h1>The Poincaré Problem<a class="headerlink" href="#the-poincare-problem" title="Link to this heading">#</a></h1>
+<p>Let’s solve an exercise from <a class="reference external" href="https://allendowney.github.io/ThinkBayes2/chap07.html">Chapter 7</a>. It’s based on a fictional anecdote about the mathematician Henri Poincaré:</p>
+<blockquote>
+<div><p>Supposedly Poincaré suspected that his local bakery was selling loaves of bread that were lighter than the advertised weight of 1 kg, so every day for a year he bought a loaf of bread, brought it home and weighed it. At the end of the year, he plotted the distribution of his measurements and showed that it fit a normal distribution with mean 950 g and standard deviation 50 g. He brought this evidence to the bread police, who gave the baker a warning.</p>
+<p>For the next year, Poincaré continued to weigh his bread every day. At the end of the year, he found that the average weight was 1000 g, just as it should be, but again he complained to the bread police, and this time they fined the baker.</p>
+<p>Why? Because the shape of the new distribution was asymmetric. Unlike the normal distribution, it was skewed to the right, which is consistent with the hypothesis that the baker was still making 950 g loaves, but deliberately giving Poincaré the heavier ones.</p>
+<p>To see whether this anecdote is plausible, let’s suppose that when the baker sees Poincaré coming, he hefts <code class="docutils literal notranslate"><span class="pre">k</span></code> loaves of bread and gives Poincaré the heaviest one.  How many loaves would the baker have to heft to make the average of the maximum 1000 g?</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># install empiricaldist if necessary</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">empiricaldist</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>empiricaldist
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell content</p>
+<p class="expanded admonition-title">Hide code cell content</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get utils.py</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">basename</span><span class="p">,</span> <span class="n">exists</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">basename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlretrieve</span>
+        <span class="n">local</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Downloaded &#39;</span> <span class="o">+</span> <span class="n">local</span><span class="p">)</span>
+    
+<span class="n">download</span><span class="p">(</span><span class="s1">&#39;https://github.com/AllenDowney/ThinkBayes2/raw/master/soln/utils.py&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>The following function generates the maximum of <code class="docutils literal notranslate"><span class="pre">k</span></code> values from a normal distribution with the given parameters, repeated <code class="docutils literal notranslate"><span class="pre">n</span></code> times.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_sample</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">norm</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span><span class="o">.</span><span class="n">rvs</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here are distributions with the same underlying normal distribution and different values of <code class="docutils literal notranslate"><span class="pre">k</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu_true</span><span class="p">,</span> <span class="n">sigma_true</span> <span class="o">=</span> <span class="mi">950</span><span class="p">,</span> <span class="mi">50</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">generate_sample</span><span class="p">(</span><span class="n">mu_true</span><span class="p">,</span> <span class="n">sigma_true</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;k=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Weight (g)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;bread_dist_max.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/1ea3e8a6f9dce36e9f97f68e125f7f8f72826b0752e385821bf2991e3ce2615b.png" src="_images/1ea3e8a6f9dce36e9f97f68e125f7f8f72826b0752e385821bf2991e3ce2615b.png" />
+</div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">k</span></code> increases, the mean increases and the standard deviation decreases.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">k=4</span></code>, the mean is close to 1000.
+So let’s assume the baker hefted four loaves and gave the heaviest to Poincaré.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k_true</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="n">sample4</span> <span class="o">=</span> <span class="n">generate_sample</span><span class="p">(</span><span class="n">mu_true</span><span class="p">,</span> <span class="n">sigma_true</span><span class="p">,</span> <span class="n">k_true</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
+<span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="n">sample4</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">sample4</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+<span class="n">mean</span><span class="p">,</span> <span class="n">std</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(np.float64(1001.9175597523723), np.float64(36.27105788650583))
+</pre></div>
+</div>
+</div>
+</div>
+<p>At the end of one year, can we tell the difference between these hypotheses?</p>
+<ul class="simple">
+<li><p>Innocent: The baker actually increased the mean to 1000, and <code class="docutils literal notranslate"><span class="pre">k=1</span></code>.</p></li>
+<li><p>Shenanigans: The mean was still 950, but the baker selected with <code class="docutils literal notranslate"><span class="pre">k=4</span></code>.</p></li>
+</ul>
+<p>Here’s a sample under the <code class="docutils literal notranslate"><span class="pre">k=4</span></code> scenario, compared to 10 samples with <code class="docutils literal notranslate"><span class="pre">k=1</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">generate_sample</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">sample4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;k=4&#39;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Weight (g)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;bread_dist_compare.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/7b6da6e593659e1009facc4f1dee2ef9641cd61e691f7c197a0c60a0d56d4308.png" src="_images/7b6da6e593659e1009facc4f1dee2ef9641cd61e691f7c197a0c60a0d56d4308.png" />
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">k=4</span></code> distribution falls mostly within the range of variation we’d expect from the <code class="docutils literal notranslate"><span class="pre">k=1</span></code> distribution with the same mean and standard deviation.
+If you were on the jury and saw this evidence, would you convict the baker?</p>
+<section id="ask-a-bayesian">
+<h2>Ask a Bayesian<a class="headerlink" href="#ask-a-bayesian" title="Link to this heading">#</a></h2>
+<p>As a Bayesian approach to this problem, let’s see if we can use this data to estimate <code class="docutils literal notranslate"><span class="pre">k</span></code> and the parameters of the underlying distribution.
+To compute the likelihood of the data, we have to do a little math.</p>
+<p>Assume that <span class="math notranslate nohighlight">\(m\)</span> is the maximum of <span class="math notranslate nohighlight">\(k\)</span> draws from a distribution with CDF <span class="math notranslate nohighlight">\(F(x)\)</span>.
+In general, the CDF of <span class="math notranslate nohighlight">\(m\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[ F_M(m) = F(m)^k \]</div>
+<p>which we can differentiate to get the PDF:</p>
+<div class="math notranslate nohighlight">
+\[ f_M(m) = k f(m) F(m)^{k-1}  \]</div>
+<p>If the draws are from a normal distribution with parameters <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[ F(m) = \Phi(z) \]</div>
+<div class="math notranslate nohighlight">
+\[ f(m) = \frac{1}{\sigma} \phi(z) \]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\Phi\)</span> are the standard normal PDF and CDF, and <span class="math notranslate nohighlight">\(z\)</span> is the standardized value <span class="math notranslate nohighlight">\((m-\mu) / \sigma\)</span>. Plugging in, we get the PDF of <span class="math notranslate nohighlight">\(m\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[ f_M(m) = \frac{k}{\sigma} \phi(z) \Phi(z)^{k-1} \]</div>
+<p>Here’s a function that evaluates the log of this PDF at <span class="math notranslate nohighlight">\(m\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">LOG2PI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="n">SQRT2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">max_normal_logp</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate the log PDF of the distribution of the max of k draws.&quot;&quot;&quot;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma</span>
+    <span class="n">log_phi</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">LOG2PI</span><span class="p">)</span>
+
+    <span class="c1"># Use PyTensor&#39;s erfc for better numerical stability</span>
+    <span class="c1"># Φ(z) = 0.5 * erfc(-z/√2)</span>
+    <span class="n">Phi</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">erfc</span><span class="p">(</span><span class="o">-</span><span class="n">z</span> <span class="o">/</span> <span class="n">SQRT2</span><span class="p">)</span>
+    <span class="n">log_Phi</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Phi</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">k</span><span class="o">/</span><span class="n">sigma</span><span class="p">)</span> <span class="o">+</span> <span class="n">log_phi</span> <span class="o">+</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">log_Phi</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now here’s a PyMC model that</p>
+<ul class="simple">
+<li><p>Defines prior distributions for <code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">sigma</span></code>, and <code class="docutils literal notranslate"><span class="pre">k</span></code>, and</p></li>
+<li><p>Uses the previous function to define a custom distribution that computes the likelihood of the data for a hypothetical set of parameters.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_model</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">950</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">HalfNormal</span><span class="p">(</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+        <span class="n">obs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">CustomDist</span><span class="p">(</span>
+            <span class="s2">&quot;obs&quot;</span><span class="p">,</span>
+            <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span>
+            <span class="n">logp</span><span class="o">=</span><span class="n">max_normal_logp</span><span class="p">,</span>
+            <span class="n">observed</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Notice that we treat <code class="docutils literal notranslate"><span class="pre">k</span></code> as continuous.
+That’s because continuous parameters are much easier to sample (and the log PDF function allows non-integer values of <code class="docutils literal notranslate"><span class="pre">k</span></code>).
+But it also make sense in the context of the problem – for example, if the baker sometimes hefts three loaves and sometimes four, we can approximate the distribution of the maximum with <code class="docutils literal notranslate"><span class="pre">k=3.5</span></code>.</p>
+<p>Now let’s sample.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">make_model</span><span class="p">(</span><span class="n">sample4</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [mu, sigma, k]
+</pre></div>
+</div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "d0e7f6cff45c4dd989e83bdfa1899112", "version_major": 2, "version_minor": 0}</script><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/downey/miniconda3/envs/ThinkBayes2/lib/python3.11/site-packages/pymc/step_methods/hmc/quadpotential.py:316: RuntimeWarning: overflow encountered in dot
+  return 0.5 * np.dot(x, v_out)
+</pre></div>
+</div>
+<div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 7 seconds.
+</pre></div>
+</div>
+</div>
+</div>
+<p>The model runs quickly and the diagnostics look good.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+      <th>sd</th>
+      <th>hdi_3%</th>
+      <th>hdi_97%</th>
+      <th>mcse_mean</th>
+      <th>mcse_sd</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+      <th>r_hat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>mu</th>
+      <td>939.756</td>
+      <td>22.427</td>
+      <td>896.043</td>
+      <td>979.040</td>
+      <td>0.912</td>
+      <td>0.576</td>
+      <td>606.0</td>
+      <td>795.0</td>
+      <td>1.01</td>
+    </tr>
+    <tr>
+      <th>sigma</th>
+      <td>53.787</td>
+      <td>6.059</td>
+      <td>42.718</td>
+      <td>64.953</td>
+      <td>0.246</td>
+      <td>0.152</td>
+      <td>606.0</td>
+      <td>784.0</td>
+      <td>1.01</td>
+    </tr>
+    <tr>
+      <th>k</th>
+      <td>5.446</td>
+      <td>2.707</td>
+      <td>1.201</td>
+      <td>10.581</td>
+      <td>0.110</td>
+      <td>0.092</td>
+      <td>618.0</td>
+      <td>806.0</td>
+      <td>1.01</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Here are the posterior distributions of the parameters compared to their known values.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaussian_kde</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_posterior</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">x_true</span><span class="p">):</span>
+    <span class="c1"># Extract posterior samples</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">trace</span><span class="p">)[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="c1"># KDE over posterior samples</span>
+    <span class="n">kde</span> <span class="o">=</span> <span class="n">gaussian_kde</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+
+    <span class="c1"># Define range for plotting</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">samples</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">200</span><span class="p">)</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">kde</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+
+    <span class="c1"># Evaluate posterior density at the true value</span>
+    <span class="n">p_true</span> <span class="o">=</span> <span class="n">kde</span><span class="p">(</span><span class="n">x_true</span><span class="p">)</span>
+
+    <span class="c1"># Plot the KDE</span>
+    <span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">var_name</span><span class="p">,</span> <span class="n">hdi_prob</span><span class="o">=</span><span class="s1">&#39;hide&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Plot vertical lines at true value and mean</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">x_true</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">p_true</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">p_true</span> <span class="o">*</span> <span class="mf">0.85</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x_true</span><span class="p">,</span> <span class="n">p_true</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;actual=</span><span class="si">{</span><span class="n">x_true</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Weight (g)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="n">mu_true</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;bread_posterior_mu.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/98c0284061971292318647a11c325005be7c04a7c919a99018a3f8eb11a27583.png" src="_images/98c0284061971292318647a11c325005be7c04a7c919a99018a3f8eb11a27583.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="n">sigma_true</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;bread_posterior_sigma.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/62113754575cce745a7f8cb1ecc41f1efc2ccd4f77c01399aceb83a24223ccff.png" src="_images/62113754575cce745a7f8cb1ecc41f1efc2ccd4f77c01399aceb83a24223ccff.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">k_true</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;bread_posterior_k.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/807a5b738c80f513a678310be39f319fb7433f19e7b098c78ac48e7091d282da.png" src="_images/807a5b738c80f513a678310be39f319fb7433f19e7b098c78ac48e7091d282da.png" />
+</div>
+</div>
+<p>With one year of data, we can recover the parameters pretty well.
+The true values fall comfortably inside the posterior distributions, and the posterior mode of <code class="docutils literal notranslate"><span class="pre">k</span></code> is close to the true value, <code class="docutils literal notranslate"><span class="pre">4</span></code>.</p>
+<p>But the posterior distributions are still quite wide.
+There is even some possibility that the baker is innocent, although it is small.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples_k</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">trace</span><span class="p">)[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="p">(</span><span class="n">samples_k</span> <span class="o">&lt;</span> <span class="mf">1.5</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>np.float64(0.0155)
+</pre></div>
+</div>
+</div>
+</div>
+<p>This example shows that we can use the shape of an observed distribution to estimate the effect of selection bias and recover the unbiased latent distribution.
+But we might need a lot of data, and the inference depends on strong assumptions about the shape of the latent distribution.</p>
+<p>Credits: I don’t remember where I got this example from (maybe <a class="reference external" href="https://everything2.com/title/%2522true%2522+story+about+Poincar%25C3%25A9%2527s+baker">here</a>?), but it appears in Leonard Mlodinov, <em>The Drunkard’s Walk</em> (2008). Mlodinov credits Bart Holland, <em>What Are the Chances?</em> (2002).
+The <a class="reference external" href="https://hsm.stackexchange.com/questions/7299/poincar%C3%A9-and-the-baker-was-the-anecdote-true">ultimate source</a> seems to be George Gamow and Marvin Stern, <em>Puzzle Math</em> (1958) – but their version is about a German professor, not Poincaré.</p>
+<p><em>Think Bayes</em>, Second Edition</p>
+<p>Copyright 2020 Allen B. Downey</p>
+<p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="zipf.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">What’s a chartist?</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ask-a-bayesian">Ask a Bayesian</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
