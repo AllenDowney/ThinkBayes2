@@ -705,10 +705,9 @@ For this example, I’ll assume that the unknown/unstaged cancers are a mixture 
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">make_graph</span><span class="p">(</span><span class="n">lams</span><span class="p">,</span> <span class="n">kappas</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_graph</span><span class="p">(</span><span class="n">lams</span><span class="p">,</span> <span class="n">kappas</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
 
-    <span class="n">gamma</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">lam</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lams</span><span class="p">):</span>
         <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;U</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;U</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">lam</span><span class="p">)</span>
         <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;D</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;D</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">lam</span><span class="p">)</span>
@@ -732,14 +731,14 @@ For this example, I’ll assume that the unknown/unstaged cancers are a mixture 
 </ul>
 <p>If <code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>, the treatment is effective by decreasing the probability of progression to the next stage.
 In the models we’ll run for this example, <code class="docutils literal notranslate"><span class="pre">gamma=0</span></code>, which means that detection has no effect on progression.
-In reality, <code class="docutils literal notranslate"><span class="pre">gamma=1</span></code> could mean either:</p>
+In reality, <code class="docutils literal notranslate"><span class="pre">gamma=0</span></code> could mean either:</p>
 <ul class="simple">
 <li><p>There is no effective treatment, or</p></li>
 <li><p>The benefit of treatment is offset by the negative implication of detection.</p></li>
 </ul>
 <p>To explain the second point, detection might be more likely if a cancer causes symptoms, and a cancer that causes symptoms might be more likely to progress, compared to an asymptomatic cancer at the same stage.</p>
 <p>So, in the absence of effective treatment, we might expect <code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">&lt;</span> <span class="pre">0</span></code>.
-A moderately effective treatment might would have to overcome this effect to bring <code class="docutils literal notranslate"><span class="pre">gamma</span></code> up to 0.</p>
+A moderately effective treatment would have to overcome this effect to bring <code class="docutils literal notranslate"><span class="pre">gamma</span></code> up to 0.</p>
 <p>Here are the values of these parameters I chose to fit the data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -747,7 +746,13 @@ A moderately effective treatment might would have to overcome this effect to bri
 <span class="n">kappas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.09</span><span class="p">,</span> <span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">]</span>
 <span class="n">mu</span> <span class="o">=</span> <span class="mf">0.3</span>
 
-<span class="n">G</span> <span class="o">=</span> <span class="n">make_graph</span><span class="p">(</span><span class="n">lams</span><span class="p">,</span> <span class="n">kappas</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">make_graph</span><span class="p">(</span><span class="n">lams</span><span class="p">,</span> <span class="n">kappas</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1
+1
 </pre></div>
 </div>
 </div>
@@ -785,7 +790,7 @@ A moderately effective treatment might would have to overcome this effect to bri
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/69e48a05159968d4e689fef43257e42c7ab18efa4a1ed942ee33ed6014febfbb.png" src="_images/69e48a05159968d4e689fef43257e42c7ab18efa4a1ed942ee33ed6014febfbb.png" />
+<img alt="_images/debcb3b629dbfcb7504b0df1b2127b5c7b3bc120ba08e45aa776251e60de80ec.png" src="_images/debcb3b629dbfcb7504b0df1b2127b5c7b3bc120ba08e45aa776251e60de80ec.png" />
 </div>
 </div>
 <p>In this model, death is only possible after a cancer has progressed to the third stage and been detected.
@@ -875,7 +880,7 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.00</td>
       <td>0.09</td>
       <td>0.00</td>
-      <td>0.00</td>
+      <td>0.0</td>
       <td>0.0</td>
     </tr>
     <tr>
@@ -885,7 +890,7 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.16</td>
       <td>0.00</td>
       <td>0.18</td>
-      <td>0.00</td>
+      <td>0.0</td>
       <td>0.0</td>
     </tr>
     <tr>
@@ -895,7 +900,7 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.20</td>
       <td>0.00</td>
       <td>0.00</td>
-      <td>0.80</td>
+      <td>0.8</td>
       <td>0.0</td>
     </tr>
     <tr>
@@ -903,9 +908,9 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.00</td>
       <td>0.00</td>
       <td>0.00</td>
-      <td>0.85</td>
-      <td>0.15</td>
+      <td>1.00</td>
       <td>0.00</td>
+      <td>0.0</td>
       <td>0.0</td>
     </tr>
     <tr>
@@ -914,8 +919,8 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.00</td>
       <td>0.00</td>
       <td>0.00</td>
-      <td>0.84</td>
-      <td>0.16</td>
+      <td>1.00</td>
+      <td>0.0</td>
       <td>0.0</td>
     </tr>
     <tr>
@@ -925,7 +930,7 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.00</td>
       <td>0.00</td>
       <td>0.00</td>
-      <td>0.70</td>
+      <td>0.7</td>
       <td>0.3</td>
     </tr>
     <tr>
@@ -935,7 +940,7 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.00</td>
       <td>0.00</td>
       <td>0.00</td>
-      <td>0.00</td>
+      <td>0.0</td>
       <td>1.0</td>
     </tr>
   </tbody>
@@ -961,15 +966,16 @@ For example, a transition from <code class="docutils literal notranslate"><span 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U2&#39;, &#39;D2&#39;, &#39;D2&#39;,
-       &#39;D2&#39;, &#39;D2&#39;, &#39;D2&#39;, &#39;D3&#39;, &#39;D3&#39;, &#39;D3&#39;, &#39;D3&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
-       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
-       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
-       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
-       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
-       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
-       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;],
-      dtype=&#39;&lt;U2&#39;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
+       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
+       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
+       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
+       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
+       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
+       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
+       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
+       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
+       &#39;D1&#39;], dtype=&#39;&lt;U2&#39;)
 </pre></div>
 </div>
 </div>
@@ -994,7 +1000,7 @@ For example, a transition from <code class="docutils literal notranslate"><span 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(9, &#39;D2&#39;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(7, &#39;D1&#39;)
 </pre></div>
 </div>
 </div>
@@ -1084,31 +1090,31 @@ If a case is never diagnosed, it is omitted – but that never happens in this e
   <tbody>
     <tr>
       <th>0</th>
-      <td>5</td>
-      <td>D1</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>13</td>
-      <td>D2</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2</td>
-      <td>D2</td>
+      <td>11</td>
+      <td>D3</td>
       <td>False</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>6</td>
+      <th>1</th>
+      <td>5</td>
+      <td>D3</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>14</td>
       <td>D1</td>
       <td>True</td>
     </tr>
     <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>D3</td>
+      <td>False</td>
+    </tr>
+    <tr>
       <th>4</th>
-      <td>11</td>
+      <td>5</td>
       <td>D1</td>
       <td>True</td>
     </tr>
@@ -1124,7 +1130,7 @@ If a case is never diagnosed, it is omitted – but that never happens in this e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6425
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7548
 </pre></div>
 </div>
 </div>
@@ -1166,15 +1172,15 @@ If a case is never diagnosed, it is omitted – but that never happens in this e
   <tbody>
     <tr>
       <th>D1</th>
-      <td>94.700399</td>
+      <td>100.00000</td>
     </tr>
     <tr>
       <th>D2</th>
-      <td>71.687292</td>
+      <td>100.00000</td>
     </tr>
     <tr>
       <th>D3</th>
-      <td>16.848568</td>
+      <td>15.68088</td>
     </tr>
   </tbody>
 </table>
@@ -1220,15 +1226,15 @@ So the simulation results are not exactly the same, but they are close.</p>
   <tbody>
     <tr>
       <th>D1</th>
-      <td>37.55</td>
+      <td>37.38</td>
     </tr>
     <tr>
       <th>D2</th>
-      <td>33.13</td>
+      <td>33.54</td>
     </tr>
     <tr>
       <th>D3</th>
-      <td>29.32</td>
+      <td>29.08</td>
     </tr>
   </tbody>
 </table>
