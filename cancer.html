@@ -383,6 +383,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#markov-model">Markov Model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation">Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#counterfactuals">Counterfactuals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#markov-analysis-with-pymc">Markov analysis with PyMC</a></li>
 </ul>
             </nav>
         </div>
@@ -405,27 +407,29 @@ It is tempting to conclude that the person would have had a 91% chance of surviv
 <p>But that’s not true.</p>
 <p>The actual probability depends on details of how cancer progresses and the effectiveness of treatment.
 In the limiting case where treatment is ineffective, the actual probability of survival – in the hypothetical scenario that they had been diagnosed earlier – is zero.
-In reality, it is higher than zero, but it is probably much less than 91%.</p>
+In reality, it is higher than zero, but probably much less than 91%.</p>
 <p>It’s important to get this right, because Stage I survival rates are often used to argue for increased screening.
 But that’s not a valid argument – we can’t tell, just by looking at survival tables, whether screening would improve outcomes at all.</p>
-<p>To demonstrate this point, I’ll present a simple model that produces the same survival rates as colon cancer – high for Stage I and low for Stage IV – even if treatment is completely ineffective.</p>
+<p>To demonstrate this point, I’ll model a hypothetical cancer that produces the same survival rates as colon cancer – high for Stage I and low for Stage IV – <strong>even though treatment is completely ineffective</strong>.
+And if treatment is ineffective, screening has no benefit at all.</p>
 <section id="background">
 <h2>Background<a class="headerlink" href="#background" title="Link to this heading">#</a></h2>
 <p>In a <a class="reference external" href="https://www.youtube.com/watch?v=ph2ZeNooFLg">recent video</a>, Nassim Taleb and Emi Gal discuss the pros and cons of cancer screening, especially full-body MRIs for people who have no symptoms.</p>
 <p>At one point they consider this table of survival rates based on stage at diagnosis:</p>
 <a class="reference internal image-reference" href="https://github.com/AllenDowney/ThinkBayes2/raw/master/images/cancer_table.png"><img alt="https://github.com/AllenDowney/ThinkBayes2/raw/master/images/cancer_table.png" src="https://github.com/AllenDowney/ThinkBayes2/raw/master/images/cancer_table.png" style="width: 600px;" />
 </a>
-<p>They note that survival rates are generally highest when cancers are diagnosed when the tumor is localized at the primary site, lower when it has spread regionally, and often much lower if it has spread distantly.</p>
+<p>They note that survival rates are generally highest if a tumor is detected while localized at the primary site, lower if it has spread regionally, and often much lower if it has spread distantly.</p>
 <p>They take this as evidence that screening for these cancers is beneficial.
 For example, <a class="reference external" href="https://youtu.be/ph2ZeNooFLg?t=357">at one point</a> Taleb says, “Look at the payoff for pancreatic cancer – 10 times the survival rate.”</p>
 <p>And Gal adds, “Colon cancer, it’s like seven times… The overarching insight is that you want to find cancer early… This table makes the case for the importance of finding cancer early.”</p>
-<p>Taleb agrees, but I think that conclusion is incorrect. This table does not make the case that it is better to catch cancer early.</p>
+<p>Taleb agrees, but I think that conclusion is incorrect. <strong>This table does not make the case that it is better to catch cancer early</strong>.</p>
 <p>To be clear, it is <em>possible</em> that catching cancer early is beneficial, but only if (1) the cancers we catch would otherwise cause disease and death, and (2) we have treatments that prevent those outcomes – and this table does not show that either of those things is true.
 In fact, it is possible for a cancer to reproduce any row in this table, even if we have no treatment and detection has no effect on the progression of disease.</p>
 <p>To demonstrate, I’ll use a Markov model to reproduce the incidence and survival rates of colon cancer, even if there were no effective treatment.</p>
 <p>To be clear, I’m not claiming that cancer treatment is not effective – in many cases we know that it is.
-My point is that we can’t tell, just looking at a table like this, whether early detection has any benefit at all.</p>
-<p><a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/cancer.ipynb">Click here to run this notebook on Colab</a>.</p>
+My point is that we can’t tell, just looking at a survival rates, whether early detection has any benefit at all.</p>
+<p>That’s why <a class="reference external" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2733256/">this editorial</a> by Gerd Gigerenzer concludes, “In the context of screening, survival rates are misleading statistics.”</p>
+<p>If you want to replicate my analysis, you can <a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/cancer.ipynb">click here to run this notebook on Colab</a>.</p>
 </section>
 <section id="data">
 <h2>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h2>
@@ -529,8 +533,8 @@ My point is that we can’t tell, just looking at a table like this, whether ear
 </div></div></div>
 </div>
 <p>In this data, the 5-year survival rate for colon cancer is 91.4% if it’s detected when localized, 74% if it is not detected until it has spread regionally, and 15.8% if it has spread distantly.
-For this example, I’ll assume that the unknown/unstaged cancers are a mixture of the other categories and we’ll leave them out of the calculation.</p>
-<p>The dataset also includes the number of cases that were diagnosed at each stage.</p>
+For this example, I’ll assume that the unknown/unstaged cancers are a mixture of the other categories and we’ll leave them out of the analysis.</p>
+<p>The dataset also includes the number of cases diagnosed at each stage.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df2</span> <span class="o">=</span> <span class="n">clean_table</span><span class="p">(</span><span class="n">tables</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -750,14 +754,8 @@ A moderately effective treatment would have to overcome this effect to bring <co
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1
-1
-</pre></div>
 </div>
-</div>
-</div>
-<p>Overall, I would say these values are plausible.</p>
+<p>Overall, these values are within the range we observe in real cancers.</p>
 <ul class="simple">
 <li><p>The transition rates are close to 1/6, which means the average time at each stage is 6 simulated years.</p></li>
 <li><p>The detection rate is low at the first stage, higher at the second, and much higher at the third.</p></li>
@@ -790,15 +788,15 @@ A moderately effective treatment would have to overcome this effect to bring <co
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/debcb3b629dbfcb7504b0df1b2127b5c7b3bc120ba08e45aa776251e60de80ec.png" src="_images/debcb3b629dbfcb7504b0df1b2127b5c7b3bc120ba08e45aa776251e60de80ec.png" />
+<img alt="_images/69e48a05159968d4e689fef43257e42c7ab18efa4a1ed942ee33ed6014febfbb.png" src="_images/69e48a05159968d4e689fef43257e42c7ab18efa4a1ed942ee33ed6014febfbb.png" />
 </div>
 </div>
 <p>In this model, death is only possible after a cancer has progressed to the third stage and been detected.
-That’s obviously not realistic – among other things, deaths can occur at any stage due to other causes.</p>
+That’s obviously not realistic – in reality deaths can occur at any stage, due to cancer or other causes.</p>
 <p>But adding more transitions would not make make the model better.
 The goal is to show that we can reproduce survival rates even with restrictive assumptions, so we’ll minimize the number of parameters.</p>
 <p>It might also help to think of the states more abstractly.
-For example, a transition from <code class="docutils literal notranslate"><span class="pre">D2</span></code> to <code class="docutils literal notranslate"><span class="pre">D3</span></code> might literally represent a cancer that progresses from one stage to another, but it could also include someone whose risk or mortality has increased to be comparable to someone at the next stage, due to other causes.</p>
+For example, a transition from <code class="docutils literal notranslate"><span class="pre">D2</span></code> to <code class="docutils literal notranslate"><span class="pre">D3</span></code> might literally represent a cancer that progresses from one stage to another, but it could also include someone whose risk of mortality has increased to be comparable to someone at the next stage, due to other causes.</p>
 </section>
 <section id="simulation">
 <h2>Simulation<a class="headerlink" href="#simulation" title="Link to this heading">#</a></h2>
@@ -880,7 +878,7 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.00</td>
       <td>0.09</td>
       <td>0.00</td>
-      <td>0.0</td>
+      <td>0.00</td>
       <td>0.0</td>
     </tr>
     <tr>
@@ -890,7 +888,7 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.16</td>
       <td>0.00</td>
       <td>0.18</td>
-      <td>0.0</td>
+      <td>0.00</td>
       <td>0.0</td>
     </tr>
     <tr>
@@ -900,7 +898,7 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.20</td>
       <td>0.00</td>
       <td>0.00</td>
-      <td>0.8</td>
+      <td>0.80</td>
       <td>0.0</td>
     </tr>
     <tr>
@@ -908,9 +906,9 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.00</td>
       <td>0.00</td>
       <td>0.00</td>
-      <td>1.00</td>
+      <td>0.85</td>
+      <td>0.15</td>
       <td>0.00</td>
-      <td>0.0</td>
       <td>0.0</td>
     </tr>
     <tr>
@@ -919,8 +917,8 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.00</td>
       <td>0.00</td>
       <td>0.00</td>
-      <td>1.00</td>
-      <td>0.0</td>
+      <td>0.84</td>
+      <td>0.16</td>
       <td>0.0</td>
     </tr>
     <tr>
@@ -930,7 +928,7 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.00</td>
       <td>0.00</td>
       <td>0.00</td>
-      <td>0.7</td>
+      <td>0.70</td>
       <td>0.3</td>
     </tr>
     <tr>
@@ -940,7 +938,7 @@ For example, a transition from <code class="docutils literal notranslate"><span 
       <td>0.00</td>
       <td>0.00</td>
       <td>0.00</td>
-      <td>0.0</td>
+      <td>0.00</td>
       <td>1.0</td>
     </tr>
   </tbody>
@@ -966,16 +964,15 @@ For example, a transition from <code class="docutils literal notranslate"><span 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
-       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
-       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
-       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
-       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
-       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
-       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
-       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
-       &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;, &#39;D1&#39;,
-       &#39;D1&#39;], dtype=&#39;&lt;U2&#39;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U1&#39;, &#39;U2&#39;, &#39;D2&#39;, &#39;D2&#39;,
+       &#39;D2&#39;, &#39;D2&#39;, &#39;D2&#39;, &#39;D3&#39;, &#39;D3&#39;, &#39;D3&#39;, &#39;D3&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;],
+      dtype=&#39;&lt;U2&#39;)
 </pre></div>
 </div>
 </div>
@@ -1000,13 +997,13 @@ For example, a transition from <code class="docutils literal notranslate"><span 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(7, &#39;D1&#39;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(9, &#39;D2&#39;)
 </pre></div>
 </div>
 </div>
 </div>
 <p>And we’ll use the following function to check 5-year survival after diagnosis.
-In the rare case where we reach the end of the sequence, that’s considered survival.</p>
+In the rare case where we reach the end of the sequence, that case is counted as a survival.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">survived</span><span class="p">(</span><span class="n">state_seq</span><span class="p">,</span> <span class="n">diagnosis_index</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
@@ -1090,31 +1087,31 @@ If a case is never diagnosed, it is omitted – but that never happens in this e
   <tbody>
     <tr>
       <th>0</th>
-      <td>11</td>
-      <td>D3</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>1</th>
       <td>5</td>
-      <td>D3</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>14</td>
       <td>D1</td>
       <td>True</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>3</td>
-      <td>D3</td>
+      <th>1</th>
+      <td>13</td>
+      <td>D2</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>D2</td>
       <td>False</td>
     </tr>
     <tr>
+      <th>3</th>
+      <td>6</td>
+      <td>D1</td>
+      <td>True</td>
+    </tr>
+    <tr>
       <th>4</th>
-      <td>5</td>
+      <td>11</td>
       <td>D1</td>
       <td>True</td>
     </tr>
@@ -1122,7 +1119,7 @@ If a case is never diagnosed, it is omitted – but that never happens in this e
 </table>
 </div></div></div>
 </div>
-<p>In the simulations, the overall 5-year survival rate is about 64%, the same as colon cancer in reality.</p>
+<p>For the hypothetical cancer, the overall 5-year survival rate is about 64%, the same as colon cancer in reality.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;survived&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -1130,7 +1127,7 @@ If a case is never diagnosed, it is omitted – but that never happens in this e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7548
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6425
 </pre></div>
 </div>
 </div>
@@ -1172,15 +1169,15 @@ If a case is never diagnosed, it is omitted – but that never happens in this e
   <tbody>
     <tr>
       <th>D1</th>
-      <td>100.00000</td>
+      <td>94.700399</td>
     </tr>
     <tr>
       <th>D2</th>
-      <td>100.00000</td>
+      <td>71.687292</td>
     </tr>
     <tr>
       <th>D3</th>
-      <td>15.68088</td>
+      <td>16.848568</td>
     </tr>
   </tbody>
 </table>
@@ -1226,15 +1223,15 @@ So the simulation results are not exactly the same, but they are close.</p>
   <tbody>
     <tr>
       <th>D1</th>
-      <td>37.38</td>
+      <td>37.55</td>
     </tr>
     <tr>
       <th>D2</th>
-      <td>33.54</td>
+      <td>33.13</td>
     </tr>
     <tr>
       <th>D3</th>
-      <td>29.08</td>
+      <td>29.32</td>
     </tr>
   </tbody>
 </table>
@@ -1243,21 +1240,85 @@ So the simulation results are not exactly the same, but they are close.</p>
 <p>The actual distribution for colon cancer is 38% localized, 38% regional, and 24% distant.
 Again, the simulation results are not exactly the same, but close.</p>
 <p>With more trial and error, I could probably find parameters that reproduce the results exactly.
-That would not be surprising, because even though the model is meant to be parsimonious, it has seven parameters (not counting <code class="docutils literal notranslate"><span class="pre">gamma</span></code>, which we fixed at 0) and we are trying to match observations with only five degrees of freedom.</p>
-<p>That might seem unfair, but it makes the point, which is that there are not enough numbers in the survival table – even if we add in the distribution of stages – to conclude that early detection would have any benefit.</p>
-<p>The model we constructed has almost the same survival rates as colon cancer, but detection has no effect on survival time.</p>
+That would not be surprising, because even though the model is meant to be parsimonious, it has seven parameters (not counting <code class="docutils literal notranslate"><span class="pre">gamma</span></code>, which we fixed at 0) and we are matching observations with only five degrees of freedom.</p>
+<p>That might seem unfair, but it makes the point that there are not enough numbers in the survival table – even if we also consider the distribution of stages – to conclude that early detection would have any benefit.</p>
+<p>The model we constructed has almost the same survival rates as colon cancer, but detection has no effect on survival time.
+Therefore, <strong>survival rates do not make the case that it is better to find cancer early</strong>.</p>
+<p>Again, it <em>might</em> be better to find cancer early, if the benefit of treatment outweighs the costs of false discovery and overdiagnosis – but that’s a more complicated analysis, and 5-year survival rates aren’t part of it.</p>
+</section>
+<section id="counterfactuals">
+<h2>Counterfactuals<a class="headerlink" href="#counterfactuals" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://youtu.be/ph2ZeNooFLg?t=836">Later in the video</a>, Taleb says, “Your mother, had she had a colonoscopy, she would be alive today… she’s no longer with us because it was detected when it was stage IV, right?” And Gal agrees.</p>
 <p>That <em>might</em> be true, if treatment would have prevented the cancer from progressing.
 But this conclusion is not supported by the data in the survival table.</p>
 <p>If someone is diagnosed with stage IV colon cancer and dies, it is tempting to look at the survival table and think there’s a 91% chance they would have survived if they had been diagnosed earlier.</p>
-<p>But that’s not true, because that 91% includes many cancers that would have progressed slowly or never, even without treatment.
-In the case of someone who died, we know their cancer was not one of those.</p>
-<p>Also, surviving five years after stage I is more likely than surviving five years after stage IV, even without treatment.
-In a counterfactual where someone is diagnosed earlier, they would have to survive longer after diagnosis, in order to be alive today.</p>
+<p>But that’s not true – it’s probably not even close to true.</p>
+<ul class="simple">
+<li><p>First, that 91% includes cancers that would have progressed slowly or never, even without treatment. In the case of someone who died, we know their cancer was not one of those.</p></li>
+<li><p>Also, surviving five years after stage I is more likely than surviving five years after stage IV, even without treatment.</p></li>
+</ul>
+<p>In a counterfactual where someone is diagnosed earlier, they would have to survive longer after diagnosis, in order to be alive today.</p>
 <p>So it is not correct to say that they would not have died if they had been diagnosed earlier.
 The actual probability depends on progression rates with and without treatment.
-In the limiting case, where treatment is ineffective, the actual probability is zero.</p>
-<p>In reality, it is higher than zero, but likely to be much less than 91%.</p>
+In the limiting case, where treatment is ineffective, the actual probability is zero.
+In reality, it is higher than zero, but likely to be much less than 91%.</p>
+</section>
+<section id="markov-analysis-with-pymc">
+<h2>Markov analysis with PyMC<a class="headerlink" href="#markov-analysis-with-pymc" title="Link to this heading">#</a></h2>
+<p>Instead of QuantEcon, we could have used PyMC to simulate the Markov chain.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pip install pymc pymc-extras</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pymc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pymc_extras</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pmx</span>
+
+<span class="c1"># map labels &lt;-&gt; ints</span>
+<span class="n">state_to_idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">states</span><span class="p">)}</span>
+<span class="n">idx_to_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
+
+<span class="c1"># initial distribution: start in &#39;U1&#39;</span>
+<span class="n">init_probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">))</span>
+<span class="n">init_probs</span><span class="p">[</span><span class="n">state_to_idx</span><span class="p">[</span><span class="s1">&#39;U1&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mi">100</span>    <span class="c1"># number of time steps     </span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">10</span>     <span class="c1"># number of trajectories</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">():</span>
+    <span class="n">init_dist</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Categorical</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">init_probs</span><span class="p">)</span>
+    <span class="n">chain_rv</span> <span class="o">=</span> <span class="n">pmx</span><span class="o">.</span><span class="n">DiscreteMarkovChain</span><span class="p">(</span><span class="s2">&quot;chain&quot;</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">,</span> <span class="n">init_dist</span><span class="o">=</span><span class="n">init_dist</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">T</span><span class="p">,))</span>
+
+<span class="c1"># Fast, no idata:</span>
+<span class="n">traj</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">chain_rv</span><span class="p">,</span> <span class="n">draws</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">traj_labels</span> <span class="o">=</span> <span class="n">idx_to_state</span><span class="p">[</span><span class="n">traj</span><span class="p">]</span>
+<span class="n">traj_labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;U1&#39;, &#39;U2&#39;, &#39;U2&#39;, &#39;U3&#39;, &#39;U3&#39;, &#39;D3&#39;, &#39;D3&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;,
+       &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;], dtype=&#39;&lt;U2&#39;)
+</pre></div>
+</div>
+</div>
+</div>
 <p>Copyright 2025 Allen B. Downey</p>
 <p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
 </section>
@@ -1322,6 +1383,8 @@ In the limiting case, where treatment is ineffective, the actual probability is 
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#markov-model">Markov Model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation">Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#counterfactuals">Counterfactuals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#markov-analysis-with-pymc">Markov analysis with PyMC</a></li>
 </ul>
   </nav></div>
 
