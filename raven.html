@@ -1,0 +1,1469 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The Raven Paradox &#8212; Think Bayes</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'raven';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Cancer Survival Rates Are Misleading" href="cancer.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    Think Bayes 2
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Front Matter</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">1. Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">2. Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">3. Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">4. Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">5. Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">6. Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">7. Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">8. Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">9. Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">10. Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">11. Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">12. Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">13. Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">14. Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">15. Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">16. Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">17. Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">18. Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19_v3.html">19. MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">20. Approximate Bayesian Computation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redline_pymc.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bookstore.html">How Many Books?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beta_binomial.html">The All-Knowing Cube of Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zipf.html">What’s a chartist?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bread.html">The Poincaré Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cancer.html">Cancer Survival Rates Are Misleading</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">The Raven Paradox</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/raven.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>The Raven Paradox</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-problem">The Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-setup">The Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scenario-1">Scenario 1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scenario-2">Scenario 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scenario-3">Scenario 3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scenario-4">Scenario 4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#successive-updates">Successive updates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#varying-m">Varying <code class="docutils literal notranslate"><span class="pre">M</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-reading">Related Reading</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <p>You can order print and ebook versions of <em>Think Bayes 2e</em> from
+<a class="reference external" href="https://bookshop.org/a/98697/9781492089469">Bookshop.org</a> and
+<a class="reference external" href="https://amzn.to/334eqGo">Amazon</a>.</p>
+<section id="the-raven-paradox">
+<h1>The Raven Paradox<a class="headerlink" href="#the-raven-paradox" title="Link to this heading">#</a></h1>
+<p>Suppose you are not sure whether all ravens are black.
+If you see a white raven, that clearly refutes the hypothesis.
+And if you see a black raven, that supports the hypothesis in the sense that it increases our confidence, maybe slightly.
+But what if you see a red apple – does that make the hypothesis any more or less likely?</p>
+<p>This question is the core of the <a class="reference external" href="https://en.wikipedia.org/wiki/Raven_paradox">Raven paradox</a>, a problem in the philosophy of science posed by Carl Gustav Hempel in the 1940s.
+It highlights a counterintuitive aspect of how we evaluate evidence and confirm hypotheses.</p>
+<p>No resolution of the paradox is universally accepted, but the most widely accepted is what I will call the standard Bayesian response.
+In this article, I’ll present this response, explain why I think it is incomplete, and propose an extension that might resolve the paradox.</p>
+<p><a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/raven.ipynb">Click here to run this notebook on Colab</a>.</p>
+<section id="the-problem">
+<h2>The Problem<a class="headerlink" href="#the-problem" title="Link to this heading">#</a></h2>
+<p>The paradox starts with the hypothesis</p>
+<p>A: All ravens are black</p>
+<p>And the contrapositive hypothesis</p>
+<p>B: All non-black things are non-ravens</p>
+<p>Logically, these hypotheses are identical – if A is true, B must be true, and vice versa.
+So if we have a certain level of confidence in A, we should have exactly the same confidence in B.
+And if we observe evidence in favor of A, we should also accept it as evidence in favor of B, to the same degree.</p>
+<p>Also, if we accept that a black raven is evidence in favor of A, we should also accept that a non-black non-raven is evidence in favor of B.</p>
+<p>Finally, if a non-black non-raven is evidence in favor of B, we should also accept that it is evidence in favor of A.</p>
+<p>Therefore, a red apple (which is a non-black non-raven) is evidence that all ravens are black.</p>
+<p>If you accept this conclusion, it seems like every time you see a red apple (or a blue car, or a green leaf, etc.) you should think, “Now I am slightly more confident that all ravens are black (and all flamingos are pink, etc.)”.</p>
+<p>But that seems absurd, so we have two options:</p>
+<ol class="arabic simple">
+<li><p>Discover an error in the argument, or</p></li>
+<li><p>Accept the conclusion.</p></li>
+</ol>
+<p>As you might expect, many versions of (1) and (2) have been proposed.</p>
+<p>The standard Bayesian response is to accept the conclusion but, <a class="reference external" href="https://en.wikipedia.org/wiki/Raven_paradox#Standard_Bayesian_solution">quoth Wikipedia</a> “argue that the amount of confirmation provided is very small, due to the large discrepancy between the number of ravens and the number of non-black objects. According to this resolution, the conclusion appears paradoxical because we intuitively estimate the amount of evidence provided by the observation of a green apple to be zero, when it is in fact non-zero but extremely small.”</p>
+<p>In my opinion, the standard Bayesian response is correct but incomplete.
+It is true that when the number of non-ravens is large, the amount of evidence we get from each non-black non-raven is so small it is negligible.
+But I don’t think that’s <em>why</em> the conclusion is so acutely counterintuitive.</p>
+<p>To clarify my objection, let me present a smaller example I’ll call the Roulette paradox.
+An American roulette wheel has 36 pockets with the numbers <code class="docutils literal notranslate"><span class="pre">1</span></code> to <code class="docutils literal notranslate"><span class="pre">36</span></code>, and two pockets labeled <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">00</span></code>.
+The non-zero pockets are red or black, and the zero pockets are green.</p>
+<p>Suppose we work in quality control at the roulette factory and our job is to check that all zero pockets are green.
+If we observe a green zero, that’s evidence that all zeros are green.
+But what if we observe a red 19?</p>
+<p>In this example, the standard Bayesian response fails:</p>
+<ul class="simple">
+<li><p>First, the number of non-zeros is not particularly large, so the weight of the evidence is not negligible.</p></li>
+<li><p>Also, the Bayesian response doesn’t address what I think is actually the key: The non-green non-zero <strong>may or may not be evidence</strong>, depending on how it was sampled.</p></li>
+</ul>
+<p>As I will demonstrate,</p>
+<ol class="arabic simple">
+<li><p>If we choose a pocket at random and it turns out to be a non-green non-zero, that <em>is not</em> evidence that all zeros are green.</p></li>
+<li><p>But if we choose a non-green pocket and it turns out to be non-zero, that <em>is</em> evidence that all zeros are green.</p></li>
+</ol>
+<p>In both cases we observe a non-green non-zero, but “observe” is ambiguous.
+Whether the observation is evidence or not <strong>depends on the sampling process</strong> that generated the observation.
+And I think confusion between these two scenarios is the foundation of the paradox.</p>
+</section>
+<section id="the-setup">
+<h2>The Setup<a class="headerlink" href="#the-setup" title="Link to this heading">#</a></h2>
+<p>Let’s get into the details.
+Switching from roulette back to ravens, we will consider four scenarios:</p>
+<ol class="arabic simple">
+<li><p>You choose a random thing and it turns out to be a black raven.</p></li>
+<li><p>You choose a random thing and it turns out to be a non-black non-raven.</p></li>
+<li><p>You choose a random raven and it turns out to be black.</p></li>
+<li><p>You choose a random non-black thing and it turns out to be a non-raven.</p></li>
+</ol>
+<p>We’ll start with a small world where there are only <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">=</span> <span class="pre">9</span></code> ravens and <code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">19</span></code> non-ravens.
+Then we’ll see what happens as we vary <code class="docutils literal notranslate"><span class="pre">N</span></code> and <code class="docutils literal notranslate"><span class="pre">M</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">M</span> <span class="o">=</span> <span class="mi">19</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>I’ll use <code class="docutils literal notranslate"><span class="pre">i</span></code> to represent the unknown number of black ravens, which could be any value from <code class="docutils literal notranslate"><span class="pre">0</span></code> to <code class="docutils literal notranslate"><span class="pre">N</span></code>, and <code class="docutils literal notranslate"><span class="pre">j</span></code> to represent the unknown number of black non-ravens, from <code class="docutils literal notranslate"><span class="pre">0</span></code> to <code class="docutils literal notranslate"><span class="pre">M</span></code>.</p>
+<p>We’ll use a joint distribution to represent beliefs about <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>; then we’ll use Bayes’s Theorem to update these beliefs when we see new data.</p>
+<p>Let’s start with a uniform prior over all possible combinations of <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">empiricaldist</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pmf</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_prior</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+    <span class="n">prior_i</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">prior_j</span> <span class="o">=</span> <span class="n">Pmf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">prior</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">prior_i</span><span class="p">,</span> <span class="n">prior_j</span><span class="p">)</span>
+    <span class="n">normalize</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">prior</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">make_prior</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The result is a Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with the values of <code class="docutils literal notranslate"><span class="pre">i</span></code> across the columns and the values of <code class="docutils literal notranslate"><span class="pre">j</span></code> down the rows.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">N</span></code>, that means all ravens are black, so we can compute the prior probability of <code class="docutils literal notranslate"><span class="pre">A</span></code> like this.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_A</span> <span class="o">=</span> <span class="n">prior</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">prior_A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.10000000000000002
+</pre></div>
+</div>
+</div>
+</div>
+<p>For this prior, the probability of <code class="docutils literal notranslate"><span class="pre">A</span></code> is 10%.
+We’ll see later that the prior affects the strength of the evidence, but it doesn’t affect whether an observation is in favor of <code class="docutils literal notranslate"><span class="pre">A</span></code> or not.</p>
+</section>
+<section id="scenario-1">
+<h2>Scenario 1<a class="headerlink" href="#scenario-1" title="Link to this heading">#</a></h2>
+<p>Now let’s consider the first scenario: we choose a thing at random from the universe of things, and we find that it is a black raven.</p>
+<p>The likelihood for this observation is: <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">/</span> <span class="pre">(N</span> <span class="pre">+</span> <span class="pre">M)</span></code>, because <code class="docutils literal notranslate"><span class="pre">i</span></code> is the number of black ravens and <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">+</span> <span class="pre">M</span></code> is the total number of things.</p>
+<p>The following function computes the posterior distribution of <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code> in this scenario.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">update_scenario1</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+    <span class="c1"># Create meshgrids for i and j</span>
+    <span class="n">I</span><span class="p">,</span> <span class="n">J</span> <span class="o">=</span> <span class="n">make_mesh</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+
+    <span class="c1"># Compute likelihood for Scenario 1</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">I</span> <span class="o">/</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="n">M</span><span class="p">)</span>
+
+    <span class="c1"># Perform Bayesian update</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+    <span class="n">normalize</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s the update.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">update_scenario1</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s the posterior probability of A.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_A</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">posterior_A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.20000000000000004
+</pre></div>
+</div>
+</div>
+</div>
+<p>The posterior probability is higher, so the black raven is evidence in favor of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+<p>To quantify the strength of the evidence, we’ll use the log odds ratio.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">logit</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">log_odds_ratio</span><span class="p">(</span><span class="n">posterior_A</span><span class="p">,</span> <span class="n">prior_A</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">logit</span><span class="p">(</span><span class="n">posterior_A</span><span class="p">)</span> <span class="o">-</span> <span class="n">logit</span><span class="p">(</span><span class="n">prior_A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lor</span> <span class="o">=</span> <span class="n">log_odds_ratio</span><span class="p">(</span><span class="n">posterior_A</span><span class="p">,</span> <span class="n">prior_A</span><span class="p">)</span>
+<span class="n">lor</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.8109302162163288
+</pre></div>
+</div>
+</div>
+</div>
+<p>Later we’ll see how the strength of the evidence depends on the prior distribution of <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>.</p>
+<p>Before we go on, let’s also look at the marginal distribution of <code class="docutils literal notranslate"><span class="pre">i</span></code> (number of black ravens) before and after.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_i_prior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">marginal_i_posterior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_i_prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">marginal_i_posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior (Scenario 1)&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of black ravens (i)&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Probability&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;raven_scenario1_marginal.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/73acb5dc58b1e987037e9ef21aff0c9bc014e6a3f841f015b7365f9352d648c7.png" src="_images/73acb5dc58b1e987037e9ef21aff0c9bc014e6a3f841f015b7365f9352d648c7.png" />
+</div>
+</div>
+<p>As expected, observing a black raven increases our confidence that all ravens are black.
+The posterior distribution shifts toward higher values of <code class="docutils literal notranslate"><span class="pre">i</span></code>, and the probability that <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">N</span></code> increases.</p>
+<p>In Scenario 1, the likelihood depends only on <code class="docutils literal notranslate"><span class="pre">i</span></code>, not on <code class="docutils literal notranslate"><span class="pre">j</span></code>, so the update doesn’t change our beliefs about <code class="docutils literal notranslate"><span class="pre">j</span></code> (the number of black non-ravens).
+We can verify this by comparing the prior and posterior distributions of <code class="docutils literal notranslate"><span class="pre">j</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_j_prior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">marginal_j_posterior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">marginal_j_prior</span><span class="p">,</span> <span class="n">marginal_j_posterior</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, let’s visualize posterior joint distribution of <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">plot_joint</span><span class="p">(</span><span class="n">joint</span><span class="p">):</span>
+    <span class="c1"># Transpose so i (number of black ravens) is on y-axis</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">joint</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+    <span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of black non-ravens (j)&#39;</span><span class="p">,</span> 
+             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Number of black ravens (i)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_joint</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Posterior: Scenario 1&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;raven_scenario1.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/3f8f1dc012592d11ac19f20c5698984fc6134a93c7eeec35c1ba1aed5913a1a2.png" src="_images/3f8f1dc012592d11ac19f20c5698984fc6134a93c7eeec35c1ba1aed5913a1a2.png" />
+</div>
+</div>
+<p>Because we started with a uniform distribution and the data has no bearing on <code class="docutils literal notranslate"><span class="pre">j</span></code>, the joint posterior probabilities don’t depend on <code class="docutils literal notranslate"><span class="pre">j</span></code>.</p>
+<p>In summary, Scenario 1 is consistent with intuition: a black raven is evidence in favor of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+</section>
+<section id="scenario-2">
+<h2>Scenario 2<a class="headerlink" href="#scenario-2" title="Link to this heading">#</a></h2>
+<p>In this scenario, we choose a thing at random from the universe of <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">+</span> <span class="pre">M</span></code> things, and it turns out to be a red apple – which we will treat generally as a non-black non-raven.</p>
+<p>The likelihood of this observation is: <code class="docutils literal notranslate"><span class="pre">(M</span> <span class="pre">-</span> <span class="pre">j)</span> <span class="pre">/</span> <span class="pre">(N</span> <span class="pre">+</span> <span class="pre">M)</span></code>, because <code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">-</span> <span class="pre">j</span></code> is the number of non-black non-ravens and <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">+</span> <span class="pre">M</span></code> is the total number of things.</p>
+<p>The following function computes the posterior distribution of <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code> in this scenario.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">update_scenario2</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+    <span class="c1"># Create meshgrids for i and j</span>
+    <span class="n">I</span><span class="p">,</span> <span class="n">J</span> <span class="o">=</span> <span class="n">make_mesh</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+
+    <span class="c1"># Compute likelihood for Scenario 2</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="p">(</span><span class="n">M</span> <span class="o">-</span> <span class="n">J</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="n">M</span><span class="p">)</span>
+
+    <span class="c1"># Perform Bayesian update</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+    <span class="n">normalize</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s the update.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">update_scenario2</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s the posterior probability of A.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_A</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">posterior_A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.1
+</pre></div>
+</div>
+</div>
+</div>
+<p>In this scenario, the posterior probability of <code class="docutils literal notranslate"><span class="pre">A</span></code> is the same as the prior.
+In fact, the entire distribution of <code class="docutils literal notranslate"><span class="pre">i</span></code> is unchanged.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_i_prior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">marginal_i_posterior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">marginal_i_prior</span><span class="p">,</span> <span class="n">marginal_i_posterior</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>So the red apple  is not evidence in favor of <code class="docutils literal notranslate"><span class="pre">A</span></code> or against it.
+This is consistent with the intuition that the red apple (or any non-black non-raven) is irrelevant.</p>
+<p>However, the red apple is evidence about <code class="docutils literal notranslate"><span class="pre">j</span></code>, as we can confirm by comparing the marginal distribution of <code class="docutils literal notranslate"><span class="pre">j</span></code> before and after.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_j_prior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">marginal_j_posterior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_j_prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">marginal_j_posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior (Scenario 2)&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of black non-ravens (j)&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Probability&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;raven_scenario2_marginal.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/b99c195fe739e438b9f9d21fbbfc7e12e264b93bff2de276ae0dbe7effc395dc.png" src="_images/b99c195fe739e438b9f9d21fbbfc7e12e264b93bff2de276ae0dbe7effc395dc.png" />
+</div>
+</div>
+<p>And here’s the posterior joint distribution of <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_joint</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Posterior: Scenario 2&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;raven_scenario2.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/de8e2c353c1109b5324bd83ac12ec0262d1267021a2736b91d8f83ec641bc11d.png" src="_images/de8e2c353c1109b5324bd83ac12ec0262d1267021a2736b91d8f83ec641bc11d.png" />
+</div>
+</div>
+<p>Because the red apple has no bearing on <code class="docutils literal notranslate"><span class="pre">i</span></code>, the posterior probabilities in this scenario don’t depend on <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
+<p>In summary, Scenario 2 matches our intuition: a red apple (chosen at random) is <em>not</em> evidence about whether all ravens are black.</p>
+</section>
+<section id="scenario-3">
+<h2>Scenario 3<a class="headerlink" href="#scenario-3" title="Link to this heading">#</a></h2>
+<p>In this scenario, we choose a raven first and then observe that it is black.</p>
+<p>The likelihood for this observation is: <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">/</span> <span class="pre">N</span></code>, because <code class="docutils literal notranslate"><span class="pre">i</span></code> is the number of black ravens and <code class="docutils literal notranslate"><span class="pre">N</span></code> is the total number of ravens.</p>
+<p>The following function computes the posterior distribution of <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code> in this scenario.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">update_scenario3</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+    <span class="c1"># Create meshgrids for i and j</span>
+    <span class="n">I</span><span class="p">,</span> <span class="n">J</span> <span class="o">=</span> <span class="n">make_mesh</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+
+    <span class="c1"># Compute likelihood for Scenario 3</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">I</span> <span class="o">/</span> <span class="n">N</span>
+
+    <span class="c1"># Perform Bayesian update</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">likelihood</span>
+    <span class="n">normalize</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s the update.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">update_scenario3</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s the posterior probability of A.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_A</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">posterior_A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.20000000000000004
+</pre></div>
+</div>
+</div>
+</div>
+<p>This posterior is the same as in Scenario 1, so we conclude that the black raven is evidence in favor of <code class="docutils literal notranslate"><span class="pre">A</span></code>, with the same strength regardless of whether we are in:</p>
+<ul class="simple">
+<li><p>Scenario 1: Select a random thing and it turns out to be a black raven or</p></li>
+<li><p>Scenario 3: Select a random raven and it turns out to be black.</p></li>
+</ul>
+<p>In fact, the entire posterior distribution is the same in both scenarios.
+That because the likelihoods in Scenarios 1 and 3 differ only by a constant factor, which is removed when the posterior distributions are normalized.</p>
+<p>In summary, Scenario 3 is consistent with intuition: if we choose a raven and find that it is black, that is evidence in favor of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+</section>
+<section id="scenario-4">
+<h2>Scenario 4<a class="headerlink" href="#scenario-4" title="Link to this heading">#</a></h2>
+<p>In the last scenario, we first choose a non-black thing (from all non-black things in the universe), and then observe that it is a non-raven.</p>
+<p>The likelihood of this observation is: <code class="docutils literal notranslate"><span class="pre">(M</span> <span class="pre">-</span> <span class="pre">j)</span> <span class="pre">/</span> <span class="pre">(N</span> <span class="pre">-</span> <span class="pre">i</span> <span class="pre">+</span> <span class="pre">M</span> <span class="pre">-</span> <span class="pre">j)</span></code> because <code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">-</span> <span class="pre">j</span></code> is the number of non-black non-ravens and <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">-</span> <span class="pre">i</span> <span class="pre">+</span> <span class="pre">M</span> <span class="pre">-</span> <span class="pre">j</span></code> is the total number of non-black things.</p>
+<p>This likelihood <strong>depends on both</strong> <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>, unlike Scenario 2.
+This is the key difference that makes Scenario 4 informative about whether all ravens are black.</p>
+<p>The following function computes the posterior distribution of <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code> in this scenario.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">update_scenario4</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+    <span class="c1"># Create meshgrids for i and j</span>
+    <span class="n">I</span><span class="p">,</span> <span class="n">J</span> <span class="o">=</span> <span class="n">make_mesh</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+
+    <span class="c1"># Compute likelihood for Scenario 4</span>
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+        <span class="n">likelihood</span> <span class="o">=</span> <span class="p">(</span><span class="n">M</span> <span class="o">-</span> <span class="n">J</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">I</span> <span class="o">+</span> <span class="n">M</span> <span class="o">-</span> <span class="n">J</span><span class="p">)</span>
+
+    <span class="c1"># Perform Bayesian update</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">prior</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">likelihood</span><span class="p">)</span>
+    <span class="n">normalize</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s the update.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">update_scenario4</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And here’s the posterior probability of A.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior_A</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">posterior_A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.14940297326954258
+</pre></div>
+</div>
+</div>
+</div>
+<p>The posterior is greater than the prior, so the non-black non-raven is evidence in favor of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+<p>Again, we can quantify the strength of the evidence by computing the log odds ratio.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lor</span> <span class="o">=</span> <span class="n">log_odds_ratio</span><span class="p">(</span><span class="n">posterior_A</span><span class="p">,</span> <span class="n">prior_A</span><span class="p">)</span>
+<span class="n">lor</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.45793326392280087
+</pre></div>
+</div>
+</div>
+</div>
+<p>The LOR is smaller than in Scenarios 1 and 3, because there are more non-ravens than ravens.
+As we’ll see, the strength of the evidence gets smaller as <code class="docutils literal notranslate"><span class="pre">M</span></code> gets bigger.</p>
+<p>Here is the marginal distribution of <code class="docutils literal notranslate"><span class="pre">i</span></code> (number of black ravens) before and after:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_i_prior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">marginal_i_posterior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_i_prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">marginal_i_posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior (Scenario 4)&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of black ravens (i)&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Probability&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;raven_scenario4_marginal_i.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/90ae0b51191d2f3b068cc9a4d382e172f23d8ec19a5708c3e5f51677d0b966cd.png" src="_images/90ae0b51191d2f3b068cc9a4d382e172f23d8ec19a5708c3e5f51677d0b966cd.png" />
+</div>
+</div>
+<p>And here’s the marginal distribution of <code class="docutils literal notranslate"><span class="pre">j</span></code> (number of black non-ravens) before and after.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_j_prior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">marginal_j_posterior</span> <span class="o">=</span> <span class="n">marginal</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marginal_j_prior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Prior&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">marginal_j_posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Posterior (Scenario 4)&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Number of black non-ravens (j)&#39;</span><span class="p">,</span> 
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Probability&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;raven_scenario4_marginal_j.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/f7b88c2307331de2664b17bd98bdd246a61d436d1f5fc263d05e80ea706ce875.png" src="_images/f7b88c2307331de2664b17bd98bdd246a61d436d1f5fc263d05e80ea706ce875.png" />
+</div>
+</div>
+<p>Finally, here’s the posterior joint distribution of <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_joint</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Posterior: Scenario 4&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;raven_scenario4.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/83ec65bdd92130d86aad0ff90c7b99232096fffa2e14c5ec96647f66e8137d0c.png" src="_images/83ec65bdd92130d86aad0ff90c7b99232096fffa2e14c5ec96647f66e8137d0c.png" />
+</div>
+</div>
+<p>In Scenario 4, the likelihood depends on <strong>both</strong> <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>, so the update changes our beliefs about both parameters.</p>
+<p>And in Scenario 4 a non-black non-raven (chosen from non-black things) is evidence in favor of <code class="docutils literal notranslate"><span class="pre">A</span></code>.
+This might still be surprising, but let me suggest a way to think about it: in this scenario we are checking non-black things to make sure they are not ravens.
+If we find a non-black raven, that contradicts <code class="docutils literal notranslate"><span class="pre">A</span></code>.
+If we don’t, that supports <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+<p>In all four scenarios, the results are consistent with intuition.
+So as long as you are clear about which scenario you are in, there is no paradox.
+The paradox is only apparent if you think you are in Scenario 2 and you imagine the result from Scenario 4.</p>
+<p>In the context of the original problem:</p>
+<ol class="arabic simple">
+<li><p>If you walk out of your house and the first thing you see is a red apple (or a blue car, or a green leaf) that has no bearing on whether raven are black.</p></li>
+<li><p>But if you deliberately select a non-black thing and check whether it’s a raven, and you find that it is not, that actually is evidence that all ravens are black – but consistent with the standard Bayesian response, it is so weak it is negligible.</p></li>
+</ol>
+</section>
+<section id="successive-updates">
+<h2>Successive updates<a class="headerlink" href="#successive-updates" title="Link to this heading">#</a></h2>
+<p>In these examples, we started with a uniform prior over all combinations of <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>.
+Of course that’s not a realistic representation of what we believe about the world.
+So let’s consider the effect of other priors.</p>
+<p>In general, different priors lead to different posterior distributions, and in this case they lead to different conclusions about the <em>strength</em> of the evidence.
+But they lead to the same conclusion about the <em>direction</em> of the evidence.</p>
+<p>To demonstrate, let’s see what happens if we observe a series of black ravens (in Scenario 1 or 3).
+For simplicity, assume that we sample with replacement.</p>
+<p>The following function computes multiple updates, starting with the uniform prior and then using the posterior from each update as the prior for the next.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">multiple_updates</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">update_func</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">iters</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">joint</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iters</span><span class="p">):</span>
+        <span class="n">prior_A</span> <span class="o">=</span> <span class="n">joint</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">joint</span> <span class="o">=</span> <span class="n">update_func</span><span class="p">(</span><span class="n">joint</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+        <span class="n">posterior_A</span> <span class="o">=</span> <span class="n">joint</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">prior_A</span><span class="p">,</span> <span class="n">posterior_A</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">make_table</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_table</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Prior&#39;</span><span class="p">,</span> <span class="s1">&#39;Posterior&#39;</span><span class="p">]):</span>
+    <span class="n">res_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">res_df</span><span class="p">[</span><span class="s1">&#39;LOR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_odds_ratio</span><span class="p">(</span><span class="n">res_df</span><span class="p">[</span><span class="s1">&#39;Posterior&#39;</span><span class="p">],</span> <span class="n">res_df</span><span class="p">[</span><span class="s1">&#39;Prior&#39;</span><span class="p">])</span>
+    <span class="n">res_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Iteration&#39;</span>
+    <span class="k">return</span> <span class="n">res_df</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This table shows the results in Scenario 1 (which is the same as in Scenario 3).
+For each iteration, the table shows the prior and posterior probability of <code class="docutils literal notranslate"><span class="pre">A</span></code>, and the log odds ratio.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">multiple_updates</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">update_scenario1</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Prior</th>
+      <th>Posterior</th>
+      <th>LOR</th>
+    </tr>
+    <tr>
+      <th>Iteration</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.100000</td>
+      <td>0.200000</td>
+      <td>0.810930</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.200000</td>
+      <td>0.284211</td>
+      <td>0.462624</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.284211</td>
+      <td>0.360000</td>
+      <td>0.348307</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.360000</td>
+      <td>0.427901</td>
+      <td>0.284942</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.427901</td>
+      <td>0.488715</td>
+      <td>0.245274</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.488715</td>
+      <td>0.543171</td>
+      <td>0.218261</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.543171</td>
+      <td>0.591920</td>
+      <td>0.198796</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.591920</td>
+      <td>0.635551</td>
+      <td>0.184196</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.635551</td>
+      <td>0.674590</td>
+      <td>0.172914</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0.674590</td>
+      <td>0.709512</td>
+      <td>0.163995</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>As we see more ravens, the posterior probability of <code class="docutils literal notranslate"><span class="pre">A</span></code> increases, but the LOR decreases – which means that each raven provides weaker evidence than the previous one.
+In the long run the LOR converges to a value greater than 0 (about 0.11), which means that each raven provides at least some additional evidence, even when the prior is far from the uniform distribution we started with.</p>
+<p>In the worst case, if the prior probability of <code class="docutils literal notranslate"><span class="pre">A</span></code> is <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">1</span></code>, nothing we observe can change those beliefs, so nothing is evidence for or against <code class="docutils literal notranslate"><span class="pre">A</span></code>.
+But there is no prior where a black raven provides evidence <em>against</em> <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+<p>[Proof: The likelihood of the observation is maximized when all ravens are black (i = N). Therefore, for any prior that gives non-zero probability to both A and its complement, the LOR is positive: these observations can never be evidence against A.]</p>
+<p>The following table shows the results in Scenario 4, where we select a non-black thing and check that it is not a raven.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">multiple_updates</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">update_scenario4</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Prior</th>
+      <th>Posterior</th>
+      <th>LOR</th>
+    </tr>
+    <tr>
+      <th>Iteration</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.100000</td>
+      <td>0.149403</td>
+      <td>0.457933</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.149403</td>
+      <td>0.201006</td>
+      <td>0.359272</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.201006</td>
+      <td>0.253991</td>
+      <td>0.302582</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.253991</td>
+      <td>0.307217</td>
+      <td>0.264273</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.307217</td>
+      <td>0.359496</td>
+      <td>0.235611</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.359496</td>
+      <td>0.409837</td>
+      <td>0.212911</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.409837</td>
+      <td>0.457528</td>
+      <td>0.194344</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.457528</td>
+      <td>0.502141</td>
+      <td>0.178860</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.502141</td>
+      <td>0.543477</td>
+      <td>0.165785</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0.543477</td>
+      <td>0.581514</td>
+      <td>0.154644</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The pattern is similar.
+Each non-black thing that turns out not to be a raven is weaker evidence than the previous one.
+But it is always in favor of <code class="docutils literal notranslate"><span class="pre">A</span></code> – in this scenario, there is no prior where a non-black non-raven is evidence against <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+</section>
+<section id="varying-m">
+<h2>Varying <code class="docutils literal notranslate"><span class="pre">M</span></code><a class="headerlink" href="#varying-m" title="Link to this heading">#</a></h2>
+<p>Finally, let’s see how the strength of the evidence varies as we increase <code class="docutils literal notranslate"><span class="pre">M</span></code>, the number of non-ravens.
+The following function computes results in Scenario 4 for a range of values of <code class="docutils literal notranslate"><span class="pre">M</span></code>, holding constant the number of ravens, <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">=</span> <span class="pre">9</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">update_with_varying_M</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">M_values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run Scenario 4 for different values of M.&quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="n">M_values</span><span class="p">:</span>
+        <span class="n">prior</span> <span class="o">=</span> <span class="n">make_prior</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+        <span class="n">prior_A</span> <span class="o">=</span> <span class="n">prior</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">posterior</span> <span class="o">=</span> <span class="n">update_scenario4</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+        <span class="n">posterior_A</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">prior_A</span><span class="p">,</span> <span class="n">posterior_A</span><span class="p">))</span>
+        
+    <span class="n">table</span> <span class="o">=</span> <span class="n">make_table</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;Prior&#39;</span><span class="p">,</span> <span class="s1">&#39;Posterior&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">table</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">M_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">update_with_varying_M</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">M_values</span><span class="p">)</span>
+<span class="n">results</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Prior</th>
+      <th>Posterior</th>
+      <th>LOR</th>
+    </tr>
+    <tr>
+      <th>M</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>20</th>
+      <td>0.1</td>
+      <td>0.147655</td>
+      <td>0.444110</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>0.1</td>
+      <td>0.124515</td>
+      <td>0.246875</td>
+    </tr>
+    <tr>
+      <th>100</th>
+      <td>0.1</td>
+      <td>0.114530</td>
+      <td>0.151946</td>
+    </tr>
+    <tr>
+      <th>200</th>
+      <td>0.1</td>
+      <td>0.108495</td>
+      <td>0.091022</td>
+    </tr>
+    <tr>
+      <th>500</th>
+      <td>0.1</td>
+      <td>0.104100</td>
+      <td>0.044751</td>
+    </tr>
+    <tr>
+      <th>1000</th>
+      <td>0.1</td>
+      <td>0.102331</td>
+      <td>0.025640</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">M</span></code> increases (more non-ravens in the universe), the strength of the evidence decreases.
+This is consistent with the standard Bayesian response, which notes that in a realistic scenario, the evidence is negligible.</p>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
+<p>The standard Bayesian response to the Raven paradox is correct in the sense that <em>if</em> a non-black non-raven is evidence that all ravens are black, it is so extremely weak.
+But that doesn’t explain why the roulette example – where the number of non-green non-zero pockets is relatively small – is still so contrary to intuition.</p>
+<p>I think a better explanation for the paradox is the ambiguity of the word “observe”.
+If we are explicit about the sampling process that generates the observation, we find that a non-black non-raven may or may not be evidence that all ravens are black.</p>
+<ul class="simple">
+<li><p>Scenario 2: If we choose a random thing and find that it is a non-black non-raven, that <em>is not</em> evidence.</p></li>
+<li><p>Scenario 4: If we choose a non-black thing and find that it is a non-raven, that <em>is</em> evidence.</p></li>
+</ul>
+<p>The first case is entirely consistent with intuition.
+The second case is less obvious, but if we consider smaller examples like a roulette wheel, and do the math, it can be reconciled with intuition.</p>
+<p>Confusion between these scenarios causes the apparent paradox, and clarity about the scenarios resolves it.</p>
+</section>
+<section id="related-reading">
+<h2>Related Reading<a class="headerlink" href="#related-reading" title="Link to this heading">#</a></h2>
+<p>I am not the first to notice that the interpretation of evidence depends on a model of the data-generating process.
+In the context of the Raven Problem, Richard Royall <a class="reference external" href="https://www.taylorfrancis.com/books/mono/10.1201/9780203738665/statistical-evidence-tibshirani-richard-royall">wrote</a>:</p>
+<blockquote>
+<div><p>We see that the observation of a red pencil can be evidence that all
+ravens are black. To make the proper interpretation, we must have
+an additional piece of information. Whether the observation is or is
+not evidence supporting the hypothesis (A) that all ravens are black
+versus the hypothesis (B) that only a fraction … are black is
+determined by the sampling procedure. A randomly selected pencil
+that proves to be red is not evidence that all ravens are black, but
+a randomly selected red object that proves to be a pencil is.</p>
+</div></blockquote>
+<p>This analysis appears in an appendix of <em>Statistical evidence: a likelihood paradigm</em>, first published in 1997.
+I found it in a footnote of <a class="reference external" href="https://www.researchgate.net/profile/Prasanta-Bandyopadhyay-4/publication/317098249_Belief_Evidence_and_Uncertainty/links/5925c584aca27295a8eee52d/Belief-Evidence-and-Uncertainty.pdf"><em>Belief, Evidence, and Uncertainty: Problems of Epistemic Inference</em></a>, published in 2016:</p>
+<blockquote>
+<div><p>Royall in his commentary on the Raven Paradox … observes that how one got the white shoes is inferentially important. If you grabbed a non-raven object at random, then it does not bear on the question of whether all ravens are black. If on the other hand you grabbed a random non-black object, and it turned out to be a pair of shoes, then it provides a very tiny amount of evidence for the hypothesis that all ravens are black …</p>
+</div></blockquote>
+<p>Royall is right that the sampling process determines whether a red pencil (or white shoe) is evidence about ravens, and he analyzes a version of what I’m calling Scenario 4.
+But I don’t think his analysis quite explains why the paradox feels so counterintuitive, and it seems to have had little impact on the discussion of the Raven paradox in the confirmation theory literature.</p>
+<p>Copyright 2025 Allen B. Downey</p>
+<p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="cancer.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Cancer Survival Rates Are Misleading</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-problem">The Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-setup">The Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scenario-1">Scenario 1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scenario-2">Scenario 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scenario-3">Scenario 3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scenario-4">Scenario 4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#successive-updates">Successive updates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#varying-m">Varying <code class="docutils literal notranslate"><span class="pre">M</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-reading">Related Reading</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
