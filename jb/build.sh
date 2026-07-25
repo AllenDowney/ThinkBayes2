@@ -1,4 +1,4 @@
-# pip install jupyter-book ghp-import
+# Needs jupyter-book, ghp-import, sphinxcontrib-bibtex (see environment-dev.yml)
 
 # Build the Jupyter book version
 
@@ -21,6 +21,12 @@ cp ../examples/hospital_birth_rate.ipynb .
 cp ../examples/ok.ipynb .
 cp ../examples/bookstore.ipynb .
 cp ../examples/beta_binomial.ipynb .
+cp ../examples/zipf.ipynb .
+cp ../examples/bread.ipynb .
+cp ../examples/cancer.ipynb .
+cp ../examples/raven.ipynb .
+cp ../examples/frog.ipynb .
+cp ../examples/hepatitis.ipynb .
 cp ../soln/utils.py .
 
 # add tags to hide the solutions
