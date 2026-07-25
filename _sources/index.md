@@ -66,3 +66,7 @@ Or use these links to run the notebooks on Colab:
 * [Chapter 19 updated for PyMC version 5](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/notebooks/chap19_v3.ipynb)
 
 * [Chapter 20](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/notebooks/chap20.ipynb)
+
+## Examples
+
+* [Tracking an Outbreak with Mark and Recapture](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/hepatitis.ipynb)
