@@ -43,16 +43,16 @@ if __name__ == '__main__':
 
         # new name
         base, ext = os.path.splitext(filename)
-        
+
         if base.endswith("soln"):
             base = base.replace("soln", "")
             base = base.rstrip("_")
-            base = '../' + base
+            base = '../notebooks/' + base
         else:
             base = base + "_scrubbed"
 
         new_filename = "%s%s" % (base, ext)
-        
+
         # write
         print("writing %s" % new_filename)
         with io.open(new_filename, 'w', encoding='utf8') as f:

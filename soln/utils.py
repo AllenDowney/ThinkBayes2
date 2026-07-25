@@ -247,6 +247,20 @@ def marginal(joint, axis):
     return Pmf(joint.sum(axis=axis))
 
 
+def conditional(joint, axis, value):
+    """Compute a conditional distribution.
+
+    joint: DataFrame representing a joint distribution
+    axis: int axis to condition on (0 for rows, 1 for columns)
+    value: value to condition on (row index if axis=0, column index if axis=1)
+
+    returns: Pmf
+    """
+    # Condition on the specified axis 
+    cond = joint.xs(value, axis=axis)
+    return Pmf(cond / cond.sum())
+
+
 def pmf_marginal(joint_pmf, level):
     """Compute a marginal distribution.
 
@@ -470,7 +484,17 @@ color_list = [Bl30, Or70, Gr50, Re60, Pu20, Gray70, Re80, Gray50,
               Gr70, Bl50, Re40, Pu70, Or50, Gr30, Bl70, Pu50, Gray30]
 color_cycle = cycler(color=color_list)
 
-def set_pyplot_params():
-    # plt.rcParams['figure.dpi'] = 300
+def set_pyplot_params(dpi=75):
+    """Set the parameters for matplotlib.
+
+    dpi: int, default 75
+    """
+    plt.rcParams['figure.figsize'] = (6, 4)
+    plt.rcParams['figure.dpi'] = dpi
     plt.rcParams['axes.prop_cycle'] = color_cycle
-    plt.rcParams['lines.linewidth'] = 3
+
+    # no spines
+    plt.rcParams['axes.spines.left'] = False
+    plt.rcParams['axes.spines.right'] = False
+    plt.rcParams['axes.spines.top'] = False
+    plt.rcParams['axes.spines.bottom'] = False
