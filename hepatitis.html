@@ -391,27 +391,28 @@
 <a class="reference external" href="https://amzn.to/334eqGo">Amazon</a>.</p>
 <section id="tracking-an-outbreak-with-mark-and-recapture">
 <h1>Tracking an Outbreak with Mark and Recapture<a class="headerlink" href="#tracking-an-outbreak-with-mark-and-recapture" title="Link to this heading">#</a></h1>
-<p>In epidemiology, the true number of people infected in an outbreak is often larger than the number of cases that appear on any official list.
-If we have several incomplete lists, and we can match individuals across them, the pattern of overlaps is informative: few repeats suggest many missing cases; many repeats suggest we have seen most of the cases.</p>
-<p>The key to this approach is <a class="reference external" href="https://en.wikipedia.org/wiki/Mark_and_recapture">mark and recapture modeling</a>, a method originally developed for ecology, but applicable in many other domains.
-In <a class="reference external" href="https://doi.org/10.1002/9781118445112.stat04855.pub2">this excellent paper</a>,
-Anne Chao reviews the approach and presents an example: a hepatitis A outbreak among students at a college in northern Taiwan in 1995.</p>
-<p>Three incomplete lists of cases were available:</p>
+<p>Bayesian statistics is not as hard as people think – you don’t need a graduate degree in statistics to get started, and with a computational approach, you don’t need a lot of math.
+And with AI tools getting better and better, working with Bayesian methods is a lot easier than it used to be.</p>
+<p>As an example, I’ll use an exercise from Chapter 15 of <a class="reference external" href="https://allendowney.github.io/ThinkBayes2/chap15.html"><em>Think Bayes</em></a>, which is about <a class="reference external" href="https://en.wikipedia.org/wiki/Mark_and_recapture">mark and recapture modeling</a>, a method originally developed for ecology, but applicable in many other domains.</p>
+<p>In epidemiology, we can use mark and recapture to estimate the number of cases in a disease outbreak. For example, we might have several lists of cases from different sources. The lists are almost certainly incomplete, so we would like to estimate the total number of cases, including cases that don’t appear on any of the lists.</p>
+<p>If we can match individuals across lists, we can count the number of cases that appear on multiple lists. And the pattern of overlaps is informative: few repeats suggest many missing cases; many repeats suggest we have seen most of the cases.</p>
+<p>In <a class="reference external" href="https://doi.org/10.1002/9781118445112.stat04855.pub2">this excellent paper</a>,
+Anne Chao reviews this approach and presents an example: a hepatitis A outbreak among students at a college in northern Taiwan in 1995.</p>
+<p>Three lists of cases were available:</p>
 <ol class="arabic simple">
-<li><p><strong>P-list</strong> (135 cases): serum tests from the Institute of Preventive Medicine of Taiwan.</p></li>
-<li><p><strong>Q-list</strong> (122 cases): cases reported by local hospitals to the National Quarantine Service.</p></li>
-<li><p><strong>E-list</strong> (126 cases): questionnaires collected by epidemiologists.</p></li>
+<li><p>List P (135 cases): serum tests from the Institute of Preventive Medicine of Taiwan.</p></li>
+<li><p>List Q (122 cases): cases reported by local hospitals to the National Quarantine Service.</p></li>
+<li><p>List E (126 cases): questionnaires collected by epidemiologists.</p></li>
 </ol>
-<p>Across the three lists, 271 distinct students were identified.
+<p>Across the three lists, there were 271 distinct students.
 The question is how many infected students were never listed.</p>
-<p>In Chapter 15 of <a class="reference external" href="https://allendowney.github.io/ThinkBayes2/chap15.html"><em>Think Bayes</em></a>, I used this problem as an exercise.
-The solution there uses a discrete grid over two parameters: the total number of infections, <code class="docutils literal notranslate"><span class="pre">N</span></code>, and a shared probability, <code class="docutils literal notranslate"><span class="pre">p</span></code>, that any case appears on any given list.
-But this simple model is limited and, as we’ll see, it systematically underestimates the number of cases.
-Then, we’ll try a more realistic model and we’ll see that the results are better.</p>
+<p>To find an answer, we’ll try two models: a simple one that assumes all students are equally likely to appear on the lists, and a more realistic model that assumes some cases are more detectable than others.
+We’ll see that the first model tends to underestimate the number of cases.
+The second model is better!</p>
 <p><a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/hepatitis.ipynb">Click here to run this notebook on Colab</a>.</p>
 <section id="the-data">
 <h2>The Data<a class="headerlink" href="#the-data" title="Link to this heading">#</a></h2>
-<p>We can summarize the data by listing the number of cases that appeared on all three lists, denoted <code class="docutils literal notranslate"><span class="pre">k111</span></code>, the number that appear on each combination of lists, and the number that appear on none of the lists, <code class="docutils literal notranslate"><span class="pre">k000</span></code>.</p>
+<p>The data we need are in Chao’s paper, summarized by listing the number of cases that appeared on all three lists, and the number that appear on each combination of lists.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>P  Q  E   count
 1  1  1   28
 1  1  0   21
@@ -423,7 +424,7 @@ Then, we’ll try a more realistic model and we’ll see that the results are be
 0  0  0   ??
 </pre></div>
 </div>
-<p>Of course <code class="docutils literal notranslate"><span class="pre">k000</span></code> is unknown. That’s what we’ll estimate!</p>
+<p>The last entry, which we’ll denote <code class="docutils literal notranslate"><span class="pre">k000</span></code>, is the number of cases that don’t appear on any list. That’s what we’ll estimate!</p>
 <p>Here’s the data in array form.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -440,13 +441,13 @@ Then, we’ll try a more realistic model and we’ll see that the results are be
 </div>
 </div>
 </div>
-<p>So 271 distinct cases appear on at least one list.
-Once we estimate <code class="docutils literal notranslate"><span class="pre">k000</span></code>, we can compute <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">=</span> <span class="pre">num_seen</span> <span class="pre">+</span> <span class="pre">k000</span></code>.</p>
+<p>The number of cases that appear on at least one list, <code class="docutils literal notranslate"><span class="pre">num_seen</span></code>, is 271.
+Once we estimate <code class="docutils literal notranslate"><span class="pre">k000</span></code>, we can compute the total number of cases, <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">=</span> <span class="pre">num_seen</span> <span class="pre">+</span> <span class="pre">k000</span></code>.</p>
 </section>
 <section id="independence-model">
 <h2>Independence model<a class="headerlink" href="#independence-model" title="Link to this heading">#</a></h2>
-<p>We’ll start with what I’ll call the independence model, because it assumes that each infected person appears on list P, Q, or E with probabilities <code class="docutils literal notranslate"><span class="pre">p_P</span></code>, <code class="docutils literal notranslate"><span class="pre">p_Q</span></code>, and <code class="docutils literal notranslate"><span class="pre">p_E</span></code>, independently across people and lists.</p>
-<p>With that assumption, the eight possible combinations have probabilities equal to various products of <code class="docutils literal notranslate"><span class="pre">p_j</span></code> and <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">p_j</span></code> (see the model below).</p>
+<p>We’ll start with what I’ll call the independence model, because it assumes that each infected person appears on list P, Q, or E with probabilities <span class="math notranslate nohighlight">\(p_P\)</span>, <span class="math notranslate nohighlight">\(p_Q\)</span>, and <span class="math notranslate nohighlight">\(p_E\)</span>, independently across people and lists.</p>
+<p>With that assumption, the eight possible combinations have probabilities equal to various products of <span class="math notranslate nohighlight">\(p_j\)</span> and <span class="math notranslate nohighlight">\(1 - p_j\)</span> (see the model below).</p>
 <p>For the prior distribution of <code class="docutils literal notranslate"><span class="pre">k000</span></code> we’ll use a Poisson distribution with a weakly informative hyperprior on the Poisson mean.
 The probabilities are drawn from a uniform distribution (Beta with parameters 1, 1).</p>
 <p>Here’s the model.</p>
@@ -505,7 +506,7 @@ Instead we use <code class="docutils literal notranslate"><span class="pre">Pote
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/1c393e81224fb0b081f71a24c63fe5ec73a1a842e7a332536df59ef4cca04f6f.svg" src="_images/1c393e81224fb0b081f71a24c63fe5ec73a1a842e7a332536df59ef4cca04f6f.svg" />
+<img alt="_images/e80415e35537751a75a71070ba7628ea9baf0298747540ae235a892d0a0b2526.svg" src="_images/e80415e35537751a75a71070ba7628ea9baf0298747540ae235a892d0a0b2526.svg" />
 </div>
 </div>
 <p>Notice that <code class="docutils literal notranslate"><span class="pre">k000</span></code> affects the likelihood of the data in two ways: directly as one of the counts and indirectly as a term of <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">=</span> <span class="pre">num_seen</span> <span class="pre">+</span> <span class="pre">k000</span></code>.</p>
@@ -523,7 +524,7 @@ CompoundStep
 &gt;Metropolis: [k000]
 </pre></div>
 </div>
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "05bed6b724034c1cac042bc36d437dec", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "2e968f33fbf9422db9fa818fd50364a0", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
 </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 2_000 tune and 2_000 draw iterations (8_000 + 8_000 draws total) took 6 seconds.
 The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
 The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
@@ -653,7 +654,7 @@ The effective sample size per chain is smaller than 100 for some parameters.  A 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/b1dfc5b206cf8cfdbb9a8e295fa4f11ea0ba7492da32332b71f1e8d56e07c1a4.png" src="_images/b1dfc5b206cf8cfdbb9a8e295fa4f11ea0ba7492da32332b71f1e8d56e07c1a4.png" />
+<img alt="_images/862d7acf92e83842a9533cf4e3e9b67ee4ac09ca9521bb0b02a5554018c908e5.png" src="_images/862d7acf92e83842a9533cf4e3e9b67ee4ac09ca9521bb0b02a5554018c908e5.png" />
 </div>
 </div>
 <p>And here’s the estimated value of <code class="docutils literal notranslate"><span class="pre">N</span></code> with a 90% CI.</p>
@@ -725,17 +726,18 @@ And in this example, we can see that it did.</p>
 <section id="individual-heterogeneity">
 <h2>Individual heterogeneity<a class="headerlink" href="#individual-heterogeneity" title="Link to this heading">#</a></h2>
 <p>We’ll assume that each person has a level of detectability, <span class="math notranslate nohighlight">\(z_k\)</span>, and each list has a baseline detection level <span class="math notranslate nohighlight">\(\alpha_P\)</span>, <span class="math notranslate nohighlight">\(\alpha_Q\)</span>, <span class="math notranslate nohighlight">\(\alpha_E\)</span>.
-For a person with detectability <span class="math notranslate nohighlight">\(z_k\)</span>, the chance they appear on list <code class="docutils literal notranslate"><span class="pre">j</span></code> is <code class="docutils literal notranslate"><span class="pre">p_{kj}</span></code>, where</p>
+For a person with detectability <span class="math notranslate nohighlight">\(z_k\)</span>, the chance they appear on list <span class="math notranslate nohighlight">\(j\)</span> is <span class="math notranslate nohighlight">\(p_{kj}\)</span>, where</p>
 <div class="math notranslate nohighlight">
 \[\mathrm{logit}(p_{kj}) = \alpha_j + \sigma z_k\]</div>
 <p>Here <span class="math notranslate nohighlight">\(\sigma\)</span> controls how much influence individual detectability has, compared to the baseline detection levels.
 A person with high <span class="math notranslate nohighlight">\(z_k\)</span> is more likely to appear on more than one list; people with low detectability are more likely to be missed entirely.</p>
 <p>To implement this model, we don’t need a latent variable for every person.
-Instead we’ll define a grid of values for <code class="docutils literal notranslate"><span class="pre">z</span></code> and assign to each value a weight, <code class="docutils literal notranslate"><span class="pre">w_k</span></code>, that represents the fraction of people in the population with that value.
-Then we can compute the cell probabilities using a weighted sum of the cell probabilities conditioned on <code class="docutils literal notranslate"><span class="pre">z_k</span></code>.</p>
+Instead we’ll define a grid of values for <span class="math notranslate nohighlight">\(z\)</span> and assign to each value a weight, <span class="math notranslate nohighlight">\(w_k\)</span>, that represents the fraction of people in the population with that value.
+Then we can compute the cell probabilities using a weighted sum of the cell probabilities conditioned on <span class="math notranslate nohighlight">\(z_k\)</span>. As an example, for cell 101, we can compute:</p>
 <div class="math notranslate nohighlight">
-\[\pi_{abc} = \sum_k w_k \, P(abc \mid z_k)\]</div>
-<p>We’ll precompute the values of <code class="docutils literal notranslate"><span class="pre">z</span></code> and the corresponding weights (using the PDF of a normal distribution to make a bell curve).</p>
+\[\pi_{101} = \sum_k w_k \, P(101 \mid z_k)\]</div>
+<p>And similarly for the other cells.</p>
+<p>Before we build the model, we’ll precompute the values of <span class="math notranslate nohighlight">\(z\)</span> and the corresponding weights (using the PDF of a normal distribution to make a bell curve).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">21</span><span class="p">)</span>
@@ -772,7 +774,7 @@ Then we can compute the cell probabilities using a weighted sum of the cell prob
 The argument <code class="docutils literal notranslate"><span class="pre">sigma_prior_scale</span></code> is the scale of the half-normal prior on <span class="math notranslate nohighlight">\(\sigma\)</span>; we’ll vary it later to check sensitivity.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_heterogeneity_model</span><span class="p">(</span><span class="n">sigma_prior_scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_heterogeneity_model</span><span class="p">(</span><span class="n">sigma_prior_scale</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">)</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
         <span class="n">sigma</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">HalfNormal</span><span class="p">(</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma_prior_scale</span><span class="p">)</span>
@@ -829,7 +831,7 @@ The argument <code class="docutils literal notranslate"><span class="pre">sigma_
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/7577003e4202b6aa337ecb2d5a6f6f5c456c870058f63e4cd22ea6197e6f604e.svg" src="_images/7577003e4202b6aa337ecb2d5a6f6f5c456c870058f63e4cd22ea6197e6f604e.svg" />
+<img alt="_images/32dcb61e65905ea12b4703f43de1f99c106005fd27b92b0f4d7897953cf608ee.svg" src="_images/32dcb61e65905ea12b4703f43de1f99c106005fd27b92b0f4d7897953cf608ee.svg" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -846,7 +848,7 @@ CompoundStep
 &gt;Metropolis: [k000]
 </pre></div>
 </div>
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "1509e778c16e4795be44abbc3311a907", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "2d90786282844aee8965f713071e960b", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
 </div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 2_000 tune and 2_000 draw iterations (8_000 + 8_000 draws total) took 8 seconds.
 The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
 The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
@@ -897,159 +899,159 @@ The effective sample size per chain is smaller than 100 for some parameters.  A 
   <tbody>
     <tr>
       <th>N</th>
-      <td>494.968</td>
-      <td>54.767</td>
-      <td>391.000</td>
-      <td>589.000</td>
-      <td>5.985</td>
-      <td>4.051</td>
-      <td>84.0</td>
-      <td>184.0</td>
-      <td>1.06</td>
+      <td>491.111</td>
+      <td>59.044</td>
+      <td>381.000</td>
+      <td>601.000</td>
+      <td>12.049</td>
+      <td>3.917</td>
+      <td>23.0</td>
+      <td>131.0</td>
+      <td>1.13</td>
     </tr>
     <tr>
       <th>alpha[P]</th>
-      <td>-1.146</td>
-      <td>0.258</td>
-      <td>-1.659</td>
-      <td>-0.702</td>
-      <td>0.025</td>
+      <td>-1.129</td>
+      <td>0.274</td>
+      <td>-1.666</td>
+      <td>-0.629</td>
+      <td>0.052</td>
       <td>0.014</td>
-      <td>104.0</td>
-      <td>227.0</td>
-      <td>1.04</td>
+      <td>28.0</td>
+      <td>164.0</td>
+      <td>1.10</td>
     </tr>
     <tr>
       <th>alpha[Q]</th>
-      <td>-1.303</td>
-      <td>0.257</td>
-      <td>-1.776</td>
-      <td>-0.832</td>
-      <td>0.024</td>
-      <td>0.013</td>
-      <td>111.0</td>
-      <td>267.0</td>
-      <td>1.04</td>
+      <td>-1.289</td>
+      <td>0.279</td>
+      <td>-1.813</td>
+      <td>-0.770</td>
+      <td>0.051</td>
+      <td>0.014</td>
+      <td>30.0</td>
+      <td>146.0</td>
+      <td>1.10</td>
     </tr>
     <tr>
       <th>alpha[E]</th>
-      <td>-1.254</td>
-      <td>0.260</td>
-      <td>-1.752</td>
-      <td>-0.789</td>
-      <td>0.025</td>
-      <td>0.013</td>
-      <td>108.0</td>
-      <td>214.0</td>
-      <td>1.04</td>
+      <td>-1.237</td>
+      <td>0.280</td>
+      <td>-1.771</td>
+      <td>-0.721</td>
+      <td>0.052</td>
+      <td>0.015</td>
+      <td>29.0</td>
+      <td>129.0</td>
+      <td>1.10</td>
     </tr>
     <tr>
       <th>sigma</th>
-      <td>0.935</td>
-      <td>0.213</td>
-      <td>0.539</td>
-      <td>1.336</td>
-      <td>0.018</td>
-      <td>0.008</td>
-      <td>138.0</td>
-      <td>376.0</td>
-      <td>1.03</td>
+      <td>0.923</td>
+      <td>0.240</td>
+      <td>0.484</td>
+      <td>1.384</td>
+      <td>0.040</td>
+      <td>0.012</td>
+      <td>35.0</td>
+      <td>222.0</td>
+      <td>1.09</td>
     </tr>
     <tr>
       <th>p_typical[P]</th>
-      <td>0.244</td>
-      <td>0.046</td>
-      <td>0.159</td>
-      <td>0.330</td>
-      <td>0.005</td>
+      <td>0.248</td>
+      <td>0.050</td>
+      <td>0.150</td>
+      <td>0.337</td>
+      <td>0.009</td>
       <td>0.002</td>
-      <td>104.0</td>
-      <td>227.0</td>
-      <td>1.04</td>
+      <td>28.0</td>
+      <td>164.0</td>
+      <td>1.10</td>
     </tr>
     <tr>
       <th>p_typical[Q]</th>
-      <td>0.217</td>
-      <td>0.043</td>
-      <td>0.144</td>
-      <td>0.303</td>
-      <td>0.004</td>
+      <td>0.220</td>
+      <td>0.047</td>
+      <td>0.133</td>
+      <td>0.306</td>
+      <td>0.009</td>
       <td>0.002</td>
-      <td>111.0</td>
-      <td>267.0</td>
-      <td>1.04</td>
+      <td>30.0</td>
+      <td>146.0</td>
+      <td>1.10</td>
     </tr>
     <tr>
       <th>p_typical[E]</th>
-      <td>0.225</td>
-      <td>0.044</td>
-      <td>0.143</td>
-      <td>0.306</td>
-      <td>0.004</td>
+      <td>0.229</td>
+      <td>0.048</td>
+      <td>0.139</td>
+      <td>0.318</td>
+      <td>0.009</td>
       <td>0.002</td>
-      <td>108.0</td>
-      <td>214.0</td>
-      <td>1.04</td>
+      <td>29.0</td>
+      <td>129.0</td>
+      <td>1.10</td>
     </tr>
     <tr>
       <th>p_avg[P]</th>
-      <td>0.278</td>
-      <td>0.036</td>
-      <td>0.214</td>
-      <td>0.346</td>
-      <td>0.003</td>
+      <td>0.281</td>
+      <td>0.038</td>
+      <td>0.206</td>
+      <td>0.348</td>
+      <td>0.007</td>
       <td>0.002</td>
-      <td>115.0</td>
-      <td>270.0</td>
-      <td>1.04</td>
+      <td>31.0</td>
+      <td>165.0</td>
+      <td>1.09</td>
     </tr>
     <tr>
       <th>p_avg[Q]</th>
-      <td>0.251</td>
-      <td>0.033</td>
-      <td>0.191</td>
-      <td>0.313</td>
-      <td>0.003</td>
+      <td>0.254</td>
+      <td>0.036</td>
+      <td>0.189</td>
+      <td>0.321</td>
+      <td>0.006</td>
       <td>0.001</td>
-      <td>129.0</td>
-      <td>319.0</td>
-      <td>1.03</td>
+      <td>35.0</td>
+      <td>271.0</td>
+      <td>1.08</td>
     </tr>
     <tr>
       <th>p_avg[E]</th>
-      <td>0.259</td>
-      <td>0.034</td>
-      <td>0.196</td>
-      <td>0.321</td>
-      <td>0.003</td>
-      <td>0.001</td>
-      <td>122.0</td>
-      <td>272.0</td>
-      <td>1.04</td>
+      <td>0.262</td>
+      <td>0.037</td>
+      <td>0.193</td>
+      <td>0.330</td>
+      <td>0.006</td>
+      <td>0.002</td>
+      <td>33.0</td>
+      <td>216.0</td>
+      <td>1.09</td>
     </tr>
     <tr>
       <th>mu</th>
-      <td>220.063</td>
-      <td>54.572</td>
-      <td>121.053</td>
-      <td>318.643</td>
-      <td>5.791</td>
-      <td>3.848</td>
-      <td>89.0</td>
-      <td>194.0</td>
-      <td>1.05</td>
+      <td>216.175</td>
+      <td>58.091</td>
+      <td>108.362</td>
+      <td>325.413</td>
+      <td>11.680</td>
+      <td>3.555</td>
+      <td>24.0</td>
+      <td>141.0</td>
+      <td>1.12</td>
     </tr>
     <tr>
       <th>k000</th>
-      <td>223.968</td>
-      <td>54.767</td>
-      <td>120.000</td>
-      <td>318.000</td>
-      <td>5.985</td>
-      <td>4.051</td>
-      <td>84.0</td>
-      <td>184.0</td>
-      <td>1.06</td>
+      <td>220.111</td>
+      <td>59.044</td>
+      <td>110.000</td>
+      <td>330.000</td>
+      <td>12.049</td>
+      <td>3.917</td>
+      <td>23.0</td>
+      <td>131.0</td>
+      <td>1.13</td>
     </tr>
   </tbody>
 </table>
@@ -1063,7 +1065,7 @@ The effective sample size per chain is smaller than 100 for some parameters.  A 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/251ad1bb08ea1f70c8ca7414ac08b2b6c40c4c4f5220fe1302bb46cd63b8e12a.png" src="_images/251ad1bb08ea1f70c8ca7414ac08b2b6c40c4c4f5220fe1302bb46cd63b8e12a.png" />
+<img alt="_images/b5f8d4ae35e5f0457016abaf85faec41f6e71f5826b9f9f8fad99ed777b93974.png" src="_images/b5f8d4ae35e5f0457016abaf85faec41f6e71f5826b9f9f8fad99ed777b93974.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1105,15 +1107,15 @@ The effective sample size per chain is smaller than 100 for some parameters.  A 
   <tbody>
     <tr>
       <th>N</th>
-      <td>494.968</td>
-      <td>54.767</td>
-      <td>410.0</td>
-      <td>584.0</td>
-      <td>5.985</td>
-      <td>4.051</td>
-      <td>84.0</td>
-      <td>184.0</td>
-      <td>1.06</td>
+      <td>491.111</td>
+      <td>59.044</td>
+      <td>395.0</td>
+      <td>588.0</td>
+      <td>12.049</td>
+      <td>3.917</td>
+      <td>23.0</td>
+      <td>131.0</td>
+      <td>1.13</td>
     </tr>
   </tbody>
 </table>
@@ -1136,7 +1138,7 @@ Here are the posterior distributions of the two models (the dashed line is the t
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/afb5f3718ad57605afac99c01e6c4b01f4ae9cc100483baee96afd1b722b3ad0.png" src="_images/afb5f3718ad57605afac99c01e6c4b01f4ae9cc100483baee96afd1b722b3ad0.png" />
+<img alt="_images/0e18a60d73650534f53ba1b7d3664a9716fb5faf30da3162351842bf3760a31e.png" src="_images/0e18a60d73650534f53ba1b7d3664a9716fb5faf30da3162351842bf3760a31e.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1187,9 +1189,9 @@ Here are the posterior distributions of the two models (the dashed line is the t
     </tr>
     <tr>
       <th>Heterogeneity</th>
-      <td>494.968</td>
-      <td>410.0</td>
-      <td>584.0</td>
+      <td>491.111</td>
+      <td>395.0</td>
+      <td>588.0</td>
     </tr>
   </tbody>
 </table>
@@ -1218,7 +1220,7 @@ So the upper tail of <code class="docutils literal notranslate"><span class="pre
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sensitivity</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">scale</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">scale</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]:</span>
     <span class="n">idata_s</span> <span class="o">=</span> <span class="n">fit_heterogeneity</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata_s</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">],</span> <span class="n">hdi_prob</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
     <span class="n">sensitivity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -1287,27 +1289,27 @@ The effective sample size per chain is smaller than 100 for some parameters.  A 
   <tbody>
     <tr>
       <th>0</th>
-      <td>0.5</td>
-      <td>476.9</td>
-      <td>382.0</td>
-      <td>558.0</td>
-      <td>0.8</td>
+      <td>1.0</td>
+      <td>485.8</td>
+      <td>398.0</td>
+      <td>561.0</td>
+      <td>0.9</td>
     </tr>
     <tr>
       <th>1</th>
+      <td>2.0</td>
+      <td>500.1</td>
+      <td>418.0</td>
+      <td>594.0</td>
       <td>1.0</td>
-      <td>494.4</td>
-      <td>403.0</td>
-      <td>572.0</td>
-      <td>0.9</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>2.0</td>
-      <td>493.3</td>
-      <td>383.0</td>
-      <td>571.0</td>
-      <td>0.9</td>
+      <td>4.0</td>
+      <td>506.5</td>
+      <td>410.0</td>
+      <td>592.0</td>
+      <td>1.0</td>
     </tr>
   </tbody>
 </table>
@@ -1322,7 +1324,7 @@ The effective sample size per chain is smaller than 100 for some parameters.  A 
 <p>It also demonstrates the impact of AI tools on the development process for Bayesian models. The models in this example are moderately complex. Both of them use a <code class="docutils literal notranslate"><span class="pre">Potential</span></code> to compute a custom likelihood function, and the second involves array operations that might take some time to write, test, and debug. Using various AI tools, I was able to get both models working quickly – which allowed time to inspect, test, and refine them.
 And then I was able to test a few variations to make the models simpler and easier to explain.</p>
 <p>I’m not sure I would say it was easy – this kind of work still requires a fundamental understanding of Bayesian statistics and PyMC. But it is a lot easier than it used to be!</p>
-<p>Copyright 2025 Allen B. Downey</p>
+<p>Copyright 2026 Allen B. Downey</p>
 <p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
 </section>
 </section>
