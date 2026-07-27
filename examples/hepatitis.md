@@ -19,28 +19,30 @@ You can order print and ebook versions of *Think Bayes 2e* from
 
 # Tracking an Outbreak with Mark and Recapture
 
-In epidemiology, the true number of people infected in an outbreak is often larger than the number of cases that appear on any official list.
-If we have several incomplete lists, and we can match individuals across them, the pattern of overlaps is informative: few repeats suggest many missing cases; many repeats suggest we have seen most of the cases.
+Bayesian statistics is not as hard as people think -- you don't need a graduate degree in statistics to get started, and with a computational approach, you don't need a lot of math.
+And with AI tools getting better and better, working with Bayesian methods is a lot easier than it used to be.
 
-The key to this approach is [mark and recapture modeling](https://en.wikipedia.org/wiki/Mark_and_recapture), a method originally developed for ecology, but applicable in many other domains.
+As an example, I'll use an exercise from Chapter 15 of [*Think Bayes*](https://allendowney.github.io/ThinkBayes2/chap15.html), which is about [mark and recapture modeling](https://en.wikipedia.org/wiki/Mark_and_recapture), a method originally developed for ecology, but applicable in many other domains.
+
+In epidemiology, we can use mark and recapture to estimate the number of cases in a disease outbreak. For example, we might have several lists of cases from different sources. The lists are almost certainly incomplete, so we would like to estimate the total number of cases, including cases that don't appear on any of the lists.
+
+If we can match individuals across lists, we can count the number of cases that appear on multiple lists. And the pattern of overlaps is informative: few repeats suggest many missing cases; many repeats suggest we have seen most of the cases.
+
 In [this excellent paper](https://doi.org/10.1002/9781118445112.stat04855.pub2), 
-Anne Chao reviews the approach and presents an example: a hepatitis A outbreak among students at a college in northern Taiwan in 1995.
+Anne Chao reviews this approach and presents an example: a hepatitis A outbreak among students at a college in northern Taiwan in 1995.
 
+Three lists of cases were available:
 
-Three incomplete lists of cases were available:
+1. List P (135 cases): serum tests from the Institute of Preventive Medicine of Taiwan.
+2. List Q (122 cases): cases reported by local hospitals to the National Quarantine Service.
+3. List E (126 cases): questionnaires collected by epidemiologists.
 
-1. **P-list** (135 cases): serum tests from the Institute of Preventive Medicine of Taiwan.
-2. **Q-list** (122 cases): cases reported by local hospitals to the National Quarantine Service.
-3. **E-list** (126 cases): questionnaires collected by epidemiologists.
-
-Across the three lists, 271 distinct students were identified.
+Across the three lists, there were 271 distinct students.
 The question is how many infected students were never listed.
 
-
-In Chapter 15 of [*Think Bayes*](https://allendowney.github.io/ThinkBayes2/chap15.html), I used this problem as an exercise.
-The solution there uses a discrete grid over two parameters: the total number of infections, `N`, and a shared probability, `p`, that any case appears on any given list.
-But this simple model is limited and, as we'll see, it systematically underestimates the number of cases.
-Then, we'll try a more realistic model and we'll see that the results are better.
+To find an answer, we'll try two models: a simple one that assumes all students are equally likely to appear on a given list, and a more realistic model that assumes some cases are more detectable than others.
+We'll see that the first model tends to underestimate the number of cases.
+The second model is better!
 
 [Click here to run this notebook on Colab](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/hepatitis.ipynb).
 
@@ -68,8 +70,10 @@ download('https://github.com/AllenDowney/ThinkBayes2/raw/master/soln/utils.py')
 ```
 
 ```python tags=["remove-cell"]
+# Make sure we have PyMC and arviz
 try:
-    import pymc as pm
+    import pymc
+    import arviz
 except ImportError:
     !pip install pymc arviz
 ```
@@ -95,7 +99,7 @@ set_pyplot_params()
 
 ## The Data
 
-We can summarize the data by listing the number of cases that appeared on all three lists, denoted `k111`, the number that appear on each combination of lists, and the number that appear on none of the lists, `k000`. 
+The data we need are in Chao's paper, summarized by listing the number of cases that appeared on all three lists, and the number that appear on each combination of lists.
 
 ```
 P  Q  E   count
@@ -109,7 +113,7 @@ P  Q  E   count
 0  0  0   ??
 ```
 
-Of course `k000` is unknown. That's what we'll estimate!
+The last entry, which we'll denote `k000`, is the number of cases that don't appear on any list. That's what we'll estimate!
 
 Here's the data in array form.
 
@@ -120,8 +124,8 @@ num_seen = observed.sum()
 num_seen
 ```
 
-So 271 distinct cases appear on at least one list.
-Once we estimate `k000`, we can compute `N = num_seen + k000`.
+The number of cases that appear on at least one list, `num_seen`, is 271. 
+Once we estimate `k000`, we can compute the total number of cases, `N = num_seen + k000`.
 
 
 ## Homogeneous model
@@ -210,7 +214,7 @@ And here's the estimated value of `N` with a 90% CI.
 az.summary(idata, var_names=["N"], hdi_prob=0.9)
 ```
 
-The posterior mean, 381, is consistent with Chao’s independence estimator `N̂0` and with the solution in Think Bayes.
+The posterior mean, about 385, is consistent with Chao’s independence estimator `N̂0` and with the solution in Think Bayes.
 Unfortunately, it turns out to be too low. A later campus-wide serum screen put the true number of infections around 545.
 
 The homogeneous model treats each infected student as equally likely to appear on a given list.
@@ -240,10 +244,13 @@ A person with high $z_k$ is more likely to appear on more than one list; people 
 To implement this model, we don't need a latent variable for every person.
 Instead, we'll assume there are 21 detectability levels, `z_k`, and assign each level a weight, `w_k`, that represents the fraction of people in the population at that level.
 Then we can compute the cell probabilities using a weighted sum of the cell probabilities conditioned on `z_k`.
+As an example, here is the probability for cell 101:
 
-$$\pi_{abc} = \sum_k w_k \, P(abc \mid z_k)$$
+$$\pi_{101} = \sum_k w_k \, P(101 \mid z_k)$$
 
-We'll precompute the values of `z` and the corresponding weights (using the PDF of a normal distribution to make a bell curve).
+And similarly for the other cells.
+
+Before we build the model, we'll precompute the values of $z$ and the corresponding weights (using the PDF of a normal distribution to make a bell curve).
 
 ```python
 z = np.linspace(-4, 4, 21)
@@ -264,7 +271,7 @@ Now here's a function that builds the model.
 The argument `sigma_prior_scale` is the scale of the half-normal prior on $\sigma$; we'll vary it later to check sensitivity.
 
 ```python
-def make_heterogeneity_model(sigma_prior_scale=1):
+def make_heterogeneity_model(sigma_prior_scale=2):
     with pm.Model(coords=coords) as model:
         alpha = pm.Normal("alpha", mu=0, sigma=1.5, dims="list")
         sigma = pm.HalfNormal("sigma", sigma=sigma_prior_scale)
@@ -339,7 +346,7 @@ decorate()
 az.summary(idata_het, var_names=["N"], hdi_prob=0.9)
 ```
 
-The mean is much closer to the true value, 545.
+The mean is closer to the true value, 545.
 And the 90% CI contains the true value.
 
 But the price we pay for a more flexible model is a wider CI.
@@ -374,7 +381,7 @@ With only seven observed cells the baselines $\alpha_j$, and $\sigma$ can trade 
 Larger $\sigma$ creates a subgroup with low probability of detection, which can support a larger unseen population.
 So the upper tail of `N` may be prior-sensitive.
 
-To check, we'll test a few values of $\sigma_prior_scale$, which controls the width of the prior distribution of `\sigma`.
+To check, we'll test a few values of `sigma_prior_scale`, which controls the width of the prior distribution of $\sigma$.
 
 ```python
 def fit_heterogeneity(sigma_prior_scale, random_seed=42):
@@ -388,7 +395,7 @@ def fit_heterogeneity(sigma_prior_scale, random_seed=42):
 
 ```python
 sensitivity = []
-for scale in [0.5, 1.0, 2.0]:
+for scale in [1.0, 2.0, 4.0]:
     idata_s = fit_heterogeneity(scale)
     s = az.summary(idata_s, var_names=["N", "sigma"], hdi_prob=0.9)
     sensitivity.append(
@@ -418,7 +425,7 @@ And then I was able to test a few variations to make the models simpler and easi
 I'm not sure I would say it was easy -- this kind of work still requires a fundamental understanding of Bayesian statistics and PyMC. But it is a lot easier than it used to be!
 
 <!-- #region tags=["remove-print"] -->
-Copyright 2025 Allen B. Downey
+Copyright 2026 Allen B. Downey
 
 License: [Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 <!-- #endregion -->
