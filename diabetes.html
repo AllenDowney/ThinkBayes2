@@ -1,0 +1,1502 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Counting Diabetes Cases with Mark and Recapture &#8212; Think Bayes</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'diabetes';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Tracking an Outbreak with Mark and Recapture" href="hepatitis.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    Think Bayes 2
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Front Matter</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">1. Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">2. Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">3. Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">4. Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">5. Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">6. Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">7. Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">8. Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">9. Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">10. Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">11. Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">12. Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">13. Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">14. Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">15. Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">16. Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">17. Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">18. Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19_v3.html">19. MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">20. Approximate Bayesian Computation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redline_pymc.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bookstore.html">How Many Books?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beta_binomial.html">The All-Knowing Cube of Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zipf.html">What’s a chartist?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bread.html">The Poincaré Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cancer.html">Cancer Survival Rates Are Misleading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raven.html">The Raven Paradox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frog.html">The Frog Puzzle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hepatitis.html">Tracking an Outbreak with Mark and Recapture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Counting Diabetes Cases with Mark and Recapture</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/diabetes.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Counting Diabetes Cases with Mark and Recapture</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-data">The Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#homogeneous-model">Homogeneous model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#individual-heterogeneity">Individual heterogeneity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sensitivity-to-priors">Sensitivity to Priors</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <p>You can order print and ebook versions of <em>Think Bayes 2e</em> from
+<a class="reference external" href="https://bookshop.org/a/98697/9781492089469">Bookshop.org</a> and
+<a class="reference external" href="https://amzn.to/334eqGo">Amazon</a>.</p>
+<section id="counting-diabetes-cases-with-mark-and-recapture">
+<h1>Counting Diabetes Cases with Mark and Recapture<a class="headerlink" href="#counting-diabetes-cases-with-mark-and-recapture" title="Link to this heading">#</a></h1>
+<p>In epidemiology, the true number of people with a condition is often larger than the number who appear on any official list.
+If we have several incomplete lists, and we can match individuals across them, the pattern of overlaps is informative: few repeats suggest many missing cases; many repeats suggest we have seen most of the cases.</p>
+<p>The key to this approach is <a class="reference external" href="https://en.wikipedia.org/wiki/Mark_and_recapture">mark and recapture modeling</a>, a method originally developed for ecology, but applicable in many other domains.
+In <a class="reference external" href="https://doi.org/10.1002/9781118445112.stat04855.pub2">this excellent paper</a>,
+Anne Chao reviews the approach and presents two examples.
+Here we use the second: counting people with diabetes in an Italian community, based on data collected by Bruno et al. (1994).</p>
+<p>Four incomplete lists of cases were available:</p>
+<ol class="arabic simple">
+<li><p>Clinic (1754 cases): diabetic clinic and/or family physician visits.</p></li>
+<li><p>Hospital (452 cases): hospital discharges.</p></li>
+<li><p>Rx (1135 cases): prescriptions.</p></li>
+<li><p>Supplies (173 cases): purchases of reagent strips and insulin syringes.</p></li>
+</ol>
+<p>Across the four lists, 2069 distinct people were identified.
+Despite active case finding, Bruno et al. concluded that some people with diabetes were still missed.
+The question is how many.</p>
+<p>Compared with the three-list hepatitis A example in Chao’s paper (and in the companion notebook <code class="docutils literal notranslate"><span class="pre">hepatitis.ipynb</span></code>), this dataset has a high overlapping fraction (sample coverage about 80%).
+Chao’s recommended coverage-based estimate is <code class="docutils literal notranslate"><span class="pre">N̂</span> <span class="pre">≈</span> <span class="pre">2609</span></code> (95% CI about 2477–2784), versus an independence-based <code class="docutils literal notranslate"><span class="pre">N̂0</span> <span class="pre">≈</span> <span class="pre">2272</span></code>.
+Pairwise diagnostics also flag strong positive dependence involving the Supplies list (especially with Hospital and Rx).</p>
+<p>We’ll fit the same two Bayesian models as in the hepatitis notebook — homogeneous detection, then individual heterogeneity — adapted to four lists, and compare the posteriors to Chao’s estimates.</p>
+<p><a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/diabetes.ipynb">Click here to run this notebook on Colab</a>.</p>
+<section id="the-data">
+<h2>The Data<a class="headerlink" href="#the-data" title="Link to this heading">#</a></h2>
+<p>We can summarize the data by listing the number of cases in each of the <span class="math notranslate nohighlight">\(2^4 - 1 = 15\)</span> observable cells (all patterns except never listed).
+Following Chao’s Table 2, the four list indicators are Clinic, Hospital, Rx, and Supplies.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>C  H  R  S   count
+1  1  1  1    58
+1  1  1  0   157
+1  1  0  1    18
+1  1  0  0   104
+1  0  1  1    46
+1  0  1  0   650
+1  0  0  1    12
+1  0  0  0   709
+0  1  1  1    14
+0  1  1  0    20
+0  1  0  1     7
+0  1  0  0    74
+0  0  1  1     8
+0  0  1  0   182
+0  0  0  1    10
+0  0  0  0    ??
+</pre></div>
+</div>
+<p>Of course the all-zero cell is unknown. That’s what we’ll estimate!</p>
+<p>For the models below, we store the 15 observed counts in the same order as <code class="docutils literal notranslate"><span class="pre">itertools.product([0,</span> <span class="pre">1],</span> <span class="pre">repeat=4)</span></code> excluding <code class="docutils literal notranslate"><span class="pre">(0,0,0,0)</span></code> — that is, binary counting from <code class="docutils literal notranslate"><span class="pre">0001</span></code> through <code class="docutils literal notranslate"><span class="pre">1111</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">product</span>
+
+<span class="n">patterns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">product</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">4</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">patterns</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0., 0., 0., 0.],
+       [0., 0., 0., 1.],
+       [0., 0., 1., 0.],
+       [0., 0., 1., 1.],
+       [0., 1., 0., 0.],
+       [0., 1., 0., 1.],
+       [0., 1., 1., 0.],
+       [0., 1., 1., 1.],
+       [1., 0., 0., 0.],
+       [1., 0., 0., 1.],
+       [1., 0., 1., 0.],
+       [1., 0., 1., 1.],
+       [1., 1., 0., 0.],
+       [1., 1., 0., 1.],
+       [1., 1., 1., 0.],
+       [1., 1., 1., 1.]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cell counts for patterns 0001 … 1111 (k0000 unknown)</span>
+<span class="n">observed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">182</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">74</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">709</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">650</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">157</span><span class="p">,</span> <span class="mi">58</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">num_seen</span> <span class="o">=</span> <span class="n">observed</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">num_seen</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2069
+</pre></div>
+</div>
+</div>
+</div>
+<p>So 2069 distinct cases appear on at least one list.
+Once we estimate <code class="docutils literal notranslate"><span class="pre">k0000</span></code>, we can compute <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">=</span> <span class="pre">num_seen</span> <span class="pre">+</span> <span class="pre">k0000</span></code>.</p>
+</section>
+<section id="homogeneous-model">
+<h2>Homogeneous model<a class="headerlink" href="#homogeneous-model" title="Link to this heading">#</a></h2>
+<p>We’ll start with what I’ll call the homogeneous model, because it assumes that every person with diabetes has the same probability of appearing on a given list — but different probabilities for the four lists.</p>
+<p>With that assumption, the probability of each of the 16 capture patterns is the product of list probabilities and their complements (see the model below).</p>
+<p>For the prior distribution of <code class="docutils literal notranslate"><span class="pre">k0000</span></code> we’ll use a Poisson distribution with a weakly informative hyperprior on the Poisson mean.
+For the list probabilities, the prior is a Beta distribution with parameters (1, 1), which is uniform from 0 to 1.</p>
+<p>Here’s the model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">coords</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;list&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Clinic&quot;</span><span class="p">,</span> <span class="s2">&quot;Hospital&quot;</span><span class="p">,</span> <span class="s2">&quot;Rx&quot;</span><span class="p">,</span> <span class="s2">&quot;Supplies&quot;</span><span class="p">]}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">)</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">HalfNormal</span><span class="p">(</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+    <span class="n">k0000</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s2">&quot;k0000&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">num_seen</span> <span class="o">+</span> <span class="n">k0000</span><span class="p">)</span>
+
+    <span class="c1"># Probability of each pattern under list-wise independence given p</span>
+    <span class="c1"># shape: cell × list</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">patterns</span>
+    <span class="n">cell_probs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span>
+        <span class="n">p</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">**</span> <span class="n">y</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span><span class="p">),</span>
+        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">k0000</span><span class="p">,</span> <span class="o">*</span><span class="n">observed</span><span class="p">])</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">Potential</span><span class="p">(</span>
+        <span class="s2">&quot;likelihood&quot;</span><span class="p">,</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">logp</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">Multinomial</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">cell_probs</span><span class="p">),</span> <span class="n">counts</span><span class="p">),</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>As a technical note, you might wonder why we can’t write the likelihood like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Multinomial</span><span class="p">(</span><span class="s2">&quot;likelihood&quot;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">cell_probs</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">counts</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The problem is that the value we pass as <code class="docutils literal notranslate"><span class="pre">observed</span></code> has to be constant — it can’t be a random variable or contain any random variables — and <code class="docutils literal notranslate"><span class="pre">counts</span></code> contains the random variable <code class="docutils literal notranslate"><span class="pre">k0000</span></code>.
+Instead we use <code class="docutils literal notranslate"><span class="pre">Potential</span></code> to compute the log likelihood of the data directly.</p>
+<p>Here’s a graphical representation of the model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pm</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/1f5a76050d0943e306c7c5ac561d2450824cee39f89c536c14401c9fc7b78417.svg" src="_images/1f5a76050d0943e306c7c5ac561d2450824cee39f89c536c14401c9fc7b78417.svg" />
+</div>
+</div>
+<p>Notice that <code class="docutils literal notranslate"><span class="pre">k0000</span></code> affects the likelihood of the data in two ways: directly as one of the counts and indirectly as a term of <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">=</span> <span class="pre">num_seen</span> <span class="pre">+</span> <span class="pre">k0000</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">idata</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="n">tune</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">target_accept</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiprocess sampling (4 chains in 4 jobs)
+CompoundStep
+&gt;NUTS: [p, mu]
+&gt;Metropolis: [k0000]
+</pre></div>
+</div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c6c24e6da0be4f7f82eb7eeb530c4cb6", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 2_000 tune and 2_000 draw iterations (8_000 + 8_000 draws total) took 6 seconds.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="s2">&quot;k0000&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+      <th>sd</th>
+      <th>hdi_3%</th>
+      <th>hdi_97%</th>
+      <th>mcse_mean</th>
+      <th>mcse_sd</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+      <th>r_hat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>N</th>
+      <td>2251.390</td>
+      <td>18.341</td>
+      <td>2218.000</td>
+      <td>2285.000</td>
+      <td>0.878</td>
+      <td>0.468</td>
+      <td>436.0</td>
+      <td>766.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>p[Clinic]</th>
+      <td>0.779</td>
+      <td>0.011</td>
+      <td>0.760</td>
+      <td>0.800</td>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>1015.0</td>
+      <td>2227.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>p[Hospital]</th>
+      <td>0.201</td>
+      <td>0.009</td>
+      <td>0.185</td>
+      <td>0.217</td>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>6566.0</td>
+      <td>5505.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>p[Rx]</th>
+      <td>0.504</td>
+      <td>0.011</td>
+      <td>0.483</td>
+      <td>0.526</td>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>2405.0</td>
+      <td>3973.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>p[Supplies]</th>
+      <td>0.077</td>
+      <td>0.006</td>
+      <td>0.067</td>
+      <td>0.088</td>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>8420.0</td>
+      <td>5729.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>mu</th>
+      <td>183.470</td>
+      <td>22.785</td>
+      <td>140.647</td>
+      <td>226.672</td>
+      <td>0.942</td>
+      <td>0.422</td>
+      <td>585.0</td>
+      <td>1293.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>k0000</th>
+      <td>182.390</td>
+      <td>18.341</td>
+      <td>149.000</td>
+      <td>216.000</td>
+      <td>0.878</td>
+      <td>0.468</td>
+      <td>436.0</td>
+      <td>766.0</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The model samples reasonably well. Here are the posterior distributions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">])</span>
+<span class="n">decorate</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/03ef5260a3ea8e7ffa5ec22c5dd169979331b8ba8166cafd2c305111ee74258c.png" src="_images/03ef5260a3ea8e7ffa5ec22c5dd169979331b8ba8166cafd2c305111ee74258c.png" />
+</div>
+</div>
+<p>And here’s the estimated value of <code class="docutils literal notranslate"><span class="pre">N</span></code> with a 90% CI.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">],</span> <span class="n">hdi_prob</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+      <th>sd</th>
+      <th>hdi_5%</th>
+      <th>hdi_95%</th>
+      <th>mcse_mean</th>
+      <th>mcse_sd</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+      <th>r_hat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>N</th>
+      <td>2251.39</td>
+      <td>18.341</td>
+      <td>2222.0</td>
+      <td>2281.0</td>
+      <td>0.878</td>
+      <td>0.468</td>
+      <td>436.0</td>
+      <td>766.0</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The posterior mean is about 2251, with a 90% HDI from about 2222 to 2281 — close to Chao’s independence estimator <code class="docutils literal notranslate"><span class="pre">N̂0</span> <span class="pre">≈</span> <span class="pre">2272</span></code>.
+That estimate ignores dependence among lists.
+Chao’s pairwise Petersen/Chapman numbers already suggest strong positive dependence for some pairs (especially Hospital–Supplies and Rx–Supplies), so the homogeneous model is expected to underestimate <code class="docutils literal notranslate"><span class="pre">N</span></code> relative to the dependence-adjusted coverage estimator <code class="docutils literal notranslate"><span class="pre">N̂</span> <span class="pre">≈</span> <span class="pre">2609</span></code>.
+And in this example, it does: 2251 is well below 2609.</p>
+<p>The homogeneous model treats each person as equally likely to appear on a given list.
+It also assumes that, after accounting for the different coverage of the four lists, appearing on one list provides no information about appearing on another.
+Both assumptions are questionable.</p>
+<p>In reality, some people are easier to detect than others — for example, because they have more contact with clinics, hospitals, or pharmacies.
+Such people would be more likely to appear on several lists, while others might appear on none.</p>
+<p>If that’s true, the data will contain more repeated observations than the homogeneous model expects.
+In that case, the homogeneous model interprets the observed overlap as evidence that the lists have covered most of the population, and it tends to underestimate the number of cases.</p>
+<p>So let’s build a better model.</p>
+</section>
+<section id="individual-heterogeneity">
+<h2>Individual heterogeneity<a class="headerlink" href="#individual-heterogeneity" title="Link to this heading">#</a></h2>
+<p>We’ll assume that each person has a level of detectability, <span class="math notranslate nohighlight">\(z_k\)</span>, and each list has a baseline detection level <span class="math notranslate nohighlight">\(\alpha_j\)</span>.
+For a person with detectability <span class="math notranslate nohighlight">\(z_k\)</span>, the chance they appear on list <code class="docutils literal notranslate"><span class="pre">j</span></code> is <code class="docutils literal notranslate"><span class="pre">p_{kj}</span></code>, where</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{logit}(p_{kj}) = \alpha_j + \sigma z_k\]</div>
+<p>Here <span class="math notranslate nohighlight">\(\sigma\)</span> controls how much influence individual detectability has, compared to the baseline detection levels.
+A person with high <span class="math notranslate nohighlight">\(z_k\)</span> is more likely to appear on more than one list; people with low detectability are more likely to be missed entirely.</p>
+<p>To implement this model, we don’t need a latent variable for every person.
+Instead, we’ll assume there are 21 detectability levels, <code class="docutils literal notranslate"><span class="pre">z_k</span></code>, and assign each level a weight, <code class="docutils literal notranslate"><span class="pre">w_k</span></code>, that represents the fraction of people in the population at that level.
+Then we can compute the cell probabilities using a weighted sum of the cell probabilities conditioned on <code class="docutils literal notranslate"><span class="pre">z_k</span></code>.</p>
+<div class="math notranslate nohighlight">
+\[\pi_{s} = \sum_k w_k \, P(s \mid z_k)\]</div>
+<p>We’ll precompute the values of <code class="docutils literal notranslate"><span class="pre">z</span></code> and the corresponding weights (using the PDF of a normal distribution to make a bell curve).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">21</span><span class="p">)</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="n">weights</span> <span class="o">/=</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The capture patterns were already defined above (<code class="docutils literal notranslate"><span class="pre">product</span></code> over four lists).
+Now here’s a function that builds the model.
+The argument <code class="docutils literal notranslate"><span class="pre">sigma_prior_scale</span></code> is the scale of the half-normal prior on <span class="math notranslate nohighlight">\(\sigma\)</span>; we’ll vary it later to check sensitivity.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_heterogeneity_model</span><span class="p">(</span><span class="n">sigma_prior_scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">)</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">HalfNormal</span><span class="p">(</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma_prior_scale</span><span class="p">)</span>
+
+        <span class="c1"># Probability someone with z=0 appears on each list</span>
+        <span class="n">p_typical</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span>
+            <span class="s2">&quot;p_typical&quot;</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;list&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Probability someone with each level of z appears on each list</span>
+        <span class="c1"># shape: level × list</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="n">alpha</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">z</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">p_z</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
+
+        <span class="c1"># Population average probability of appearing on each list</span>
+        <span class="n">p_avg</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span>
+            <span class="s2">&quot;p_avg&quot;</span><span class="p">,</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p_z</span> <span class="o">*</span> <span class="n">weights</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+            <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Probability of each cell for each level of z and list</span>
+        <span class="c1"># shape: cell × level × list</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">cell_prob_given_z</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span>
+            <span class="n">p_z</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">**</span> <span class="n">y</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p_z</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span><span class="p">),</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Mixture over levels of z; shape: cell</span>
+        <span class="n">probs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cell_prob_given_z</span> <span class="o">*</span> <span class="n">weights</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">probs</span> <span class="o">=</span> <span class="n">probs</span> <span class="o">/</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span>
+
+        <span class="c1"># The rest of this model is the same as the previous one</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">HalfNormal</span><span class="p">(</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+        <span class="n">k0000</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s2">&quot;k0000&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">)</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">num_seen</span> <span class="o">+</span> <span class="n">k0000</span><span class="p">)</span>
+
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">k0000</span><span class="p">,</span> <span class="o">*</span><span class="n">observed</span><span class="p">])</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">Potential</span><span class="p">(</span>
+            <span class="s2">&quot;likelihood&quot;</span><span class="p">,</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">logp</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">Multinomial</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">probs</span><span class="p">),</span> <span class="n">counts</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">heterogeneity_model</span> <span class="o">=</span> <span class="n">make_heterogeneity_model</span><span class="p">()</span>
+<span class="n">pm</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">heterogeneity_model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/5b534a73a341a33aff7eb24bac024c6f09720bc05f9f8b24bcd100a1fea2d702.svg" src="_images/5b534a73a341a33aff7eb24bac024c6f09720bc05f9f8b24bcd100a1fea2d702.svg" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">heterogeneity_model</span><span class="p">:</span>
+    <span class="n">idata_het</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="n">tune</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiprocess sampling (4 chains in 4 jobs)
+CompoundStep
+&gt;NUTS: [alpha, sigma, mu]
+&gt;Metropolis: [k0000]
+</pre></div>
+</div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "1ba5618ab4734c9fa3a7e31c7f227ff8", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 2_000 tune and 2_000 draw iterations (8_000 + 8_000 draws total) took 13 seconds.
+The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
+The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
+</pre></div>
+</div>
+</div>
+</div>
+<p>This model doesn’t sample as well — <code class="docutils literal notranslate"><span class="pre">r_hat</span></code> for <code class="docutils literal notranslate"><span class="pre">N</span></code> is a bit high and the effective sample size is modest — but the posterior mean is stable enough for our purposes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span>
+    <span class="n">idata_het</span><span class="p">,</span>
+    <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;p_typical&quot;</span><span class="p">,</span> <span class="s2">&quot;p_avg&quot;</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="s2">&quot;k0000&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+      <th>sd</th>
+      <th>hdi_3%</th>
+      <th>hdi_97%</th>
+      <th>mcse_mean</th>
+      <th>mcse_sd</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+      <th>r_hat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>N</th>
+      <td>2661.309</td>
+      <td>83.139</td>
+      <td>2527.000</td>
+      <td>2823.000</td>
+      <td>13.818</td>
+      <td>3.862</td>
+      <td>35.0</td>
+      <td>209.0</td>
+      <td>1.10</td>
+    </tr>
+    <tr>
+      <th>alpha[Clinic]</th>
+      <td>0.847</td>
+      <td>0.108</td>
+      <td>0.638</td>
+      <td>1.036</td>
+      <td>0.015</td>
+      <td>0.004</td>
+      <td>51.0</td>
+      <td>302.0</td>
+      <td>1.08</td>
+    </tr>
+    <tr>
+      <th>alpha[Hospital]</th>
+      <td>-1.989</td>
+      <td>0.115</td>
+      <td>-2.213</td>
+      <td>-1.784</td>
+      <td>0.016</td>
+      <td>0.004</td>
+      <td>54.0</td>
+      <td>418.0</td>
+      <td>1.07</td>
+    </tr>
+    <tr>
+      <th>alpha[Rx]</th>
+      <td>-0.378</td>
+      <td>0.094</td>
+      <td>-0.551</td>
+      <td>-0.203</td>
+      <td>0.014</td>
+      <td>0.003</td>
+      <td>47.0</td>
+      <td>387.0</td>
+      <td>1.08</td>
+    </tr>
+    <tr>
+      <th>alpha[Supplies]</th>
+      <td>-3.230</td>
+      <td>0.142</td>
+      <td>-3.502</td>
+      <td>-2.978</td>
+      <td>0.019</td>
+      <td>0.003</td>
+      <td>56.0</td>
+      <td>623.0</td>
+      <td>1.06</td>
+    </tr>
+    <tr>
+      <th>sigma</th>
+      <td>1.199</td>
+      <td>0.096</td>
+      <td>1.020</td>
+      <td>1.375</td>
+      <td>0.014</td>
+      <td>0.003</td>
+      <td>49.0</td>
+      <td>306.0</td>
+      <td>1.07</td>
+    </tr>
+    <tr>
+      <th>p_typical[Clinic]</th>
+      <td>0.699</td>
+      <td>0.023</td>
+      <td>0.658</td>
+      <td>0.741</td>
+      <td>0.003</td>
+      <td>0.001</td>
+      <td>51.0</td>
+      <td>302.0</td>
+      <td>1.08</td>
+    </tr>
+    <tr>
+      <th>p_typical[Hospital]</th>
+      <td>0.121</td>
+      <td>0.012</td>
+      <td>0.098</td>
+      <td>0.143</td>
+      <td>0.002</td>
+      <td>0.000</td>
+      <td>54.0</td>
+      <td>418.0</td>
+      <td>1.07</td>
+    </tr>
+    <tr>
+      <th>p_typical[Rx]</th>
+      <td>0.407</td>
+      <td>0.023</td>
+      <td>0.366</td>
+      <td>0.449</td>
+      <td>0.003</td>
+      <td>0.001</td>
+      <td>47.0</td>
+      <td>387.0</td>
+      <td>1.08</td>
+    </tr>
+    <tr>
+      <th>p_typical[Supplies]</th>
+      <td>0.038</td>
+      <td>0.005</td>
+      <td>0.029</td>
+      <td>0.048</td>
+      <td>0.001</td>
+      <td>0.000</td>
+      <td>56.0</td>
+      <td>623.0</td>
+      <td>1.06</td>
+    </tr>
+    <tr>
+      <th>p_avg[Clinic]</th>
+      <td>0.660</td>
+      <td>0.022</td>
+      <td>0.618</td>
+      <td>0.699</td>
+      <td>0.003</td>
+      <td>0.001</td>
+      <td>45.0</td>
+      <td>274.0</td>
+      <td>1.08</td>
+    </tr>
+    <tr>
+      <th>p_avg[Hospital]</th>
+      <td>0.171</td>
+      <td>0.009</td>
+      <td>0.153</td>
+      <td>0.187</td>
+      <td>0.001</td>
+      <td>0.000</td>
+      <td>109.0</td>
+      <td>1055.0</td>
+      <td>1.03</td>
+    </tr>
+    <tr>
+      <th>p_avg[Rx]</th>
+      <td>0.427</td>
+      <td>0.016</td>
+      <td>0.398</td>
+      <td>0.459</td>
+      <td>0.002</td>
+      <td>0.001</td>
+      <td>51.0</td>
+      <td>398.0</td>
+      <td>1.07</td>
+    </tr>
+    <tr>
+      <th>p_avg[Supplies]</th>
+      <td>0.066</td>
+      <td>0.005</td>
+      <td>0.056</td>
+      <td>0.075</td>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>273.0</td>
+      <td>3290.0</td>
+      <td>1.02</td>
+    </tr>
+    <tr>
+      <th>mu</th>
+      <td>591.806</td>
+      <td>85.834</td>
+      <td>443.765</td>
+      <td>754.633</td>
+      <td>13.460</td>
+      <td>3.693</td>
+      <td>40.0</td>
+      <td>261.0</td>
+      <td>1.09</td>
+    </tr>
+    <tr>
+      <th>k0000</th>
+      <td>592.309</td>
+      <td>83.139</td>
+      <td>458.000</td>
+      <td>754.000</td>
+      <td>13.818</td>
+      <td>3.862</td>
+      <td>35.0</td>
+      <td>209.0</td>
+      <td>1.10</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">plot_posterior</span><span class="p">(</span><span class="n">idata_het</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;p_avg&quot;</span><span class="p">])</span>
+<span class="n">decorate</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/b191e932e441fd795e57aa4cb4a81ae96bc41ed03830890820b2499b56da7021.png" src="_images/b191e932e441fd795e57aa4cb4a81ae96bc41ed03830890820b2499b56da7021.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata_het</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">],</span> <span class="n">hdi_prob</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+      <th>sd</th>
+      <th>hdi_5%</th>
+      <th>hdi_95%</th>
+      <th>mcse_mean</th>
+      <th>mcse_sd</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+      <th>r_hat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>N</th>
+      <td>2661.309</td>
+      <td>83.139</td>
+      <td>2528.0</td>
+      <td>2793.0</td>
+      <td>13.818</td>
+      <td>3.862</td>
+      <td>35.0</td>
+      <td>209.0</td>
+      <td>1.1</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Unlike the hepatitis outbreak, there is no campus-wide screen that gives a known true <code class="docutils literal notranslate"><span class="pre">N</span></code>.
+Instead we compare to Chao’s sample-coverage estimates: independence <code class="docutils literal notranslate"><span class="pre">N̂0</span> <span class="pre">≈</span> <span class="pre">2272</span></code> and recommended <code class="docutils literal notranslate"><span class="pre">N̂</span> <span class="pre">≈</span> <span class="pre">2609</span></code> (95% CI about 2477–2784).</p>
+<p>The heterogeneity posterior mean is about 2661, with a 90% HDI from about 2528 to 2793.
+That is much closer to Chao’s <code class="docutils literal notranslate"><span class="pre">N̂</span></code> than the homogeneous model was, and the interval overlaps Chao’s reported confidence interval.
+As in the hepatitis example, allowing individual variation in detectability pulls <code class="docutils literal notranslate"><span class="pre">N</span></code> upward once the lists share more repeats than a homogeneous model can explain.</p>
+<p>Here are the posterior distributions of the two models (dashed lines mark Chao’s <code class="docutils literal notranslate"><span class="pre">N̂0</span></code> and <code class="docutils literal notranslate"><span class="pre">N̂</span></code>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">plot_density</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">idata</span><span class="p">,</span> <span class="n">idata_het</span><span class="p">],</span>
+    <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">],</span>
+    <span class="n">data_labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Homogeneous&quot;</span><span class="p">,</span> <span class="s2">&quot;Heterogeneous&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">2272</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Chao N̂0&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">2609</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Chao N̂&quot;</span><span class="p">)</span>
+<span class="n">decorate</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Posterior of N&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/e95f9e3123284e75a3d8e04ae970373b8b7f054e7e999cf543bd4d45e5e7ebab.png" src="_images/e95f9e3123284e75a3d8e04ae970373b8b7f054e7e999cf543bd4d45e5e7ebab.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summary_ind</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">],</span> <span class="n">hdi_prob</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">summary_het</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata_het</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">],</span> <span class="n">hdi_prob</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">summary_ind</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">],</span> <span class="n">summary_het</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">]],</span>
+        <span class="s2">&quot;hdi_5%&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">summary_ind</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;hdi_5%&quot;</span><span class="p">],</span> <span class="n">summary_het</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;hdi_5%&quot;</span><span class="p">]],</span>
+        <span class="s2">&quot;hdi_95%&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">summary_ind</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;hdi_95%&quot;</span><span class="p">],</span> <span class="n">summary_het</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;hdi_95%&quot;</span><span class="p">]],</span>
+    <span class="p">},</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Homogeneous&quot;</span><span class="p">,</span> <span class="s2">&quot;Heterogeneous&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+      <th>hdi_5%</th>
+      <th>hdi_95%</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Homogeneous</th>
+      <td>2251.390</td>
+      <td>2222.0</td>
+      <td>2281.0</td>
+    </tr>
+    <tr>
+      <th>Heterogeneous</th>
+      <td>2661.309</td>
+      <td>2528.0</td>
+      <td>2793.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="sensitivity-to-priors">
+<h2>Sensitivity to Priors<a class="headerlink" href="#sensitivity-to-priors" title="Link to this heading">#</a></h2>
+<p>With fifteen observed cells the baselines <span class="math notranslate nohighlight">\(\alpha_j\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span> can still trade off.
+Larger <span class="math notranslate nohighlight">\(\sigma\)</span> creates a subgroup with low probability of detection, which can support a larger unseen population.
+So the upper tail of <code class="docutils literal notranslate"><span class="pre">N</span></code> may be prior-sensitive.</p>
+<p>To check, we’ll test a few values of <code class="docutils literal notranslate"><span class="pre">sigma_prior_scale</span></code>, which controls the width of the prior distribution of <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">fit_heterogeneity</span><span class="p">(</span><span class="n">sigma_prior_scale</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">make_heterogeneity_model</span><span class="p">(</span><span class="n">sigma_prior_scale</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+        <span class="n">idata_s</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+            <span class="mi">1000</span><span class="p">,</span> <span class="n">tune</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">,</span> <span class="n">progressbar</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">idata_s</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sensitivity</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">scale</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]:</span>
+    <span class="n">idata_s</span> <span class="o">=</span> <span class="n">fit_heterogeneity</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata_s</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">],</span> <span class="n">hdi_prob</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+    <span class="n">sensitivity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;HalfNormal scale&quot;</span><span class="p">:</span> <span class="n">scale</span><span class="p">,</span>
+            <span class="s2">&quot;N mean&quot;</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;N 5%&quot;</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;hdi_5%&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;N 95%&quot;</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;hdi_95%&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;sigma mean&quot;</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiprocess sampling (4 chains in 4 jobs)
+CompoundStep
+&gt;NUTS: [alpha, sigma, mu]
+&gt;Metropolis: [k0000]
+Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 5 seconds.
+The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
+The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
+Multiprocess sampling (4 chains in 4 jobs)
+CompoundStep
+&gt;NUTS: [alpha, sigma, mu]
+&gt;Metropolis: [k0000]
+Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 5 seconds.
+The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
+The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
+Multiprocess sampling (4 chains in 4 jobs)
+CompoundStep
+&gt;NUTS: [alpha, sigma, mu]
+&gt;Metropolis: [k0000]
+Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 5 seconds.
+The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
+The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>HalfNormal scale</th>
+      <th>N mean</th>
+      <th>N 5%</th>
+      <th>N 95%</th>
+      <th>sigma mean</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.5</td>
+      <td>2644.5</td>
+      <td>2506.0</td>
+      <td>2759.0</td>
+      <td>1.2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.0</td>
+      <td>2683.3</td>
+      <td>2545.0</td>
+      <td>2832.0</td>
+      <td>1.2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2.0</td>
+      <td>2676.6</td>
+      <td>2517.0</td>
+      <td>2809.0</td>
+      <td>1.2</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Across these scales, the posterior mean of <code class="docutils literal notranslate"><span class="pre">N</span></code> stays in a narrow range (about 2645–2683), and the mean of <code class="docutils literal notranslate"><span class="pre">sigma</span></code> is about 1.2 in each case.
+So for this dataset, once the prior on <code class="docutils literal notranslate"><span class="pre">sigma</span></code> is wide enough to allow meaningful heterogeneity, the results are not very sensitive to the exact scale.</p>
+<p>Copyright 2026 Allen B. Downey</p>
+<p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="hepatitis.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Tracking an Outbreak with Mark and Recapture</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-data">The Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#homogeneous-model">Homogeneous model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#individual-heterogeneity">Individual heterogeneity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sensitivity-to-priors">Sensitivity to Priors</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
