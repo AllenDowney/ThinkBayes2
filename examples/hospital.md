@@ -86,7 +86,7 @@ def decorate(**options):
 from empiricaldist import Cdf
 
 def compare_cdf(pmf, sample):
-    pmf.make_cdf().step(label='grid')
+    pmf.make_cdf().plot(label='grid')
     Cdf.from_seq(sample).plot(label='mcmc')
     print(f'grid {pmf.mean():.4f}, mcmc {float(sample.mean()):.4f}')
     decorate()
@@ -134,38 +134,38 @@ data_ks = df['Deaths'].values
 
 Here's a hierarchical model that estimates the death rate for each hospital and simultaneously estimates the distribution of rates across hospitals.
 
-`LogitNormal` is supported on the interval from 0 to 1, but PyMC does not
-assign it a transform automatically, so the sampler would propose values
-outside that range and the model would fail to initialize.
-Passing `default_transform=logodds` puts `xs` on an unconstrained scale, as
-PyMC does automatically for `sigma`.
+Saying that `x` has a logit-normal distribution is the same as saying that
+`logit(x)` is normal, so we can write each rate as
+
+$$x_i = \mathrm{logistic}(\mu + \sigma u_i)$$
+
+where each $u_i$ is a standard normal variate.
+Writing it this way is called a non-centered parameterization, and it samples
+much better than declaring `xs` to be logit-normal directly.
 
 ```python
 import pymc as pm
-from pymc.distributions.transforms import logodds
 
 def make_model():
     with pm.Model() as model:
         mu = pm.Normal('mu', 0, 2)
         sigma = pm.HalfNormal('sigma', sigma=1)
-        xs = pm.LogitNormal('xs', mu=mu, sigma=sigma, shape=len(data_ns),
-                            default_transform=logodds)
+        us = pm.Normal('us', 0, 1, shape=len(data_ns))
+        xs = pm.Deterministic('xs', pm.math.invlogit(mu + sigma * us))
         ks = pm.Binomial('ks', n=data_ns, p=xs, observed=data_ks)
     return model
 ```
 
 ```python
-%time model = make_model()
+model = make_model()
 pm.model_to_graphviz(model)
 ```
 
 ```python
 with model:
-    pred = pm.sample_prior_predictive(1000, random_seed=42)
-    %time trace = pm.sample(500, target_accept=0.97, random_seed=42)
+    pred = pm.sample_prior_predictive(10000, random_seed=42)
+    idata = pm.sample(1000, random_seed=42)
 ```
-
-To be fair, PyMC doesn't like this parameterization much (although I'm not sure why). On most runs, there are a moderate number of divergences. Even so, the results are good enough. 
 
 PyMC returns a `DataTree` with the samples indexed by chain and draw.
 `az.extract` stacks those two dimensions into a single `sample` dimension, which is more convenient here.
@@ -173,27 +173,27 @@ PyMC returns a `DataTree` with the samples indexed by chain and draw.
 ```python
 import arviz as az
 
-post = az.extract(trace)
+post = az.extract(idata)
 prior_sample = az.extract(pred, group='prior')
 ```
 
 Here are the posterior distributions of the hyperparameters.
 
 ```python
-az.plot_dist(trace, var_names=['mu', 'sigma'])
+az.plot_dist(idata, var_names=['mu', 'sigma'])
 ```
 
 And we can extract the posterior distributions of the xs, with one row per hospital.
 
 ```python
-trace_xs = post['xs']
-trace_xs.shape
+post_xs = post['xs']
+post_xs.shape
 ```
 
 As an example, here's the posterior distribution of x for the first hospital.
 
 ```python
-Cdf.from_seq(trace_xs[0]).plot()
+Cdf.from_seq(post_xs[0]).plot()
 decorate(title='Posterior distribution of x for the first hospital',
          xlabel='Death rate', ylabel='CDF')
 ```
@@ -218,13 +218,19 @@ decorate(title='Prior distribution of mu')
 ```python
 from scipy.stats import logistic
 
-sigmas = np.linspace(0.03, 3.6, 90)
+sigmas = np.linspace(0.001, 3.6, 100)
 ps = norm.pdf(sigmas, 0, 1)
 prior_sigma = make_pmf(ps, sigmas, 'sigma')
 
 prior_sigma.plot()
 decorate(title='Prior distribution of sigma')
 ```
+
+The grid for `sigma` has to start above 0, because the distribution of `x`
+is undefined if `sigma` is 0.
+But it should start close to 0: with only 13 hospitals, the data are
+consistent with a small variation between them, so the posterior distribution
+of `sigma` has non-negligible mass near 0.
 
 The following cells confirm that these priors are consistent with the prior samples from PyMC.
 
@@ -493,7 +499,7 @@ compare_cdf(marginal_sigma, post['sigma'])
 
 ```python
 marginal_x = Pmf(marginal(posterior, 2), xs)
-compare_cdf(marginal_x, trace_xs[-1])
+compare_cdf(marginal_x, post_xs[-1])
 ```
 
 ## Parallel updates
@@ -575,7 +581,7 @@ compare_cdf(marginal_sigma, post['sigma'])
 ```
 
 ```python
-compare_cdf(marginal_x, trace_xs[i])
+compare_cdf(marginal_x, post_xs[i])
 ```
 
 ## Compute all marginals
@@ -607,23 +613,60 @@ Here's what the results look like, compared to the results from PyMC.
 for i, ps in enumerate(marginal_xs):
     pmf = Pmf(ps, xs)
     plt.figure()
-    compare_cdf(pmf, trace_xs[i])
+    compare_cdf(pmf, post_xs[i])
     decorate(title=f'Posterior marginal of x for Hospital {i}',
              xlabel='Death rate',
              ylabel='CDF',
-             xlim=[trace_xs[i].min(), trace_xs[i].max()])
+             xlim=[post_xs[i].min(), post_xs[i].max()])
 ```
 
-And here are the percentage differences between the results from the grid algorithm and PyMC. All of them are less than 1%.
+And here are the percentage differences between the results from the grid algorithm and PyMC. All of them are less than 1%, which is comparable to the Monte Carlo error in the PyMC results.
 
 ```python
 for i, ps in enumerate(marginal_xs):
     pmf = Pmf(ps, xs)
-    diff = abs(pmf.mean() - float(trace_xs[i].mean())) / pmf.mean()
+    diff = abs(pmf.mean() - float(post_xs[i].mean())) / pmf.mean()
     print(f'{diff * 100:.2f}%')
 ```
 
-The total time to do all of these computations is about 300 ms, compared to more than 10 seconds to make and run the PyMC model. And PyMC used 4 cores; I only used one.
+The cells above time the steps separately, and some of them -- like the serial
+updates -- are demonstrations rather than part of the final algorithm.
+So here is the whole thing in one function, starting from the grids and the
+data, to see what it actually costs.
+
+```python
+def run_everything(ns, ks):
+    """Run the parallel grid algorithm from scratch."""
+    M, S, X = np.meshgrid(mus, sigmas, xs, indexing='ij')
+    normpdf = np.exp(-((logit(X) - M) / S)**2 / 2) / (X * (1-X))
+    normpdf = divide(normpdf, normpdf.sum(axis=2, keepdims=True))
+
+    hyper_likelihood = np.array([get_hyper(normpdf * binom.pmf(k, n, xs))
+                                 for n, k in zip(ns, ks)])
+    numerator = prior_hyper * hyper_likelihood.prod(axis=0)
+
+    marginal_xs = np.zeros((len(ns), len(xs)))
+    for i, (n, k) in enumerate(zip(ns, ks)):
+        hyper_i = divide(numerator, hyper_likelihood[i])
+        posterior_i = normpdf * hyper_i.reshape(hyper_i.shape + (1,))
+        posterior_i = posterior_i * binom.pmf(k, n, xs)
+        marginal_xs[i] = marginal(posterior_i, 2)
+
+    return marginal_xs
+```
+
+```python
+%time marginal_xs = run_everything(data_ns, data_ks)
+```
+
+That's about half a second, compared to a few seconds for PyMC to draw the
+samples -- and PyMC used four cores, while the grid algorithm used one.
+
+The margin is smaller than it was when I first wrote this notebook in 2021,
+partly because PyMC has gotten faster, and partly because the grid for `sigma`
+is finer than it was, to cover the range near 0.
+But the conclusion is the same: for a model with this structure, the grid
+algorithm is not just practical, it's faster.
 
 The grid algorithm is easy to parallelize, and it's incremental. If you get data from a new hospital, or new data for an existing one, you can:
 
