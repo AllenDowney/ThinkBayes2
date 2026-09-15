@@ -68,6 +68,6 @@ Or use these links to run the notebooks on Colab:
 
 * [Chapter 19](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/notebooks/chap19.ipynb)
 
-* [Chapter 19 updated for PyMC version 5](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/notebooks/chap19_v3.ipynb)
+* [Chapter 19 updated for PyMC version 6](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/notebooks/chap19_v3.ipynb)
 
 * [Chapter 20](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/notebooks/chap20.ipynb)
