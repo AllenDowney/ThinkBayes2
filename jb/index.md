@@ -69,6 +69,40 @@ Or use these links to run the notebooks on Colab:
 
 ## Examples
 
+* [The Red Line Problem](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/notebooks/redline.ipynb)
+
+* [The Red Line Problem with PyMC](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/redline_pymc.ipynb)
+
+* [Estimating Vaccine Efficacy](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/vaccine2.ipynb)
+
+* [Flipping USB Connectors](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/usb.ipynb)
+
+* [The Left Handed Sister Problem](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/sister.ipynb)
+
+* [Bayesian Dice](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/bayes_dice.ipynb)
+
+* [The Emitter-Detector Problem](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/radiation.ipynb)
+
+* [Grid Algorithms for Hierarchical Models](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/hospital.ipynb)
+
+* [Comparing Birth Rates](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/hospital_birth_rate.ipynb)
+
+* [How Many Typos?](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/ok.ipynb)
+
+* [How Many Books?](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/bookstore.ipynb)
+
+* [The All-Knowing Cube of Probability](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/beta_binomial.ipynb)
+
+* [What's a Chartist?](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/zipf.ipynb)
+
+* [The Poincaré Problem](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/bread.ipynb)
+
+* [Cancer Survival Rates Are Misleading](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/cancer.ipynb)
+
+* [The Raven Paradox](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/raven.ipynb)
+
+* [The Frog Puzzle](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/frog.ipynb)
+
 * [Tracking an Outbreak with Mark and Recapture](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/hepatitis.ipynb)
 
 * [Counting Diabetes Cases with Mark and Recapture](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/diabetes.ipynb)
