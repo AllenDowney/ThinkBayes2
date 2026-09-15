@@ -53,11 +53,19 @@ jobs:
         with:
           python-version: "3.12"
 
+      # chap19 calls pm.model_to_graphviz, which needs the graphviz binaries
+      # as well as the Python package. environment.yml gets both from the
+      # conda package python-graphviz; here they install separately.
+      - name: Install Graphviz
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
-          pip install "pymc>=6" "arviz>=1"
+          pip install "pymc>=6" "arviz>=1" graphviz
 
       - name: Run tests
         run: |
