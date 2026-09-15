@@ -51,10 +51,12 @@ except ImportError:
 ```python
 # On Colab, update PyMC and ArviZ
 # (this chapter requires PyMC 6 and ArviZ 1)
+# matplotlib 3.11 avoids deprecation warnings from recent versions
+# of pyparsing, which matplotlib 3.10 triggers when it renders math
 
 try:
     import google.colab
-    !pip install --quiet --upgrade "pymc>=6" "arviz>=1"
+    !pip install --quiet --upgrade "pymc>=6" "arviz>=1" "matplotlib>=3.11"
 except ImportError:
     pass
 ```
