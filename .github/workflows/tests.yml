@@ -19,7 +19,7 @@ jobs:
         # stop testing on macos-latest until they fix the problem
         # installing pytables
         os: [ubuntu-latest, windows-latest]
-        python-version: [3.8, "3.12"]
+        python-version: ["3.12"]
 
     steps:
       - uses: actions/checkout@v2
@@ -37,3 +37,28 @@ jobs:
       - name: Run tests
         run: |
           make tests
+
+  # Chapters 19 and 20 need PyMC, which is not in requirements-dev.txt and
+  # requires Python 3.12+. They run in their own job so the matrix above
+  # stays light, and so PyTensor is not built on Windows.
+  pymc-tests:
+    name: PyMC chapters (ubuntu-latest, Python 3.12)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          pip install "pymc>=6" "arviz>=1"
+
+      - name: Run tests
+        run: |
+          cd soln; pytest --nbmake chap19_v3.ipynb chap20.ipynb
