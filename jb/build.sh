@@ -28,6 +28,7 @@ cp ../examples/raven.ipynb .
 cp ../examples/frog.ipynb .
 cp ../examples/hepatitis.ipynb .
 cp ../examples/diabetes.ipynb .
+cp ../examples/ordinal.ipynb .
 cp ../soln/utils.py .
 
 # add tags to hide the solutions
