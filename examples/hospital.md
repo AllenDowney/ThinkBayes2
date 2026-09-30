@@ -15,7 +15,12 @@ jupyter:
 
 You can order print and ebook versions of *Think Bayes 2e* from
 [Bookshop.org](https://bookshop.org/a/98697/9781492089469) and
-[Amazon](https://amzn.to/334eqGo).
+[Amazon](https://amzn.to/334eqGo) (affiliate links).
+
+If you are enjoying the free, online version, please consider
+[buying me a coffee](https://buymeacoffee.com/allendowney).
+
+And you might like this new book-in-progress by Allen Downey, [*You Would Choose Now: Measuring America's Progress Toward Fairness and Tolerance*](https://leanpub.com/ywcn).
 
 
 # Grid algorithms for hierarchical models
