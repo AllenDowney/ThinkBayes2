@@ -1,0 +1,1325 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Ordinal Regression &#8212; Think Bayes</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="application/vnd.jupyter.widget-state+json">{"state": {"0ce9521b5ce24247b13d92f18bf1efa9": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "130b81bb48ab414eab92865dc867bd5a": {"model_module": "@jupyter-widgets/output", "model_module_version": "1.0.0", "model_name": "OutputModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/output", "_model_module_version": "1.0.0", "_model_name": "OutputModel", "_view_count": null, "_view_module": "@jupyter-widgets/output", "_view_module_version": "1.0.0", "_view_name": "OutputView", "layout": "IPY_MODEL_42112fe8667244ba9b9138d5fb9901ad", "msg_id": "", "outputs": [{"data": {"text/html": "<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\">                                                                                                                   \n <span style=\"font-weight: bold\">                      </span> <span style=\"font-weight: bold\">           </span> <span style=\"font-weight: bold\">           </span> <span style=\"font-weight: bold\">           </span> <span style=\"font-weight: bold\"> Grad      </span> <span style=\"font-weight: bold\">                    </span> <span style=\"font-weight: bold\">          </span> <span style=\"font-weight: bold\">          </span> \n <span style=\"font-weight: bold\"> Progress             </span> <span style=\"font-weight: bold\"> Draw      </span> <span style=\"font-weight: bold\"> Divergen\u2026 </span> <span style=\"font-weight: bold\"> Step size </span> <span style=\"font-weight: bold\"> evals     </span> <span style=\"font-weight: bold\"> Speed              </span> <span style=\"font-weight: bold\"> Elapsed  </span> <span style=\"font-weight: bold\"> Remaini\u2026 </span> \n \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>\u2009<span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>   500         0           0.806       7           664.20 draws/s       0:00:01    0:00:00   \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>\u2009<span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>   500         0           0.845       1           672.41 draws/s       0:00:01    0:00:00   \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>\u2009<span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>   500         0           0.767       7           634.78 draws/s       0:00:01    0:00:00   \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>\u2009<span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>   500         0           0.872       3           707.82 draws/s       0:00:01    0:00:00   \n                                                                                                                   \n</pre>\n", "text/plain": "                                                                                                                   \n \u001b[1m                      \u001b[0m \u001b[1m           \u001b[0m \u001b[1m           \u001b[0m \u001b[1m           \u001b[0m \u001b[1m \u001b[0m\u001b[1mGrad     \u001b[0m\u001b[1m \u001b[0m \u001b[1m                    \u001b[0m \u001b[1m          \u001b[0m \u001b[1m          \u001b[0m \n \u001b[1m \u001b[0m\u001b[1mProgress            \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mDraw     \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mDivergen\u2026\u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mStep size\u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mevals    \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mSpeed             \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mElapsed \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mRemaini\u2026\u001b[0m\u001b[1m \u001b[0m \n \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \n  \u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m\u2009\u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m   500         0           0.806       7           664.20 draws/s       0:00:01    0:00:00   \n  \u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m\u2009\u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m   500         0           0.845       1           672.41 draws/s       0:00:01    0:00:00   \n  \u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m\u2009\u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m   500         0           0.767       7           634.78 draws/s       0:00:01    0:00:00   \n  \u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m\u2009\u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m   500         0           0.872       3           707.82 draws/s       0:00:01    0:00:00   \n                                                                                                                   \n"}, "metadata": {}, "output_type": "display_data"}], "tabbable": null, "tooltip": null}}, "2eff14bf4eea471fa0e500effbd9121a": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "42112fe8667244ba9b9138d5fb9901ad": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "99f9f33ee0224224b90966d471ea7812": {"model_module": "@jupyter-widgets/output", "model_module_version": "1.0.0", "model_name": "OutputModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/output", "_model_module_version": "1.0.0", "_model_name": "OutputModel", "_view_count": null, "_view_module": "@jupyter-widgets/output", "_view_module_version": "1.0.0", "_view_name": "OutputView", "layout": "IPY_MODEL_0ce9521b5ce24247b13d92f18bf1efa9", "msg_id": "", "outputs": [{"data": {"text/html": "<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\">Computing ... <span style=\"color: #1764f4; text-decoration-color: #1764f4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span> <span style=\"color: #800080; text-decoration-color: #800080\">100%</span> 0:00:00\n</pre>\n", "text/plain": "Computing ... \u001b[38;2;23;100;244m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m \u001b[35m100%\u001b[0m 0:00:00\n"}, "metadata": {}, "output_type": "display_data"}], "tabbable": null, "tooltip": null}}, "fc8485cc8a3842a4b1c671cad07ac4dd": {"model_module": "@jupyter-widgets/output", "model_module_version": "1.0.0", "model_name": "OutputModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/output", "_model_module_version": "1.0.0", "_model_name": "OutputModel", "_view_count": null, "_view_module": "@jupyter-widgets/output", "_view_module_version": "1.0.0", "_view_name": "OutputView", "layout": "IPY_MODEL_2eff14bf4eea471fa0e500effbd9121a", "msg_id": "", "outputs": [{"data": {"text/html": "<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\">                                                                                                                   \n <span style=\"font-weight: bold\">                      </span> <span style=\"font-weight: bold\">           </span> <span style=\"font-weight: bold\">           </span> <span style=\"font-weight: bold\">           </span> <span style=\"font-weight: bold\"> Grad      </span> <span style=\"font-weight: bold\">                    </span> <span style=\"font-weight: bold\">          </span> <span style=\"font-weight: bold\">          </span> \n <span style=\"font-weight: bold\"> Progress             </span> <span style=\"font-weight: bold\"> Draw      </span> <span style=\"font-weight: bold\"> Divergen\u2026 </span> <span style=\"font-weight: bold\"> Step size </span> <span style=\"font-weight: bold\"> evals     </span> <span style=\"font-weight: bold\"> Speed              </span> <span style=\"font-weight: bold\"> Elapsed  </span> <span style=\"font-weight: bold\"> Remaini\u2026 </span> \n \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>\u2009<span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>   500         0           0.834       3           263.20 draws/s       0:00:03    0:00:00   \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>\u2009<span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>   500         0           0.741       3           265.29 draws/s       0:00:03    0:00:00   \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>\u2009<span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>   500         0           0.849       3           275.35 draws/s       0:00:03    0:00:00   \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>\u2009<span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span>   500         0           0.734       3           264.12 draws/s       0:00:03    0:00:00   \n                                                                                                                   \n</pre>\n", "text/plain": "                                                                                                                   \n \u001b[1m                      \u001b[0m \u001b[1m           \u001b[0m \u001b[1m           \u001b[0m \u001b[1m           \u001b[0m \u001b[1m \u001b[0m\u001b[1mGrad     \u001b[0m\u001b[1m \u001b[0m \u001b[1m                    \u001b[0m \u001b[1m          \u001b[0m \u001b[1m          \u001b[0m \n \u001b[1m \u001b[0m\u001b[1mProgress            \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mDraw     \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mDivergen\u2026\u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mStep size\u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mevals    \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mSpeed             \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mElapsed \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mRemaini\u2026\u001b[0m\u001b[1m \u001b[0m \n \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \n  \u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m\u2009\u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m   500         0           0.834       3           263.20 draws/s       0:00:03    0:00:00   \n  \u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m\u2009\u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m   500         0           0.741       3           265.29 draws/s       0:00:03    0:00:00   \n  \u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m\u2009\u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m   500         0           0.849       3           275.35 draws/s       0:00:03    0:00:00   \n  \u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m\u2009\u001b[38;2;31;119;180m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m   500         0           0.734       3           264.12 draws/s       0:00:03    0:00:00   \n                                                                                                                   \n"}, "metadata": {}, "output_type": "display_data"}], "tabbable": null, "tooltip": null}}}, "version_major": 2, "version_minor": 0}</script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script crossorigin="anonymous" data-jupyter-widgets-cdn="https://cdn.jsdelivr.net/npm/" src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@1.0.6/dist/embed-amd.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'ordinal';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Counting Diabetes Cases with Mark and Recapture" href="diabetes.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Think Bayes</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    Think Bayes 2
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Front Matter</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preface.html">Preface</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Chapters</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chap01.html">1. Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap02.html">2. Bayes’s Theorem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap03.html">3. Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap04.html">4. Estimating Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap05.html">5. Estimating Counts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap06.html">6. Odds and Addends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap07.html">7. Minimum, Maximum, and Mixture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap08.html">8. Poisson Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap09.html">9. Decision Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap10.html">10. Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap11.html">11. Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap12.html">12. Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap13.html">13. Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap14.html">14. Survival Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap15.html">15. Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap16.html">16. Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap17.html">17. Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap18.html">18. Conjugate Priors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap19_v3.html">19. MCMC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chap20.html">20. Approximate Bayesian Computation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="redline.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redline_pymc.html">The Red Line Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vaccine2.html">Estimating vaccine efficacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb.html">Flipping USB Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sister.html">The Left Handed Sister Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dice.html">Bayesian Dice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radiation.html">The Emitter-Detector Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital.html">Grid algorithms for hierarchical models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hospital_birth_rate.html">Comparing birth rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ok.html">How Many Typos?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bookstore.html">How Many Books?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beta_binomial.html">The All-Knowing Cube of Probability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zipf.html">What’s a chartist?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bread.html">The Poincaré Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cancer.html">Cancer Survival Rates Are Misleading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raven.html">The Raven Paradox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frog.html">The Frog Puzzle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hepatitis.html">Tracking an Outbreak with Mark and Recapture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diabetes.html">Counting Diabetes Cases with Mark and Recapture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Ordinal Regression</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/AllenDowney/ThinkBayes2" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/ordinal.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Ordinal Regression</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-question">The Question</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-forward-model">The Forward Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-data">The Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-model">The Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-model-predicts">What the Model Predicts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#under-the-hood">Under the Hood</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <p>You can order print and ebook versions of <em>Think Bayes 2e</em> from
+<a class="reference external" href="https://bookshop.org/a/98697/9781492089469">Bookshop.org</a> and
+<a class="reference external" href="https://amzn.to/334eqGo">Amazon</a> (affiliate links).</p>
+<p>If you are enjoying the free, online version, please consider
+<a class="reference external" href="https://buymeacoffee.com/allendowney">buying me a coffee</a>.</p>
+<p>And you might like this new book-in-progress by Allen Downey, <a class="reference external" href="https://leanpub.com/ywcn"><em>You Would Choose Now: Measuring America’s Progress Toward Fairness and Tolerance</em></a>.</p>
+<section id="ordinal-regression">
+<h1>Ordinal Regression<a class="headerlink" href="#ordinal-regression" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/ordinal.ipynb">Click here to run this notebook on Colab</a>.</p>
+<p>Survey questions often ask for an answer on an ordered scale: strongly disagree
+to strongly agree, poor to excellent, never to always.
+Answers like these are called <strong>ordinal</strong> – the categories have an order, but
+the distances between them don’t mean anything.
+“Very happy” is happier than “pretty happy”, but it is not twice as happy, and
+the step from “not too happy” to “pretty happy” is not necessarily the same size
+as the step from “pretty happy” to “very happy”.</p>
+<p>That makes them awkward to model.
+If we assign the responses numbers and run linear regression, we are pretending
+the spacing is meaningful.
+If we treat them as unordered categories and run multinomial regression, we
+throw away the ordering, which is important information.</p>
+<p>Ordinal regression is the model that fits the shape of the problem.
+This example develops it in two steps: first the <strong>forward path</strong>, computing the
+probability of the data given the parameters, and then the <strong>reverse path</strong>, computing the posterior distribution of the parameters given the data.</p>
+<p>This example is adapted from a workshop on
+<a class="reference external" href="https://allendowney.github.io/SurveyDataPyMC/">survey data analysis with PyMC</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">expit</span><span class="p">,</span> <span class="n">logit</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-question">
+<h2>The Question<a class="headerlink" href="#the-question" title="Link to this heading">#</a></h2>
+<p>The <a class="reference external" href="https://gss.norc.org/">General Social Survey</a> has asked the same question
+about happiness since 1972:</p>
+<blockquote>
+<div><p>Taken all together, how would you say things are these days – would you say
+that you are very happy, pretty happy, or not too happy?</p>
+</div></blockquote>
+<p>There are three possible responses, which I’ll put in order from least to most
+happy and label 0, 1, and 2.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">happy_map</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;Not too happy&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Pretty happy&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Very happy&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-forward-model">
+<h2>The Forward Model<a class="headerlink" href="#the-forward-model" title="Link to this heading">#</a></h2>
+<p>Let’s suppose each respondent has a latent level of happiness – a number on a
+continuous scale we can’t observe directly.
+When they answer the question, they translate that number into one of the three responses.
+I’ll call the latent value <span class="math notranslate nohighlight">\(\eta\)</span> (eta), which is the conventional name for the
+linear predictor in a model like this.</p>
+<p>To model that process, we’ll suppose there are <strong>cutpoints</strong> on the scale that
+mark transitions from one response to the next.
+With three responses there are two cutpoints; for now we’ll pretend we know
+they are at -1 and 1.</p>
+<ul class="simple">
+<li><p>Someone below -1 is likely to say “not too happy”.</p></li>
+<li><p>Someone between -1 and 1 is likely to say “pretty happy”.</p></li>
+<li><p>Someone above 1 is likely to say “very happy”.</p></li>
+</ul>
+<p>Here are the cutpoints, <span class="math notranslate nohighlight">\(c0\)</span> and <span class="math notranslate nohighlight">\(c1\)</span>, and a range of possible values for <span class="math notranslate nohighlight">\(\eta\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cutpoints</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">etas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For a person with a given <span class="math notranslate nohighlight">\(\eta\)</span>, the probability that they answer 0 or below is</p>
+<div class="math notranslate nohighlight">
+\[P(Y \le 0) = \mathrm{expit}(c_0 - \eta)\]</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">expit</span></code> is the inverse of the logit function, which maps any number onto a
+probability.
+The probability that they answer 1 or below depends on the other cutpoint, <span class="math notranslate nohighlight">\(c_1\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[P(Y \le 1) = \mathrm{expit}(c_1 - \eta)\]</div>
+<p>And the probability that they answer 2 or below is 1, because there is no higher
+response.
+Here’s what that looks like in code.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p_le_0</span> <span class="o">=</span> <span class="n">expit</span><span class="p">(</span><span class="n">cutpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">etas</span><span class="p">)</span>
+<span class="n">p_le_1</span> <span class="o">=</span> <span class="n">expit</span><span class="p">(</span><span class="n">cutpoints</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">etas</span><span class="p">)</span>
+<span class="n">p_le_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">etas</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>These are <strong>cumulative</strong> probabilities, so together they make a cumulative distribution function (CDF).
+The following function take the value of <span class="math notranslate nohighlight">\(\eta\)</span> for a hypothetical person and plots:</p>
+<ul class="simple">
+<li><p>Logistic curves centered at the cutpoints.</p></li>
+<li><p>A vertical dashed line at the given values of <span class="math notranslate nohighlight">\(\eta\)</span>.</p></li>
+<li><p>Points on the logistic curves at <span class="math notranslate nohighlight">\(\eta\)</span>.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">plot_ordinal_cdf</span><span class="p">(</span><span class="n">eta0</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">etas</span><span class="p">,</span> <span class="n">p_le_0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$P(Y \leq 0)$&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">etas</span><span class="p">,</span> <span class="n">p_le_1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$P(Y \leq 1)$&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">etas</span><span class="p">,</span> <span class="n">p_le_2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$P(Y \leq 2)$&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cutpoints</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">eta0</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="sa">rf</span><span class="s1">&#39;$\eta=</span><span class="si">{</span><span class="n">eta0</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="n">expit</span><span class="p">(</span><span class="n">cutpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">eta0</span><span class="p">),</span> <span class="n">expit</span><span class="p">(</span><span class="n">cutpoints</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">eta0</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">eta0</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="n">eta0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Latent happiness, $\eta$&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Cumulative probability&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Cumulative probabilities and cutpoints&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s what it looks like for someone with <span class="math notranslate nohighlight">\(\eta = 0.5\)</span>, a little happier than
+average.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eta0</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">plot_ordinal_cdf</span><span class="p">(</span><span class="n">eta0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/bc8d4a5098702e7b2b5d363262f77272c1bb8f09d63ad476f14ed77cf5052cdd.png" src="_images/bc8d4a5098702e7b2b5d363262f77272c1bb8f09d63ad476f14ed77cf5052cdd.png" />
+</div>
+</div>
+<p>The three dots are the CDF of their response, which we can store as the probabilities in a <code class="docutils literal notranslate"><span class="pre">Cdf</span></code> object (defined by <a class="reference external" href="https://allendowney.github.io/empiricaldist/"><code class="docutils literal notranslate"><span class="pre">empiricaldist</span></code></a>)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">empiricaldist</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cdf</span>
+
+<span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="n">expit</span><span class="p">(</span><span class="n">cutpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">eta0</span><span class="p">),</span> <span class="n">expit</span><span class="p">(</span><span class="n">cutpoints</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">eta0</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="n">cdf</span> <span class="o">=</span> <span class="n">Cdf</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">cdf</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.182426</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.622459</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>And the differences between consecutive values are the probabilities of the
+three responses – the PMF.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pmf</span> <span class="o">=</span> <span class="n">cdf</span><span class="o">.</span><span class="n">make_pmf</span><span class="p">()</span>
+<span class="n">pmf</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pmf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">happy_map</span><span class="p">)</span>
+<span class="n">pmf</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>probs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Not too happy</th>
+      <td>0.182426</td>
+    </tr>
+    <tr>
+      <th>Pretty happy</th>
+      <td>0.440034</td>
+    </tr>
+    <tr>
+      <th>Very happy</th>
+      <td>0.377541</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>So this person is most likely to say “pretty happy”, with “very happy” the next
+most likely.</p>
+<p>That’s the forward path: given the cutpoints and a latent value, we can compute
+the probability of each response.</p>
+<p>Now we can run it backward: given the responses, estimate the parameters.</p>
+</section>
+<section id="the-data">
+<h2>The Data<a class="headerlink" href="#the-data" title="Link to this heading">#</a></h2>
+<p>As data for this example we’ll use an excerpt from the <a class="reference external" href="https://gss.norc.org/">General Social Survey</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;gss_happy.csv&#39;</span><span class="p">)</span>
+<span class="n">gss</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>year</th>
+      <th>age</th>
+      <th>cohort</th>
+      <th>happy</th>
+      <th>sex</th>
+      <th>educ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1972</td>
+      <td>23.0</td>
+      <td>1949.0</td>
+      <td>3</td>
+      <td>2</td>
+      <td>16.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1972</td>
+      <td>70.0</td>
+      <td>1902.0</td>
+      <td>3</td>
+      <td>1</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1972</td>
+      <td>48.0</td>
+      <td>1924.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>12.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1972</td>
+      <td>27.0</td>
+      <td>1945.0</td>
+      <td>3</td>
+      <td>2</td>
+      <td>17.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1972</td>
+      <td>61.0</td>
+      <td>1911.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>12.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">happy</span></code> column uses 1 for “very happy” and 3 for “not too happy”, so I’ll
+recode it to put the categories in increasing order, starting from <code class="docutils literal notranslate"><span class="pre">0</span></code>.
+This coding is actually a requirement for the PyMC implementation of ordinal regression.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gss</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gss</span><span class="p">[</span><span class="s1">&#39;happy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s the distribution of responses.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">proportions</span> <span class="o">=</span> <span class="n">gss</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+<span class="n">proportions</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">proportions</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">happy_map</span><span class="p">)</span>
+<span class="p">(</span><span class="n">proportions</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>y
+Not too happy    12.8
+Pretty happy     55.9
+Very happy       31.3
+Name: proportion, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p>Most people say they are pretty happy, and more say very happy than not too
+happy.</p>
+<p>Now let’s see whether happiness varies with age.
+I’ll group respondents into five-year bins and compute the proportion giving
+each response.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">gss</span><span class="p">[</span><span class="s1">&#39;age_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">gss</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
+
+<span class="n">age_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">gss</span><span class="p">[</span><span class="s1">&#39;age_group&#39;</span><span class="p">],</span> <span class="n">gss</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">normalize</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="n">age_table</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">age_table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">happy_map</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="s1">&#39;C2&#39;</span><span class="p">]</span>
+<span class="n">age_table</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Age&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Percent giving each response&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Happiness by age&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Happiness by age&#39;)
+</pre></div>
+</div>
+<img alt="_images/ef69f1580f43ebd6e997e3a1dd7b241944e65b9ab943d79f79a40eb669db63b0.png" src="_images/ef69f1580f43ebd6e997e3a1dd7b241944e65b9ab943d79f79a40eb669db63b0.png" />
+</div>
+</div>
+<p>The proportion saying “very happy” rises with
+age, and the proportion saying “not too happy” falls.</p>
+</section>
+<section id="the-model">
+<h2>The Model<a class="headerlink" href="#the-model" title="Link to this heading">#</a></h2>
+<p>Now we’ll estimate the cutpoints and the effect of age.</p>
+<p>For the cutpoints, we need a prior that generates ordered values.
+PyMC provides an <code class="docutils literal notranslate"><span class="pre">ordered</span></code> transform that does exactly that.</p>
+<p>To choose locations for the priors, we’ll use the observed proportions.
+Specifically, we’ll use logits of the cumulative proportions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cumulative</span> <span class="o">=</span> <span class="n">proportions</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+<span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">logit</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">cumulative</span><span class="p">[:</span><span class="mi">2</span><span class="p">]]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[np.float64(-1.92), np.float64(0.78)]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Peeking at the data to choose the priors helps the sampler get started, but it doesn’t affect the results much (as long as there’s enough spread in the priors).</p>
+<p>For the effect of age, we’ll use a linear model.
+We’ll center <code class="docutils literal notranslate"><span class="pre">age</span></code> so the parameter is easier to interpret (it also helps the sampler).</p>
+<p>The dataset has almost 60,000 respondents, which is more than we need – and
+sampling takes about a minute with all of them.
+So I’ll draw a random subset of 5000, which is enough to estimate three
+parameters and runs in a few seconds.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">gss</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="n">age_shift</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">age_centered</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span> <span class="o">-</span> <span class="n">age_shift</span>
+<span class="n">age_shift</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>np.float64(46.3)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now here’s the model, taking advantage of the built-in <code class="docutils literal notranslate"><span class="pre">OrderedLogistic</span></code> likelihood.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pymc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pm</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">age_data</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="n">age_centered</span><span class="p">)</span>
+
+    <span class="n">cutpoints</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;cutpoints&#39;</span><span class="p">,</span>
+                          <span class="n">mu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]),</span>
+                          <span class="n">sigma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                          <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="n">transform</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ordered</span><span class="p">)</span>
+    
+    <span class="n">beta_age</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;beta_age&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="n">eta</span> <span class="o">=</span> <span class="n">beta_age</span> <span class="o">*</span> <span class="n">age_data</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">OrderedLogistic</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">eta</span><span class="p">,</span> <span class="n">cutpoints</span><span class="o">=</span><span class="n">cutpoints</span><span class="p">,</span>
+                       <span class="n">compute_p</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>There is no intercept in the linear model of <code class="docutils literal notranslate"><span class="pre">eta</span></code>.
+That’s deliberate – because <code class="docutils literal notranslate"><span class="pre">OrderedLogistic</span></code> compares <code class="docutils literal notranslate"><span class="pre">eta</span></code> to the cutpoints, an intercept would shift every cutpoint by the same amount.
+So adding an intercept would make the model unidentifiable: we could increase the intercept
+and increase every cutpoint to match, and the likelihood would not change.</p>
+<p>Here’s a graphical representation of the model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pm</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/e14d4bc35d5e300a5a15371282a2962bfd163f776c1d59998db6c16ecc37d362.svg" src="_images/e14d4bc35d5e300a5a15371282a2962bfd163f776c1d59998db6c16ecc37d362.svg" />
+</div>
+</div>
+<p>Now we can run the sampler.</p>
+<p>Because we set <code class="docutils literal notranslate"><span class="pre">compute_p=True</span></code>, the model contains a deterministic variable
+with the probability of each response for each respondent.
+That’s an array with almost 60,000 rows, and if we stored it for every draw, the
+result would be several gigabytes – and we don’t need it, because we’ll
+recompute these probabilities later for a small range of ages.
+So I’ll use <code class="docutils literal notranslate"><span class="pre">var_names</span></code> to store only the parameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;cutpoints&#39;</span><span class="p">,</span> <span class="s1">&#39;beta_age&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">idata</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">tune</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">var_names</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NUTS[nutpie]: [cutpoints, beta_age]
+</pre></div>
+</div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "fc8485cc8a3842a4b1c671cad07ac4dd", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">arviz</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">az</span>
+
+<span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">var_names</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+      <th>sd</th>
+      <th>eti89_lb</th>
+      <th>eti89_ub</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+      <th>r_hat</th>
+      <th>mcse_mean</th>
+      <th>mcse_sd</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>cutpoints[0]</th>
+      <td>-1.936</td>
+      <td>0.043</td>
+      <td>-2.003</td>
+      <td>-1.869</td>
+      <td>827.123</td>
+      <td>1071.997</td>
+      <td>1.002</td>
+      <td>0.001</td>
+      <td>0.001</td>
+    </tr>
+    <tr>
+      <th>cutpoints[1]</th>
+      <td>0.822</td>
+      <td>0.031</td>
+      <td>0.773</td>
+      <td>0.871</td>
+      <td>2626.386</td>
+      <td>1499.888</td>
+      <td>1.002</td>
+      <td>0.001</td>
+      <td>0.001</td>
+    </tr>
+    <tr>
+      <th>beta_age</th>
+      <td>0.006</td>
+      <td>0.002</td>
+      <td>0.003</td>
+      <td>0.008</td>
+      <td>1548.974</td>
+      <td>1191.611</td>
+      <td>1.002</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The estimated cutpoints are close to the values we computed from the observed
+proportions, which is what we’d expect, since most of the information about
+where the cutpoints go is in the overall response distribution.</p>
+<p><code class="docutils literal notranslate"><span class="pre">beta_age</span></code> is small but clearly positive, which means older respondents are more
+likely to give happier answers.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">plot_dist</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cutpoints&#39;</span><span class="p">,</span> <span class="s1">&#39;beta_age&#39;</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/8cd4c6b9465d9f386ff9269b2e2d527ffdfc28d2d1527ebb7bc565dae57d9f36.png" src="_images/8cd4c6b9465d9f386ff9269b2e2d527ffdfc28d2d1527ebb7bc565dae57d9f36.png" />
+</div>
+</div>
+</section>
+<section id="what-the-model-predicts">
+<h2>What the Model Predicts<a class="headerlink" href="#what-the-model-predicts" title="Link to this heading">#</a></h2>
+<p>A slope on a logit scale is hard to interpret directly, so let’s convert it back
+into probabilities.
+Because we passed <code class="docutils literal notranslate"><span class="pre">compute_p=True</span></code>, PyMC computed the probability of each
+response for each respondent, and we can evaluate it for any age.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">age_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">set_data</span><span class="p">({</span><span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="n">age_range</span> <span class="o">-</span> <span class="n">age_shift</span><span class="p">})</span>
+    <span class="n">idata_pred</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">compute_deterministics</span><span class="p">(</span><span class="n">idata</span><span class="o">.</span><span class="n">posterior</span><span class="p">)</span>
+    <span class="n">predicted</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">idata_pred</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y_probs&#39;</span><span class="p">],</span>
+                           <span class="n">num_samples</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "99f9f33ee0224224b90966d471ea7812", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div></div>
+</div>
+<p>The result has an axis for age, an axis for the three responses, and an axis for
+the posterior samples, so we can plot the mean and a credible interval for each
+response.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">plot_bands</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">probs</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot the mean and a 90% interval for each category.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">colors</span><span class="p">):</span>
+        <span class="n">pk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">probs</span><span class="p">)[:,</span> <span class="n">k</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+        <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">pk</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">age_table</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
+<span class="n">plot_bands</span><span class="p">(</span><span class="n">age_range</span><span class="p">,</span> <span class="n">predicted</span><span class="p">,</span> <span class="n">colors</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Age&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Percent giving each response&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Happiness by age, with model predictions&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Happiness by age, with model predictions&#39;)
+</pre></div>
+</div>
+<img alt="_images/bd0fa91b092adf4e68538ac7c333caac3918e435551a7f64a09f61442e42a4e7.png" src="_images/bd0fa91b092adf4e68538ac7c333caac3918e435551a7f64a09f61442e42a4e7.png" />
+</div>
+</div>
+<p>The model captures the trends in the data, but not the details of the ups and downs.</p>
+<p>Notice that the three curves are constrained: they always sum to 100%, they are
+always in the same order, and none of them can wander outside 0 and 100.
+Those constraints come from the structure of the model, not from anything we
+had to impose.</p>
+</section>
+<section id="under-the-hood">
+<h2>Under the Hood<a class="headerlink" href="#under-the-hood" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">OrderedLogistic</span></code> is a convenience.
+Underneath, it does exactly what we did in the forward model: it computes
+cumulative probabilities from the cutpoints, differences them to get category
+probabilities, and passes those to a <code class="docutils literal notranslate"><span class="pre">Categorical</span></code> distribution.</p>
+<p>Here is the same model written out:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model2</span><span class="p">:</span>
+    <span class="n">age_data</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="n">age_centered</span><span class="p">)</span>
+
+    <span class="n">cutpoints</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;cutpoints&#39;</span><span class="p">,</span>
+                          <span class="n">mu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]),</span>
+                          <span class="n">sigma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                          <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="n">transform</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ordered</span><span class="p">)</span>
+    <span class="n">beta_age</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;beta_age&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="n">eta</span> <span class="o">=</span> <span class="n">beta_age</span> <span class="o">*</span> <span class="n">age_data</span>
+
+    <span class="c1"># cumulative probabilities, as in the forward model</span>
+    <span class="n">cdf_0</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">invlogit</span><span class="p">(</span><span class="n">cutpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">eta</span><span class="p">)</span>
+    <span class="n">cdf_1</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">invlogit</span><span class="p">(</span><span class="n">cutpoints</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">eta</span><span class="p">)</span>
+
+    <span class="c1"># differences, to get the probability of each response</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">cdf_0</span><span class="p">,</span> <span class="n">cdf_1</span> <span class="o">-</span> <span class="n">cdf_0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">cdf_1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model2</span><span class="p">:</span>
+    <span class="n">idata2</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">tune</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NUTS[nutpie]: [cutpoints, beta_age]
+</pre></div>
+</div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "130b81bb48ab414eab92865dc867bd5a", "version_major": 2, "version_minor": 0}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata2</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cutpoints&#39;</span><span class="p">,</span> <span class="s1">&#39;beta_age&#39;</span><span class="p">],</span> <span class="n">round_to</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+      <th>sd</th>
+      <th>eti89_lb</th>
+      <th>eti89_ub</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+      <th>r_hat</th>
+      <th>mcse_mean</th>
+      <th>mcse_sd</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>cutpoints[0]</th>
+      <td>-1.933</td>
+      <td>0.044</td>
+      <td>-2.002</td>
+      <td>-1.864</td>
+      <td>822.489</td>
+      <td>1032.171</td>
+      <td>1.002</td>
+      <td>0.002</td>
+      <td>0.001</td>
+    </tr>
+    <tr>
+      <th>cutpoints[1]</th>
+      <td>0.822</td>
+      <td>0.030</td>
+      <td>0.774</td>
+      <td>0.872</td>
+      <td>2596.059</td>
+      <td>1563.674</td>
+      <td>1.003</td>
+      <td>0.001</td>
+      <td>0.001</td>
+    </tr>
+    <tr>
+      <th>beta_age</th>
+      <td>0.006</td>
+      <td>0.002</td>
+      <td>0.003</td>
+      <td>0.008</td>
+      <td>1590.263</td>
+      <td>1474.314</td>
+      <td>1.001</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The results are the same, within sampling error.</p>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>Ordinal data is common and easy to model badly.
+Treating the categories as numbers assumes a spacing we don’t know; treating
+them as unordered categories discards the ordering we do know.</p>
+<p>The cumulative logit model takes the middle path.
+It supposes a latent quantity on a continuous scale and a set of cutpoints that
+divide the scale into ordered categories.
+By estimating the cutpoints along with the other parameters of the model, we infer the spacing of the responses rather than assume it.</p>
+<p>For more on modeling survey data with PyMC, see
+<a class="reference external" href="https://allendowney.github.io/SurveyDataPyMC/">this workshop</a>.</p>
+<p>Copyright 2026 Allen B. Downey</p>
+<p>License: <a class="reference external" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="diabetes.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Counting Diabetes Cases with Mark and Recapture</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-question">The Question</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-forward-model">The Forward Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-data">The Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-model">The Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-model-predicts">What the Model Predicts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#under-the-hood">Under the Hood</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Allen B. Downey
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

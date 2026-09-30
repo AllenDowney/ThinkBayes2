@@ -106,3 +106,5 @@ Or use these links to run the notebooks on Colab:
 * [Tracking an Outbreak with Mark and Recapture](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/hepatitis.ipynb)
 
 * [Counting Diabetes Cases with Mark and Recapture](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/diabetes.ipynb)
+
+* [Ordinal Regression](https://colab.research.google.com/github/AllenDowney/ThinkBayes2/blob/master/examples/ordinal.ipynb)
