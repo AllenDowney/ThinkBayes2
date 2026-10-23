@@ -1,3 +1,10 @@
+---
+myst:
+  html_meta:
+    description: "Preface to Think Bayes, 2nd edition: learning Bayesian statistics with programming, who the book is for, modeling, and how to run the code."
+og:description: "Preface to Think Bayes, 2nd edition: learning Bayesian statistics with programming, who the book is for, modeling, and how to run the code."
+---
+
 # Preface
 
 The premise of this book, and the other books in the *Think X* series,

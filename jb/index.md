@@ -1,4 +1,11 @@
-# Think Bayes 2
+---
+myst:
+  html_meta:
+    description: "Think Bayes, 2nd edition, free online: an introduction to Bayesian statistics using Python and computational methods, as notebooks you can run on Colab."
+og:description: "Think Bayes, 2nd edition, free online: an introduction to Bayesian statistics using Python and computational methods, as notebooks you can run on Colab."
+---
+
+# Think Bayes: Bayesian Statistics in Python
 
 by Allen B. Downey
 
